@@ -1,0 +1,169 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Role {
+  id             Int              @id @default(autoincrement())
+  name           String?          @unique
+  description    String?
+  RolePermission RolePermission[]
+  User           User[]
+
+  @@map("sb25_role")
+}
+
+model Permission {
+  id             Int              @id @default(autoincrement())
+  name           String?          @unique
+  description    String?
+  RolePermission RolePermission[]
+
+  @@map("sb25_permission")
+}
+
+model RolePermission {
+  roleId       Int
+  role         Role?       @relation(fields: [roleId], references: [id])
+  permissionId Int
+  permission   Permission? @relation(fields: [permissionId], references: [id])
+
+  @@id([roleId, permissionId])
+  @@map("sb25_role_permission")
+}
+
+model User {
+  id       String     @id
+  email    String?    @unique
+  password String?
+  roleId   Int?
+  role     Role?      @relation(fields: [roleId], references: [id])
+  Lecturer Lecturer[]
+  Operator Operator[]
+
+  @@map("sb25_user")
+}
+
+model Major {
+  id         Int        @id @default(autoincrement())
+  name       String?
+  numberCode Int?
+  stringCode String?
+  Course     Course[]
+  Lecturer   Lecturer[]
+}
+
+model Course {
+  id      String  @id
+  name    String?
+  code    String?
+  sks     Int?
+  majorId Int?
+  major   Major?  @relation(fields: [majorId], references: [id])
+
+  @@map("sb25_course")
+}
+
+model Lecturer {
+  id         String        @id
+  npk        String?
+  nidn       String?
+  name       String?
+  frontTitle String?
+  backTitle  String?
+  degree     DegreeStatus?
+  year       Int?
+  religion   Religion?
+  gender     Gender?
+  address    String?
+  email      String?
+  hp         String?
+  photo      String?
+  majorId    Int?
+  major      Major?        @relation(fields: [majorId], references: [id])
+  userId     String?
+  user       User?         @relation(fields: [userId], references: [id])
+}
+
+model Operator {
+  id         String  @id
+  name       String?
+  position   String?
+  department String?
+
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id])
+}
+
+enum SemesterType {
+  GANJIL
+  GENAP
+  GANJIL_PENDEK
+  GENAP_PENDEK
+}
+
+enum Gender {
+  PRIA
+  WANITA
+}
+
+enum Religion {
+  ISLAM
+  KATOLIK
+  PROTESTAN
+  BUDDHA
+  HINDU
+  KONGHUCU
+  DLL
+}
+
+enum StudentStatus {
+  AKTIF
+  NONAKTIF
+  CUTI
+  DO
+  MENGUNDURKAN_DIRI
+  LULUS
+}
+
+enum SemesterStatus {
+  AKTIF
+  NONAKTIF
+  CUTI
+  DO
+  MENGUNDURKAN_DIRI
+  LULUS
+}
+
+enum CampusType {
+  BJB
+  BJM
+  SORE
+  ONLINE
+}
+
+enum Location {
+  BJB
+  BJM
+}
+
+enum PaymentStatus {
+  LUNAS
+  BELUM_LUNAS
+}
+
+enum DegreeStatus {
+  S1
+  S2
+  S3
+}
