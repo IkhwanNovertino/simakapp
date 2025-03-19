@@ -15,17 +15,19 @@ const AdminPage = () => {
           <UserCard type="Parents" />
           <UserCard type="Staff" />
         </div>
-
         {/* MIDDLE CHART */}
         <div className="flex flex-col lg:flex-row gap-4">
           {/* COUNT CHART */}
-          <div className="w-full lg:w-1/3 h-[450px]">
-            <CountChart />
+          <div className="w-full lg:w-1/2 h-[450px]">
+            <CountChart title="Mahasiswa/i" />
+          </div>
+          <div className="w-full lg:w-1/2 h-[450px]">
+            <CountChart title="Program Studi" />
           </div>
           {/* ATTENDANCE CHART */}
-          <div className="w-full lg:w-2/3 h-[450px]">
-            {/* <AttandanceChart /> */}
-          </div>
+          {/* <div className="w-full lg:w-2/3 h-[450px]"> */}
+          {/* <AttandanceChart /> */}
+          {/* </div> */}
         </div>
 
         {/* BOTTOM CHART */}

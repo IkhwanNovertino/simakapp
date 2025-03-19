@@ -21,12 +21,16 @@ const data = [
   },
 ];
 
-const CountChart = () => {
+interface CountChartProps {
+  title: string;
+}
+
+const CountChart = ({ title }: CountChartProps) => {
   return (
     <div className="bg-white rounded-xl w-full h-full p-4">
       {/* TITLE */}
       <div className="flex justify-between items-center">
-        <h1 className="text-lg font-semibold">Students</h1>
+        <h1 className="text-lg font-semibold">{title}</h1>
         <Image src={"/moreDark.png"} alt="more-icon" width={20} height={20} className="" />
       </div>
       {/* CHART */}
