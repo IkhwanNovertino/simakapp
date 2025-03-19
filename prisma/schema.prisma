@@ -61,6 +61,8 @@ model Major {
   stringCode String?
   Course     Course[]
   Lecturer   Lecturer[]
+
+  @@map("sb25_major")
 }
 
 model Course {
@@ -93,6 +95,8 @@ model Lecturer {
   major      Major?        @relation(fields: [majorId], references: [id])
   userId     String?
   user       User?         @relation(fields: [userId], references: [id])
+
+  @@map("sb25_lecturer")
 }
 
 model Operator {
@@ -103,6 +107,8 @@ model Operator {
 
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
+
+  @@map("sb25_operator")
 }
 
 enum SemesterType {
