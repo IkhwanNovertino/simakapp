@@ -20,7 +20,7 @@ model Role {
   RolePermission RolePermission[]
   User           User[]
 
-  @@map("sb25_role")
+  @@map("sb25_roles")
 }
 
 model Permission {
@@ -29,7 +29,7 @@ model Permission {
   description    String?
   RolePermission RolePermission[]
 
-  @@map("sb25_permission")
+  @@map("sb25_permissions")
 }
 
 model RolePermission {
@@ -39,7 +39,7 @@ model RolePermission {
   permission   Permission? @relation(fields: [permissionId], references: [id])
 
   @@id([roleId, permissionId])
-  @@map("sb25_role_permission")
+  @@map("sb25_role_permissions")
 }
 
 model User {
@@ -51,7 +51,7 @@ model User {
   Lecturer Lecturer[]
   Operator Operator[]
 
-  @@map("sb25_user")
+  @@map("sb25_users")
 }
 
 model Major {
@@ -61,8 +61,9 @@ model Major {
   stringCode String?
   Course     Course[]
   Lecturer   Lecturer[]
+  Student    Student[]
 
-  @@map("sb25_major")
+  @@map("sb25_majors")
 }
 
 model Course {
@@ -73,7 +74,7 @@ model Course {
   majorId Int?
   major   Major?  @relation(fields: [majorId], references: [id])
 
-  @@map("sb25_course")
+  @@map("sb25_courses")
 }
 
 model Lecturer {
@@ -95,8 +96,9 @@ model Lecturer {
   major      Major?        @relation(fields: [majorId], references: [id])
   userId     String?
   user       User?         @relation(fields: [userId], references: [id])
+  Student    Student[]
 
-  @@map("sb25_lecturer")
+  @@map("sb25_lecturers")
 }
 
 model Operator {
@@ -108,7 +110,31 @@ model Operator {
   userId String?
   user   User?   @relation(fields: [userId], references: [id])
 
-  @@map("sb25_operator")
+  @@map("sb25_operators")
+}
+
+model Student {
+  id             String    @id
+  nim            Int?
+  name           String?
+  year           Int?
+  religion       Religion?
+  gender         Gender?
+  address        String?
+  email          String?
+  hp             String?
+  photo          String?
+  fatherName     String?
+  motherName     String?
+  guardianName   String?
+  guardianHp     String?
+  majorId        Int?
+  major          Major?    @relation(fields: [majorId], references: [id])
+  lecturerId     String?
+  lecturer       Lecturer? @relation(fields: [lecturerId], references: [id])
+  statusRegister String?
+
+  @@map("sb25_students")
 }
 
 enum SemesterType {
