@@ -4,14 +4,37 @@ import Link from "next/link";
 
 const menuItems = [
   {
-    title: "MENU",
+    title: "",
     items: [
       {
         icon: "/home.png",
-        label: "Home",
+        label: "Dashboard",
         href: "/",
         visible: ["admin", "teacher", "student", "parent"],
       },
+    ],
+  },
+  {
+    title: "HAK AKSES",
+    items: [
+      {
+        icon: "/setting.png",
+        label: "Hak Akses",
+        href: "/list/permissions",
+        visible: ["admin", "teacher", "student", "parent"],
+      },
+      {
+        icon: "/profile.png",
+        label: "Role",
+        href: "/roles",
+        visible: ["admin", "teacher", "student", "parent"],
+      },
+    ],
+  },
+  {
+    title: "MENU MASTER",
+    items: [
+
       {
         icon: "/teacher.png",
         label: "Dosen",
@@ -98,29 +121,6 @@ const menuItems = [
       //   href: "/list/assignments",
       //   visible: ["admin", "teacher", "student", "parent"],
       // },
-    ],
-  },
-  {
-    title: "ROLE",
-    items: [
-      {
-        icon: "/profile.png",
-        label: "Role",
-        href: "/profile",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-      {
-        icon: "/setting.png",
-        label: "Hak Akses",
-        href: "/settings",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-      {
-        icon: "/profile.png",
-        label: "User",
-        href: "/profile",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
     ],
   },
   {

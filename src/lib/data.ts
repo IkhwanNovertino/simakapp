@@ -24,3 +24,26 @@ export const teachersData = [
     address: "Dosen Wali",
   },
 ];
+
+export const permissionDaata = [
+  {
+    id: 1,
+    name: "create user",
+    description: "modul untuk membuat data user"
+  },
+  {
+    id: 2,
+    name: "read user",
+    description: "modul untuk menampilkan data user"
+  },
+  {
+    id: 3,
+    name: "update user",
+    description: "modul untuk mengubah data user"
+  },
+  {
+    id: 4,
+    name: "update lecturer",
+    description: "modul untuk mengubah data dosen"
+  },
+]
