@@ -2,7 +2,6 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { permissionDaata, role } from "@/lib/data";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Prisma } from "@prisma/client";
@@ -14,27 +13,13 @@ type PermissionDataType = {
   description: string;
 };
 
-const columns = [
-  {
-    header: "Hak Akses",
-    accessor: "hak akses",
-  },
-  {
-    header: "Deskripsi",
-    accessor: "deskripsi",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
-];
+
 
 const PermissionListPage = async (
   { searchParams }: { searchParams: { [key: string]: string | undefined } }
 ) => {
 
-  const { page, ...queryParams } = searchParams;
+  const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
 
   const query: Prisma.PermissionWhereInput = {}
@@ -43,7 +28,10 @@ const PermissionListPage = async (
       if (value !== undefined) {
         switch (key) {
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+              { description: { contains: value, mode: "insensitive" } },
+            ]
             break;
           default:
             break;
@@ -61,24 +49,38 @@ const PermissionListPage = async (
     prisma.permission.count({ where: query }),
   ]);
 
-  console.log(data);
-
-
   const renderRow = (item: PermissionDataType) => (
     <tr
       key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      className="border-b border-gray-200 even:bg-slate-100 text-sm hover:bg-ternary-light"
     >
       <td className="flex items-center gap-4 p-4">{item.name}</td>
       <td className="hidden md:table-cell">{item.description}</td>
       <td>
         <div className="flex items-center gap-2">
-          <FormContainer table="permission" type="update" id={item.id} />
+          <FormContainer table="permission" type="update" data={item} />
           <FormContainer table="permission" type="delete" id={item.id} />
         </div>
       </td>
     </tr>
   );
+
+  const columns = [
+    {
+      header: "Hak Akses",
+      accessor: "hak akses",
+      className: "pl-4",
+    },
+    {
+      header: "Deskripsi",
+      accessor: "deskripsi",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Actions",
+      accessor: "action",
+    },
+  ];
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -96,7 +98,7 @@ const PermissionListPage = async (
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={permissionDaata} />
+      <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
     </div>
