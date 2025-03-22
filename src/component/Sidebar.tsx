@@ -26,7 +26,7 @@ const menuItems = [
       {
         icon: "/profile.png",
         label: "Role",
-        href: "/roles",
+        href: "/list/roles",
         visible: ["admin", "teacher", "student", "parent"],
       },
     ],

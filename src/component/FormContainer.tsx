@@ -1,9 +1,23 @@
+import { prisma } from "@/lib/prisma";
 import FormModal, { FormModalProps } from "./FormModal";
 
 const FormContainer = async (
   { table, type, data, id }: FormModalProps
 ) => {
   let relatedData = {};
+  if (type !== "delete") {
+    switch (table) {
+      case "role":
+        const rolePermission = await prisma.permission.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { permissions: rolePermission };
+        break;
+
+      default:
+        break;
+    }
+  }
 
   return (
     <div>

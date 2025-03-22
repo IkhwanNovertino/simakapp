@@ -1,6 +1,6 @@
 "use client";
 
-import { deletePermission } from "@/lib/action";
+import { deletePermission, deleteRole } from "@/lib/action";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -8,13 +8,16 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
-  table: "permission";
+  table: "permission" | "role" | "lecturer" | "student" | "course";
   type: "create" | "update" | "delete";
   data?: any;
   id?: any;
 }
 
 const PermissionForm = dynamic(() => import("./forms/PermissionForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const RoleForm = dynamic(() => import("./forms/RoleForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -26,7 +29,30 @@ const forms: {
     relatedData?: any,
   ) => JSX.Element;
 } = {
-  permission: (setOpen, type, data, relatedData) => <PermissionForm setOpen={setOpen} type={type} data={data} relatedData={relatedData} />,
+  permission: (setOpen, type, data, relatedData) =>
+    <PermissionForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
+  role: (setOpen, type, data, relatedData) =>
+    <RoleForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
+};
+
+const deleteActionMap = {
+  permission: deletePermission,
+  role: deleteRole,
+  operator: deleteRole,
+  lecturer: deleteRole,
+  student: deleteRole,
+  course: deleteRole,
+  room: deleteRole,
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
@@ -38,7 +64,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
 
   const Form = () => {
 
-    const [state, formAction] = useActionState(deletePermission, { success: false, error: false });
+    const [state, formAction] = useActionState(deleteActionMap[table], { success: false, error: false });
 
     const router = useRouter();
     useEffect(() => {
@@ -55,6 +81,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
         <span className="text-center font-medium">
           Data akan hilang. apakah anda yakin ingin menghapus data {table} ini?
         </span>
+        {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
         <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
           Hapus
         </button>
