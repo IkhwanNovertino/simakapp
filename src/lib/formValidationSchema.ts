@@ -34,3 +34,12 @@ export const majorSchema = z.object({
 })
 
 export type MajorInputs = z.infer<typeof majorSchema>;
+
+export const roomSchema = z.object({
+  id: z.coerce.number().optional(),
+  name: z.string().min(1, {message: "ruang/lokal harus diisi"}),
+  location: z.enum(["BJB", "BJM"], {message: "lokasi ruang/lokal harus diisi"}),
+  capacity: z.coerce.number().min(1, {message: "kapasitas ruang/lokal harus diisi"}),
+})
+
+export type RoomInputs = z.infer<typeof roomSchema>;
