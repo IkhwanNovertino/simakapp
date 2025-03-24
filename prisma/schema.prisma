@@ -142,6 +142,8 @@ model Room {
   name     String?
   location Location?
   capacity Int?
+
+  @@map("sb25_rooms")
 }
 
 enum SemesterType {
