@@ -13,6 +13,12 @@ const FormContainer = async (
         });
         relatedData = { permissions: rolePermission };
         break;
+      case "rolePermission":
+        const permissions = await prisma.permission.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { permissions: permissions };
+        break;
 
       default:
         break;

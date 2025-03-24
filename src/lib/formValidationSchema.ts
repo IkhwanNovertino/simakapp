@@ -16,3 +16,12 @@ export const roleSchema = z.object({
 })
 
 export type RoleInputs = z.infer<typeof roleSchema>;
+
+export const rolePermissionSchema = z.object({
+  roleId: z.coerce.number(),
+  roleName: z.string(),
+  roleDescription: z.string().optional(),
+  permission: z.coerce.number(), //ids permission
+})
+
+export type RolePermissionInputs = z.infer<typeof rolePermissionSchema>;
