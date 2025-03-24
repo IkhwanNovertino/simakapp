@@ -54,6 +54,12 @@ const menuItems = [
         visible: ["admin", "teacher"],
       },
       {
+        icon: "/parent.png",
+        label: "Program Studi",
+        href: "/list/majors",
+        visible: ["admin", "teacher"],
+      },
+      {
         icon: "/subject.png",
         label: "Mata Kuliah",
         href: "/list/courses",

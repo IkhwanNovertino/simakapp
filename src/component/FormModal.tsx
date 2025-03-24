@@ -1,6 +1,6 @@
 "use client";
 
-import { deletePermission, deleteRole, deleteRolePermission } from "@/lib/action";
+import { deleteMajor, deletePermission, deleteRole, deleteRolePermission } from "@/lib/action";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -8,7 +8,13 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
-  table: "permission" | "role" | "rolePermission" | "lecturer" | "student" | "course";
+  table: "permission"
+  | "role"
+  | "rolePermission"
+  | "lecturer"
+  | "student"
+  | "course"
+  | "major";
   type: "create" | "update" | "delete";
   data?: any;
   id?: any;
@@ -21,6 +27,9 @@ const RoleForm = dynamic(() => import("./forms/RoleForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const RolePermissionForm = dynamic(() => import("./forms/RolePermissionForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const MajorForm = dynamic(() => import("./forms/MajorForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -53,12 +62,20 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  major: (setOpen, type, data, relatedData) =>
+    <MajorForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
   permission: deletePermission,
   role: deleteRole,
   rolePermission: deleteRolePermission,
+  major: deleteMajor,
   operator: deleteRole,
   lecturer: deleteRole,
   student: deleteRole,

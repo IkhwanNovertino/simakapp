@@ -25,3 +25,12 @@ export const rolePermissionSchema = z.object({
 })
 
 export type RolePermissionInputs = z.infer<typeof rolePermissionSchema>;
+
+export const majorSchema = z.object({
+  id: z.coerce.number().optional(),
+  name: z.string().min(1, {message: "nama program studi harus diisi"}),
+  numberCode: z.coerce.number().min(1, {message: "kode angka program studi harus diisi"}),
+  stringCode: z.string().min(1, {message: "kode program studi harus diisi"}),
+})
+
+export type MajorInputs = z.infer<typeof majorSchema>;

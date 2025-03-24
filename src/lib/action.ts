@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { PermissionInputs, RoleInputs, RolePermissionInputs } from "./formValidationSchema";
+import { MajorInputs, PermissionInputs, RoleInputs, RolePermissionInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { parse } from "node:path";
 
@@ -159,6 +159,55 @@ export const createRolePermission = async (state: stateType, data: RolePermissio
       }
     })
 
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+
+export const createMajor = async (state: stateType, data: MajorInputs) => {
+  try {
+    await prisma.major.create({
+      data: {
+        name: data.name,
+        numberCode: data.numberCode,
+        stringCode: data.stringCode,
+      }
+    });
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const updateMajor = async (state: stateType, data: MajorInputs) => {
+  try {
+    await prisma.major.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        name: data.name,
+        numberCode: data.numberCode,
+        stringCode: data.stringCode,
+      }
+    });
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+
+export const deleteMajor = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.major.delete({
+      where: {
+        id: parseInt(id)
+      }
+    });
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
