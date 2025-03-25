@@ -3,7 +3,6 @@
 import { revalidatePath } from "next/cache";
 import { CourseInputs, MajorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { v4 as uuid } from "uuid";
 
 type stateType = {
   success: boolean;
@@ -261,10 +260,8 @@ export const deleteRoom = async (state: stateType, data: FormData) => {
 
 export const createCourse = async (state: stateType, data: CourseInputs) => {
   try {
-    const courseId = uuid().toString();
     await prisma.course.create({
       data: {
-        id: courseId,
         name: data.name,
         sks: data.sks,
         code: data.code,
