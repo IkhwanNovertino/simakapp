@@ -43,3 +43,13 @@ export const roomSchema = z.object({
 })
 
 export type RoomInputs = z.infer<typeof roomSchema>;
+
+export const courseSchema = z.object({
+  id: z.string().optional(),
+  code: z.string().min(1, {message: "kode mata kuliah harus diisi"}),
+  name: z.string().min(1, {message: "nama mata kuliah harus diisi"}),
+  sks: z.coerce.number().min(1, { message: "sks harus diisi" }),
+  majorId: z.coerce.number().min(1, { message: "program studi harus diisi" })
+})
+
+export type CourseInputs = z.infer<typeof courseSchema>;

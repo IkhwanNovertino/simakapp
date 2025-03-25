@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteMajor, deletePermission, deleteRole, deleteRolePermission, deleteRoom } from "@/lib/action";
+import { deleteCourse, deleteMajor, deletePermission, deleteRole, deleteRolePermission, deleteRoom } from "@/lib/action";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -34,6 +34,9 @@ const MajorForm = dynamic(() => import("./forms/MajorForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const RoomForm = dynamic(() => import("./forms/RoomForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const CourseForm = dynamic(() => import("./forms/CourseForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -80,6 +83,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  course: (setOpen, type, data, relatedData) =>
+    <CourseForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -88,10 +98,10 @@ const deleteActionMap = {
   rolePermission: deleteRolePermission,
   major: deleteMajor,
   room: deleteRoom,
+  course: deleteCourse,
   operator: deleteRole,
   lecturer: deleteRole,
   student: deleteRole,
-  course: deleteRole,
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {

@@ -19,6 +19,12 @@ const FormContainer = async (
         });
         relatedData = { permissions: permissions };
         break;
+      case "course":
+        const majors = await prisma.major.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { majors: majors };
+        break;
 
       default:
         break;

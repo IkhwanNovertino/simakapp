@@ -1,9 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { MajorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs } from "./formValidationSchema";
+import { CourseInputs, MajorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { parse } from "node:path";
+import { v4 as uuid } from "uuid";
 
 type stateType = {
   success: boolean;
@@ -41,7 +41,6 @@ export const updatePermission = async (state: stateType, data: PermissionInputs)
     return {success: false, error:true}
   }
 }
-
 export const deletePermission = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
@@ -100,7 +99,6 @@ export const updateRole = async (state: stateType, data: RoleInputs) => {
     return {success: false, error:true}
   }
 }
-
 export const deleteRole = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
@@ -149,7 +147,6 @@ export const deleteRolePermission = async (state: stateType, data: FormData) => 
     return {success: false, error:true}
   }
 }
-
 export const createRolePermission = async (state: stateType, data: RolePermissionInputs) => {
   try {
     await prisma.rolePermission.create({
@@ -199,7 +196,6 @@ export const updateMajor = async (state: stateType, data: MajorInputs) => {
     return {success: false, error:true}
   }
 }
-
 export const deleteMajor = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
@@ -248,13 +244,64 @@ export const updateRoom = async (state: stateType, data: RoomInputs) => {
     return {success: false, error:true}
   }
 }
-
 export const deleteRoom = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     await prisma.room.delete({
       where: {
         id: parseInt(id)
+      }
+    });
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+
+export const createCourse = async (state: stateType, data: CourseInputs) => {
+  try {
+    const courseId = uuid().toString();
+    await prisma.course.create({
+      data: {
+        id: courseId,
+        name: data.name,
+        sks: data.sks,
+        code: data.code,
+        majorId: data.majorId,
+      }
+    });
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const updateCourse = async (state: stateType, data: CourseInputs) => {
+  try {
+    await prisma.course.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        name: data.name,
+        sks: data.sks,
+        code: data.code,
+        majorId: data.majorId,
+      }
+    });
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const deleteCourse = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.course.delete({
+      where: {
+        id: id,
       }
     });
     return { success: true, error: false };
