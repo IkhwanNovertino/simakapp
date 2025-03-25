@@ -3,41 +3,11 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { role, teachersData } from "@/lib/data";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Course, Major, Prisma } from "@prisma/client";
-import Image from "next/image";
-import Link from "next/link";
 
 type CourseDataType = Course & { major: Major };
-
-const columns = [
-  {
-    header: "Mata Kuliah",
-    accessor: "mata kuliah",
-    className: "px-4",
-  },
-  {
-    header: "Kode",
-    accessor: "kode",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "SKS",
-    accessor: "sks",
-    className: "hidden md:table-cell",
-  },
-  {
-    header: "Program Studi",
-    accessor: "program studi",
-    className: "hidden lg:table-cell",
-  },
-  {
-    header: "Actions",
-    accessor: "action",
-  },
-];
 
 const CourseListPage = async (
   { searchParams }: { searchParams: { [key: string]: string | undefined } }
@@ -87,6 +57,32 @@ const CourseListPage = async (
     })
   ]);
 
+  const columns = [
+    {
+      header: "Mata Kuliah",
+      accessor: "mata kuliah",
+      className: "px-4",
+    },
+    {
+      header: "Kode",
+      accessor: "kode",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "SKS",
+      accessor: "sks",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Program Studi",
+      accessor: "program studi",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Actions",
+      accessor: "action",
+    },
+  ];
 
   const renderRow = (item: CourseDataType) => (
     <tr
