@@ -43,13 +43,14 @@ model RolePermission {
 }
 
 model User {
-  id       String     @id
+  id       String     @id @default(uuid())
   email    String?    @unique
   password String?
   roleId   Int?
   role     Role?      @relation(fields: [roleId], references: [id])
   Lecturer Lecturer[]
   Operator Operator[]
+  Student  Student[]
 
   @@map("sb25_users")
 }
@@ -67,7 +68,7 @@ model Major {
 }
 
 model Course {
-  id      String  @id
+  id      String  @id @default(uuid())
   name    String?
   code    String?
   sks     Int?
@@ -78,7 +79,7 @@ model Course {
 }
 
 model Lecturer {
-  id         String        @id
+  id         String        @id @default(uuid())
   npk        String?
   nidn       String?
   name       String?
@@ -102,7 +103,7 @@ model Lecturer {
 }
 
 model Operator {
-  id         String  @id
+  id         String  @id @default(uuid())
   name       String?
   position   String?
   department String?
@@ -114,7 +115,7 @@ model Operator {
 }
 
 model Student {
-  id             String    @id
+  id             String    @id @default(uuid())
   nim            Int?
   name           String?
   year           Int?
@@ -133,6 +134,8 @@ model Student {
   lecturerId     String?
   lecturer       Lecturer? @relation(fields: [lecturerId], references: [id])
   statusRegister String?
+  userId         String?
+  user           User?     @relation(fields: [userId], references: [id])
 
   @@map("sb25_students")
 }
