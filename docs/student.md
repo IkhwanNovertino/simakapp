@@ -1,0 +1,126 @@
+# Employee Specifications
+
+## Translate
+
+- en: student
+- id: mahasiswa
+
+## Data Model and Form
+
+- id
+  - String
+  - PK
+  - default uuid
+- nim
+  - --nomor induk mahasiswa
+  - String?
+  - Required
+- name
+  - --nama mahasiswa
+  - String?
+  - required
+- year
+  - --tahun terdaftar menjadi mahasiswa
+  - Int?
+  - Required
+- religion
+  - --agama
+  - Religion?
+  - Optional
+- gender
+  - --jenis kelamin
+  - Gender?
+  - Required
+- address
+  - --alamat tempat tinggal
+  - String?
+  - Optional
+- email
+  - String?
+  - Optional
+- hp
+  - String?
+  - Optional
+- photo
+  - String?
+  - Optional
+- fatherName
+  - String?
+  - Optional
+- motherName
+  - String?
+  - Optional
+- guardianName
+  - --Nama wali
+  - String?
+- guardianHp
+  - String?
+- nowReregisterId
+  - --reregisterId saat ini
+  - String?
+  - FK dari ReregisterMahasiswa
+  - @\* skip
+- nowStatusReregister
+  - --Status reregister saat ini
+  - StudentStatus?
+  - default terisi ketika mengisi ReregisterDetail
+  - @\* skip
+- prevReregisterId
+  - --reregisterId sebelumnya
+  - FK dari ReregisterMahasiswa
+  - Optional
+  - default terisi ketika mengisi ReregisterDetail
+  - @\* skip
+- prevStatusReregister
+  - --Status reregister periode sebelumnya
+  - StudentStatus?
+  - Optional
+  - default terisi ketika mengisi ReregisterDetail
+  - @\* skip
+- statusNotes
+  - --Catatan tambahan tentang status
+  - String? mahasiswa
+  - @\* skip
+- campusType
+  - CampusType?
+  - Optional
+  - @\* skip
+- majorId
+  - Int?
+  - FK dari Major
+  - Required
+- lecturerId
+  - --dosen wali
+  - Int?
+  - FK dari Lecturer
+- nowYearReregister
+  - --Tahun Reregister Sekarang
+  - Int?
+  - Optional
+  - default terisi ketika mengisi ReregisterDetail
+  - @\* skip
+- prevYearReregister
+  - --Tahun reregister sebelumnya
+  - Int?
+  - Optional
+  - default terisi ketika mengisi ReregisterDetail
+  - @\* skip
+- semesterRegister
+  - --semester registrasi
+    - Ganjil
+    - Genap
+  - String
+  - Required
+  - @\* skip
+- semester
+  - --semester sekarang
+  - Int?
+  - Optional
+  - default terisi ketika mengisi ReregisterDetail
+  - @\* skip
+- statusRegister
+  - --status mahasiswa pada saat register
+    - Baru
+    - Transfer / Renim / RPL (Rekognisi Pembelajaran Lampau)
+
+## Examples of Data:
