@@ -11,9 +11,12 @@ type stateType = {
 
 export const createPermission = async (state: stateType, data: PermissionInputs) => {
   try {
+    console.log("actionCreatePermission running");
+    const name = data.action + ":" + data.resource;
+    
     await prisma.permission.create({
       data: {
-        name: data.name,
+        name: name,
         description: data.description,
       }
     });
@@ -30,7 +33,7 @@ export const updatePermission = async (state: stateType, data: PermissionInputs)
         id: data.id
       },
       data: {
-        name: data.name,
+        name: `${data.action}:${data.resource}`,
         description: data.description,
       }
     });
@@ -43,11 +46,20 @@ export const updatePermission = async (state: stateType, data: PermissionInputs)
 export const deletePermission = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    await prisma.permission.delete({
-      where: {
-        id: parseInt(id)
-      }
-    });
+    const transactionDeletePermission = await prisma.$transaction([
+      prisma.rolePermission.deleteMany({
+        where: {
+          permissionId: parseInt(id)
+        }
+      }),
+
+      prisma.permission.delete({
+        where: {
+          id: parseInt(id)
+        }
+      }),
+    ])
+  
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
@@ -101,7 +113,6 @@ export const updateRole = async (state: stateType, data: RoleInputs) => {
 export const deleteRole = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    console.log(id);
     
     const transactionDelete = await prisma.$transaction([
       prisma.rolePermission.deleteMany({

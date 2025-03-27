@@ -2,7 +2,9 @@ import { z } from "zod";
 
 export const permissionSchema = z.object({
   id: z.coerce.number().optional(),
-  name: z.string().min(1, { message: "Hak akses harus diisi!" }),
+  action: z.string().min(1, { message: "pilih aksi yang diinginkan!" }),
+  resource: z.string().min(1, { message: "pilih modul/domain yang diinginkan!" }),
+  // name: z.string().min(1, { message: "Hak akses harus diisi!" }),
   description: z.string().optional(),
 })
 

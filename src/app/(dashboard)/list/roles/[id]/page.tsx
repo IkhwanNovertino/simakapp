@@ -6,10 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Permission, Prisma, Role, RolePermission } from "@prisma/client";
 
-type RoleDataType = RolePermission & {
-  permission: Permission,
-  role: Role
-};
+type PermissionDataType = Permission;
 
 const SingleRolePage = async (
   { searchParams, params: { id } }: { searchParams: { [key: string]: string | undefined }, params: { id: string } },
@@ -17,16 +14,18 @@ const SingleRolePage = async (
 
   const { page } = await searchParams;
   const p = page ? parseInt(page) : 1;
-  console.log(id);
 
   const [dataRes, count] = await prisma.$transaction([
-    prisma.rolePermission.findMany({
+    prisma.role.findMany({
       where: {
-        roleId: parseInt(id),
+        id: parseInt(id),
       },
       include: {
-        role: true,
-        permission: true,
+        RolePermission: {
+          include: {
+            permission: true,
+          },
+        },
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
@@ -38,27 +37,25 @@ const SingleRolePage = async (
     }),
   ]);
 
-  const dataRoleName = dataRes[0]?.role?.name;
   const data = {
-    roleId: dataRes[0]?.roleId,
-    roleName: dataRes[0]?.role?.name,
-    roleDescription: dataRes[0]?.role?.description,
-    permission: dataRes.map((item) => item.permissionId),
+    roleId: dataRes[0]?.id,
+    roleName: dataRes[0]?.name,
+    roleDescription: dataRes[0]?.description,
+    permission: dataRes[0]?.RolePermission.map((item) => item.permission?.id),
   };
+  const dataTable = dataRes[0]?.RolePermission.map((item) => item.permission)
   console.log(data);
+  console.log(dataTable);
 
-
-
-
-  const renderRow = (item: RoleDataType) => (
+  const renderRow = (item: PermissionDataType) => (
     <tr
-      key={`${item.permissionId}:${item.roleId}`}
+      key={`${item.id}:${data.roleId}`}
     >
-      <td className="p-4">{item.permission.name}</td>
-      <td className="hidden md:table-cell">{item.permission.description}</td>
+      <td className="p-4">{item.name}</td>
+      <td className="hidden md:table-cell">{item.description}</td>
       <td>
         <div className="flex items-center gap-2">
-          <FormContainer table="rolePermission" type="delete" id={`${item.roleId}:${item.permissionId}`} />
+          <FormContainer table="rolePermission" type="delete" id={`${data.roleId}:${item.id}`} />
         </div>
       </td>
     </tr >
@@ -85,7 +82,7 @@ const SingleRolePage = async (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between md:mb-4">
-        <h1 className="hidden md:block text-lg font-semibold ">Detail {dataRoleName} beserta hak aksesnya</h1>
+        <h1 className="hidden md:block text-lg font-semibold ">Detail {data.roleName} beserta hak aksesnya</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           {/* <TableSearch /> */}
           <div className="flex items-center gap-4 self-end">
@@ -97,7 +94,7 @@ const SingleRolePage = async (
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={dataRes} />
+      <Table columns={columns} renderRow={renderRow} data={dataTable} />
       {/* PAGINATION */}
       <Pagination page={p} count={count} />
     </div>

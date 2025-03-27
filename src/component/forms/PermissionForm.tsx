@@ -9,6 +9,7 @@ import { createPermission, updatePermission } from "@/lib/action";
 import { useFormState } from "react-dom";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { resourceData } from "@/lib/setting";
 
 interface PermissionFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -31,8 +32,11 @@ const PermissionForm = ({ setOpen, type, data, relatedData }: PermissionFormProp
   const [state, formAction] = useActionState(type === "create" ? createPermission : updatePermission, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
+    console.log(data);
+
     startTransition(() => formAction(data))
   })
+
 
   const router = useRouter();
   useEffect(() => {
@@ -58,13 +62,69 @@ const PermissionForm = ({ setOpen, type, data, relatedData }: PermissionFormProp
             hidden
           />
         )}
-        <InputField
-          label="Hak Akses"
-          name="name"
-          defaultValue={data?.name}
-          register={register}
-          error={errors?.name}
-        />
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Pilih aksi</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("action")}
+            defaultValue={data?.name.split(":")[0]}
+          >
+            <option
+              value={"view"}
+              className="text-sm py-0.5"
+
+            >
+              view
+            </option>
+            <option
+              value={"create"}
+              className="text-sm py-0.5"
+            >
+              create
+            </option>
+            <option
+              value={"edit"}
+              className="text-sm py-0.5"
+            >
+              edit
+            </option>
+            <option
+              value={"delete"}
+              className="text-sm py-0.5"
+            >
+              delete
+            </option>
+          </select>
+          {errors.action?.message && (
+            <p className="text-xs text-red-400">
+              {errors.action.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
+          <label className="text-xs text-gray-500">Modul/Domain</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("resource")}
+            defaultValue={data?.name.split(":")[1]}
+          >
+            {resourceData.map((item: { pathname: string, name: string, nama: string }) => (
+              <option
+                value={item.pathname}
+                key={item.name}
+                className="text-sm py-0.5"
+
+              >
+                {item.nama}
+              </option>
+            ))}
+          </select>
+          {errors.resource?.message && (
+            <p className="text-xs text-red-400">
+              {errors.resource.message.toString()}
+            </p>
+          )}
+        </div>
         <InputField
           label="Deskripsi Hak Akses"
           name="description"
@@ -74,7 +134,7 @@ const PermissionForm = ({ setOpen, type, data, relatedData }: PermissionFormProp
         />
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+      <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">
         {type === "create" ? "Tambah" : "Ubah"}
       </button>
     </form >

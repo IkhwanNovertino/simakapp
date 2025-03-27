@@ -55,6 +55,7 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RolePermissionFormProps)
             defaultValue={data?.roleId}
             register={register}
             error={errors?.roleId}
+            hidden
           />
         )}
         <InputField
