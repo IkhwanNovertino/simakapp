@@ -16,4 +16,8 @@ export const resourceData = [
   { pathname: "attendances", name: "attendance", nama: "presensi" },
   { pathname: "khs", name: "khr", nama: "khs" },
   { pathname: "herregistrations", name: "herregistration", nama: "herregistrasi" },
-]
+];
+
+export const degree = ["S1", "S2", "S3"];
+export const gender = ["PRIA", "WANITA"];
+export const religion = ["ISLAM", "PROTESTAN", "KATOLIK", "HINDU", "BUDHA", "KONGHUCU", "DLL"];
