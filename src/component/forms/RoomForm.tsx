@@ -45,24 +45,27 @@ const RoomForm = ({ setOpen, type, data, relatedData }: RoomFormProps) => {
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data program studi baru" : "Ubah data program studi"}</h1>
 
-      <div className="flex justify-start flex-wrap gap-4">
+      <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <InputField
-            label="id"
-            name="id"
-            defaultValue={data?.id}
-            register={register}
-            error={errors?.id}
-            hidden
-          />
+          <div className="hidden">
+            <InputField
+              label="id"
+              name="id"
+              defaultValue={data?.id}
+              register={register}
+              error={errors?.id}
+            />
+          </div>
         )}
-        <InputField
-          label="Nama Ruang/Lokal"
-          name="name"
-          defaultValue={data?.name}
-          register={register}
-          error={errors?.name}
-        />
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
+          <InputField
+            label="Nama Ruang/Lokal"
+            name="name"
+            defaultValue={data?.name}
+            register={register}
+            error={errors?.name}
+          />
+        </div>
         <div className="flex flex-col gap-2 w-full md:w-1/3">
           <label className="text-xs text-gray-500">Lokasi</label>
           <select
@@ -89,14 +92,16 @@ const RoomForm = ({ setOpen, type, data, relatedData }: RoomFormProps) => {
             </p>
           )}
         </div>
-        <InputField
-          label="Kapasitas"
-          name="capacity"
-          type="number"
-          defaultValue={data?.capacity}
-          register={register}
-          error={errors?.capacity}
-        />
+        <div className="flex flex-col gap-2 w-full md:w-1/6">
+          <InputField
+            label="Kapasitas"
+            name="capacity"
+            type="number"
+            defaultValue={data?.capacity}
+            register={register}
+            error={errors?.capacity}
+          />
+        </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">

@@ -51,50 +51,58 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
       </span>
       <div className="flex justify-start flex-wrap gap-4">
         {data && (
-          <InputField
-            label="id"
-            name="id"
-            defaultValue={data?.id}
-            register={register}
-            error={errors?.id}
-            hidden
-          />
+          <div className="hidden">
+            <InputField
+              label="id"
+              name="id"
+              defaultValue={data?.id}
+              register={register}
+              error={errors?.id}
+            />
+          </div>
         )}
-        <InputField
-          label="Email"
-          name="username"
-          defaultValue={data?.username}
-          register={register}
-          error={errors?.username}
-          inputProps={data && { disabled: true }}
-        />
-        <InputField
-          label="Kata Kunci"
-          name="password"
-          defaultValue={data?.password}
-          register={register}
-          error={errors?.password}
-        />
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
+          <InputField
+            label="Email"
+            name="username"
+            defaultValue={data?.username}
+            register={register}
+            error={errors?.username}
+            inputProps={data && { disabled: true }}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
+          <InputField
+            label="Kata Kunci"
+            name="password"
+            defaultValue={data?.password}
+            register={register}
+            error={errors?.password}
+          />
+        </div>
       </div>
       <span className="text-xs text-gray-400 font-medium">
         Informasi Personal
       </span>
       <div className="flex justify-start flex-wrap gap-4">
-
-        <InputField
-          label="Nama Lengkap"
-          name="name"
-          defaultValue={data?.name}
-          register={register}
-          error={errors?.name}
-        />
-        <InputField
-          label="Bagian"
-          name="department"
-          defaultValue={data?.department}
-          register={register}
-          error={errors?.department}
-        />
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
+          <InputField
+            label="Nama Lengkap"
+            name="name"
+            defaultValue={data?.name}
+            register={register}
+            error={errors?.name}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
+          <InputField
+            label="Bagian"
+            name="department"
+            defaultValue={data?.department}
+            register={register}
+            error={errors?.department}
+          />
+        </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">

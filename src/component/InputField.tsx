@@ -7,7 +7,6 @@ interface InputFieldProps {
   name: string;
   defaultValue?: string;
   error?: FieldError;
-  hidden?: boolean;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
@@ -18,11 +17,10 @@ const InputField = ({
   name,
   defaultValue,
   error,
-  hidden,
   inputProps,
 }: InputFieldProps) => {
   return (
-    <div className={hidden ? "hidden" : "flex flex-col gap-2 w-full md:w-1/3"}>
+    <>
       <label className="text-xs text-gray-500">{label}</label>
       <input
         type={type}
@@ -34,7 +32,7 @@ const InputField = ({
       {error?.message && (
         <p className="text-xs text-red-400">{error.message.toString()}</p>
       )}
-    </div>
+    </>
   )
 }
 

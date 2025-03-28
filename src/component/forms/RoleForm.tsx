@@ -48,32 +48,37 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">{type === "create" ? "Buat data role baru" : "Ubah data role"}</h1>
 
-      <div className="flex justify-start flex-wrap gap-4">
+      <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <InputField
-            label="id"
-            name="id"
-            defaultValue={data?.id}
-            register={register}
-            error={errors?.id}
-            hidden
-          />
+          <div className="hidden">
+            <InputField
+              label="id"
+              name="id"
+              defaultValue={data?.id}
+              register={register}
+              error={errors?.id}
+            />
+          </div>
         )}
-        <InputField
-          label="Nama Role"
-          name="name"
-          defaultValue={data?.name}
-          register={register}
-          error={errors?.name}
-        />
-        <InputField
-          label="Deskripsi Role"
-          name="description"
-          defaultValue={data?.description}
-          register={register}
-          error={errors?.description}
-        />
-        <div className="flex flex-col gap-2 w-full md:w-1/3">
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="Nama Role"
+            name="name"
+            defaultValue={data?.name}
+            register={register}
+            error={errors?.name}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-4/6">
+          <InputField
+            label="Deskripsi Role"
+            name="description"
+            defaultValue={data?.description}
+            register={register}
+            error={errors?.description}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Pilih Hak Akses</label>
           <select
             multiple

@@ -45,38 +45,45 @@ const PermissionForm = ({ setOpen, type, data, relatedData }: PermissionFormProp
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data program studi baru" : "Ubah data program studi"}</h1>
 
-      <div className="flex justify-start flex-wrap gap-4">
+      <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <InputField
-            label="id"
-            name="id"
-            defaultValue={data?.id}
-            register={register}
-            error={errors?.id}
-            hidden
-          />
+          <div className="hidden">
+            <InputField
+              label="id"
+              name="id"
+              defaultValue={data?.id}
+              register={register}
+              error={errors?.id}
+            />
+          </div>
         )}
-        <InputField
-          label="Kode Angka"
-          name="numberCode"
-          defaultValue={data?.numberCode}
-          register={register}
-          error={errors?.numberCode}
-        />
-        <InputField
-          label="Kode Huruf"
-          name="stringCode"
-          defaultValue={data?.stringCode}
-          register={register}
-          error={errors?.stringCode}
-        />
-        <InputField
-          label="Nama Program Studi"
-          name="name"
-          defaultValue={data?.name}
-          register={register}
-          error={errors?.name}
-        />
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
+          <InputField
+            label="Kode Angka"
+            name="numberCode"
+            defaultValue={data?.numberCode}
+            register={register}
+            error={errors?.numberCode}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
+          <InputField
+            label="Kode Huruf"
+            name="stringCode"
+            defaultValue={data?.stringCode}
+            register={register}
+            error={errors?.stringCode}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/2">
+          <InputField
+            label="Nama Program Studi"
+            name="name"
+            defaultValue={data?.name}
+            register={register}
+            error={errors?.name}
+          />
+        </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
