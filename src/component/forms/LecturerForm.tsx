@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { CourseInputs, courseSchema } from "@/lib/formValidationSchema";
-import { createCourse, updateCourse } from "@/lib/action";
+import { CourseInputs, courseSchema, LecturerInputs, lecturerSchema } from "@/lib/formValidationSchema";
+import { createCourse, createLecturer, updateCourse, updateLecturer } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -23,11 +23,11 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<CourseInputs>({
-    resolver: zodResolver(courseSchema)
+  } = useForm<LecturerInputs>({
+    resolver: zodResolver(lecturerSchema)
   })
 
-  const action = type === "create" ? createCourse : updateCourse
+  const action = type === "create" ? createLecturer : updateLecturer;
   const [state, formAction] = useActionState(action, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
@@ -46,7 +46,9 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data program studi baru" : "Ubah data program studi"}</h1>
-
+      <span className="text-xs text-gray-400 font-medium">
+        Informasi Autentikasi
+      </span>
       <div className="flex justify-start flex-wrap gap-4">
         {data && (
           <InputField
@@ -59,50 +61,126 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           />
         )}
         <InputField
-          label="Kode Mata Kuliah"
-          name="code"
-          defaultValue={data?.code}
+          label="Email"
+          name="username"
+          defaultValue={data?.username}
           register={register}
-          error={errors?.code}
+          error={errors?.username}
+          inputProps={data && { disabled: true }}
         />
         <InputField
-          label="Nama Mata Kuliah"
+          label="Kata Kunci"
+          name="password"
+          defaultValue={data?.password}
+          register={register}
+          error={errors?.password}
+        />
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Dosen Wali?</label>
+          <input
+            type="checkbox"
+            id="isDosenWali"
+            className="w-fit"
+            {...register("isDosenWali")}
+            defaultChecked={data?.isDosenWali}
+          />
+        </div>
+      </div>
+      <span className="text-xs text-gray-400 font-medium">
+        Informasi Personal
+      </span>
+      <div className="flex justify-start flex-wrap gap-4">
+
+        <InputField
+          label="NPK"
+          name="npk"
+          defaultValue={data?.npk}
+          register={register}
+          error={errors?.npk}
+        />
+        <InputField
+          label="NIDN"
+          name="nidn"
+          defaultValue={data?.nidn}
+          register={register}
+          error={errors?.nidn}
+        />
+        <InputField
+          label="Nama Lengkap"
           name="name"
           defaultValue={data?.name}
           register={register}
           error={errors?.name}
         />
-        <div className="flex flex-col gap-2 w-full md:w-1/3">
-          <label className="text-xs text-gray-500">Program Studi</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("majorId")}
-            defaultValue={data?.majorId}
-          >
-            {majors.map(
-              (major: { id: number, name: string }) => (
-                <option
-                  value={major.id} key={major.id}
-                  className="text-sm py-0.5 capitalize"
-                >
-                  {major.name}
-                </option>
-              )
-            )}
-          </select>
-          {errors.majorId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.majorId.message.toString()}
-            </p>
-          )}
-        </div>
         <InputField
-          label="SKS"
-          name="sks"
-          defaultValue={data?.sks}
+          label="Front Title"
+          name="frontTitle"
+          defaultValue={data?.frontTitle}
           register={register}
-          error={errors?.sks}
-          inputProps={{ pattern: "[0-9]*", inputMode: "numeric" }}
+          error={errors?.frontTitle}
+        />
+        <InputField
+          label="Back Title"
+          name="backTitle"
+          defaultValue={data?.backTitle}
+          register={register}
+          error={errors?.backTitle}
+        />
+        <InputField
+          label="Tingkat Pendidikan"
+          name="degree"
+          defaultValue={data?.degree}
+          register={register}
+          error={errors?.degree}
+        />
+        <InputField
+          label="Tahun Masuk"
+          name="year"
+          defaultValue={data?.year}
+          register={register}
+          error={errors?.year}
+        />
+        <InputField
+          label="Program Studi"
+          name="majorId"
+          defaultValue={data?.majorId}
+          register={register}
+          error={errors?.majorId}
+        />
+        <InputField
+          label="Personal Email"
+          name="email"
+          defaultValue={data?.email}
+          register={register}
+          error={errors?.email}
+        />
+        <InputField
+          label="No. Handphone"
+          name="phone"
+          defaultValue={data?.phone}
+          register={register}
+          error={errors?.phone}
+        />
+        <InputField
+          label="Foto Profile"
+          name="photo"
+          defaultValue={data?.photo}
+          register={register}
+          error={errors?.photo}
+        />
+        <InputField
+          label="Agama"
+          name="religion"
+          defaultValue={data?.religion}
+          register={register}
+          error={errors?.religion}
+        />
+        <InputField
+          label="Alamat"
+          name="address"
+          defaultValue={data?.address}
+          register={register}
+          error={errors?.address}
         />
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}

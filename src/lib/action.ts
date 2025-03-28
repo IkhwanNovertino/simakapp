@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { CourseInputs, MajorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs } from "./formValidationSchema";
+import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
 
 type stateType = {
@@ -305,6 +305,100 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
   }
 }
 export const deleteCourse = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.course.delete({
+      where: {
+        id: id,
+      }
+    });
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+
+export const createLecturer = async (state: stateType, data: LecturerInputs) => {
+  try {
+    await prisma.lecturer.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        hp: data.phone,
+      }
+    })
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const updateLecturer = async (state: stateType, data: LecturerInputs) => {
+  try {
+    await prisma.lecturer.update({
+      where: {
+        id: data?.id
+      },
+      data: {
+        name: data.name,
+        email: data.email,
+        hp: data.phone,
+      }
+    })
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const deleteLecturer = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.course.delete({
+      where: {
+        id: id,
+      }
+    });
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+
+export const createOperator = async (state: stateType, data: OperatorInputs) => {
+  try {
+    await prisma.operator.create({
+      data: {
+        name: data.name,
+        department: data?.department,
+      }
+    })
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const updateOperator = async (state: stateType, data: OperatorInputs) => {
+  try {
+    await prisma.operator.update({
+      where: {
+        id: data?.id
+      },
+      data: {
+        name: data.name,
+        department: data?.department,
+      }
+    })
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const deleteOperator = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     await prisma.course.delete({

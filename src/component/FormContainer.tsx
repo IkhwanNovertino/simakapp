@@ -25,7 +25,6 @@ const FormContainer = async (
         });
         relatedData = { majors: majors };
         break;
-
       default:
         break;
     }

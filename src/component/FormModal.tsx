@@ -11,6 +11,7 @@ export interface FormModalProps {
   table: "permission"
   | "role"
   | "rolePermission"
+  | "operator"
   | "lecturer"
   | "student"
   | "course"
@@ -37,6 +38,12 @@ const RoomForm = dynamic(() => import("./forms/RoomForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const CourseForm = dynamic(() => import("./forms/CourseForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const LecturerForm = dynamic(() => import("./forms/LecturerForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const OperatorForm = dynamic(() => import("./forms/OperatorForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -90,6 +97,20 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  lecturer: (setOpen, type, data, relatedData) =>
+    <LecturerForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
+  operator: (setOpen, type, data, relatedData) =>
+    <OperatorForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -99,8 +120,8 @@ const deleteActionMap = {
   major: deleteMajor,
   room: deleteRoom,
   course: deleteCourse,
-  operator: deleteRole,
   lecturer: deleteRole,
+  operator: deleteRole,
   student: deleteRole,
 }
 
