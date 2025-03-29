@@ -121,6 +121,15 @@
 - statusRegister
   - --status mahasiswa pada saat register
     - Baru
-    - Transfer / Renim / RPL (Rekognisi Pembelajaran Lampau)
+    - RPL (Rekognisi Pembelajaran Lampau)
+      - Transfer kredit
+      - Segala sesuatu yang memerlukan transfer nilai dari kuliah sebelumnya, maka melewati jalur transfer kredit
+        -- Contoh :
+        - Transfer kuliah => antar kampus/Perguruan Tinggi
+        - Renim => kuliah di STMIK BJB, SI, 13smt (renim) pindah ke TI, supaya tidak kena DO, solusinya melakukan Renim dan pindah jurusan ke TI. Inti Renim itu antar jurusan tiap kampus. Transkip nilai sebelumnya tetap diakui, dan kembali memulai dari semester 1 dengan nim baru.
+      - Perolehan kredit
+        - Pernah bekerja di bidang yang sama dengan jurusan kuliah yang akan diregister, pihak akademik akan menganalis portofolio selama bekerja tersebut dengan menyesuikan mata kuliah yang sesuai.
+          --Contoh:
+        - punya portofolio jadi web programmer selama 3 tahun, pihak akademik melakukan test terhadap skil calon mahasiswa tersebut, maka calon mahasiswa tersebut sudah menyelesaikan mata kuliah yang berhubungan dengan pemograman web.
 
 ## Examples of Data:
