@@ -31,6 +31,37 @@ const FormContainer = async (
         });
         relatedData = { role: role };
         break;
+      case "lecturer":
+        const majorLecturer = await prisma.major.findMany({
+          select: { id: true, name: true },
+        });
+        const roleLecturer = await prisma.role.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { majors: majorLecturer, role: roleLecturer };
+        break;
+      case "student":
+        const majorstudent = await prisma.major.findMany({
+          select: { id: true, name: true },
+        });
+        const lecturerstudent = await prisma.lecturer.findMany({
+          where: {
+            user: {
+              role: {
+                name: "dosen wali"
+              }
+            }
+          },
+          select: { id: true, name: true },
+        });
+        const rolestudent = await prisma.role.findFirst({
+          where: {
+            name: "mahasiswa",
+          },
+          select: { id: true, name: true },
+        });
+        relatedData = { majors: majorstudent, role: rolestudent, lecturer: lecturerstudent };
+        break;
       default:
         break;
     }

@@ -21,7 +21,7 @@ const SingleRolePage = async (
         id: parseInt(id),
       },
       include: {
-        RolePermission: {
+        rolePermission: {
           include: {
             permission: true,
           },
@@ -41,11 +41,9 @@ const SingleRolePage = async (
     roleId: dataRes[0]?.id,
     roleName: dataRes[0]?.name,
     roleDescription: dataRes[0]?.description,
-    permission: dataRes[0]?.RolePermission.map((item) => item.permission?.id),
+    permission: dataRes[0]?.rolePermission.map((item) => item.permission?.id),
   };
-  const dataTable = dataRes[0]?.RolePermission.map((item) => item.permission)
-  console.log(data);
-  console.log(dataTable);
+  const dataTable = dataRes[0]?.rolePermission.map((item) => item.permission)
 
   const renderRow = (item: PermissionDataType) => (
     <tr

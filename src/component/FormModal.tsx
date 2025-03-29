@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCourse, deleteMajor, deleteOperator, deletePermission, deleteRole, deleteRolePermission, deleteRoom } from "@/lib/action";
+import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePermission, deleteRole, deleteRolePermission, deleteRoom } from "@/lib/action";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -44,6 +44,9 @@ const LecturerForm = dynamic(() => import("./forms/LecturerForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const OperatorForm = dynamic(() => import("./forms/OperatorForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const StudentForm = dynamic(() => import("./forms/StudentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -111,6 +114,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  student: (setOpen, type, data, relatedData) =>
+    <StudentForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -118,10 +128,10 @@ const deleteActionMap = {
   role: deleteRole,
   rolePermission: deleteRolePermission,
   operator: deleteOperator,
+  lecturer: deleteLecturer,
   major: deleteMajor,
   room: deleteRoom,
   course: deleteCourse,
-  lecturer: deleteRole,
   student: deleteRole,
 }
 

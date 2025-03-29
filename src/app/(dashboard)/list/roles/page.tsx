@@ -9,7 +9,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 type RoleDataType = Role & {
-  RolePermission: {
+  rolePermission: {
     permission: Permission;
   }[];
 }
@@ -43,7 +43,7 @@ const RoleListPage = async (
     prisma.role.findMany({
       where: query,
       include: {
-        RolePermission: {
+        rolePermission: {
           include: {
             permission: {
               select: {
@@ -68,7 +68,7 @@ const RoleListPage = async (
       <td className="p-4">{item.name}</td>
       <td className="hidden md:table-cell">{item.description}</td>
       <td className="hidden md:table-cell md:flex-wrap md:w-56 lg:w-80 xl:w-xl">
-        {item.RolePermission.map(el => (
+        {item.rolePermission.map(el => (
           <div key={el.permission.id} className="text-xs m-1 p-1.5 inline-block max-w-fit rounded even:bg-primary odd:bg-secondary">{el.permission.name}</div>
         ))}
       </td >

@@ -4,32 +4,32 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { CourseInputs, courseSchema, LecturerInputs, lecturerSchema } from "@/lib/formValidationSchema";
-import { createCourse, createLecturer, updateCourse, updateLecturer } from "@/lib/action";
+import { CourseInputs, courseSchema, LecturerInputs, lecturerSchema, StudentInputs, studentSchema } from "@/lib/formValidationSchema";
+import { createCourse, createLecturer, createStudent, updateCourse, updateLecturer, updateStudent } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { degree, gender, religion } from "@/lib/setting";
 import Image from "next/image";
 
-interface LecturerFormProps {
+interface StudentFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
   type: "create" | "update";
   data?: any;
   relatedData?: any;
 }
 
-const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) => {
-  const { majors, role } = relatedData;
+const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => {
+  const { majors, role, lecturer } = relatedData;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LecturerInputs>({
-    resolver: zodResolver(lecturerSchema)
+  } = useForm<StudentInputs>({
+    resolver: zodResolver(studentSchema)
   })
 
-  const action = type === "create" ? createLecturer : updateLecturer;
+  const action = type === "create" ? createStudent : updateStudent;
   const [state, formAction] = useActionState(action, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
@@ -84,14 +84,14 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             error={errors?.password}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Apakah user ini adalah dosen wali?</label>
-          <input
-            type="checkbox"
-            id="isDosenWali"
-            className="w-fit"
-            {...register("isDosenWali")}
-            defaultChecked={data?.isDosenWali}
+        <div className="hidden">
+          <InputField
+            label="roleId"
+            name="roleId"
+            defaultValue={role?.id}
+            register={register}
+            error={errors?.id}
+            inputProps={{ disabled: true }}
           />
         </div>
       </div>
@@ -101,56 +101,11 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
-            label="NPK"
-            name="npk"
-            defaultValue={data?.npk}
+            label="NIM"
+            name="nim"
+            defaultValue={data?.nim}
             register={register}
-            error={errors?.npk}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="NIDN"
-            name="nidn"
-            defaultValue={data?.nidn}
-            register={register}
-            error={errors?.nidn}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Pendidikan Terakhir</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("degree")}
-            defaultValue={data?.degree}
-          >
-            <option value="" className="text-sm py-0.5">
-              Pilih Pendidikan Terakhir
-            </option>
-            {degree.map((item) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.degree?.message && (
-            <p className="text-xs text-red-400">
-              {errors.degree.message.toString()}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Gelar Nama Depan"
-            name="frontTitle"
-            defaultValue={data?.frontTitle}
-            register={register}
-            error={errors?.frontTitle}
+            error={errors?.nim}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -164,17 +119,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
-            label="Gelar Nama Belakang"
-            name="backTitle"
-            defaultValue={data?.backTitle}
-            register={register}
-            error={errors?.backTitle}
-          />
-        </div>
-
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Tahun Masuk"
+            label="Tahun Mendaftar"
             name="year"
             defaultValue={data?.year}
             register={register}
@@ -188,11 +133,31 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             {...register("majorId")}
             defaultValue={data?.majorId}
           >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih Program Studi
-            </option>
-
             {majors.map((item: any) => (
+              <option
+                value={item.id}
+                key={item.id}
+                className="text-sm py-0.5"
+
+              >
+                {item.name}
+              </option>
+            ))}
+          </select>
+          {errors.majorId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.majorId.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Dosen Wali</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("lecturerId")}
+            defaultValue={data?.lecturerId}
+          >
+            {lecturer.map((item: any) => (
               <option
                 value={item.id}
                 key={item.id}
@@ -258,10 +223,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             {...register("religion")}
             defaultValue={data?.religion}
           >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih Agama
-            </option>
-            {religion.map((item: string) => (
+            {religion.map((item) => (
               <option
                 value={item}
                 key={item}
@@ -293,13 +255,67 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             </p>
           )}
         </div> */}
-        <div className="flex flex-col gap-2 w-full md:w-3/5">
+        <div className="flex flex-col gap-2 w-full">
           <InputField
             label="Alamat"
             name="address"
             defaultValue={data?.address}
             register={register}
             error={errors?.address}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="Nama Ayah"
+            name="fatherName"
+            defaultValue={data?.fatherName}
+            register={register}
+            error={errors?.fatherName}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="Nama Ayah"
+            name="fatherName"
+            defaultValue={data?.fatherName}
+            register={register}
+            error={errors?.fatherName}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="Nama Ibu Kandung"
+            name="motherName"
+            defaultValue={data?.motherName}
+            register={register}
+            error={errors?.motherName}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="Nama Wali Mahasiswa"
+            name="guardianName"
+            defaultValue={data?.guardianName}
+            register={register}
+            error={errors?.guardianName}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="No. Hp Wali Mahasiswa"
+            name="guardianHp"
+            defaultValue={data?.guardianHp}
+            register={register}
+            error={errors?.guardianHp}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="Status Registrasi"
+            name="statusRegister"
+            defaultValue={data?.statusRegister}
+            register={register}
+            error={errors?.statusRegister}
           />
         </div>
       </div>
@@ -311,4 +327,4 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
   )
 }
 
-export default LecturerForm;
+export default StudentForm;

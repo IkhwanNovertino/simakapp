@@ -1,8 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs } from "./formValidationSchema";
+import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs, StudentInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
+import { connect } from "http2";
 
 type stateType = {
   success: boolean;
@@ -74,7 +75,7 @@ export const createRole = async (state: stateType, data: RoleInputs) => {
       data: {
         name: data.name,
         description: data.description,
-        RolePermission: {
+        rolePermission: {
           createMany: {
             data: [
               ...data?.rolePermission.map((id: number) => ({ permissionId: id })),
@@ -321,12 +322,38 @@ export const deleteCourse = async (state: stateType, data: FormData) => {
 
 export const createLecturer = async (state: stateType, data: LecturerInputs) => {
   try {
-    await prisma.lecturer.create({
-      data: {
-        name: data.name,
-        email: data.email,
-        hp: data.phone,
-      }
+    console.log(data);
+    const role = await prisma.role.findFirst({where: {name: {contains: "Dosen", mode: "insensitive"}}});
+    const [createUserLecturer, createLecturerUser] = await prisma.$transaction(async (prisma) => {
+      const createUserLecturer = await prisma.user.create({
+        data: {
+          email: data.username,
+          password: data.password,
+          role: {
+            connect: {
+              name: data.isDosenWali ? "dosen wali" : "dosen",
+            }
+          }
+        }
+      });
+      const createLecturerUser = await prisma.lecturer.create({
+        data: {
+          npk: data.npk,
+          nidn: data.nidn,
+          name: data.name,
+          frontTitle: data.frontTitle,
+          backTitle: data.backTitle,
+          degree: data.degree,
+          year: data.year,
+          address: data.address,
+          majorId: data.majorId,
+          gender: data.gender,
+          hp: data.phone,
+          email: data.email,
+          userId: createUserLecturer.id
+        }
+      })
+      return [createUserLecturer, createLecturerUser];
     })
     return { success: true, error: false };
   } catch (err: any) {
@@ -355,11 +382,18 @@ export const updateLecturer = async (state: stateType, data: LecturerInputs) => 
 export const deleteLecturer = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    await prisma.course.delete({
-      where: {
-        id: id,
-      }
-    });
+    const deleteOperatorTransaction = await prisma.$transaction([
+      prisma.user.delete({
+        where: {
+          id: id.split(":")[1]
+        }
+      }),
+      prisma.lecturer.delete({
+        where: {
+          id: id.split(":")[0]
+        }
+      })
+    ])
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
@@ -429,12 +463,96 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
         }
       })
     ])
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
 
-    // await prisma.operator.delete({
+export const createStudent = async (state: stateType, data: StudentInputs) => {
+  try {
+    console.log(data);
+
+    await prisma.student.create({
+      data: {
+        nim: parseInt(data.nim),
+        name: data.name,
+        majorId: data.majorId,
+        year: data.year,
+        gender: data.gender,
+        hp: data.phone,
+        email: data.email,
+        lecturerId: data.lecturerId,
+        address: data.address,
+        fatherName: data.fatherName,
+        motherName: data.motherName,
+        guardianName: data.guardianName,
+        guardianHp: data.guardianHp,
+        statusRegister: data.statusRegister,
+      }
+    })
+    
+    const [createUser, createOperatorUser] = await prisma.$transaction(async (prisma) => {
+      const createUser = await prisma.user.create({
+        data: {
+          email: data.username,
+          password: data.password,
+          roleId: parseInt(data.roleId),
+        }
+      });
+      const createOperatorUser = await prisma.operator.create({
+          data: {
+            name: data.name,
+            department: data?.department,
+            userId: createUser.id
+          }
+      })
+      return [createUser, createOperatorUser];
+    })
+    
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const updateStudent = async (state: stateType, data: StudentInputs) => {
+  try {
+    // await prisma.operator.update({
     //   where: {
-    //     id: id,
+    //     id: data?.id
     //   },
+    //   data: {
+    //     name: data.name,
+    //     department: data?.department,
+    //   }
     // })
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const deleteStudent = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    console.log(id.split(":")[0]);
+    console.log(id.split(":")[1]);
+    
+
+    const deleteOperatorTransaction = await prisma.$transaction([
+      prisma.user.delete({
+        where: {
+          id: id.split(":")[1]
+        }
+      }),
+      prisma.operator.delete({
+        where: {
+          id: id.split(":")[0]
+        }
+      })
+    ])
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
