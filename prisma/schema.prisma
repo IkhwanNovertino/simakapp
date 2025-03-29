@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -17,8 +11,8 @@ model Role {
   id             Int              @id @default(autoincrement())
   name           String?          @unique
   description    String?
-  RolePermission RolePermission[]
-  User           User[]
+  rolePermission RolePermission[]
+  user           User[]
 
   @@map("sb25_roles")
 }
@@ -27,7 +21,7 @@ model Permission {
   id             Int              @id @default(autoincrement())
   name           String?          @unique
   description    String?
-  RolePermission RolePermission[]
+  rolePermission RolePermission[]
 
   @@map("sb25_permissions")
 }
@@ -48,9 +42,9 @@ model User {
   password String?
   roleId   Int?
   role     Role?      @relation(fields: [roleId], references: [id])
-  Lecturer Lecturer[]
-  Operator Operator[]
-  Student  Student[]
+  lecturer Lecturer[]
+  operator Operator[]
+  student  Student[]
 
   @@map("sb25_users")
 }
@@ -60,20 +54,22 @@ model Major {
   name       String?
   numberCode Int?
   stringCode String?
-  Course     Course[]
-  Lecturer   Lecturer[]
-  Student    Student[]
+  course     Course[]
+  lecturer   Lecturer[]
+  student    Student[]
 
   @@map("sb25_majors")
 }
 
 model Course {
-  id      String  @id @default(uuid())
-  name    String?
-  code    String?
-  sks     Int?
-  majorId Int?
-  major   Major?  @relation(fields: [majorId], references: [id])
+  id        String  @id @default(uuid())
+  name      String?
+  code      String?
+  sks       Int?
+  majorId   Int?
+  isPKL     Boolean @default(false)
+  isSkripsi Boolean @default(false)
+  major     Major?  @relation(fields: [majorId], references: [id])
 
   @@map("sb25_courses")
 }
@@ -95,9 +91,9 @@ model Lecturer {
   photo      String?
   majorId    Int?
   major      Major?        @relation(fields: [majorId], references: [id])
-  userId     String?
+  userId     String?       @unique
   user       User?         @relation(fields: [userId], references: [id])
-  Student    Student[]
+  student    Student[]
 
   @@map("sb25_lecturers")
 }
@@ -105,10 +101,9 @@ model Lecturer {
 model Operator {
   id         String  @id @default(uuid())
   name       String?
-  position   String?
   department String?
 
-  userId String?
+  userId String? @unique
   user   User?   @relation(fields: [userId], references: [id])
 
   @@map("sb25_operators")
@@ -134,7 +129,7 @@ model Student {
   lecturerId     String?
   lecturer       Lecturer? @relation(fields: [lecturerId], references: [id])
   statusRegister String?
-  userId         String?
+  userId         String?   @unique
   user           User?     @relation(fields: [userId], references: [id])
 
   @@map("sb25_students")
