@@ -369,12 +369,24 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
 
 export const createOperator = async (state: stateType, data: OperatorInputs) => {
   try {
-    await prisma.operator.create({
-      data: {
-        name: data.name,
-        department: data?.department,
-      }
+    const [createUser, createOperatorUser] = await prisma.$transaction(async (prisma) => {
+      const createUser = await prisma.user.create({
+        data: {
+          email: data.username,
+          password: data.password,
+          roleId: parseInt(data.roleId),
+        }
+      });
+      const createOperatorUser = await prisma.operator.create({
+          data: {
+            name: data.name,
+            department: data?.department,
+            userId: createUser.id
+          }
+      })
+      return [createUser, createOperatorUser];
     })
+    
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
@@ -401,11 +413,28 @@ export const updateOperator = async (state: stateType, data: OperatorInputs) => 
 export const deleteOperator = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    await prisma.course.delete({
-      where: {
-        id: id,
-      }
-    });
+    console.log(id.split(":")[0]);
+    console.log(id.split(":")[1]);
+    
+
+    const deleteOperatorTransaction = await prisma.$transaction([
+      prisma.user.delete({
+        where: {
+          id: id.split(":")[1]
+        }
+      }),
+      prisma.operator.delete({
+        where: {
+          id: id.split(":")[0]
+        }
+      })
+    ])
+
+    // await prisma.operator.delete({
+    //   where: {
+    //     id: id,
+    //   },
+    // })
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);

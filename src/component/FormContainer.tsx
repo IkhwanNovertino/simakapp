@@ -25,6 +25,12 @@ const FormContainer = async (
         });
         relatedData = { majors: majors };
         break;
+      case "operator":
+        const role = await prisma.role.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { role: role };
+        break;
       default:
         break;
     }

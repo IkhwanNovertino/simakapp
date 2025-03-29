@@ -9,15 +9,15 @@ import { createCourse, createLecturer, createOperator, updateCourse, updateLectu
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-interface LecturerFormProps {
+interface OperatorFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
   type: "create" | "update";
   data?: any;
   relatedData?: any;
 }
 
-const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) => {
-  const { majors } = relatedData;
+const OperatorForm = ({ setOpen, type, data, relatedData }: OperatorFormProps) => {
+  const { role } = relatedData;
 
   const {
     register,
@@ -49,7 +49,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
       <span className="text-xs text-gray-400 font-medium">
         Informasi Autentikasi
       </span>
-      <div className="flex justify-start flex-wrap gap-4">
+      <div className="flex justify-between flex-wrap gap-4">
         {data && (
           <div className="hidden">
             <InputField
@@ -65,7 +65,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           <InputField
             label="Email"
             name="username"
-            defaultValue={data?.username}
+            defaultValue={data?.user.email}
             register={register}
             error={errors?.username}
             inputProps={data && { disabled: true }}
@@ -75,17 +75,45 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           <InputField
             label="Kata Kunci"
             name="password"
-            defaultValue={data?.password}
+            type="password"
+            defaultValue={data?.user.password}
             register={register}
             error={errors?.password}
+            inputProps={data && { disabled: true }}
           />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Role Pengguna</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("roleId")}
+            defaultValue={data?.user.roleId}
+            disabled={data && true}
+          >
+            {role.map((item: any) => (
+              <option
+                key={item.id}
+                value={item.id}
+                className="text-sm py-0.5"
+
+              >
+                {item.name}
+              </option>
+            ))}
+
+          </select>
+          {errors.roleId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.roleId.message.toString()}
+            </p>
+          )}
         </div>
       </div>
       <span className="text-xs text-gray-400 font-medium">
         Informasi Personal
       </span>
-      <div className="flex justify-start flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-1/3">
+      <div className="flex justify-between flex-wrap gap-4">
+        <div className="flex flex-col gap-2 w-full md:w-5/10">
           <InputField
             label="Nama Lengkap"
             name="name"
@@ -94,7 +122,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             error={errors?.name}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/3">
+        <div className="flex flex-col gap-2 w-full md:w-4/10">
           <InputField
             label="Bagian"
             name="department"
@@ -112,4 +140,4 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
   )
 }
 
-export default LecturerForm;
+export default OperatorForm;

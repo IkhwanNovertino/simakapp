@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCourse, deleteMajor, deletePermission, deleteRole, deleteRolePermission, deleteRoom } from "@/lib/action";
+import { deleteCourse, deleteMajor, deleteOperator, deletePermission, deleteRole, deleteRolePermission, deleteRoom } from "@/lib/action";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -117,11 +117,11 @@ const deleteActionMap = {
   permission: deletePermission,
   role: deleteRole,
   rolePermission: deleteRolePermission,
+  operator: deleteOperator,
   major: deleteMajor,
   room: deleteRoom,
   course: deleteCourse,
   lecturer: deleteRole,
-  operator: deleteRole,
   student: deleteRole,
 }
 
