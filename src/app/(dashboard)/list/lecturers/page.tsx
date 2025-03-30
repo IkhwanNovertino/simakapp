@@ -1,14 +1,15 @@
+import FilterSearch from "@/component/FilterSearch";
 import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Lecturer, Prisma, Role, User } from "@prisma/client";
+import { Lecturer, Major, Prisma, Role, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
-type LecturerDataType = Lecturer & { user: User & { role: Role } };
+type LecturerDataType = Lecturer & { user: User & { role: Role } } & { major: Major };
 
 
 
@@ -30,6 +31,9 @@ const LecturerListPage = async (
               { name: { contains: value, mode: "insensitive" } },
             ]
             break;
+          case "filter":
+            query.majorId = parseInt(value)
+            break;
           default:
             break;
         }
@@ -37,7 +41,7 @@ const LecturerListPage = async (
     }
   };
 
-  const [data, count] = await prisma.$transaction([
+  const [data, count, dataFilter] = await prisma.$transaction([
     prisma.lecturer.findMany({
       where: query,
       include: {
@@ -50,12 +54,16 @@ const LecturerListPage = async (
               }
             },
           },
-        }
+        },
+        major: true
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
     prisma.lecturer.count({ where: query }),
+    prisma.major.findMany({
+      select: { name: true, id: true }
+    }),
   ]);
 
   const columns = [
@@ -71,6 +79,11 @@ const LecturerListPage = async (
     {
       header: "NIDN",
       accessor: "nidn",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Prodi",
+      accessor: "prodi",
       className: "hidden md:table-cell",
     },
     {
@@ -90,21 +103,22 @@ const LecturerListPage = async (
     >
       <td className="flex items-center gap-4 p-4">
         <div className="flex flex-col">
-          <h3 className="font-semibold">{item.name}</h3>
+          <h3 className="font-semibold">{`${item.frontTitle} ${item.name}, ${item.backTitle}`}</h3>
           <p className="text-xs text-gray-500">{item?.user.email}</p>
         </div>
       </td>
       <td className="hidden md:table-cell">{item.npk}</td>
       <td className="hidden md:table-cell">{item.nidn}</td>
+      <td className="hidden md:table-cell uppercase">{item.major?.stringCode || "-"}</td>
       <td className="hidden lg:table-cell">{item.user?.role?.name || "-"}</td>
       <td>
         <div className="flex items-center gap-2">
-          {/* <Link href={`/list/lecturers/${item.id}`}>
+          <Link href={`/list/lecturers/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
-          </Link> */}
-          <FormContainer table="lecturer" type="update" data={item} />
+          </Link>
+          {/* <FormContainer table="lecturer" type="update" data={item} /> */}
           <FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />
         </div>
       </td>
@@ -126,6 +140,7 @@ const LecturerListPage = async (
           </div>
         </div>
       </div>
+      <FilterSearch data={dataFilter} />
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}

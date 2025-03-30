@@ -111,7 +111,7 @@ model Operator {
 
 model Student {
   id             String    @id @default(uuid())
-  nim            Int?
+  nim            String?
   name           String?
   year           Int?
   religion       Religion?

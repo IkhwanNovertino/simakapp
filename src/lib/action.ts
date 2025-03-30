@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs, StudentInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { connect } from "http2";
+import { Religion } from "@prisma/client";
 
 type stateType = {
   success: boolean;
@@ -474,43 +475,40 @@ export const createStudent = async (state: stateType, data: StudentInputs) => {
   try {
     console.log(data);
 
-    await prisma.student.create({
-      data: {
-        nim: parseInt(data.nim),
-        name: data.name,
-        majorId: data.majorId,
-        year: data.year,
-        gender: data.gender,
-        hp: data.phone,
-        email: data.email,
-        lecturerId: data.lecturerId,
-        address: data.address,
-        fatherName: data.fatherName,
-        motherName: data.motherName,
-        guardianName: data.guardianName,
-        guardianHp: data.guardianHp,
-        statusRegister: data.statusRegister,
-      }
-    })
-    
-    const [createUser, createOperatorUser] = await prisma.$transaction(async (prisma) => {
-      const createUser = await prisma.user.create({
+    const [userStudent, student] = await prisma.$transaction(async (prisma) => {
+      const userStudent = await prisma.user.create({
         data: {
           email: data.username,
           password: data.password,
-          roleId: parseInt(data.roleId),
+          role: {
+            connect: {
+              id: parseInt(data.roleId)
+            }
+          }
         }
       });
-      const createOperatorUser = await prisma.operator.create({
-          data: {
-            name: data.name,
-            department: data?.department,
-            userId: createUser.id
-          }
+      const student = await prisma.student.create({
+        data: {
+          nim: parseInt(data.nim),
+          name: data.name,
+          majorId: data.majorId,
+          year: data.year,
+          gender: data.gender,
+          hp: data.phone,
+          email: data.email,
+          lecturerId: data.lecturerId,
+          address: data.address,
+          fatherName: data.fatherName,
+          motherName: data.motherName,
+          guardianName: data.guardianName,
+          guardianHp: data.guardianHp,
+          statusRegister: data.statusRegister,
+          religion: data.religion as Religion,
+          userId: userStudent.id
+        }
       })
-      return [createUser, createOperatorUser];
+      return [userStudent, student];
     })
-    
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);

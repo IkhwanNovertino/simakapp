@@ -1,3 +1,4 @@
+import FilterSearch from "@/component/FilterSearch";
 import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
@@ -27,7 +28,12 @@ const StudentListPage = async (
           case "search":
             query.OR = [
               { name: { contains: value, mode: "insensitive" } },
+              { nim: { equals: parseInt(value) } },
+              { lecturer: { name: { contains: value, mode: "insensitive" } } }
             ]
+            break;
+          case "filter":
+            query.majorId = parseInt(value)
             break;
           default:
             break;
@@ -36,7 +42,7 @@ const StudentListPage = async (
     }
   };
 
-  const [data, count] = await prisma.$transaction([
+  const [data, count, dataFilter] = await prisma.$transaction([
     prisma.student.findMany({
       where: query,
       include: {
@@ -53,6 +59,9 @@ const StudentListPage = async (
       skip: ITEM_PER_PAGE * (p - 1),
     }),
     prisma.student.count({ where: query }),
+    prisma.major.findMany({
+      select: { id: true, name: true }
+    })
   ]);
 
   const columns = [
@@ -61,13 +70,13 @@ const StudentListPage = async (
       accessor: "info",
     },
     {
-      header: "Email",
-      accessor: "email",
+      header: "NIM",
+      accessor: "nim",
       className: "hidden md:table-cell",
     },
     {
       header: "Program Studi",
-      accessor: "nidn",
+      accessor: "program studi",
       className: "hidden md:table-cell",
     },
     {
@@ -96,10 +105,10 @@ const StudentListPage = async (
         /> */}
         <div className="flex flex-col">
           <h3 className="font-semibold">{item.name}</h3>
-          <p className="text-xs text-gray-500">{item.nim}</p>
+          <p className="text-xs text-gray-500">{item.user?.email}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell">{item?.user?.email || "-"}</td>
+      <td className="hidden md:table-cell">{item?.nim || "-"}</td>
       <td className="hidden md:table-cell">{item.major?.name || "-"}</td>
       <td className="hidden lg:table-cell">{item.lecturer?.name || "-"}</td>
       <td>
@@ -138,6 +147,7 @@ const StudentListPage = async (
           </div>
         </div>
       </div>
+      <FilterSearch data={dataFilter} />
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
