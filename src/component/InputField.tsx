@@ -7,6 +7,7 @@ interface InputFieldProps {
   name: string;
   defaultValue?: string;
   error?: FieldError;
+  required?: boolean;
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
@@ -18,10 +19,11 @@ const InputField = ({
   defaultValue,
   error,
   inputProps,
+  required,
 }: InputFieldProps) => {
   return (
     <>
-      <label className="text-xs text-gray-500">{label}</label>
+      <label className={required ? "text-xs text-gray-500 after:content-['_(*)'] after:text-red-400" : "text-xs text-gray-500"}>{label}</label>
       <input
         type={type}
         {...register(name)}

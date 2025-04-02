@@ -52,8 +52,8 @@ model User {
 model Major {
   id         Int        @id @default(autoincrement())
   name       String?
-  numberCode Int?
-  stringCode String?
+  numberCode Int?       @unique
+  stringCode String?    @unique
   course     Course[]
   lecturer   Lecturer[]
   student    Student[]

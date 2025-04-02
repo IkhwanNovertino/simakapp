@@ -20,6 +20,7 @@ interface LecturerFormProps {
 
 const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) => {
   const { majors, role } = relatedData;
+  const defaultChecked = type === "create" && "FEMALE";
 
   const {
     register,
@@ -70,6 +71,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.user.email}
             register={register}
             error={errors?.username}
+            required={true}
             inputProps={data && { disabled: true }}
           />
         </div>
@@ -81,6 +83,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.user.password}
             register={register}
             inputProps={data && { disabled: true }}
+            required={true}
             error={errors?.password}
           />
         </div>
@@ -106,6 +109,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.npk}
             register={register}
             error={errors?.npk}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -115,10 +119,11 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.nidn}
             register={register}
             error={errors?.nidn}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Pendidikan Terakhir</label>
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Pendidikan Terakhir</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("degree")}
@@ -160,6 +165,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.name}
             register={register}
             error={errors?.name}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -179,10 +185,11 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.year}
             register={register}
             error={errors?.year}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Program Studi</label>
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Program Studi</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("majorId")}
@@ -210,12 +217,16 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Gender</label>
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Gender</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full overflow-hidden"
             {...register("gender")}
+            size={3}
             defaultValue={data?.gender}
           >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih Gender
+            </option>
             {gender.map((item) => (
               <option
                 value={item}

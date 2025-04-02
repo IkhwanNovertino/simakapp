@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { CourseInputs, courseSchema, LecturerInputs, lecturerSchema, StudentInputs, studentSchema } from "@/lib/formValidationSchema";
-import { createCourse, createLecturer, createStudent, updateCourse, updateLecturer, updateStudent } from "@/lib/action";
+import { StudentInputs, studentSchema } from "@/lib/formValidationSchema";
+import { createStudent, updateStudent } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { degree, gender, religion } from "@/lib/setting";
@@ -71,6 +71,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             register={register}
             error={errors?.username}
             inputProps={data && { disabled: true }}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -82,6 +83,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             register={register}
             inputProps={data && { disabled: true }}
             error={errors?.password}
+            required={true}
           />
         </div>
         <div className="hidden">
@@ -106,6 +108,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             defaultValue={data?.nim}
             register={register}
             error={errors?.nim}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -115,6 +118,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             defaultValue={data?.name}
             register={register}
             error={errors?.name}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -124,15 +128,20 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             defaultValue={data?.year}
             register={register}
             error={errors?.year}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Program Studi</label>
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Program Studi</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("majorId")}
             defaultValue={data?.majorId}
           >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih Program Studi
+            </option>
+
             {majors.map((item: any) => (
               <option
                 value={item.id}
@@ -151,7 +160,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Dosen Wali</label>
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Dosen Wali</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("lecturerId")}
@@ -168,19 +177,33 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
               </option>
             ))}
           </select>
-          {errors.majorId?.message && (
+          {errors.lecturerId?.message && (
             <p className="text-xs text-red-400">
-              {errors.majorId.message.toString()}
+              {errors.lecturerId.message.toString()}
             </p>
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Gender</label>
+          <InputField
+            label="Status Registrasi"
+            name="statusRegister"
+            defaultValue={data?.statusRegister}
+            register={register}
+            error={errors?.statusRegister}
+            required={true}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Gender</label>
           <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full overflow-hidden"
             {...register("gender")}
+            size={3}
             defaultValue={data?.gender}
           >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih Gender
+            </option>
             {gender.map((item) => (
               <option
                 value={item}
@@ -223,7 +246,10 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             {...register("religion")}
             defaultValue={data?.religion}
           >
-            {religion.map((item) => (
+            <option value="" className="text-sm py-0.5">
+              -- Pilih Agama
+            </option>
+            {religion.map((item: string) => (
               <option
                 value={item}
                 key={item}
@@ -255,7 +281,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             </p>
           )}
         </div> */}
-        <div className="flex flex-col gap-2 w-full">
+        <div className="flex flex-col gap-2 w-full md:w-5/8">
           <InputField
             label="Alamat"
             name="address"
@@ -264,6 +290,11 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             error={errors?.address}
           />
         </div>
+      </div>
+      <span className="text-xs text-gray-400 font-medium">
+        Informasi Ortu/Wali Mahasiswa
+      </span>
+      <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
             label="Nama Ayah"
@@ -307,15 +338,6 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             defaultValue={data?.guardianHp}
             register={register}
             error={errors?.guardianHp}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Status Registrasi"
-            name="statusRegister"
-            defaultValue={data?.statusRegister}
-            register={register}
-            error={errors?.statusRegister}
           />
         </div>
       </div>

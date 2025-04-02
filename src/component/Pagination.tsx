@@ -18,7 +18,7 @@ const Pagination = ({ page, count }: { page: number, count: number }) => {
   return (
     <div className="p-4 flex items-center justify-between text-gray-500">
       <button
-        className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold hover:cursor-pointer hover:not-disabled:bg-primary disabled:opacity-50  disabled:cursor-not-allowed"
         onClick={() => { changePage(page - 1) }}
         disabled={!hasPrev}
       >
@@ -32,7 +32,7 @@ const Pagination = ({ page, count }: { page: number, count: number }) => {
             return (
               <button
                 key={pageIndex}
-                className={`px-2 rounded-sm hover:bg-lamaSky ${page === pageIndex ? "bg-lamaSky" : ""}`}
+                className={`px-2 rounded-sm hover:bg-primary cursor-pointer ${page === pageIndex ? "bg-primary-light" : ""}`}
                 onClick={() => { changePage(pageIndex) }}
               >
                 {pageIndex}
@@ -42,7 +42,7 @@ const Pagination = ({ page, count }: { page: number, count: number }) => {
         )}
       </div>
       <button
-        className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+        className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold hover:cursor-pointer hover:bg-primary disabled:opacity-50  disabled:cursor-not-allowed"
         onClick={() => { changePage(page + 1) }}
         disabled={!hasNext}
       >

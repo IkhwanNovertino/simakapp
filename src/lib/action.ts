@@ -324,7 +324,6 @@ export const deleteCourse = async (state: stateType, data: FormData) => {
 export const createLecturer = async (state: stateType, data: LecturerInputs) => {
   try {
     console.log(data);
-    const role = await prisma.role.findFirst({where: {name: {contains: "Dosen", mode: "insensitive"}}});
     const [createUserLecturer, createLecturerUser] = await prisma.$transaction(async (prisma) => {
       const createUserLecturer = await prisma.user.create({
         data: {
@@ -489,7 +488,7 @@ export const createStudent = async (state: stateType, data: StudentInputs) => {
       });
       const student = await prisma.student.create({
         data: {
-          nim: parseInt(data.nim),
+          nim: data.nim,
           name: data.name,
           majorId: data.majorId,
           year: data.year,
