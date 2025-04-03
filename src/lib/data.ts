@@ -49,6 +49,12 @@ export const permissionDaata = [
 ]
 
 // YOU SHOULD CHANGE THE DATES OF THE EVENTS TO THE CURRENT DATE TO SEE THE EVENTS ON THE CALENDAR
+
+const date = new Date();
+const getYear = date.getFullYear();
+const getMonth = date.getMonth();
+const getDay = date.getDate();
+
 export const calendarEvents = [
   {
     title: "Math",
@@ -86,6 +92,7 @@ export const calendarEvents = [
     start: new Date(2024, 7, 12, 14, 0),
     end: new Date(2024, 7, 12, 14, 45),
   },
+  // Day 2
   {
     title: "English",
     allDay: false,
@@ -111,6 +118,7 @@ export const calendarEvents = [
     start: new Date(2024, 7, 13, 14, 0),
     end: new Date(2024, 7, 13, 14, 45),
   },
+  // Day 3
   {
     title: "Math",
     allDay: false,
@@ -136,6 +144,7 @@ export const calendarEvents = [
     start: new Date(2024, 7, 14, 14, 0),
     end: new Date(2024, 7, 13, 14, 45),
   },
+  // Day 4
   {
     title: "English",
     allDay: false,
@@ -161,6 +170,7 @@ export const calendarEvents = [
     start: new Date(2024, 7, 15, 14, 0),
     end: new Date(2024, 7, 15, 14, 45),
   },
+  // Day 5
   {
     title: "Math",
     allDay: false,
