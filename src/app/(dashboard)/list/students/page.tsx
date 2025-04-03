@@ -11,8 +11,6 @@ import Link from "next/link";
 
 type StudentDataType = Student & { major: Major } & { user: User } & { lecturer: Lecturer };
 
-
-
 const StudentListPage = async (
   { searchParams }: { searchParams: { [key: string]: string | undefined } }
 ) => {
@@ -28,7 +26,7 @@ const StudentListPage = async (
           case "search":
             query.OR = [
               { name: { contains: value, mode: "insensitive" } },
-              { nim: { equals: parseInt(value) } },
+              { nim: { contains: value } },
               { lecturer: { name: { contains: value, mode: "insensitive" } } }
             ]
             break;
@@ -118,11 +116,7 @@ const StudentListPage = async (
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
-          <Link href={`/list/lecturers/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-accent">
-              <Image src="/delete.png" alt="" width={16} height={16} />
-            </button>
-          </Link>
+          <FormContainer table="student" type="delete" id={`${item.id}:${item.userId}`} />
           {/* {role === "admin" && (
             <FormModal table="teacher" type="delete" id={item.id} />
           )} */}

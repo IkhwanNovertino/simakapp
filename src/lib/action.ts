@@ -547,7 +547,7 @@ export const deleteStudent = async (state: stateType, data: FormData) => {
           id: id.split(":")[1]
         }
       }),
-      prisma.operator.delete({
+      prisma.student.delete({
         where: {
           id: id.split(":")[0]
         }

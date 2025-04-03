@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePermission, deleteRole, deleteRolePermission, deleteRoom } from "@/lib/action";
+import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePermission, deleteRole, deleteRolePermission, deleteRoom, deleteStudent } from "@/lib/action";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -129,10 +129,10 @@ const deleteActionMap = {
   rolePermission: deleteRolePermission,
   operator: deleteOperator,
   lecturer: deleteLecturer,
+  student: deleteStudent,
   major: deleteMajor,
   room: deleteRoom,
   course: deleteCourse,
-  student: deleteRole,
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
