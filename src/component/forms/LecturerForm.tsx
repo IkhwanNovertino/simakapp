@@ -88,14 +88,33 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Apakah user ini adalah dosen wali?</label>
-          <input
-            type="checkbox"
-            id="isDosenWali"
-            className="w-fit"
-            {...register("isDosenWali")}
-            defaultChecked={data?.isDosenWali}
-          />
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Role Pengguna</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("roleId")}
+            defaultValue={data?.user.roleId}
+            disabled={data && true}
+          >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih role pengguna
+            </option>
+            {role.map((item: any) => (
+              <option
+                key={item.id}
+                value={item.id}
+                className="text-sm py-0.5"
+
+              >
+                {item.name}
+              </option>
+            ))}
+
+          </select>
+          {errors.roleId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.roleId.message.toString()}
+            </p>
+          )}
         </div>
       </div>
       <span className="text-xs text-gray-400 font-medium">
@@ -130,7 +149,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.degree}
           >
             <option value="" className="text-sm py-0.5">
-              Pilih Pendidikan Terakhir
+              -- Pilih pendidikan terakhir
             </option>
             {degree.map((item) => (
               <option
@@ -196,7 +215,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.majorId}
           >
             <option value="" className="text-sm py-0.5">
-              -- Pilih Program Studi
+              -- Pilih program studi
             </option>
 
             {majors.map((item: any) => (
@@ -225,7 +244,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.gender}
           >
             <option value="" className="text-sm py-0.5">
-              -- Pilih Gender
+              -- Pilih gender
             </option>
             {gender.map((item) => (
               <option
@@ -263,14 +282,14 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Agama</label>
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Agama</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("religion")}
             defaultValue={data?.religion}
           >
             <option value="" className="text-sm py-0.5">
-              -- Pilih Agama
+              -- Pilih agama
             </option>
             {religion.map((item: string) => (
               <option

@@ -60,8 +60,8 @@ export const lecturerSchema = z.object({
   id: z.string().optional(),
   // information authentication
   username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }),
-  password: z.string().min(5, { message: "password harus diisi" }),
-  isDosenWali: z.boolean().optional(),
+  password: z.string().min(5, { message: "password minimal 5 karakter" }),
+  roleId: z.string().min(1, {message: "role harus diisi"}),
   // information data lecturer
   npk: z.string().min(1, { message: "NPK harus diisi" }),
   nidn: z.string().min(1, {message: "NIDN harus diisi"}),
@@ -72,7 +72,7 @@ export const lecturerSchema = z.object({
   year: z.coerce.number().min(4, {message: "tahun masuk harus diisi"}),
   address: z.string().optional(),
   gender: z.enum(["PRIA", "WANITA"], { message: "Gender harus diisi" }),
-  religion: z.enum(["ISLAM", "PROTESTAN", "KATOLIK", "HINDU", "BUDHA", "KONGHUCU", "DLL"]).optional().or(z.literal("")),
+  religion: z.enum(["ISLAM", "PROTESTAN", "KATOLIK", "HINDU", "BUDHA", "KONGHUCU", "DLL"], {message: "agama harus diisi"}),
   majorId: z.coerce.number().min(1, { message: "Program studi harus diisi" }),
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),
   phone: z.string().optional(),
@@ -86,7 +86,7 @@ export const operatorSchema = z.object({
   id: z.string().optional(),
   // information authentication
   username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }),
-  password: z.string().min(5, { message: "password harus diisi" }),
+  password: z.string().min(5, { message: "password minimal 5 karakter" }),
   roleId: z.string().min(1, {message: "role harus diisi"}),
   // information data operation
   name: z.string().min(1, { message: "nama dosen harus diisi" }),
@@ -99,13 +99,13 @@ export const studentSchema = z.object({
   id: z.string().optional(),
   // information authentication
   username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }),
-  password: z.string().min(5, { message: "password harus diisi" }),
+  password: z.string().min(5, { message: "password minimal 5 karakter" }),
   roleId: z.string().min(1, {message: "role harus diisi"}),
   // information data student
   nim: z.string().length(12, {message: "NIM harus diisi"}),
   name: z.string().min(1, { message: "nama dosen harus diisi" }),
   year: z.coerce.number().min(4, { message: "tahun terdaftar harus diisi" }),
-  religion: z.string().optional(),
+  religion: z.enum(["ISLAM", "PROTESTAN", "KATOLIK", "HINDU", "BUDHA", "KONGHUCU", "DLL"], {message: "agama harus diisi"}),
   gender: z.enum(["PRIA", "WANITA"], { message: "Gender harus diisi" }),
   address: z.string().optional(),
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),

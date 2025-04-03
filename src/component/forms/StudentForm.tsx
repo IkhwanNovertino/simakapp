@@ -86,15 +86,34 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             required={true}
           />
         </div>
-        <div className="hidden">
-          <InputField
-            label="roleId"
-            name="roleId"
-            defaultValue={role?.id}
-            register={register}
-            error={errors?.id}
-            inputProps={{ disabled: true }}
-          />
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Role Pengguna</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("roleId")}
+            defaultValue={data?.user.roleId}
+            disabled={data && true}
+          >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih role pengguna
+            </option>
+            {role.map((item: any) => (
+              <option
+                key={item.id}
+                value={item.id}
+                className="text-sm py-0.5"
+
+              >
+                {item.name}
+              </option>
+            ))}
+
+          </select>
+          {errors.roleId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.roleId.message.toString()}
+            </p>
+          )}
         </div>
       </div>
       <span className="text-xs text-gray-400 font-medium">
@@ -166,6 +185,9 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             {...register("lecturerId")}
             defaultValue={data?.lecturerId}
           >
+            <option value={""} className="text-sm py-0.5">
+              -- Pilih perwalian akademik
+            </option>
             {lecturer.map((item: any) => (
               <option
                 value={item.id}
@@ -240,7 +262,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Agama</label>
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Agama</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("religion")}

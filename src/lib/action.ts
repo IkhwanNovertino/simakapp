@@ -323,7 +323,8 @@ export const deleteCourse = async (state: stateType, data: FormData) => {
 
 export const createLecturer = async (state: stateType, data: LecturerInputs) => {
   try {
-    console.log(data);
+    console.log(data)
+
     const [createUserLecturer, createLecturerUser] = await prisma.$transaction(async (prisma) => {
       const createUserLecturer = await prisma.user.create({
         data: {
@@ -331,7 +332,7 @@ export const createLecturer = async (state: stateType, data: LecturerInputs) => 
           password: data.password,
           role: {
             connect: {
-              name: data.isDosenWali ? "dosen wali" : "dosen",
+              id: parseInt(data?.roleId),
             }
           }
         }
@@ -350,11 +351,13 @@ export const createLecturer = async (state: stateType, data: LecturerInputs) => 
           gender: data.gender,
           hp: data.phone,
           email: data.email,
+          religion: data.religion as Religion,
           userId: createUserLecturer.id
         }
       })
       return [createUserLecturer, createLecturerUser];
     })
+
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
