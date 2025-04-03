@@ -1,4 +1,5 @@
 import Announcements from "@/component/Announcements";
+import BigCalendar from "@/component/BigCalendar";
 import CountChart from "@/component/CountChart";
 import EventCalender from "@/component/EventCalender";
 import UserCard from "@/component/UserCard";
@@ -31,9 +32,13 @@ const AdminPage = () => {
         </div>
 
         {/* BOTTOM CHART */}
-        <div className="w-full h-[500px]">
-          {/* <FinanceChart /> */}
+        <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
+          <h1>Student&apos;s Schedule</h1>
+          <BigCalendar />
         </div>
+        {/* <div className="w-full h-[500px]"> */}
+        {/* <FinanceChart /> */}
+        {/* </div> */}
       </div>
 
       {/* RIGHT */}

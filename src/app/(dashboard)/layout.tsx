@@ -11,13 +11,13 @@ export default function DashboardLayout({
 }>) {
   return (
     <div
-      className="h-screen flex"
+      className="min-h-screen max-h-fit flex overflow-scroll"
     >
       {/* LEFT */}
-      <div className="w-[14%] md:w-[8%] lg:w-[16%] xl:w-[14%] p-4">
+      <div className="w-[14%] md:w-[8%] lg:w-[16%] xl:w-[14%] p-4 ">
         <Link
           href={"/"}
-          className="flex items-center justify-center lg:justify-start gap-2"
+          className="flex items-center justify-center lg:justify-start gap-2 "
         >
           <Image src={"/logo.png"} width={32} height={32} alt={"logo"} />
           <span className="hidden lg:block">STIMIK</span>
@@ -26,7 +26,7 @@ export default function DashboardLayout({
         <Sidebar />
       </div>
       {/* RIGHT */}
-      <div className="bg-[#F7F8FA] w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] overflow-y-scroll flex flex-col">
+      <div className="bg-[#f3f5fa] w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] overflow-hidden flex flex-col">
         <Navbar />
         {children}
       </div>

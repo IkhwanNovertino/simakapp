@@ -1,4 +1,5 @@
 import Announcements from "@/component/Announcements";
+import BigCalendar from "@/component/BigCalendar";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
@@ -145,7 +146,7 @@ const SingleLecturerPage = async (
         {/* BOTTOM */}
         <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
           <h1>Teacher&apos;s Schedule</h1>
-          {/* <BigCalendar /> */}
+          <BigCalendar />
         </div>
       </div>
       {/* RIGHT */}
