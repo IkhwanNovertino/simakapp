@@ -35,7 +35,7 @@ async function main() {
   }
 
   // role
-  const roleName = ["admin", "dosen", "perwalian akademik", "finance", "akademik"]
+  const roleName = ["admin", "dosen", "perwalian akademik", "finance", "akademik", "mahasiswa"]
 
   for (const element of roleName) {
     await prisma.role.create({
