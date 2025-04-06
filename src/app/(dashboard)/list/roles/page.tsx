@@ -52,6 +52,7 @@ const RoleListPage = async (
               }
             },
           },
+          take: 10,
         }
       },
       take: ITEM_PER_PAGE,
@@ -71,6 +72,7 @@ const RoleListPage = async (
         {item.rolePermission.map(el => (
           <div key={el.permission.id} className="text-xs m-1 p-1.5 inline-block max-w-fit rounded even:bg-primary odd:bg-secondary">{el.permission.name}</div>
         ))}
+        {item.rolePermission.length === 10 && <span className="text-lg mx-3 inline-block">...</span>}
       </td >
       <td>
         <div className="flex items-center gap-2">

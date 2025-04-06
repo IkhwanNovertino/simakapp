@@ -1,13 +1,13 @@
 "use client";
 
 import { ITEM_PER_PAGE } from "@/lib/setting";
+import { log } from "console";
 import { useRouter } from "next/navigation";
 
 const Pagination = ({ page, count }: { page: number, count: number }) => {
   const router = useRouter();
   const hasPrev = ITEM_PER_PAGE * (page - 1) > 0;
   const hasNext = ITEM_PER_PAGE * (page - 1) + ITEM_PER_PAGE < count;
-
 
   const changePage = (newPage: number) => {
     const params = new URLSearchParams(window.location.search);
