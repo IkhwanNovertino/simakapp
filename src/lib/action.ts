@@ -324,7 +324,6 @@ export const deleteCourse = async (state: stateType, data: FormData) => {
 export const createLecturer = async (state: stateType, data: LecturerInputs) => {
   try {
     console.log(data)
-
     const [createUserLecturer, createLecturerUser] = await prisma.$transaction(async (prisma) => {
       const createUserLecturer = await prisma.user.create({
         data: {
@@ -476,7 +475,6 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
 export const createStudent = async (state: stateType, data: StudentInputs) => {
   try {
     console.log(data);
-
     const [userStudent, student] = await prisma.$transaction(async (prisma) => {
       const userStudent = await prisma.user.create({
         data: {
