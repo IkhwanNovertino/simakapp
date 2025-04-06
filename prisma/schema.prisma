@@ -13,6 +13,7 @@ model Role {
   description    String?
   rolePermission RolePermission[]
   user           User[]
+  roleType       RoleType?
 
   @@map("sb25_roles")
 }
@@ -205,4 +206,11 @@ enum DegreeStatus {
   S1
   S2
   S3
+}
+
+enum RoleType {
+  STUDENT
+  LECTURER
+  ADVISOR
+  OPERATOR
 }
