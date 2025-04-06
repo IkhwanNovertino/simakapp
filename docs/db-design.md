@@ -80,6 +80,13 @@ enum DegreeStatus {
   S2
   S3
 }
+
+enum RoleType {
+  Student
+  Lecturer
+  Advisor
+  Operator
+}
 ```
 
 ## Table Specs

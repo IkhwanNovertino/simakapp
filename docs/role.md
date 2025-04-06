@@ -17,5 +17,8 @@
 - description
   - --deskripsi role
   - String?
+- roleType
+  - ["student", "lecturer","advisor", "operator"]
+  - RoleType
 
 ## Examples of Data:
