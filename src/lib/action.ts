@@ -5,6 +5,8 @@ import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionIn
 import { prisma } from "./prisma";
 import { connect } from "http2";
 import { Religion } from "@prisma/client";
+import { permission } from "process";
+import { parse } from "path";
 
 type stateType = {
   success: boolean;
@@ -138,11 +140,24 @@ export const deleteRole = async (state: stateType, data: FormData) => {
   }
 }
 
-export const deleteRolePermission = async (state: stateType, data: FormData) => {
+export const createRolePermissions = async (id: string) => {
   try {
-    const id = data.get("id") as string;
-    console.log(id);
-    
+    await prisma.rolePermission.create({
+      data: {
+        roleId: parseInt(id.split(":")[0]),
+        permissionId: parseInt( id.split(":")[1]),
+      }
+    })
+
+    return {success: true, error: false};
+  } catch (err) {
+    console.log(err);
+    return {success: false, error: true};
+  }
+}
+
+export const deleteRolePermissions = async (id: string) => {
+  try {
     await prisma.rolePermission.delete({
       where: {
         roleId_permissionId: {
@@ -151,30 +166,27 @@ export const deleteRolePermission = async (state: stateType, data: FormData) => 
         }
       }
     })
-
-
-    return { success: true, error: false };
-  } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
-    return {success: false, error:true}
+    return {success: true, error: false};
+  } catch (err) {
+    console.log(err);
+    return {success: false, error: true};
   }
 }
-export const createRolePermission = async (state: stateType, data: RolePermissionInputs) => {
+
+export const getRolePermission = async (id: string) => {
   try {
-    await prisma.rolePermission.create({
-      data: {
-        roleId: data.roleId,
-        permissionId: data.permission
+    const get = await prisma.rolePermission.findFirst({
+      where: {
+        roleId: parseInt(id.split(":")[0]),
+        permissionId: parseInt( id.split(":")[1]),
       }
     })
-
-    return { success: true, error: false };
-  } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
-    return {success: false, error:true}
+    return {success: (get ? true : false), error: false};
+  } catch (err) {
+    console.log(err);
+    return {success: false, error: true};
   }
 }
-
 export const createMajor = async (state: stateType, data: MajorInputs) => {
   try {
     await prisma.major.create({
