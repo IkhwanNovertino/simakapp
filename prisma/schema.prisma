@@ -13,7 +13,7 @@ model Role {
   description    String?
   rolePermission RolePermission[]
   user           User[]
-  roleType       RoleType?
+  roleType       RoleType         @default(OPERATOR)
 
   @@map("sb25_roles")
 }

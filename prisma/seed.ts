@@ -1,4 +1,4 @@
-import { Location, PrismaClient } from "@prisma/client";
+import { Location, PrismaClient, RoleType } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -42,6 +42,9 @@ async function main() {
       data: {
         name: element,
         description: element,
+        roleType: (element === "dosen" && "LECTURER") || (element === "mahasiswa" && "STUDENT") ||
+          (element === "perwalian akademik" && "ADVISOR") || (element === "admin" && "OPERATOR") ||
+          (element === "finance" && "OPERATOR") || (element === "akademik" && "OPERATOR")as RoleType,
       }
     })
   }
