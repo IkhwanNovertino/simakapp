@@ -8,6 +8,7 @@ import { RoleInputs, roleSchema } from "@/lib/formValidationSchema";
 import { createRole, updateRole } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { RoleType } from "@prisma/client";
 
 interface RoleFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -38,7 +39,7 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data hak akses`);
+      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data role`);
       router.refresh();
       setOpen(false);
     }
@@ -107,6 +108,25 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
               {errors.rolePermission.message.toString()}
             </p>
           )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-4/6">
+          <div className="text-xs text-gray-500">Tipe role pengguna</div>
+          <div className="flex items-center gap-2">
+            <input type="radio" id="roleTypeOperator" value={"OPERATOR"} {...register('roleType')} defaultChecked={true} defaultValue={data?.roleType} />
+            <label htmlFor="roleTypeOperator" className="text-sm">Operator</label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="radio" id="roleTypeStudent" value={"STUDENT"} {...register('roleType')} defaultChecked={false} defaultValue={data?.roleType} />
+            <label htmlFor="roleTypeStudent" className="text-sm">Mahasiswa</label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="radio" id="roleTypeLecturer" value={"LECTURER"} {...register('roleType')} defaultChecked={false} defaultValue={data?.roleType} />
+            <label htmlFor="roleTypeLecturer" className="text-sm">Dosen</label>
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="radio" id="roleTypeAdvisor" value={"ADVISOR"} {...register('roleType')} defaultChecked={false} defaultValue={data?.roleType} />
+            <label htmlFor="roleTypeAdvisor" className="text-sm">Perwalian Akademik</label>
+          </div>
         </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}

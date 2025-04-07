@@ -73,11 +73,11 @@ export const deletePermission = async (state: stateType, data: FormData) => {
 
 export const createRole = async (state: stateType, data: RoleInputs) => {
   try {
-    console.log(data?.rolePermission);
     await prisma.role.create({
       data: {
         name: data.name,
         description: data.description,
+        roleType: data.roleType,
         rolePermission: {
           createMany: {
             data: [

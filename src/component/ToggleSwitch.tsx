@@ -33,10 +33,10 @@ const ToggleSwitch = ({ id }: { id: string }) => {
   return (
     <form>
       <div className="flex items-center">
-        <input type="checkbox" name={id} id={id} checked={isChecked} onChange={(e) => handleChange(e)} />
+        <input type="checkbox" name={id} id={id} checked={isChecked} onChange={(e) => handleChange(e)} hidden />
         <label htmlFor={id}
           className={`${isChecked ? 'bg-primary' : 'bg-gray-200'} relative inline-flex items-center h-6 rounded-full w-11 p-1
-          transition-colors duration-200 ease-in-out focus:outline-none`}
+          cursor-pointer transition-colors duration-200 ease-in-out focus:outline-none`}
         >
           <span
             className={`${isChecked && 'translate-x-5'} inline-block w-4 h-4 transform bg-white 
