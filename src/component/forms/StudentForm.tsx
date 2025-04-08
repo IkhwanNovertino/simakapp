@@ -33,6 +33,8 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
   const [state, formAction] = useActionState(action, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
+    console.log('Running');
+
     startTransition(() => formAction(data))
   })
 
@@ -92,11 +94,8 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("roleId")}
             defaultValue={data?.user.roleId}
-            disabled={data && true}
+            disabled={true}
           >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih role pengguna
-            </option>
             {role.map((item: any) => (
               <option
                 key={item.id}

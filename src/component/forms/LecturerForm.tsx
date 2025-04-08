@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { CourseInputs, courseSchema, LecturerInputs, lecturerSchema } from "@/lib/formValidationSchema";
-import { createCourse, createLecturer, updateCourse, updateLecturer } from "@/lib/action";
+import { LecturerInputs, lecturerSchema } from "@/lib/formValidationSchema";
+import { createLecturer, updateLecturer } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { degree, gender, religion } from "@/lib/setting";
@@ -20,7 +20,7 @@ interface LecturerFormProps {
 
 const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) => {
   const { majors, role } = relatedData;
-  const defaultChecked = type === "create" && "FEMALE";
+
 
   const {
     register,

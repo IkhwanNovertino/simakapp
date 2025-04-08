@@ -336,6 +336,7 @@ export const deleteCourse = async (state: stateType, data: FormData) => {
 export const createLecturer = async (state: stateType, data: LecturerInputs) => {
   try {
     console.log(data)
+
     const [createUserLecturer, createLecturerUser] = await prisma.$transaction(async (prisma) => {
       const createUserLecturer = await prisma.user.create({
         data: {
@@ -487,6 +488,7 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
 export const createStudent = async (state: stateType, data: StudentInputs) => {
   try {
     console.log(data);
+    const roleStudent = await prisma.role.findFirst({ where: { roleType: "STUDENT" }, select: {id: true} });
     const [userStudent, student] = await prisma.$transaction(async (prisma) => {
       const userStudent = await prisma.user.create({
         data: {
@@ -494,7 +496,7 @@ export const createStudent = async (state: stateType, data: StudentInputs) => {
           password: data.password,
           role: {
             connect: {
-              id: parseInt(data.roleId)
+              id: parseInt(data?.roleId),
             }
           }
         }

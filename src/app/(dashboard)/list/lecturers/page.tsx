@@ -118,7 +118,7 @@ const LecturerListPage = async (
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
-          {/* <FormContainer table="lecturer" type="update" data={item} /> */}
+          <FormContainer table="lecturer" type="update" data={item} />
           <FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />
         </div>
       </td>

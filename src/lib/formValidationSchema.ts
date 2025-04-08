@@ -62,7 +62,8 @@ export const lecturerSchema = z.object({
   // information authentication
   username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }),
   password: z.string().min(5, { message: "password minimal 5 karakter" }),
-  roleId: z.string().min(1, {message: "role harus diisi"}),
+  roleId: z.string().min(1, { message: "role harus diisi" }),
+  isDosenWali: z.boolean().optional(),
   // information data lecturer
   npk: z.string().min(1, { message: "NPK harus diisi" }),
   nidn: z.string().min(1, {message: "NIDN harus diisi"}),
