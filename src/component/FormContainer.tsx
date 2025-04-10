@@ -25,6 +25,13 @@ const FormContainer = async (
         });
         relatedData = { role: role };
         break;
+      case "operatorUser":
+        const roleOperatorUser = await prisma.role.findMany({
+          where: { roleType: "OPERATOR" },
+          select: { id: true, name: true },
+        });
+        relatedData = { role: roleOperatorUser };
+        break;
       case "lecturer":
         const majorLecturer = await prisma.major.findMany({
           select: { id: true, name: true },

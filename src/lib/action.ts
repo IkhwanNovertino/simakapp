@@ -356,6 +356,29 @@ export const createUserLecturer = async (state: stateType, data: UserInputs) => 
     return {success: false, error:true}
   }
 }
+export const createUserOperator = async (state: stateType, data: UserInputs) => {
+  try {
+    console.log(data);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    await prisma.user.create({
+      data: {
+        email: data.username,
+        password: hashedPassword,
+        roleId: parseInt(data.roleId),
+        operator: {
+          connect: {
+            id: data?.id
+          }
+        }
+      },
+    })
+
+    return {success: true, error:false}
+  } catch (err) {
+    console.log(err);
+    return {success: false, error:true}
+  }
+}
 
 // export const createUser = async (state: stateType, data: UserInputs) => {
 //   try {
@@ -458,23 +481,29 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
 
 export const createOperator = async (state: stateType, data: OperatorInputs) => {
   try {
-    const [createUser, createOperatorUser] = await prisma.$transaction(async (prisma) => {
-      const createUser = await prisma.user.create({
-        data: {
-          email: data.username,
-          password: data.password,
-          roleId: parseInt(data.roleId),
-        }
-      });
-      const createOperatorUser = await prisma.operator.create({
-          data: {
-            name: data.name,
-            department: data?.department,
-            userId: createUser.id
-          }
-      })
-      return [createUser, createOperatorUser];
-    })
+    const createOperatorUser = await prisma.operator.create({
+      data: {
+        name: data.name,
+        department: data?.department,
+      }
+  })
+    // const [createUser, createOperatorUser] = await prisma.$transaction(async (prisma) => {
+    //   const createUser = await prisma.user.create({
+    //     data: {
+    //       email: data.username,
+    //       password: data.password,
+    //       roleId: parseInt(data.roleId),
+    //     }
+    //   });
+    //   const createOperatorUser = await prisma.operator.create({
+    //       data: {
+    //         name: data.name,
+    //         department: data?.department,
+    //         userId: createUser.id
+    //       }
+    //   })
+    //   return [createUser, createOperatorUser];
+    // })
     
     return { success: true, error: false };
   } catch (err: any) {

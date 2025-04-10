@@ -92,10 +92,11 @@ const OperatorListPage = async (
         {item.name}
       </td>
       <td className="hidden md:table-cell">{item.department || "-"}</td>
-      <td className="flex">{item.user.role.name}</td>
+      <td className="flex">{item?.user?.role?.name || ""}</td>
       <td>
         <div className="flex items-center gap-2">
           <FormContainer table="operator" type="update" data={item} />
+          <FormContainer table="operatorUser" type={item.user ? "update" : "createUser"} data={item} />
           <FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />
         </div>
       </td>

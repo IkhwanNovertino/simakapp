@@ -13,6 +13,7 @@ export interface FormModalProps {
   | "operator"
   | "lecturer"
   | "lecturerUser"
+  | "operatorUser"
   | "student"
   | "course"
   | "major"
@@ -44,6 +45,9 @@ const LecturerUserForm = dynamic(() => import("./forms/LecturerUserForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const OperatorForm = dynamic(() => import("./forms/OperatorForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const OperatorUserForm = dynamic(() => import("./forms/OperatorUserForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const StudentForm = dynamic(() => import("./forms/StudentForm"), {
@@ -114,6 +118,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  operatorUser: (setOpen, type, data, relatedData) =>
+    <OperatorUserForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
   student: (setOpen, type, data, relatedData) =>
     <StudentForm
       setOpen={setOpen}
@@ -129,6 +140,7 @@ const deleteActionMap = {
   operator: deleteOperator,
   lecturer: deleteLecturer,
   lecturerUser: deleteLecturer,
+  operatorUser: deleteLecturer,
   student: deleteStudent,
   major: deleteMajor,
   room: deleteRoom,
@@ -136,8 +148,6 @@ const deleteActionMap = {
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
-
-
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary") || (type === "update" && "bg-ternary") || (type === "delete" && "bg-accent");
   const [open, setOpen] = useState(false);
