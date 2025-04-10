@@ -97,10 +97,6 @@ export type OperatorInputs = z.infer<typeof operatorSchema>;
 
 export const studentSchema = z.object({
   id: z.string().optional(),
-  // information authentication
-  username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }),
-  password: z.string().min(5, { message: "password minimal 5 karakter" }),
-  roleId: z.string().min(1, {message: "role harus diisi"}),
   // information data student
   nim: z.string().length(12, {message: "NIM harus diisi"}),
   name: z.string().min(1, { message: "nama dosen harus diisi" }),

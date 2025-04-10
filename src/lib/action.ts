@@ -356,6 +356,29 @@ export const createUserLecturer = async (state: stateType, data: UserInputs) => 
     return {success: false, error:true}
   }
 }
+export const createUserStudent = async (state: stateType, data: UserInputs) => {
+  try {
+    console.log(data);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    await prisma.user.create({
+      data: {
+        email: data.username,
+        password: hashedPassword,
+        roleId: parseInt(data.roleId),
+        student: {
+          connect: {
+            id: data?.id
+          }
+        }
+      },
+    })
+
+    return {success: true, error:false}
+  } catch (err) {
+    console.log(err);
+    return {success: false, error:true}
+  }
+}
 export const createUserOperator = async (state: stateType, data: UserInputs) => {
   try {
     console.log(data);
@@ -379,38 +402,6 @@ export const createUserOperator = async (state: stateType, data: UserInputs) => 
     return {success: false, error:true}
   }
 }
-
-// export const createUser = async (state: stateType, data: UserInputs) => {
-//   try {
-//     console.log(data);
-//     const role = await prisma.role.findUnique({where: {id: parseInt(data.roleId)}});
-//     const hashedPassword = await bcrypt.hash(data.password, 10);
-
-//     if (role?.roleType === "OPERATOR") {
-//       await prisma.user.create({
-//         data: {
-//           email: data.username,
-//           password: data.password,
-//           roleId: parseInt(data.roleId),
-//           operator: {
-//             connect: {
-//               id: data?.id
-//             }
-//           }
-//         },
-//       })
-      
-//     } else if () {
-      
-//     } else {
-
-//     }
-//     return {success: true, error:false}
-//   } catch (err) {
-//     console.log(err);
-//     return {success: false, error:true}
-//   }
-// }
 
 export const createLecturer = async (state: stateType, data: LecturerInputs) => {
   try {
@@ -557,40 +548,24 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
 export const createStudent = async (state: stateType, data: StudentInputs) => {
   try {
     console.log(data);
-    const roleStudent = await prisma.role.findFirst({ where: { roleType: "STUDENT" }, select: {id: true} });
-    const [userStudent, student] = await prisma.$transaction(async (prisma) => {
-      const userStudent = await prisma.user.create({
-        data: {
-          email: data.username,
-          password: data.password,
-          role: {
-            connect: {
-              id: parseInt(data?.roleId),
-            }
-          }
-        }
-      });
-      const student = await prisma.student.create({
-        data: {
-          nim: data.nim,
-          name: data.name,
-          majorId: data.majorId,
-          year: data.year,
-          gender: data.gender,
-          hp: data.phone,
-          email: data.email,
-          lecturerId: data.lecturerId,
-          address: data.address,
-          fatherName: data.fatherName,
-          motherName: data.motherName,
-          guardianName: data.guardianName,
-          guardianHp: data.guardianHp,
-          statusRegister: data.statusRegister,
-          religion: data.religion as Religion,
-          userId: userStudent.id
-        }
-      })
-      return [userStudent, student];
+    const student = await prisma.student.create({
+      data: {
+        nim: data.nim,
+        name: data.name,
+        majorId: data.majorId,
+        year: data.year,
+        gender: data.gender,
+        hp: data.phone,
+        email: data.email,
+        lecturerId: data.lecturerId,
+        address: data.address,
+        fatherName: data.fatherName,
+        motherName: data.motherName,
+        guardianName: data.guardianName,
+        guardianHp: data.guardianHp,
+        statusRegister: data.statusRegister,
+        religion: data.religion as Religion,
+      }
     })
     return { success: true, error: false };
   } catch (err: any) {

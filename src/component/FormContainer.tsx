@@ -77,6 +77,15 @@ const FormContainer = async (
         });
         relatedData = { majors: majorstudent, role: rolestudent, lecturer: lecturerstudent };
         break;
+      case "studentUser":
+        const roleStudentUser = await prisma.role.findMany({
+          where: {
+            roleType: "STUDENT",
+          },
+          select: { id: true, name: true },
+        });
+        relatedData = { role: roleStudentUser, };
+        break;
       default:
         break;
     }
