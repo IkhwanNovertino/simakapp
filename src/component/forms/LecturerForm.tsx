@@ -13,15 +13,13 @@ import Image from "next/image";
 
 interface LecturerFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update";
+  type: "create" | "update" | "createUser";
   data?: any;
   relatedData?: any;
 }
 
 const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) => {
-  const { majors, role } = relatedData;
-
-
+  const { majors } = relatedData;
   const {
     register,
     handleSubmit,
@@ -30,10 +28,17 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
     resolver: zodResolver(lecturerSchema)
   })
 
+  console.log('is running');
+
+
   const action = type === "create" ? createLecturer : updateLecturer;
+  // const action = (type === "create" && createLecturer) || (type === "update" && updateLecturer);
   const [state, formAction] = useActionState(action, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
+    console.log('handleSubmit');
+    console.log(data);
+
     startTransition(() => formAction(data))
   })
 
@@ -48,9 +53,9 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data program studi baru" : "Ubah data program studi"}</h1>
+      <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data dosen baru" : "Ubah data dosen"}</h1>
       <span className="text-xs text-gray-400 font-medium">
-        Informasi Autentikasi
+        Informasi Personal
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
@@ -64,63 +69,6 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             />
           </div>
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Email"
-            name="username"
-            defaultValue={data?.user.email}
-            register={register}
-            error={errors?.username}
-            required={true}
-            inputProps={data && { disabled: true }}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Kata Kunci"
-            name="password"
-            type="password"
-            defaultValue={data?.user.password}
-            register={register}
-            inputProps={data && { disabled: true }}
-            required={true}
-            error={errors?.password}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Role Pengguna</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("roleId")}
-            defaultValue={data?.user.roleId}
-            disabled={data && true}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih role pengguna
-            </option>
-            {role.map((item: any) => (
-              <option
-                key={item.id}
-                value={item.id}
-                className="text-sm py-0.5"
-
-              >
-                {item.name}
-              </option>
-            ))}
-
-          </select>
-          {errors.roleId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.roleId.message.toString()}
-            </p>
-          )}
-        </div>
-      </div>
-      <span className="text-xs text-gray-400 font-medium">
-        Informasi Personal
-      </span>
-      <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
             label="NPK"
@@ -156,7 +104,6 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
                 value={item}
                 key={item}
                 className="text-sm py-0.5"
-
               >
                 {item}
               </option>

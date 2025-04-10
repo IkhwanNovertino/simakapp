@@ -13,7 +13,7 @@ import Image from "next/image";
 
 interface StudentFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update";
+  type: "create" | "update" | "createUser";
   data?: any;
   relatedData?: any;
 }

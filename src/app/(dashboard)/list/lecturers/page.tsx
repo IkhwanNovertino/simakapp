@@ -8,6 +8,7 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Lecturer, Major, Prisma, Role, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { Form } from "react-hook-form";
 
 type LecturerDataType = Lecturer & { user: User & { role: Role } } & { major: Major };
 
@@ -40,7 +41,6 @@ const LecturerListPage = async (
       }
     }
   };
-
   const [data, count, dataFilter] = await prisma.$transaction([
     prisma.lecturer.findMany({
       where: query,
@@ -104,7 +104,7 @@ const LecturerListPage = async (
       <td className="flex items-center gap-4 p-4">
         <div className="flex flex-col">
           <h3 className="font-semibold">{`${item.frontTitle} ${item.name}, ${item.backTitle}`}</h3>
-          <p className="text-xs text-gray-500">{item?.user.email}</p>
+          <p className="text-xs text-gray-500">{item?.user?.email || ""}</p>
         </div>
       </td>
       <td className="hidden md:table-cell">{item.npk}</td>
@@ -118,7 +118,8 @@ const LecturerListPage = async (
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
-          <FormContainer table="lecturer" type="update" data={item} />
+          <FormContainer table="lecturerUser" type={item.user ? "update" : "createUser"} data={item} />
+          {/* <FormContainer table="lecturer" type="update" data={item} /> */}
           <FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />
         </div>
       </td>

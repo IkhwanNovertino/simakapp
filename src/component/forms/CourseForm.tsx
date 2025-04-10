@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 interface CourseFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update";
+  type: "create" | "update" | "createUser";
   data?: any;
   relatedData?: any;
 }

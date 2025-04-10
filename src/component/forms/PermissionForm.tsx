@@ -13,7 +13,7 @@ import { resourceData } from "@/lib/setting";
 
 interface PermissionFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update";
+  type: "create" | "update" | "createUser";
   data?: any;
   relatedData?: any;
 }

@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 interface PermissionFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update";
+  type: "create" | "update" | "createUser";
   data?: any;
   relatedData?: any;
 }
@@ -29,6 +29,8 @@ const PermissionForm = ({ setOpen, type, data, relatedData }: PermissionFormProp
   const [state, formAction] = useActionState(type === "create" ? createMajor : updateMajor, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
+    console.log('handleSubmitMajor');
+
     startTransition(() => formAction(data))
   })
 

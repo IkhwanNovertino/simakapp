@@ -1,12 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs, StudentInputs } from "./formValidationSchema";
+import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs, StudentInputs, UserInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { connect } from "http2";
 import { Religion } from "@prisma/client";
 import { permission } from "process";
 import { parse } from "path";
+import bcrypt from "bcryptjs";
 
 type stateType = {
   success: boolean;
@@ -155,7 +156,6 @@ export const createRolePermissions = async (id: string) => {
     return {success: false, error: true};
   }
 }
-
 export const deleteRolePermissions = async (id: string) => {
   try {
     await prisma.rolePermission.delete({
@@ -172,7 +172,6 @@ export const deleteRolePermissions = async (id: string) => {
     return {success: false, error: true};
   }
 }
-
 export const getRolePermission = async (id: string) => {
   try {
     const get = await prisma.rolePermission.findFirst({
@@ -187,6 +186,7 @@ export const getRolePermission = async (id: string) => {
     return {success: false, error: true};
   }
 }
+
 export const createMajor = async (state: stateType, data: MajorInputs) => {
   try {
     await prisma.major.create({
@@ -333,41 +333,81 @@ export const deleteCourse = async (state: stateType, data: FormData) => {
   }
 }
 
+export const createUserLecturer = async (state: stateType, data: UserInputs) => {
+  try {
+    console.log(data);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    await prisma.user.create({
+      data: {
+        email: data.username,
+        password: hashedPassword,
+        roleId: parseInt(data.roleId),
+        lecturer: {
+          connect: {
+            id: data?.id
+          }
+        }
+      },
+    })
+
+    return {success: true, error:false}
+  } catch (err) {
+    console.log(err);
+    return {success: false, error:true}
+  }
+}
+
+// export const createUser = async (state: stateType, data: UserInputs) => {
+//   try {
+//     console.log(data);
+//     const role = await prisma.role.findUnique({where: {id: parseInt(data.roleId)}});
+//     const hashedPassword = await bcrypt.hash(data.password, 10);
+
+//     if (role?.roleType === "OPERATOR") {
+//       await prisma.user.create({
+//         data: {
+//           email: data.username,
+//           password: data.password,
+//           roleId: parseInt(data.roleId),
+//           operator: {
+//             connect: {
+//               id: data?.id
+//             }
+//           }
+//         },
+//       })
+      
+//     } else if () {
+      
+//     } else {
+
+//     }
+//     return {success: true, error:false}
+//   } catch (err) {
+//     console.log(err);
+//     return {success: false, error:true}
+//   }
+// }
+
 export const createLecturer = async (state: stateType, data: LecturerInputs) => {
   try {
     console.log(data)
-
-    const [createUserLecturer, createLecturerUser] = await prisma.$transaction(async (prisma) => {
-      const createUserLecturer = await prisma.user.create({
-        data: {
-          email: data.username,
-          password: data.password,
-          role: {
-            connect: {
-              id: parseInt(data?.roleId),
-            }
-          }
-        }
-      });
-      const createLecturerUser = await prisma.lecturer.create({
-        data: {
-          npk: data.npk,
-          nidn: data.nidn,
-          name: data.name,
-          frontTitle: data.frontTitle,
-          backTitle: data.backTitle,
-          degree: data.degree,
-          year: data.year,
-          address: data.address,
-          majorId: data.majorId,
-          gender: data.gender,
-          hp: data.phone,
-          email: data.email,
-          religion: data.religion as Religion,
-          userId: createUserLecturer.id
-        }
-      })
-      return [createUserLecturer, createLecturerUser];
+    await prisma.lecturer.create({
+      data: {
+        npk: data.npk,
+        nidn: data.nidn,
+        name: data.name,
+        frontTitle: data.frontTitle,
+        backTitle: data.backTitle,
+        degree: data.degree,
+        year: data.year,
+        address: data.address,
+        majorId: data.majorId,
+        gender: data.gender,
+        hp: data.phone,
+        email: data.email,
+        religion: data.religion as Religion,
+      }
     })
 
     return { success: true, error: false };

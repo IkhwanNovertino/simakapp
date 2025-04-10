@@ -12,11 +12,12 @@ export interface FormModalProps {
   | "role"
   | "operator"
   | "lecturer"
+  | "lecturerUser"
   | "student"
   | "course"
   | "major"
   | "room"
-  type: "create" | "update" | "delete";
+  type: "create" | "update" | "delete" | "createUser";
   data?: any;
   id?: any;
 }
@@ -39,6 +40,9 @@ const CourseForm = dynamic(() => import("./forms/CourseForm"), {
 const LecturerForm = dynamic(() => import("./forms/LecturerForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const LecturerUserForm = dynamic(() => import("./forms/LecturerUserForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
 const OperatorForm = dynamic(() => import("./forms/OperatorForm"), {
   loading: () => <h1>Loading...</h1>,
 });
@@ -49,7 +53,7 @@ const StudentForm = dynamic(() => import("./forms/StudentForm"), {
 const forms: {
   [key: string]: (
     setOpen: Dispatch<SetStateAction<boolean>>,
-    type: "create" | "update",
+    type: "create" | "update" | "createUser",
     data?: any,
     relatedData?: any,
   ) => JSX.Element;
@@ -96,6 +100,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  lecturerUser: (setOpen, type, data, relatedData) =>
+    <LecturerUserForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
   operator: (setOpen, type, data, relatedData) =>
     <OperatorForm
       setOpen={setOpen}
@@ -117,6 +128,7 @@ const deleteActionMap = {
   role: deleteRole,
   operator: deleteOperator,
   lecturer: deleteLecturer,
+  lecturerUser: deleteLecturer,
   student: deleteStudent,
   major: deleteMajor,
   room: deleteRoom,
@@ -127,7 +139,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
 
 
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
-  const bgColor = (type === "create" && "bg-secondary") || (type === "update" && "bg-ternary") || (type === "delete" && "bg-accent");
+  const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary") || (type === "update" && "bg-ternary") || (type === "delete" && "bg-accent");
   const [open, setOpen] = useState(false);
 
   const Form = () => {
@@ -154,7 +166,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
           Hapus
         </button>
       </form>
-    ) : type === "create" || type === "update" ? (
+    ) : type === "create" || type === "update" || type === "createUser" ? (
       forms[table](setOpen, type, data, relatedData)
     ) : (
       "Form not found!"

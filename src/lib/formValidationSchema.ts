@@ -57,14 +57,17 @@ export const courseSchema = z.object({
 
 export type CourseInputs = z.infer<typeof courseSchema>;
 
-export const lecturerSchema = z.object({
+export const userSchema = z.object({
   id: z.string().optional(),
-  // information authentication
   username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }),
   password: z.string().min(5, { message: "password minimal 5 karakter" }),
-  roleId: z.string().min(1, { message: "role harus diisi" }),
-  isDosenWali: z.boolean().optional(),
-  // information data lecturer
+  roleId: z.string().min(1, {message: "role pengguna harus diisi"}),
+})
+
+export type UserInputs = z.infer<typeof userSchema>;
+
+export const lecturerSchema = z.object({
+  id: z.string().optional(),
   npk: z.string().min(1, { message: "NPK harus diisi" }),
   nidn: z.string().min(1, {message: "NIDN harus diisi"}),
   name: z.string().min(1, { message: "nama dosen harus diisi" }),
@@ -79,7 +82,6 @@ export const lecturerSchema = z.object({
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),
   phone: z.string().optional(),
   photo: z.string().optional(),
-
 })
 
 export type LecturerInputs = z.infer<typeof lecturerSchema>;
