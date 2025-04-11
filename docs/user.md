@@ -26,6 +26,10 @@
   - --password user untuk login
   - String?
   - required
+- isStatus
+  - --status login
+  - boolean?
+  - default(false)
 
 ### Data Examples
 

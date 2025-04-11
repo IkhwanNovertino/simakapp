@@ -53,7 +53,8 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
         Informasi Autentikasi
       </span>
       <div className="flex justify-between flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+
+        <div className="hidden">
           <InputField
             label="id"
             name="id"
