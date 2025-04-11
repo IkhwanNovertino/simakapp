@@ -1,12 +1,14 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useState } from 'react';
-import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
+
+const Calender = dynamic(() => import('react-calendar'), { ssr: false });
 // TEMPORARY
 const events = [
   {
@@ -34,7 +36,7 @@ const EventCalender = () => {
   return (
     <div className="bg-white p-4 rounded-md">
       <div>
-        <Calendar onChange={setValue} value={value} />
+        <Calender onChange={setValue} value={value} />
       </div>
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-semibold my-4">Events</h1>
