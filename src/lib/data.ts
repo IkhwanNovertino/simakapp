@@ -46,14 +46,17 @@ export const permissionDaata = [
     name: "update lecturer",
     description: "modul untuk mengubah data dosen"
   },
+];
+
+// Enum untuk StatusRegistrasi
+export const StatusRegistrasi = [
+  "BARU",
+  "TRANSFER KREDIT",
+  "RENIM",
+  "PEROLEHAN KREDIT",
 ]
 
 // YOU SHOULD CHANGE THE DATES OF THE EVENTS TO THE CURRENT DATE TO SEE THE EVENTS ON THE CALENDAR
-
-const date = new Date();
-const getYear = date.getFullYear();
-const getMonth = date.getMonth();
-const getDay = date.getDate();
 
 export const calendarEvents = [
   {

@@ -12,7 +12,7 @@ import { RoleType } from "@prisma/client";
 
 interface RoleFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser";
+  type: "create" | "update" | "createUser" | "updateUser";
   data?: any;
   relatedData?: any;
 }

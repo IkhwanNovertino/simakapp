@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } 
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { LecturerInputs, lecturerSchema, UserInputs, userSchema } from "@/lib/formValidationSchema";
-import { createLecturer, createUserLecturer, createUserOperator, updateLecturer } from "@/lib/action";
+import { createLecturer, createUserLecturer, createUserOperator, updateLecturer, updateUserOperator } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { degree, gender, religion } from "@/lib/setting";
@@ -13,7 +13,7 @@ import Image from "next/image";
 
 interface OperatorUserFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser";
+  type: "create" | "update" | "createUser" | "updateUser";
   data?: any;
   relatedData?: any;
 }
@@ -30,8 +30,8 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
     resolver: zodResolver(userSchema)
   })
 
-  // const action = type === "create" ? createLecturerUser : updateLecturer;
-  const [state, formAction] = useActionState(createUserOperator, { success: false, error: false });
+  const action = type === "createUser" ? createUserOperator : updateUserOperator;
+  const [state, formAction] = useActionState(action, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -40,7 +40,7 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data program studi`);
+      toast.success(`Berhasil ${type === "createUser" ? "menambahkan" : "mengubah"} data user operator`);
       router.refresh();
       setOpen(false);
     }
@@ -48,21 +48,21 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <h1 className="text-xl font-semibold">{"Form Akun pengguna Dosen"}</h1>
+      <h1 className="text-xl font-semibold">{"Akun pengguna operator"}</h1>
       <span className="text-xs text-gray-400 font-medium">
         Informasi Autentikasi
       </span>
       <div className="flex justify-between flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="hidden">
           <InputField
             label="id"
             name="id"
-            defaultValue={data?.id}
+            defaultValue={data?.user?.id || data?.id}
             register={register}
             error={errors?.id}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
           <InputField
             label="Email"
             name="username"
@@ -72,7 +72,7 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
             required={true}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
           <InputField
             label="Password"
             name="password"
@@ -107,6 +107,18 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
           {errors.roleId?.message && (
             <p className="text-xs text-red-400">
               {errors.roleId.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col items-start gap-2 w-full md:w-1/3 md:mt-1">
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Status User</label>
+          <div className="flex items-center justify-center gap-2">
+            <input type="checkbox" id="isStatus" {...register("isStatus")} className="w-4 h-4 " defaultChecked={data?.user?.isStatus} />
+            <label htmlFor="isStatus"> mengaktifkan status user</label>
+          </div>
+          {errors.isStatus?.message && (
+            <p className="text-xs text-red-400">
+              {errors.isStatus.message.toString()}
             </p>
           )}
         </div>

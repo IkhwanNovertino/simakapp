@@ -19,7 +19,7 @@ export interface FormModalProps {
   | "course"
   | "major"
   | "room"
-  type: "create" | "update" | "delete" | "createUser";
+  type: "create" | "update" | "delete" | "createUser" | "updateUser";
   data?: any;
   id?: any;
 }
@@ -61,7 +61,7 @@ const StudentUserForm = dynamic(() => import("./forms/StudentUserForm"), {
 const forms: {
   [key: string]: (
     setOpen: Dispatch<SetStateAction<boolean>>,
-    type: "create" | "update" | "createUser",
+    type: "create" | "update" | "createUser" | "updateUser",
     data?: any,
     relatedData?: any,
   ) => JSX.Element;
@@ -157,11 +157,27 @@ const deleteActionMap = {
   major: deleteMajor,
   room: deleteRoom,
   course: deleteCourse,
+};
+
+const namaTabelMap = {
+  permission: "hak akses",
+  role: "role",
+  operator: "operator",
+  lecturer: "dosen",
+  lecturerUser: "user dosen",
+  operatorUser: "user operator",
+  studentUser: "user mahasiswa",
+  student: "mahasiswa",
+  major: "program studi",
+  room: "ruang/lokal",
+  course: "mata kuliah",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
-  const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary") || (type === "update" && "bg-ternary") || (type === "delete" && "bg-accent");
+  const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary")
+    || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-ternary")
+    || (type === "delete" && "bg-accent");
   const [open, setOpen] = useState(false);
 
   const Form = () => {
@@ -181,14 +197,14 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
       <form action={formAction} className="p-4 flex flex-col gap-4">
         <input type="string | number" name="id" value={id} readOnly hidden />
         <span className="text-center font-medium">
-          Data akan hilang. apakah anda yakin ingin menghapus data {table} ini?
+          Data akan hilang. apakah anda yakin ingin menghapus data {namaTabelMap[table]} ini?
         </span>
         {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
         <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
           Hapus
         </button>
       </form>
-    ) : type === "create" || type === "update" || type === "createUser" ? (
+    ) : type === "create" || type === "update" || type === "createUser" || type === "updateUser" ? (
       forms[table](setOpen, type, data, relatedData)
     ) : (
       "Form not found!"

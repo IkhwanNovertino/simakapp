@@ -116,7 +116,7 @@ const StudentListPage = async (
               <Image src="/view.png" alt="" width={16} height={16} />
             </button>
           </Link>
-          <FormContainer table="studentUser" type={item.user ? "update" : "createUser"} data={item} />
+          <FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />
           <FormContainer table="student" type="delete" id={`${item.id}:${item.userId}`} />
           {/* {role === "admin" && (
             <FormModal table="teacher" type="delete" id={item.id} />

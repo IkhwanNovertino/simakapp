@@ -1,26 +1,24 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { Dispatch, SetStateAction, startTransition, useActionState, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { LecturerInputs, lecturerSchema, UserInputs, userSchema } from "@/lib/formValidationSchema";
-import { createLecturer, createUserLecturer, updateLecturer } from "@/lib/action";
+import { UserInputs, userSchema } from "@/lib/formValidationSchema";
+import { createUserLecturer, updateUserLecturer } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { degree, gender, religion } from "@/lib/setting";
-import Image from "next/image";
 
 interface LecturerUserFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser";
+  type: "create" | "update" | "createUser" | "updateUser";
   data?: any;
   relatedData?: any;
 }
 
 const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserFormProps) => {
-  const { majors, role } = relatedData;
-
+  const { role } = relatedData;
+  const [isChecked, setIsChecked] = useState(false)
 
   const {
     register,
@@ -30,8 +28,9 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
     resolver: zodResolver(userSchema)
   })
 
-  // const action = type === "create" ? createLecturerUser : updateLecturer;
-  const [state, formAction] = useActionState(createUserLecturer, { success: false, error: false });
+  const action = type === "createUser" ? createUserLecturer : updateUserLecturer;
+  const [state, formAction] = useActionState(action, { success: false, error: false });
+
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -40,7 +39,7 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data program studi`);
+      toast.success(`Berhasil ${type === "createUser" ? "menambahkan" : "mengubah"} data user dosen`);
       router.refresh();
       setOpen(false);
     }
@@ -48,7 +47,7 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <h1 className="text-xl font-semibold">{"Form Akun pengguna Dosen"}</h1>
+      <h1 className="text-xl font-semibold">{"Akun pengguna dosen"}</h1>
       <span className="text-xs text-gray-400 font-medium">
         Informasi Autentikasi
       </span>
@@ -58,12 +57,12 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
           <InputField
             label="id"
             name="id"
-            defaultValue={data?.id}
+            defaultValue={data?.user?.id || data?.id}
             register={register}
             error={errors?.id}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
           <InputField
             label="Email"
             name="username"
@@ -73,7 +72,7 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
             required={true}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
           <InputField
             label="Password"
             name="password"
@@ -84,6 +83,7 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
             required={true}
           />
         </div>
+
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Role Pengguna</label>
           <select
@@ -111,6 +111,19 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
             </p>
           )}
         </div>
+        <div className="flex flex-col items-start gap-2 w-full md:w-1/3 md:mt-1">
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Status User</label>
+          <div className="flex items-center justify-center gap-2">
+            <input type="checkbox" id="isStatus" {...register("isStatus")} className="w-4 h-4 " defaultChecked={data?.user?.isStatus} />
+            <label htmlFor="isStatus"> mengaktifkan status user</label>
+          </div>
+          {errors.isStatus?.message && (
+            <p className="text-xs text-red-400">
+              {errors.isStatus.message.toString()}
+            </p>
+          )}
+        </div>
+
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">

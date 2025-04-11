@@ -13,7 +13,7 @@ import Image from "next/image";
 
 interface LecturerFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser";
+  type: "create" | "update" | "createUser" | "updateUser";
   data?: any;
   relatedData?: any;
 }
@@ -32,7 +32,6 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
 
 
   const action = type === "create" ? createLecturer : updateLecturer;
-  // const action = (type === "create" && createLecturer) || (type === "update" && updateLecturer);
   const [state, formAction] = useActionState(action, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
@@ -45,7 +44,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data program studi`);
+      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data dosen`);
       router.refresh();
       setOpen(false);
     }

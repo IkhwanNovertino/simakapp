@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 interface OperatorFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser";
+  type: "create" | "update" | "createUser" | "updateUser";
   data?: any;
   relatedData?: any;
 }
@@ -37,7 +37,7 @@ const OperatorForm = ({ setOpen, type, data, relatedData }: OperatorFormProps) =
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data program studi`);
+      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data operator`);
       router.refresh();
       setOpen(false);
     }

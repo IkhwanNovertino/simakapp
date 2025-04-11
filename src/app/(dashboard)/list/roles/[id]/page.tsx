@@ -11,36 +11,6 @@ import { Permission, Prisma, Role, RolePermission } from "@prisma/client";
 
 type PermissionDataType = Permission;
 
-// const renderRow = (item: PermissionDataType) => {
-
-//   const [isChecked, setIsChecked] = useState(false);
-//   const { id } = useParams() as { id: string };
-//   useEffect(() => {
-//     const checkRolePermission = async () => {
-//       const rolePermission = await getRolePermission({ role: parseInt(id), permission: item.id }) || false;
-//       setIsChecked(rolePermission);
-//     };
-//     checkRolePermission();
-//   }, [id, item.id]);
-
-//   return (
-//     <tr key={item.id}>
-//       <td className="p-4">{item.name}</td>
-//       <td className="hidden md:table-cell">{item.description}</td>
-//       <td>
-//         <div className="flex items-center gap-2">
-//           <ToggleSwitch
-//             roleId={parseInt(id)}
-//             permissionId={item.id}
-//             isChecked={isChecked}
-//             onChange={(isChecked) => setIsChecked(isChecked)}
-//           />
-//         </div>
-//       </td>
-//     </tr>
-//   );
-// };
-
 const SingleRolePage = async (
   {
     searchParams,
@@ -51,19 +21,38 @@ const SingleRolePage = async (
   },
 ) => {
 
-  const { page } = await searchParams;
+  const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
   const { id } = await params;
+
+  const query: Prisma.PermissionWhereInput = {}
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case "search":
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+              { description: { contains: value, mode: "insensitive" } },
+            ]
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  };
 
   const [dataRole, data, count] = await prisma.$transaction([
     prisma.role.findFirst({
       where: { id: parseInt(id) }
     }),
     prisma.permission.findMany({
+      where: query,
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
-    prisma.permission.count({}),
+    prisma.permission.count({ where: query }),
   ]);
   const renderRow = (item: PermissionDataType) => (
     <tr

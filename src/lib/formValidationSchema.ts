@@ -61,7 +61,8 @@ export const userSchema = z.object({
   id: z.string().optional(),
   username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }),
   password: z.string().min(5, { message: "password minimal 5 karakter" }),
-  roleId: z.string().min(1, {message: "role pengguna harus diisi"}),
+  roleId: z.string().min(1, { message: "role pengguna harus diisi" }),
+  isStatus: z.boolean().default(false)
 })
 
 export type UserInputs = z.infer<typeof userSchema>;

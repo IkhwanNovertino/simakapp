@@ -96,7 +96,7 @@ const OperatorListPage = async (
       <td>
         <div className="flex items-center gap-2">
           <FormContainer table="operator" type="update" data={item} />
-          <FormContainer table="operatorUser" type={item.user ? "update" : "createUser"} data={item} />
+          <FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />
           <FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />
         </div>
       </td>

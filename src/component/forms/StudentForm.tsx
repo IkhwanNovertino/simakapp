@@ -10,10 +10,11 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { degree, gender, religion } from "@/lib/setting";
 import Image from "next/image";
+import { StatusRegistrasi } from "@/lib/data";
 
 interface StudentFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser";
+  type: "create" | "update" | "createUser" | "updateUser";
   data?: any;
   relatedData?: any;
 }
@@ -41,7 +42,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data program studi`);
+      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data mahasiswa`);
       router.refresh();
       setOpen(false);
     }
@@ -49,7 +50,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data program studi baru" : "Ubah data program studi"}</h1>
+      <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data mahasiswa baru" : "Ubah data mahasiswa"}</h1>
 
       <span className="text-xs text-gray-400 font-medium">
         Informasi Personal
@@ -104,7 +105,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             defaultValue={data?.majorId}
           >
             <option value="" className="text-sm py-0.5">
-              -- Pilih Program Studi
+              -- Pilih program studi
             </option>
 
             {majors.map((item: any) => (
@@ -152,14 +153,31 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Status Registrasi"
-            name="statusRegister"
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Status Registrasi</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("statusRegister")}
             defaultValue={data?.statusRegister}
-            register={register}
-            error={errors?.statusRegister}
-            required={true}
-          />
+          >
+            <option value={""} className="text-sm py-0.5">
+              -- Pilih status registrasi
+            </option>
+            {StatusRegistrasi.map((item: any) => (
+              <option
+                value={item}
+                key={item}
+                className="text-sm py-0.5"
+
+              >
+                {item}
+              </option>
+            ))}
+          </select>
+          {errors.statusRegister?.message && (
+            <p className="text-xs text-red-400">
+              {errors.statusRegister.message.toString()}
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Gender</label>
@@ -170,7 +188,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             defaultValue={data?.gender}
           >
             <option value="" className="text-sm py-0.5">
-              -- Pilih Gender
+              -- Pilih gender
             </option>
             {gender.map((item) => (
               <option
@@ -215,7 +233,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             defaultValue={data?.religion}
           >
             <option value="" className="text-sm py-0.5">
-              -- Pilih Agama
+              -- Pilih agama
             </option>
             {religion.map((item: string) => (
               <option

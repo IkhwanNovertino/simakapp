@@ -342,11 +342,34 @@ export const createUserLecturer = async (state: stateType, data: UserInputs) => 
         email: data.username,
         password: hashedPassword,
         roleId: parseInt(data.roleId),
+        isStatus: data.isStatus,
         lecturer: {
           connect: {
             id: data?.id
           }
         }
+      },
+    })
+
+    return {success: true, error:false}
+  } catch (err) {
+    console.log(err);
+    return {success: false, error:true}
+  }
+}
+export const updateUserLecturer = async (state: stateType, data: UserInputs) => {
+  try {
+    console.log(data);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    await prisma.user.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        email: data.username,
+        password: hashedPassword,
+        roleId: parseInt(data.roleId),
+        isStatus: data.isStatus,
       },
     })
 
@@ -365,7 +388,54 @@ export const createUserStudent = async (state: stateType, data: UserInputs) => {
         email: data.username,
         password: hashedPassword,
         roleId: parseInt(data.roleId),
+        isStatus: data.isStatus,
         student: {
+          connect: {
+            id: data?.id
+          }
+        }
+      },
+    })
+
+    return { success: true, error: false }
+  } catch (err) {
+    console.log(err);
+    return { success: false, error: true }
+  }
+};
+export const updateUserStudent = async (state: stateType, data: UserInputs) => {
+  try {
+    console.log(data);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    await prisma.user.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        email: data.username,
+        password: hashedPassword,
+        roleId: parseInt(data.roleId),
+        isStatus: data.isStatus,
+      },
+    })
+
+    return { success: true, error: false }
+  } catch (err) {
+    console.log(err);
+    return { success: false, error: true }
+  }
+};
+export const createUserOperator = async (state: stateType, data: UserInputs) => {
+  try {
+    console.log(data);
+    const hashedPassword = await bcrypt.hash(data.password, 10);
+    await prisma.user.create({
+      data: {
+        email: data.username,
+        password: hashedPassword,
+        roleId: parseInt(data.roleId),
+        isStatus: data.isStatus,
+        operator: {
           connect: {
             id: data?.id
           }
@@ -379,20 +449,19 @@ export const createUserStudent = async (state: stateType, data: UserInputs) => {
     return {success: false, error:true}
   }
 }
-export const createUserOperator = async (state: stateType, data: UserInputs) => {
+export const updateUserOperator = async (state: stateType, data: UserInputs) => {
   try {
     console.log(data);
     const hashedPassword = await bcrypt.hash(data.password, 10);
-    await prisma.user.create({
+    await prisma.user.update({
+      where: {
+      id: data.id
+    },
       data: {
         email: data.username,
         password: hashedPassword,
         roleId: parseInt(data.roleId),
-        operator: {
-          connect: {
-            id: data?.id
-          }
-        }
+        isStatus: data.isStatus,
       },
     })
 

@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 interface RoomFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser";
+  type: "create" | "update" | "createUser" | "updateUser";
   data?: any;
   relatedData?: any;
 }
@@ -35,7 +35,7 @@ const RoomForm = ({ setOpen, type, data, relatedData }: RoomFormProps) => {
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data program studi`);
+      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data ruang/lokal`);
       router.refresh();
       setOpen(false);
     }
@@ -43,7 +43,7 @@ const RoomForm = ({ setOpen, type, data, relatedData }: RoomFormProps) => {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data program studi baru" : "Ubah data program studi"}</h1>
+      <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data ruang/lokal baru" : "Ubah data ruang/lokal"}</h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         {data && (

@@ -13,7 +13,7 @@ import { resourceData } from "@/lib/setting";
 
 interface PermissionFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser";
+  type: "create" | "update" | "createUser" | "updateUser";
   data?: any;
   relatedData?: any;
 }
@@ -28,8 +28,8 @@ const PermissionForm = ({ setOpen, type, data, relatedData }: PermissionFormProp
     resolver: zodResolver(permissionSchema)
   })
 
-
-  const [state, formAction] = useActionState(type === "create" ? createPermission : updatePermission, { success: false, error: false });
+  const action = type === "create" ? createPermission : updatePermission;
+  const [state, formAction] = useActionState(action, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
     console.log(data);
