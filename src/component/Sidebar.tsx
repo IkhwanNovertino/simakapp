@@ -1,6 +1,5 @@
 'use client';
-import { role } from "@/lib/data";
-// import { headers } from "next/headers";
+
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -57,12 +56,6 @@ const menuItems = [
         visible: ["admin", "teacher"],
       },
       {
-        icon: "/icon/reregister.svg",
-        label: "Her Registrasi",
-        href: "/list/reregisters",
-        visible: ["admin", "teacher"],
-      },
-      {
         icon: "/icon/major.svg",
         label: "Program Studi",
         href: "/list/majors",
@@ -104,7 +97,12 @@ const menuItems = [
         href: "/list/krs",
         visible: ["admin", "teacher", "student", "parent"],
       },
-
+      {
+        icon: "/icon/reregister.svg",
+        label: "Her Registrasi",
+        href: "/list/reregisters",
+        visible: ["admin", "teacher"],
+      },
       {
         icon: "/icon/khs.svg",
         label: "KHS",

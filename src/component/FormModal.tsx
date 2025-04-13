@@ -176,7 +176,7 @@ const namaTabelMap = {
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
   const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
   const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary")
-    || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-ternary")
+    || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-purple-500/60")
     || (type === "delete" && "bg-accent");
   const [open, setOpen] = useState(false);
 
@@ -217,7 +217,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
         className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
         onClick={() => setOpen(true)}
       >
-        <Image src={`/icon/${type}.svg`} alt={`icon-${type}`} width={18} height={18} />
+        <Image src={`/icon/${type}.svg`} alt={`icon-${type}`} width={20} height={20} />
       </button>
 
       {open && (

@@ -70,7 +70,7 @@ const LecturerListPage = async (
     {
       header: "Info",
       accessor: "info",
-      className: "px-4",
+      className: "p-4",
     },
     {
       header: "NPK",
