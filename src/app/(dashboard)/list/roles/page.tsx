@@ -78,7 +78,7 @@ const RoleListPage = async (
         <div className="flex items-center gap-2">
           <Link href={`/list/roles/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-              <Image src="/view.png" alt="" width={16} height={16} />
+              <Image src="/icon/view.svg" alt="" width={20} height={20} />
             </button>
           </Link>
           <FormContainer table="role" type="delete" id={item.id} />

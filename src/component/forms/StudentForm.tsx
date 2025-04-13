@@ -35,6 +35,14 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
 
   const onSubmit = handleSubmit((data) => {
     console.log('Running');
+    console.log(data);
+
+    const photo = data?.photo?.[0] || "";
+    // const formData = new FormData();
+    // formData.append("photo", photo);
+    // formData.append("data", JSON.stringify(data));
+
+
 
     startTransition(() => formAction(data))
   })
@@ -252,7 +260,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             </p>
           )}
         </div>
-        {/* <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
+        <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
           <label
             className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
             htmlFor="photo"
@@ -260,13 +268,16 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             <Image src="/upload.png" alt="" width={28} height={28} />
             <span>Upload a photo</span>
           </label>
-          <input type="file" id="photo" {...register("photo")} className="hidden" />
+          <input type="file" id="photo" {...register("photo")}
+            className="hidden"
+            accept="image/jpeg, image/jpg, image/png"
+          />
           {errors.photo?.message && (
             <p className="text-xs text-red-400">
               {errors.photo.message.toString()}
             </p>
           )}
-        </div> */}
+        </div>
         <div className="flex flex-col gap-2 w-full md:w-5/8">
           <InputField
             label="Alamat"

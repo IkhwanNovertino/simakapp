@@ -95,7 +95,7 @@ const StudentListPage = async (
     >
       <td className="flex items-center gap-4 p-4">
         {/* <Image
-          src={item.photo}
+          src={item.photo || avatar.png}
           alt=""
           width={40}
           height={40}
@@ -113,7 +113,7 @@ const StudentListPage = async (
         <div className="flex items-center gap-2">
           <Link href={`/list/stundents/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-              <Image src="/view.png" alt="" width={16} height={16} />
+              <Image src="/icon/view.svg" alt="" width={20} height={20} />
             </button>
           </Link>
           <FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />

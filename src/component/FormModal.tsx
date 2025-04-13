@@ -217,7 +217,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
         className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
         onClick={() => setOpen(true)}
       >
-        <Image src={`/${type}.png`} alt={`icon-${type}`} width={16} height={16} />
+        <Image src={`/icon/${type}.svg`} alt={`icon-${type}`} width={18} height={18} />
       </button>
 
       {open && (

@@ -115,7 +115,7 @@ const LecturerListPage = async (
         <div className="flex items-center gap-2">
           <Link href={`/list/lecturers/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-              <Image src="/view.png" alt="" width={16} height={16} />
+              <Image src="/icon/view.svg" alt="" width={16} height={16} />
             </button>
           </Link>
           <FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />

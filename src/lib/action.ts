@@ -617,25 +617,29 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
 export const createStudent = async (state: stateType, data: StudentInputs) => {
   try {
     console.log(data);
-    const student = await prisma.student.create({
-      data: {
-        nim: data.nim,
-        name: data.name,
-        majorId: data.majorId,
-        year: data.year,
-        gender: data.gender,
-        hp: data.phone,
-        email: data.email,
-        lecturerId: data.lecturerId,
-        address: data.address,
-        fatherName: data.fatherName,
-        motherName: data.motherName,
-        guardianName: data.guardianName,
-        guardianHp: data.guardianHp,
-        statusRegister: data.statusRegister,
-        religion: data.religion as Religion,
-      }
-    })
+    console.log(data?.photo?.[0]);
+
+    
+    
+    // const student = await prisma.student.create({
+    //   data: {
+    //     nim: data.nim,
+    //     name: data.name,
+    //     majorId: data.majorId,
+    //     year: data.year,
+    //     gender: data.gender,
+    //     hp: data.phone,
+    //     email: data.email,
+    //     lecturerId: data.lecturerId,
+    //     address: data.address,
+    //     fatherName: data.fatherName,
+    //     motherName: data.motherName,
+    //     guardianName: data.guardianName,
+    //     guardianHp: data.guardianHp,
+    //     statusRegister: data.statusRegister,
+    //     religion: data.religion as Religion,
+    //   }
+    // })
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);

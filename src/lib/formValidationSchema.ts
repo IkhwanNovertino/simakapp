@@ -107,7 +107,7 @@ export const studentSchema = z.object({
   address: z.string().optional(),
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),
   phone: z.string().optional(),
-  photo: z.string().optional(),
+  photo: z.instanceof(FileList).optional(),
   majorId: z.coerce.number().min(1, { message: "Program studi harus diisi" }),
   lecturerId: z.string().min(1, { message: "Perwalian akademik harus diisi" }),
   fatherName: z.string().optional(),
