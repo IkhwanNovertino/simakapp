@@ -169,7 +169,7 @@ const Sidebar = () => {
             el.items.map(item => {
               return (
                 <Link
-                  className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === item.href ? "md:bg-primary-light " : ""}`}
+                  className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === item.href ? "md:bg-primary-light" : ""}`}
                   href={item.href}
                   key={item.href}
                 >
