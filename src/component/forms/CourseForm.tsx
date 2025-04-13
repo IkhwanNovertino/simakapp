@@ -66,6 +66,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             defaultValue={data?.code}
             register={register}
             error={errors?.code}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/2">
@@ -75,6 +76,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             defaultValue={data?.name}
             register={register}
             error={errors?.name}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/6">
@@ -84,26 +86,33 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             defaultValue={data?.sks}
             register={register}
             error={errors?.sks}
+            required={true}
             inputProps={{ pattern: "[0-9]*", inputMode: "numeric" }}
           />
         </div>
+      </div>
+      <div className="flex justify-start flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Program Studi</label>
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Program Studi</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("majorId")}
             defaultValue={data?.majorId}
           >
-            {majors.map(
-              (major: { id: number, name: string }) => (
-                <option
-                  value={major.id} key={major.id}
-                  className="text-sm py-0.5 capitalize"
-                >
-                  {major.name}
-                </option>
-              )
-            )}
+            <option value="" className="text-sm py-0.5">
+              -- Pilih program studi
+            </option>
+
+            {majors.map((item: any) => (
+              <option
+                value={item.id}
+                key={item.id}
+                className="text-sm py-0.5"
+
+              >
+                {item.name}
+              </option>
+            ))}
           </select>
           {errors.majorId?.message && (
             <p className="text-xs text-red-400">
@@ -111,7 +120,24 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             </p>
           )}
         </div>
-
+        <div className="flex flex-col items-start gap-2 w-full md:w-1/2">
+          <label className="text-xs text-gray-500">Mata Kuliah PKL atau Skripsi</label>
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex items-center justify-center gap-2 w-full">
+              <input type="checkbox" id="isPKL" {...register("isPKL")} className="w-4 h-4 " defaultChecked={data?.isPKL} />
+              <label htmlFor="isPKL" className="text-sm text-gray-600">PKL</label>
+            </div>
+            <div className="flex items-center justify-center gap-2 w-full">
+              <input type="checkbox" id="isSkripsi" {...register("isSkripsi")} className="w-4 h-4 " defaultChecked={data?.isSkripsi} />
+              <label htmlFor="isSkripsi" className="text-sm text-gray-600">Skripsi</label>
+            </div>
+          </div>
+          {errors.majorId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.majorId.message.toString()}
+            </p>
+          )}
+        </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">

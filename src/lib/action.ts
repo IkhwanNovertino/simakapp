@@ -285,12 +285,16 @@ export const deleteRoom = async (state: stateType, data: FormData) => {
 
 export const createCourse = async (state: stateType, data: CourseInputs) => {
   try {
+    console.log(data);
+    
     await prisma.course.create({
       data: {
         name: data.name,
         sks: data.sks,
         code: data.code,
         majorId: data.majorId,
+        isPKL: data.isPKL,
+        isSkripsi: data.isSkripsi,
       }
     });
     return { success: true, error: false };
@@ -310,6 +314,8 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
         sks: data.sks,
         code: data.code,
         majorId: data.majorId,
+        isPKL: data.isPKL,
+        isSkripsi: data.isSkripsi,
       }
     });
     return { success: true, error: false };
@@ -616,30 +622,27 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
 
 export const createStudent = async (state: stateType, data: StudentInputs) => {
   try {
-    console.log(data);
-    console.log(data?.photo?.[0]);
-
-    
-    
-    // const student = await prisma.student.create({
-    //   data: {
-    //     nim: data.nim,
-    //     name: data.name,
-    //     majorId: data.majorId,
-    //     year: data.year,
-    //     gender: data.gender,
-    //     hp: data.phone,
-    //     email: data.email,
-    //     lecturerId: data.lecturerId,
-    //     address: data.address,
-    //     fatherName: data.fatherName,
-    //     motherName: data.motherName,
-    //     guardianName: data.guardianName,
-    //     guardianHp: data.guardianHp,
-    //     statusRegister: data.statusRegister,
-    //     religion: data.religion as Religion,
-    //   }
-    // })
+    // console.log(data);
+    // console.log(data?.photo?.[0]);
+    const student = await prisma.student.create({
+      data: {
+        nim: data.nim,
+        name: data.name,
+        majorId: data.majorId,
+        year: data.year,
+        gender: data.gender,
+        hp: data.phone,
+        email: data.email,
+        lecturerId: data.lecturerId,
+        address: data.address,
+        fatherName: data.fatherName,
+        motherName: data.motherName,
+        guardianName: data.guardianName,
+        guardianHp: data.guardianHp,
+        statusRegister: data.statusRegister,
+        religion: data.religion as Religion,
+      }
+    })
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
