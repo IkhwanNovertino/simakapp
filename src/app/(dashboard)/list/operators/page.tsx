@@ -66,6 +66,7 @@ const OperatorListPage = async (
     {
       header: "Nama Operator",
       accessor: "nama operator",
+      className: "px-4"
     },
     {
       header: "Bagian",
@@ -75,7 +76,7 @@ const OperatorListPage = async (
     {
       header: "Role Pengguna",
       accessor: "role pengguna",
-      className: "",
+      className: "hidden md:table-cell",
     },
     {
       header: "Actions",
@@ -88,11 +89,11 @@ const OperatorListPage = async (
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
-      <td className="flex items-center gap-4 py-4">
+      <td className="flex items-center gap-4 p-4">
         {item.name}
       </td>
       <td className="hidden md:table-cell">{item.department || "-"}</td>
-      <td className="flex">{item?.user?.role?.name || ""}</td>
+      <td className="hidden md:table-cell">{item?.user?.role?.name || ""}</td>
       <td>
         <div className="flex items-center gap-2">
           <FormContainer table="operator" type="update" data={item} />

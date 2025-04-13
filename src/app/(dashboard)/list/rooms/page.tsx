@@ -55,7 +55,7 @@ const RoomListPage = async (
         {item.name}
       </td>
       <td className="hidden md:table-cell">{item.location === "BJB" ? "Banjarbaru" : "Banjarmasin"}</td>
-      <td className="hidden lg:table-cell">{item.capacity}</td>
+      <td className="hidden md:table-cell">{item.capacity}</td>
       <td>
         <div className="flex items-center gap-2">
           <FormContainer table="room" type="update" data={item} />
@@ -73,6 +73,7 @@ const RoomListPage = async (
     {
       header: "Lokasi",
       accessor: "lokasi",
+      className: "hidden md:table-cell",
     },
     {
       header: "Capacity",

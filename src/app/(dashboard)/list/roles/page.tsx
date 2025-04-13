@@ -68,7 +68,7 @@ const RoleListPage = async (
     >
       <td className="p-4">{item.name}</td>
       <td className="hidden md:table-cell">{item.description}</td>
-      <td className="hidden md:table-cell md:flex-wrap md:w-56 lg:w-80 xl:w-xl">
+      <td className="hidden lg:table-cell md:flex-wrap md:w-56 lg:w-80 xl:w-xl">
         {item.rolePermission.map(el => (
           <div key={el.permission.id} className="text-xs m-1 p-1.5 inline-block max-w-fit rounded even:bg-primary odd:bg-secondary">{el.permission.name}</div>
         ))}
@@ -101,7 +101,7 @@ const RoleListPage = async (
     {
       header: "Hak Akses",
       accessor: "hak akses",
-      className: "hidden md:table-cell",
+      className: "hidden lg:table-cell",
     },
     {
       header: "Actions",
