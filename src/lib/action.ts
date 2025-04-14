@@ -1,13 +1,11 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs, StudentInputs, UserInputs } from "./formValidationSchema";
+import path from "path";
+import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs, StudentInputs, studentSchema, UserInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { connect } from "http2";
-import { Religion } from "@prisma/client";
-import { permission } from "process";
-import { parse } from "path";
+import { Gender, Religion } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { writeFile } from "fs/promises";
 
 type stateType = {
   success: boolean;
@@ -553,24 +551,6 @@ export const createOperator = async (state: stateType, data: OperatorInputs) => 
         department: data?.department,
       }
   })
-    // const [createUser, createOperatorUser] = await prisma.$transaction(async (prisma) => {
-    //   const createUser = await prisma.user.create({
-    //     data: {
-    //       email: data.username,
-    //       password: data.password,
-    //       roleId: parseInt(data.roleId),
-    //     }
-    //   });
-    //   const createOperatorUser = await prisma.operator.create({
-    //       data: {
-    //         name: data.name,
-    //         department: data?.department,
-    //         userId: createUser.id
-    //       }
-    //   })
-    //   return [createUser, createOperatorUser];
-    // })
-    
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
@@ -620,29 +600,101 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
   }
 }
 
-export const createStudent = async (state: stateType, data: StudentInputs) => {
+export const createStudent = async (state: stateType, data: FormData) => {
   try {
-    // console.log(data);
-    // console.log(data?.photo?.[0]);
-    const student = await prisma.student.create({
-      data: {
-        nim: data.nim,
-        name: data.name,
-        majorId: data.majorId,
-        year: data.year,
-        gender: data.gender,
-        hp: data.phone,
-        email: data.email,
-        lecturerId: data.lecturerId,
-        address: data.address,
-        fatherName: data.fatherName,
-        motherName: data.motherName,
-        guardianName: data.guardianName,
-        guardianHp: data.guardianHp,
-        statusRegister: data.statusRegister,
-        religion: data.religion as Religion,
-      }
+    const id=data.get('id')?.toString()
+    const name = data.get('name')?.toString();
+    const nim = data.get('nim')?.toString();
+    const photo = data.get('photo') as File
+    const year = parseInt(data.get('year') as string);
+    const religion = data.get('religion')?.toString() as Religion;
+    const gender = data.get('gender')?.toString() as Gender;
+    const address = data.get('address')?.toString();
+    const email = data.get('email')?.toString();
+    const phone = data.get('phone')?.toString();
+    const majorId = parseInt(data.get('majorId') as string);
+    const lecturerId = data.get('lecturerId')?.toString();
+    const fatherName = data.get('fatherName')?.toString();
+    const motherName = data.get('motherName')?.toString();
+    const guardianName = data.get('guardianName')?.toString();
+    const guardianHp = data.get('guardianHp')?.toString();
+    const statusRegister = data.get('statusRegister')?.toString();
+    console.log(`from action.ts`);
+    console.log(data);
+    console.log(name);
+    console.log(photo);
+
+    let fileUrl: string | undefined = undefined;
+    if (photo && photo.size > 0) {
+      const bytes = await photo.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+  
+      const fileName = `${photo.name}`
+      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
+      fileUrl = `/uploads/${fileName}`
+  
+      await writeFile(filePath, buffer)
+    }
+
+    const validation = studentSchema.safeParse({
+      id,
+      name,
+      nim,
+      year,
+      religion ,
+      gender ,
+      address ,
+      email ,
+      phone ,
+      majorId,
+      lecturerId ,
+      fatherName ,
+      motherName ,
+      guardianName ,
+      guardianHp ,
+      statusRegister ,
+      photo: fileUrl ?? '', // boleh string kosong
     })
+
+    await prisma.student.create({
+      data: {
+        name: validation.data?.name,
+        nim: validation.data?.nim,
+        year: validation.data?.year,
+        religion : validation.data?.religion as Religion,
+        gender : validation.data?.gender,
+        address : validation.data?.address,
+        email : validation.data?.email,
+        hp : validation.data?.phone,
+        majorId: validation.data?.majorId,
+        lecturerId : validation.data?.lecturerId,
+        fatherName : validation.data?.fatherName,
+        motherName : validation.data?.motherName,
+        guardianName : validation.data?.guardianName,
+        guardianHp : validation.data?.guardianHp,
+        statusRegister : validation.data?.statusRegister,
+        photo: fileUrl ?? '', // boleh string kosong
+      },
+    })
+    // const student = await prisma.student.create({
+    //   data: {
+    //     nim: data.nim,
+    //     name: data.name,
+    //     majorId: data.majorId,
+    //     year: data.year,
+    //     gender: data.gender,
+    //     hp: data.phone,
+    //     email: data.email,
+    //     lecturerId: data.lecturerId,
+    //     address: data.address,
+    //     fatherName: data.fatherName,
+    //     motherName: data.motherName,
+    //     guardianName: data.guardianName,
+    //     guardianHp: data.guardianHp,
+    //     statusRegister: data.statusRegister,
+    //     religion: data.religion as Religion,
+    //   }
+    // })
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);

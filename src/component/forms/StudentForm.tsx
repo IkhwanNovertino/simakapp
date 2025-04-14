@@ -27,25 +27,25 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
     handleSubmit,
     formState: { errors },
   } = useForm<StudentInputs>({
-    resolver: zodResolver(studentSchema)
+    resolver: zodResolver(studentSchema.omit({ photo: true })),
   })
 
   const action = type === "create" ? createStudent : updateStudent;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(createStudent, { success: false, error: false });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log('Running');
-    console.log(data);
+  // const onSubmit = handleSubmit((data) => {
+  //   console.log('Running');
+  //   console.log(data);
 
-    const photo = data?.photo?.[0] || "";
-    // const formData = new FormData();
-    // formData.append("photo", photo);
-    // formData.append("data", JSON.stringify(data));
+  //   const photo = data?.photo?.[0] || "";
+  //   // const formData = new FormData();
+  //   // formData.append("photo", photo);
+  //   // formData.append("data", JSON.stringify(data));
 
 
 
-    startTransition(() => formAction(data))
-  })
+  //   startTransition(() => formAction(data))
+  // })
 
   const router = useRouter();
   useEffect(() => {
@@ -57,7 +57,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
   }, [state, router])
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-8">
+    <form action={formAction} encType="multipart/form-data" className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data mahasiswa baru" : "Ubah data mahasiswa"}</h1>
 
       <span className="text-xs text-gray-400 font-medium">
