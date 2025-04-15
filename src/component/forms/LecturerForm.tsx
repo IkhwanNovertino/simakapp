@@ -9,7 +9,6 @@ import { createLecturer, updateLecturer } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { degree, gender, religion } from "@/lib/setting";
-import Image from "next/image";
 
 interface LecturerFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;

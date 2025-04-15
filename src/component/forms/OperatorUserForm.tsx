@@ -4,12 +4,10 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { LecturerInputs, lecturerSchema, UserInputs, userSchema } from "@/lib/formValidationSchema";
-import { createLecturer, createUserLecturer, createUserOperator, updateLecturer, updateUserOperator } from "@/lib/action";
+import { UserInputs, userSchema } from "@/lib/formValidationSchema";
+import { createUserOperator, updateUserOperator } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { degree, gender, religion } from "@/lib/setting";
-import Image from "next/image";
 
 interface OperatorUserFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;

@@ -2,18 +2,15 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { role, teachersData } from "@/lib/data";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Operator, Prisma, Role, User } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
-import { date } from "zod";
 
 type OperatorDataType = Operator & { user: { role: Role } };
 
 const OperatorListPage = async (
-  { searchParams }: { searchParams: { [key: string]: string | undefined } }
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;

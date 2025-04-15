@@ -1,10 +1,5 @@
-import Pagination from "@/component/Pagination";
-import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { role, teachersData } from "@/lib/data";
 import Image from "next/image";
-import Link from "next/link";
-
 
 const ClassListPage = () => {
   return (

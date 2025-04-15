@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { Dispatch, SetStateAction, useActionState, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { StudentInputs, studentSchema } from "@/lib/formValidationSchema";
 import { createStudent, updateStudent } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { degree, gender, religion } from "@/lib/setting";
+import { gender, religion } from "@/lib/setting";
 import Image from "next/image";
 import { StatusRegistrasi } from "@/lib/data";
 
@@ -21,6 +21,8 @@ interface StudentFormProps {
 
 const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => {
   const { majors, role, lecturer } = relatedData;
+  const formRef = useRef<HTMLFormElement>(null);
+  const [preview, setPreview] = useState<string | null>(null)
 
   const {
     register,
@@ -33,19 +35,21 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
   const action = type === "create" ? createStudent : updateStudent;
   const [state, formAction] = useActionState(createStudent, { success: false, error: false });
 
-  // const onSubmit = handleSubmit((data) => {
-  //   console.log('Running');
-  //   console.log(data);
+  const onValid = (data: StudentInputs) => {
+    formRef.current?.requestSubmit()
+  }
 
-  //   const photo = data?.photo?.[0] || "";
-  //   // const formData = new FormData();
-  //   // formData.append("photo", photo);
-  //   // formData.append("data", JSON.stringify(data));
-
-
-
-  //   startTransition(() => formAction(data))
-  // })
+  // Handler untuk update preview image ketika file input berubah
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files && event.target.files[0]
+    if (file) {
+      // Buat object URL untuk preview
+      const objectUrl = URL.createObjectURL(file)
+      setPreview(objectUrl)
+    } else {
+      setPreview(null)
+    }
+  }
 
   const router = useRouter();
   useEffect(() => {
@@ -53,11 +57,15 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
       toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data mahasiswa`);
       router.refresh();
       setOpen(false);
-    }
-  }, [state, router])
+    };
+
+    return (() => {
+      if (preview) URL.revokeObjectURL(preview)
+    })
+  }, [state, router, preview])
 
   return (
-    <form action={formAction} encType="multipart/form-data" className="flex flex-col gap-8">
+    <form ref={formRef} action={formAction} className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data mahasiswa baru" : "Ubah data mahasiswa"}</h1>
 
       <span className="text-xs text-gray-400 font-medium">
@@ -215,23 +223,32 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Personal Email"
-            name="email"
-            defaultValue={data?.email}
-            register={register}
-            error={errors?.email}
+        <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
+          <label
+            className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
+            htmlFor="photo"
+          >
+            <Image src="/upload.png" alt="" width={28} height={28} />
+            <span>Upload a photo</span>
+          </label>
+          <input type="file" id="photo" name="photo"
+            className="hidden"
+            accept="image/jpeg, image/jpg, image/png"
+            onChange={handleFileChange}
           />
+          {errors.photo?.message && (
+            <p className="text-xs text-red-400">
+              {errors.photo.message.toString()}
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="No. Handphone"
-            name="phone"
-            defaultValue={data?.phone}
-            register={register}
-            error={errors?.phone}
-          />
+          <label className="text-xs text-gray-500">Preview Foto</label>
+          {preview && (
+            <div>
+              <img src={preview} alt="Preview" className="max-w-20 max-h-20 object-contain border border-gray-200 rounded-full" />
+            </div>
+          )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Agama</label>
@@ -260,24 +277,25 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
-          <label
-            className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
-            htmlFor="photo"
-          >
-            <Image src="/upload.png" alt="" width={28} height={28} />
-            <span>Upload a photo</span>
-          </label>
-          <input type="file" id="photo" {...register("photo")}
-            className="hidden"
-            accept="image/jpeg, image/jpg, image/png"
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="Personal Email"
+            name="email"
+            defaultValue={data?.email}
+            register={register}
+            error={errors?.email}
           />
-          {errors.photo?.message && (
-            <p className="text-xs text-red-400">
-              {errors.photo.message.toString()}
-            </p>
-          )}
         </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="No. Handphone"
+            name="phone"
+            defaultValue={data?.phone}
+            register={register}
+            error={errors?.phone}
+          />
+        </div>
+
         <div className="flex flex-col gap-2 w-full md:w-5/8">
           <InputField
             label="Alamat"
@@ -339,7 +357,10 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
         </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
-      <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">
+      <button
+        className="bg-blue-400 text-white p-2 rounded-md cursor-pointer"
+        onClick={handleSubmit(onValid)}
+      >
         {type === "create" ? "Tambah" : "Ubah"}
       </button>
     </form >

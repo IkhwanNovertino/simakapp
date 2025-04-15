@@ -16,7 +16,7 @@ type PermissionDataType = {
 
 
 const PermissionListPage = async (
-  { searchParams }: { searchParams: { [key: string]: string | undefined } }
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
 
   const { page, ...queryParams } = await searchParams;

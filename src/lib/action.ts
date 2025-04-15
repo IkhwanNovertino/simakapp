@@ -1,11 +1,12 @@
 "use server";
 
 import path from "path";
-import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs, RolePermissionInputs, RoomInputs, StudentInputs, studentSchema, UserInputs } from "./formValidationSchema";
+import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs,  RoomInputs, StudentInputs, studentSchema, UserInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { Gender, Religion } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { writeFile } from "fs/promises";
+import { v4 } from "uuid";
 
 type stateType = {
   success: boolean;
@@ -49,7 +50,7 @@ export const updatePermission = async (state: stateType, data: PermissionInputs)
 export const deletePermission = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    const transactionDeletePermission = await prisma.$transaction([
+    await prisma.$transaction([
       prisma.rolePermission.deleteMany({
         where: {
           permissionId: parseInt(id)
@@ -117,7 +118,7 @@ export const deleteRole = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     
-    const transactionDelete = await prisma.$transaction([
+    await prisma.$transaction([
       prisma.rolePermission.deleteMany({
         where: {
           roleId: parseInt(id)
@@ -524,7 +525,7 @@ export const updateLecturer = async (state: stateType, data: LecturerInputs) => 
 export const deleteLecturer = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    const deleteOperatorTransaction = await prisma.$transaction([
+    await prisma.$transaction([
       prisma.user.delete({
         where: {
           id: id.split(":")[1]
@@ -545,7 +546,7 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
 
 export const createOperator = async (state: stateType, data: OperatorInputs) => {
   try {
-    const createOperatorUser = await prisma.operator.create({
+    await prisma.operator.create({
       data: {
         name: data.name,
         department: data?.department,
@@ -581,7 +582,7 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
     console.log(id.split(":")[1]);
     
 
-    const deleteOperatorTransaction = await prisma.$transaction([
+    await prisma.$transaction([
       prisma.user.delete({
         where: {
           id: id.split(":")[1]
@@ -599,6 +600,7 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
     return {success: false, error:true}
   }
 }
+
 
 export const createStudent = async (state: stateType, data: FormData) => {
   try {
@@ -619,17 +621,13 @@ export const createStudent = async (state: stateType, data: FormData) => {
     const guardianName = data.get('guardianName')?.toString();
     const guardianHp = data.get('guardianHp')?.toString();
     const statusRegister = data.get('statusRegister')?.toString();
-    console.log(`from action.ts`);
-    console.log(data);
-    console.log(name);
-    console.log(photo);
 
     let fileUrl: string | undefined = undefined;
     if (photo && photo.size > 0) {
       const bytes = await photo.arrayBuffer()
       const buffer = Buffer.from(bytes)
   
-      const fileName = `${photo.name}`
+      const fileName = `${v4()}-${photo.name}`
       const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
       fileUrl = `/uploads/${fileName}`
   
@@ -641,20 +639,25 @@ export const createStudent = async (state: stateType, data: FormData) => {
       name,
       nim,
       year,
-      religion ,
-      gender ,
-      address ,
-      email ,
-      phone ,
+      religion,
+      gender,
+      address,
+      email,
+      phone,
       majorId,
-      lecturerId ,
-      fatherName ,
-      motherName ,
-      guardianName ,
-      guardianHp ,
-      statusRegister ,
+      lecturerId,
+      fatherName,
+      motherName,
+      guardianName,
+      guardianHp,
+      statusRegister,
       photo: fileUrl ?? '', // boleh string kosong
     })
+
+    if (!validation.success) {
+      console.log(validation.error.flatten().fieldErrors);
+      return { success: false, error: true, fieldErrors: validation.error };
+    }
 
     await prisma.student.create({
       data: {
@@ -703,15 +706,14 @@ export const createStudent = async (state: stateType, data: FormData) => {
 }
 export const updateStudent = async (state: stateType, data: StudentInputs) => {
   try {
-    // await prisma.operator.update({
-    //   where: {
-    //     id: data?.id
-    //   },
-    //   data: {
-    //     name: data.name,
-    //     department: data?.department,
-    //   }
-    // })
+    await prisma.operator.update({
+      where: {
+        id: data?.id
+      },
+      data: {
+        name: data.name,
+      }
+    })
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
@@ -724,8 +726,7 @@ export const deleteStudent = async (state: stateType, data: FormData) => {
     console.log(id.split(":")[0]);
     console.log(id.split(":")[1]);
     
-
-    const deleteOperatorTransaction = await prisma.$transaction([
+    await prisma.$transaction([
       prisma.user.delete({
         where: {
           id: id.split(":")[1]

@@ -1,7 +1,6 @@
 "use client";
 
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { log } from "console";
 import { useRouter } from "next/navigation";
 
 const Pagination = ({ page, count }: { page: number, count: number }) => {

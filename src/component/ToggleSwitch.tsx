@@ -1,6 +1,6 @@
 'use client';
 import { createRolePermissions, deleteRolePermissions, getRolePermission } from "@/lib/action";
-import { startTransition, useActionState, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const ToggleSwitch = ({ id }: { id: string }) => {
 

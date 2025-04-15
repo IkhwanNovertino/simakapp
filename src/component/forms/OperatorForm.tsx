@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { CourseInputs, courseSchema, LecturerInputs, lecturerSchema, OperatorInputs, operatorSchema } from "@/lib/formValidationSchema";
-import { createCourse, createLecturer, createOperator, updateCourse, updateLecturer, updateOperator } from "@/lib/action";
+import { OperatorInputs, operatorSchema } from "@/lib/formValidationSchema";
+import { createOperator, updateOperator } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 

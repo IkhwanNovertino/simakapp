@@ -1,13 +1,11 @@
 'use server';
-import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import ToggleSwitch from "@/component/ToggleSwitch";
-import { getRolePermission } from "@/lib/action";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Permission, Prisma, Role, RolePermission } from "@prisma/client";
+import { Permission, Prisma } from "@prisma/client";
 
 type PermissionDataType = Permission;
 

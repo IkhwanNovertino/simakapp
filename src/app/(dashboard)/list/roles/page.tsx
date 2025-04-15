@@ -15,7 +15,7 @@ type RoleDataType = Role & {
 }
 
 const RoleListPage = async (
-  { searchParams }: { searchParams: { [key: string]: string | undefined } }
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
 
   const { page, ...queryParams } = await searchParams;

@@ -8,7 +8,6 @@ import { RoleInputs, roleSchema } from "@/lib/formValidationSchema";
 import { createRole, updateRole } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { RoleType } from "@prisma/client";
 
 interface RoleFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;

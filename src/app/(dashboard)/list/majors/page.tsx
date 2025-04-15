@@ -5,12 +5,11 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Major, Prisma } from "@prisma/client";
-import Image from "next/image";
 
 type MajorDataType = Major;
 
 const MajorListPage = async (
-  { searchParams }: { searchParams: { [key: string]: string | undefined } }
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
 
   const { page, ...queryParams } = await searchParams;

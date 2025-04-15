@@ -102,7 +102,7 @@ export const studentSchema = z.object({
   id: z.string().optional(),
   // information data student
   nim: z.string().length(12, {message: "NIM harus diisi"}),
-  name: z.string().min(1, { message: "nama dosen harus diisi" }),
+  name: z.string().min(1, { message: "nama mahasiswa harus diisi" }),
   year: z.coerce.number().min(4, { message: "tahun terdaftar harus diisi" }),
   religion: z.enum(["ISLAM", "PROTESTAN", "KATOLIK", "HINDU", "BUDHA", "KONGHUCU", "DLL"], {message: "agama harus diisi"}),
   gender: z.enum(["PRIA", "WANITA"], { message: "Gender harus diisi" }),

@@ -8,14 +8,13 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Lecturer, Major, Prisma, Role, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import { Form } from "react-hook-form";
 
 type LecturerDataType = Lecturer & { user: User & { role: Role } } & { major: Major };
 
 
 
 const LecturerListPage = async (
-  { searchParams }: { searchParams: { [key: string]: string | undefined } }
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
 
 

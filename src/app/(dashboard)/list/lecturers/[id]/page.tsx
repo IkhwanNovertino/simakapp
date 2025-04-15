@@ -5,9 +5,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const SingleLecturerPage = async (
-  { params: { id } }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) => {
 
+  const { id } = await params;
   const data = await prisma.lecturer.findUnique({
     where: {
       id: id
@@ -19,8 +20,6 @@ const SingleLecturerPage = async (
   })
 
   console.log(data);
-
-
   return (
     <div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
       {/* LEFT */}

@@ -10,7 +10,7 @@ import { Course, Major, Prisma } from "@prisma/client";
 type CourseDataType = Course & { major: Major };
 
 const CourseListPage = async (
-  { searchParams }: { searchParams: { [key: string]: string | undefined } }
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
 
   const { page, ...queryParams } = await searchParams;

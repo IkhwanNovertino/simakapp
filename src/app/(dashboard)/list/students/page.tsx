@@ -12,7 +12,7 @@ import Link from "next/link";
 type StudentDataType = Student & { major: Major } & { user: User } & { lecturer: Lecturer };
 
 const StudentListPage = async (
-  { searchParams }: { searchParams: { [key: string]: string | undefined } }
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
 
   const { page, ...queryParams } = await searchParams;
