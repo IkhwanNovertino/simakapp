@@ -36,3 +36,18 @@
 - isSkripsi
   - boolean?
   - default false
+- assesmentType:
+  - REGULAR
+  - Komponen nilai:
+    - Presensi: 10%
+    - Tugas Mandiri: 20%
+    - Tugas Kelompok: 10%
+    - UTS: 25%
+    - UAS: 35%
+  - CASE METHOD
+  - Komponen nilai:
+    - Presensi: 10%
+    - Tugas Mandiri: 35%
+    - Tugas Kelompok: 15%
+    - UTS: 20%
+    - UAS: 20%

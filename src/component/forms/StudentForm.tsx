@@ -22,8 +22,7 @@ interface StudentFormProps {
 const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => {
   const { majors, role, lecturer } = relatedData;
   const formRef = useRef<HTMLFormElement>(null);
-  const [preview, setPreview] = useState<string | null>(null)
-
+  const [preview, setPreview] = useState<string | null>(data?.photo ? data?.photo : null);
   const {
     register,
     handleSubmit,
@@ -33,7 +32,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
   })
 
   const action = type === "create" ? createStudent : updateStudent;
-  const [state, formAction] = useActionState(createStudent, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false });
 
   const onValid = (data: StudentInputs) => {
     formRef.current?.requestSubmit()
@@ -47,9 +46,11 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
       const objectUrl = URL.createObjectURL(file)
       setPreview(objectUrl)
     } else {
-      setPreview(null)
+      setPreview(data?.photo ?? null)
     }
   }
+
+
 
   const router = useRouter();
   useEffect(() => {
@@ -81,7 +82,9 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
               register={register}
               error={errors?.id}
             />
+            <input type="hidden" name="oldFoto" value={data.photo ?? ''} />
           </div>
+
         )}
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
@@ -246,7 +249,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           <label className="text-xs text-gray-500">Preview Foto</label>
           {preview && (
             <div>
-              <img src={preview} alt="Preview" className="max-w-20 max-h-20 object-contain border border-gray-200 rounded-full" />
+              <img src={preview} alt="Preview" className="w-20 h-20 object-cover border border-gray-200 rounded-full" />
             </div>
           )}
         </div>

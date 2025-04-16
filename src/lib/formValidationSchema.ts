@@ -84,7 +84,7 @@ export const lecturerSchema = z.object({
   majorId: z.coerce.number().min(1, { message: "Program studi harus diisi" }),
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),
   phone: z.string().optional(),
-  photo: z.string().optional(),
+  photo: z.string().optional().or(z.literal("")),
 })
 
 export type LecturerInputs = z.infer<typeof lecturerSchema>;

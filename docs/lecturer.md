@@ -21,6 +21,12 @@
   - --nomor induk dosen nasional
   - String?
   - Required
+- nuptk
+  - --Nomor Urut Pendidik dan Tenaga Kependidikan
+  - String?
+  - optional
+  - 16 digit (klo ngisi wajib 16 digit)
+  - 6937768669130402 (contoh)
 - degree
   - DegreeStatus?
   - Optional

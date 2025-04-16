@@ -143,6 +143,7 @@ enum RoleType {
 - id String PK uuid
 - npk String?
 - nidn String?
+- nuptk String?
 - name String?
 - degree DegreeStatus?
 - frontTitle String?

@@ -1,11 +1,11 @@
 "use server";
 
 import path from "path";
-import { CourseInputs, LecturerInputs, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs,  RoomInputs, StudentInputs, studentSchema, UserInputs } from "./formValidationSchema";
+import { CourseInputs, LecturerInputs, lecturerSchema, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs,  RoomInputs, StudentInputs, studentSchema, UserInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { Gender, Religion } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { writeFile } from "fs/promises";
+import { unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
 
 type stateType = {
@@ -477,43 +477,139 @@ export const updateUserOperator = async (state: stateType, data: UserInputs) => 
   }
 }
 
-export const createLecturer = async (state: stateType, data: LecturerInputs) => {
+export const createLecturer = async (state: stateType, data: FormData) => {
   try {
     console.log(data)
-    await prisma.lecturer.create({
-      data: {
-        npk: data.npk,
-        nidn: data.nidn,
-        name: data.name,
-        frontTitle: data.frontTitle,
-        backTitle: data.backTitle,
-        degree: data.degree,
-        year: data.year,
-        address: data.address,
-        majorId: data.majorId,
-        gender: data.gender,
-        hp: data.phone,
-        email: data.email,
-        religion: data.religion as Religion,
-      }
+    const dataLecturerRaw = {
+      npk: data.get('npk')?.toString(),
+      nidn: data.get('nidn')?.toString(),
+      name: data.get('name')?.toString(),
+      frontTitle: data.get('frontTitle')?.toString(),
+      backTitle: data.get('backTitle')?.toString(),
+      degree: data.get('degree')?.toString(),
+      year: parseInt(data.get('year') as string),
+      address: data.get('address')?.toString(),
+      majorId: parseInt(data.get('majorId') as string),
+      gender: data.get('gender')?.toString(),
+      hp: data.get('phone')?.toString(),
+      email: data.get('email')?.toString(),
+      religion: data.get('religion')?.toString(),
+    }
+    const photo = data.get('photo') as File;
+    let fileUrl: string | undefined = undefined;
+    if (photo && photo.size > 0) {
+      const bytes = await photo.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+  
+      const fileName = `${v4()}-${photo.name}`
+      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
+      fileUrl = `/uploads/${fileName}`
+  
+      await writeFile(filePath, buffer)
+    }
+
+    const validation = lecturerSchema.safeParse({
+      ...dataLecturerRaw,
+      photo: fileUrl ?? '', // boleh string kosong
     })
 
+    if (!validation.success) {
+      console.log(validation.error.flatten().fieldErrors);
+      return { success: false, error: true, fieldErrors: validation.error };
+    }
+
+    await prisma.lecturer.create({
+      data: {
+        npk: validation.data.npk,
+        nidn: validation.data.nidn,
+        name: validation.data.name,
+        frontTitle: validation.data.frontTitle,
+        backTitle: validation.data.backTitle,
+        degree: validation.data.degree,
+        year: validation.data.year,
+        address: validation.data.address,
+        majorId: validation.data.majorId,
+        gender: validation.data.gender,
+        hp: validation.data.phone,
+        email: validation.data.email,
+        religion: validation.data.religion as Religion,
+        photo: fileUrl ?? '',
+      }
+    })
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
-export const updateLecturer = async (state: stateType, data: LecturerInputs) => {
+export const updateLecturer = async (state: stateType, data: FormData) => {
   try {
+    const dataLecturerRaw = {
+      id: data.get('id')?.toString(),
+      npk: data.get('npk')?.toString(),
+      nidn: data.get('nidn')?.toString(),
+      name: data.get('name')?.toString(),
+      frontTitle: data.get('frontTitle')?.toString(),
+      backTitle: data.get('backTitle')?.toString(),
+      degree: data.get('degree')?.toString(),
+      year: parseInt(data.get('year') as string),
+      address: data.get('address')?.toString(),
+      majorId: parseInt(data.get('majorId') as string),
+      gender: data.get('gender')?.toString(),
+      hp: data.get('phone')?.toString(),
+      email: data.get('email')?.toString(),
+      religion: data.get('religion')?.toString(),
+    }
+    const photo = data.get('photo') as File;
+    const oldPhoto = data.get('oldFoto') as string;
+
+    const parsed = lecturerSchema.omit({ photo: true }).safeParse(dataLecturerRaw);
+    if (!parsed.success) {
+      console.log(parsed.error.flatten().fieldErrors);
+      return { success: false, error: true }
+    }
+
+    let fileUrl = oldPhoto;
+    if (photo && photo.size > 0) {
+      const bytes = await photo.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+  
+      const fileName = `${v4()}-${photo.name}`
+      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
+      fileUrl = `/uploads/${fileName}`
+  
+      await writeFile(filePath, buffer)
+
+      if (oldPhoto) {
+        const oldPath = path.join(process.cwd(), 'public', oldPhoto);
+        try {
+          await unlink(oldPath)
+        } catch (err) {
+          console.log(err);
+          
+        }
+      }
+    }
+
     await prisma.lecturer.update({
       where: {
-        id: data?.id
+        id: parsed?.data.id,
       },
       data: {
-        name: data.name,
-        email: data.email,
-        hp: data.phone,
+        npk: parsed.data.npk,
+        nidn: parsed.data.nidn,
+        name: parsed.data.name,
+        frontTitle: parsed.data.frontTitle,
+        backTitle: parsed.data.backTitle,
+        degree: parsed.data.degree,
+        year: parsed.data.year,
+        address: parsed.data.address,
+        majorId: parsed.data.majorId,
+        gender: parsed.data.gender,
+        hp: parsed.data.phone,
+        email: parsed.data.email,
+        religion: parsed.data.religion as Religion,
+        photo: fileUrl,
       }
     })
     return { success: true, error: false };
@@ -525,82 +621,47 @@ export const updateLecturer = async (state: stateType, data: LecturerInputs) => 
 export const deleteLecturer = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    await prisma.$transaction([
-      prisma.user.delete({
+    const dataLecturer = await prisma.lecturer.findUnique({
+      where: {
+        id: id
+      },
+      select: {
+        id: true,
+        photo: true,
+        userId: true,
+      }
+    });
+
+    if (dataLecturer?.userId) {
+      await prisma.user.delete({
         where: {
-          id: id.split(":")[1]
-        }
-      }),
-      prisma.lecturer.delete({
-        where: {
-          id: id.split(":")[0]
+          id: dataLecturer.userId
         }
       })
-    ])
-    return { success: true, error: false };
-  } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
-    return {success: false, error:true}
-  }
-}
+    }
 
-export const createOperator = async (state: stateType, data: OperatorInputs) => {
-  try {
-    await prisma.operator.create({
-      data: {
-        name: data.name,
-        department: data?.department,
-      }
-  })
-    return { success: true, error: false };
-  } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
-    return {success: false, error:true}
-  }
-}
-export const updateOperator = async (state: stateType, data: OperatorInputs) => {
-  try {
-    await prisma.operator.update({
+    await prisma.lecturer.delete({
       where: {
-        id: data?.id
-      },
-      data: {
-        name: data.name,
-        department: data?.department,
+        id: id,
       }
     })
-    return { success: true, error: false };
-  } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
-    return {success: false, error:true}
-  }
-}
-export const deleteOperator = async (state: stateType, data: FormData) => {
-  try {
-    const id = data.get("id") as string;
-    console.log(id.split(":")[0]);
-    console.log(id.split(":")[1]);
+
+    if (dataLecturer?.photo) {
+      const filePath = path.join(process.cwd(), 'public', dataLecturer.photo);
+      try {
+        await unlink(filePath)
+      } catch (err) {
+        console.error('Gagal hapus file:', err)
+        // Tidak perlu return error, lanjutkan saja — file mungkin sudah tidak ada
+      }
+    }
     
-
-    await prisma.$transaction([
-      prisma.user.delete({
-        where: {
-          id: id.split(":")[1]
-        }
-      }),
-      prisma.operator.delete({
-        where: {
-          id: id.split(":")[0]
-        }
-      })
-    ])
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
-
 
 export const createStudent = async (state: stateType, data: FormData) => {
   try {
@@ -679,41 +740,91 @@ export const createStudent = async (state: stateType, data: FormData) => {
         photo: fileUrl ?? '', // boleh string kosong
       },
     })
-    // const student = await prisma.student.create({
-    //   data: {
-    //     nim: data.nim,
-    //     name: data.name,
-    //     majorId: data.majorId,
-    //     year: data.year,
-    //     gender: data.gender,
-    //     hp: data.phone,
-    //     email: data.email,
-    //     lecturerId: data.lecturerId,
-    //     address: data.address,
-    //     fatherName: data.fatherName,
-    //     motherName: data.motherName,
-    //     guardianName: data.guardianName,
-    //     guardianHp: data.guardianHp,
-    //     statusRegister: data.statusRegister,
-    //     religion: data.religion as Religion,
-    //   }
-    // })
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
-export const updateStudent = async (state: stateType, data: StudentInputs) => {
+export const updateStudent = async (state: stateType, data: FormData) => {
   try {
-    await prisma.operator.update({
+    console.log(data);
+
+    const dataRaw = {
+      id:data.get('id')?.toString(),
+      name : data.get('name')?.toString(),
+      nim : data.get('nim')?.toString(),
+      year : parseInt(data.get('year') as string),
+      religion : data.get('religion')?.toString() as Religion,
+      gender : data.get('gender')?.toString() as Gender,
+      address : data.get('address')?.toString(),
+      email : data.get('email')?.toString(),
+      phone : data.get('phone')?.toString(),
+      majorId : parseInt(data.get('majorId') as string),
+      lecturerId : data.get('lecturerId')?.toString(),
+      fatherName : data.get('fatherName')?.toString(),
+      motherName : data.get('motherName')?.toString(),
+      guardianName : data.get('guardianName')?.toString(),
+      guardianHp : data.get('guardianHp')?.toString(),
+      statusRegister : data.get('statusRegister')?.toString(),
+    }
+
+    const photo = data.get('photo') as File;
+    const oldPhoto = data.get('oldFoto') as string;
+
+    const parsed = studentSchema.omit({ photo: true }).safeParse(dataRaw);
+
+    if (!parsed.success) {
+      console.log(parsed.error.flatten().fieldErrors);
+      return { success: false, error: true }
+    }
+
+    let fileUrl = oldPhoto;
+    if (photo && photo.size > 0) {
+      const bytes = await photo.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+  
+      const fileName = `${v4()}-${photo.name}`
+      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
+      fileUrl = `/uploads/${fileName}`
+  
+      await writeFile(filePath, buffer)
+
+      if (oldPhoto) {
+        const oldPath = path.join(process.cwd(), 'public', oldPhoto);
+        try {
+          await unlink(oldPath)
+        } catch (err) {
+          console.log(err);
+          
+        }
+      }
+    }
+
+    await prisma.student.update({
       where: {
-        id: data?.id
+        id: parsed.data?.id
       },
       data: {
-        name: data.name,
+        name: parsed.data?.name,
+        nim: parsed.data?.nim,
+        year: parsed.data?.year,
+        religion : parsed.data?.religion as Religion,
+        gender : parsed.data?.gender,
+        address : parsed.data?.address,
+        email : parsed.data?.email,
+        hp : parsed.data?.phone,
+        majorId: parsed.data?.majorId,
+        lecturerId : parsed.data?.lecturerId,
+        fatherName : parsed.data?.fatherName,
+        motherName : parsed.data?.motherName,
+        guardianName : parsed.data?.guardianName,
+        guardianHp : parsed.data?.guardianHp,
+        statusRegister : parsed.data?.statusRegister,
+        photo: fileUrl,
       }
     })
+
     return { success: true, error: false };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
@@ -723,16 +834,93 @@ export const updateStudent = async (state: stateType, data: StudentInputs) => {
 export const deleteStudent = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
+    const dataStudent = await prisma.student.findUnique({
+      where: {
+        id: id
+      },
+      select: {
+        id: true,
+        photo: true,
+        userId: true,
+      }
+    });
+
+    if (dataStudent?.userId) {
+      await prisma.user.delete({
+        where: {
+          id: dataStudent.userId
+        }
+      })
+    }
+
+    await prisma.student.delete({
+      where: {
+        id: id,
+      }
+    })
+
+    if (dataStudent?.photo) {
+      const filePath = path.join(process.cwd(), 'public', dataStudent.photo);
+      try {
+        await unlink(filePath)
+      } catch (err) {
+        console.error('Gagal hapus file:', err)
+        // Tidak perlu return error, lanjutkan saja — file mungkin sudah tidak ada
+      }
+    }
+    
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+
+export const createOperator = async (state: stateType, data: OperatorInputs) => {
+  try {
+    await prisma.operator.create({
+      data: {
+        name: data.name,
+        department: data?.department,
+      }
+  })
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const updateOperator = async (state: stateType, data: OperatorInputs) => {
+  try {
+    await prisma.operator.update({
+      where: {
+        id: data?.id
+      },
+      data: {
+        name: data.name,
+        department: data?.department,
+      }
+    })
+    return { success: true, error: false };
+  } catch (err: any) {
+    console.log(`${err.name}: ${err.message}`);
+    return {success: false, error:true}
+  }
+}
+export const deleteOperator = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
     console.log(id.split(":")[0]);
     console.log(id.split(":")[1]);
     
+
     await prisma.$transaction([
       prisma.user.delete({
         where: {
           id: id.split(":")[1]
         }
       }),
-      prisma.student.delete({
+      prisma.operator.delete({
         where: {
           id: id.split(":")[0]
         }

@@ -119,7 +119,8 @@ const LecturerListPage = async (
             </button>
           </Link>
           <FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />
-          <FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />
+          <FormContainer table="lecturer" type="update" data={item} />
+          <FormContainer table="lecturer" type="delete" id={item.id} />
         </div>
       </td>
     </tr>
