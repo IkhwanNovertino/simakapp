@@ -1,4 +1,8 @@
+import { File } from "buffer";
+import formidable from "formidable";
 import { z } from "zod";
+
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 
 export const permissionSchema = z.object({
   id: z.coerce.number().optional(),
@@ -61,7 +65,7 @@ export type CourseInputs = z.infer<typeof courseSchema>;
 
 export const userSchema = z.object({
   id: z.string().optional(),
-  username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }),
+  username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }).trim(),
   password: z.string().min(5, { message: "password minimal 5 karakter" }),
   roleId: z.string().min(1, { message: "role pengguna harus diisi" }),
   isStatus: z.boolean().default(false)
@@ -73,6 +77,7 @@ export const lecturerSchema = z.object({
   id: z.string().optional(),
   npk: z.string().min(1, { message: "NPK harus diisi" }),
   nidn: z.string().min(1, {message: "NIDN harus diisi"}),
+  nuptk: z.string().length(16, {message: "NUPTK harus 16 digit"}).optional().or(z.literal("")),
   name: z.string().min(1, { message: "nama dosen harus diisi" }),
   frontTitle: z.string().optional(),
   backTitle: z.string().optional(),
@@ -109,7 +114,6 @@ export const studentSchema = z.object({
   address: z.string().optional(),
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),
   phone: z.string().optional(),
-  photo: z.string().optional().or(z.literal("")),
   majorId: z.coerce.number().min(1, { message: "Program studi harus diisi" }),
   lecturerId: z.string().min(1, { message: "Perwalian akademik harus diisi" }),
   fatherName: z.string().optional(),
@@ -117,6 +121,7 @@ export const studentSchema = z.object({
   guardianName: z.string().optional(),
   guardianHp: z.string().optional(),
   statusRegister: z.string().min(1, {message: "status registrasi harus diisi"}),
+  photo: z.string().optional().or(z.literal("")),
   
 })
 

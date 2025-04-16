@@ -13,6 +13,8 @@ type stateType = {
   error: boolean
 }
 
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+
 export const createPermission = async (state: stateType, data: PermissionInputs) => {
   try {
     console.log("actionCreatePermission running");
@@ -498,6 +500,10 @@ export const createLecturer = async (state: stateType, data: FormData) => {
     const photo = data.get('photo') as File;
     let fileUrl: string | undefined = undefined;
     if (photo && photo.size > 0) {
+
+      const photoType = ACCEPTED_IMAGE_TYPES.includes(photo.type);
+      if (!photoType) throw new Error("Tipe file tidak sesuai");
+
       const bytes = await photo.arrayBuffer()
       const buffer = Buffer.from(bytes)
   
@@ -571,6 +577,9 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
 
     let fileUrl = oldPhoto;
     if (photo && photo.size > 0) {
+      const photoType = ACCEPTED_IMAGE_TYPES.includes(photo.type);
+      if (!photoType) throw new Error("Tipe file tidak sesuai");
+      
       const bytes = await photo.arrayBuffer()
       const buffer = Buffer.from(bytes)
   
@@ -663,7 +672,7 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
   }
 }
 
-export const createStudent = async (state: stateType, data: FormData) => {
+export const createStudent = async (state: {success: boolean, error: boolean, fieldErrors: {}}, data: FormData) => {
   try {
     const id=data.get('id')?.toString()
     const name = data.get('name')?.toString();
@@ -685,6 +694,12 @@ export const createStudent = async (state: stateType, data: FormData) => {
 
     let fileUrl: string | undefined = undefined;
     if (photo && photo.size > 0) {
+
+      const photoType = ACCEPTED_IMAGE_TYPES.includes(photo.type)
+
+      if (!photoType) throw new Error("Tipe file tidak sesuai");
+      
+
       const bytes = await photo.arrayBuffer()
       const buffer = Buffer.from(bytes)
   
@@ -740,13 +755,13 @@ export const createStudent = async (state: stateType, data: FormData) => {
         photo: fileUrl ?? '', // boleh string kosong
       },
     })
-    return { success: true, error: false };
+    return { success: true, error: false, fieldErrors: {} };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
-    return {success: false, error:true}
+    return {success: false, error:true, fieldErrors: {}}
   }
 }
-export const updateStudent = async (state: stateType, data: FormData) => {
+export const updateStudent = async (state: {success: boolean, error: boolean, fieldErrors: {}}, data: FormData) => {
   try {
     console.log(data);
 
@@ -776,11 +791,14 @@ export const updateStudent = async (state: stateType, data: FormData) => {
 
     if (!parsed.success) {
       console.log(parsed.error.flatten().fieldErrors);
-      return { success: false, error: true }
+      return { success: false, error: true, fieldErrors: parsed.error };
     }
 
     let fileUrl = oldPhoto;
     if (photo && photo.size > 0) {
+      const photoType = ACCEPTED_IMAGE_TYPES.includes(photo.type);
+      if (!photoType) throw new Error("Tipe file tidak sesuai");
+
       const bytes = await photo.arrayBuffer()
       const buffer = Buffer.from(bytes)
   
@@ -825,10 +843,10 @@ export const updateStudent = async (state: stateType, data: FormData) => {
       }
     })
 
-    return { success: true, error: false };
+    return { success: true, error: false, fieldErrors: {} };
   } catch (err: any) {
     console.log(`${err.name}: ${err.message}`);
-    return {success: false, error:true}
+    return {success: false, error:true, fieldErrors: {}}
   }
 }
 export const deleteStudent = async (state: stateType, data: FormData) => {

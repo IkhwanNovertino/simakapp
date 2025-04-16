@@ -101,31 +101,15 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Pendidikan Terakhir</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("degree")}
-            defaultValue={data?.degree}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih pendidikan terakhir
-            </option>
-            {degree.map((item) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.degree?.message && (
-            <p className="text-xs text-red-400">
-              {errors.degree.message.toString()}
-            </p>
-          )}
+          <InputField
+            label="NUPTK"
+            name="nuptk"
+            defaultValue={data?.nuptk}
+            register={register}
+            error={errors?.nuptk}
+          />
         </div>
+
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
             label="Gelar Nama Depan"
@@ -154,7 +138,32 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             error={errors?.backTitle}
           />
         </div>
-
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Pendidikan Terakhir</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("degree")}
+            defaultValue={data?.degree}
+          >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih pendidikan terakhir
+            </option>
+            {degree.map((item) => (
+              <option
+                value={item}
+                key={item}
+                className="text-sm py-0.5"
+              >
+                {item}
+              </option>
+            ))}
+          </select>
+          {errors.degree?.message && (
+            <p className="text-xs text-red-400">
+              {errors.degree.message.toString()}
+            </p>
+          )}
+        </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
             label="Tahun Masuk"
@@ -193,33 +202,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Agama</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("religion")}
-            defaultValue={data?.religion}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih agama
-            </option>
-            {religion.map((item: string) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
 
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.religion?.message && (
-            <p className="text-xs text-red-400">
-              {errors.religion.message.toString()}
-            </p>
-          )}
-        </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Gender</label>
           <select
@@ -271,8 +254,35 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           <label className="text-xs text-gray-500">Preview Foto</label>
           {preview && (
             <div>
-              <img src={preview} alt="Preview" className="max-w-20 max-h-20 object-contain border border-gray-200 rounded-full" />
+              <img src={preview} alt="Preview" className="w-20 h-20 object-cover border border-gray-200 rounded-full" />
             </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Agama</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("religion")}
+            defaultValue={data?.religion}
+          >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih agama
+            </option>
+            {religion.map((item: string) => (
+              <option
+                value={item}
+                key={item}
+                className="text-sm py-0.5"
+
+              >
+                {item}
+              </option>
+            ))}
+          </select>
+          {errors.religion?.message && (
+            <p className="text-xs text-red-400">
+              {errors.religion.message.toString()}
+            </p>
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">

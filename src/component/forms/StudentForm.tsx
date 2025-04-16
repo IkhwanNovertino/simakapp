@@ -32,7 +32,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
   })
 
   const action = type === "create" ? createStudent : updateStudent;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, fieldErrors: {} });
 
   const onValid = (data: StudentInputs) => {
     formRef.current?.requestSubmit()
@@ -49,8 +49,6 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
       setPreview(data?.photo ?? null)
     }
   }
-
-
 
   const router = useRouter();
   useEffect(() => {
@@ -239,11 +237,6 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             accept="image/jpeg, image/jpg, image/png"
             onChange={handleFileChange}
           />
-          {errors.photo?.message && (
-            <p className="text-xs text-red-400">
-              {errors.photo.message.toString()}
-            </p>
-          )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Preview Foto</label>

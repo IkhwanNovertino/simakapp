@@ -89,7 +89,7 @@ const LecturerListPage = async (
     {
       header: "Role",
       accessor: "role",
-      className: "hidden lg:table-cell",
+      className: "hidden md:table-cell",
     },
     {
       header: "Actions",
@@ -102,15 +102,23 @@ const LecturerListPage = async (
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
       <td className="flex items-center gap-4 p-4">
+        <Image
+          src={item.photo || 'avatar.png'}
+          alt=""
+          width={40}
+          height={40}
+          className="md:hidden xl:block w-16 h-16 rounded-full object-cover"
+        />
         <div className="flex flex-col">
-          <h3 className="font-semibold">{`${item.frontTitle} ${item.name}, ${item.backTitle}`}</h3>
-          <p className="text-xs text-gray-500">{item?.user?.email || ""}</p>
+          <h3 className="text-sm font-semibold">{`${item.frontTitle} ${item.name}, ${item.backTitle}`}</h3>
+          <p className="text-xs text-gray-500 italic">NUPTK : {item.nuptk || "-"}</p>
+          <p className="text-xs text-gray-500 ">{item?.user?.email || ""}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell">{item.npk}</td>
+      <td className="hidden md:table-cell">{item.npk || ""}</td>
       <td className="hidden md:table-cell">{item.nidn}</td>
-      <td className="hidden md:table-cell uppercase">{item.major?.stringCode || "-"}</td>
-      <td className="hidden lg:table-cell">{item.user?.role?.name || "-"}</td>
+      <td className="hidden md:table-cell capitalize">{item.major?.name || ""}</td>
+      <td className="hidden md:table-cell capitalize">{item?.user?.role?.name || ""}</td>
       <td>
         <div className="flex items-center gap-2">
           <Link href={`/list/lecturers/${item.id}`}>
