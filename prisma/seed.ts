@@ -1,4 +1,5 @@
 import { Location, PrismaClient, RoleType } from "@prisma/client";
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -49,8 +50,20 @@ async function main() {
     })
   }
 
-  // prodi/major
+  // user
+  const hashPassword = bcrypt.hashSync("admin", 10);
+  await prisma.user.createMany({
+    data: [
+      {
+        email: "admin@stmik.com",
+        password: hashPassword,
+        roleId: 1,
+        isStatus: true,
+      }
+    ]
+  });
 
+  // prodi/major
   await prisma.major.createMany({
     data: [
       {

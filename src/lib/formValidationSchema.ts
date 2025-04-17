@@ -126,3 +126,10 @@ export const studentSchema = z.object({
 })
 
 export type StudentInputs = z.infer<typeof studentSchema>;
+
+export const loginSchema = z.object({
+  username: z.string().email({ message: "email tidak valid" }).min(1, { message: "email harus diisi" }),
+  password: z.string().min(1, { message: "password harus diisi" }),
+})
+
+export type LoginInputs = z.infer<typeof loginSchema>;

@@ -1,14 +1,19 @@
 // import Menu from "@/components/Menu";
 import Navbar from "@/component/Navbar";
 import Sidebar from "@/component/Sidebar";
+import { getSidebarItems } from "@/lib/getSidebarItems";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  // const sidebarItems = await getSidebarItems();
+  // console.log(sidebarItems);
+
   return (
     <div
       className="min-h-screen max-h-fit flex overflow-scroll"

@@ -1,21 +1,22 @@
 'use client';
 
+import { logout } from "@/lib/auth";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const menuItems = [
-  {
-    title: "",
-    items: [
-      {
-        icon: "/icon/dashboard.svg",
-        label: "Dashboard",
-        href: "/",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-    ],
-  },
+  // {
+  //   title: "",
+  //   items: [
+  //     {
+  //       icon: "/icon/dashboard.svg",
+  //       label: "Dashboard",
+  //       href: "/",
+  //       visible: ["admin", "teacher", "student", "parent"],
+  //     },
+  //   ],
+  // },
   {
     title: "HAK AKSES",
     items: [
@@ -129,29 +130,29 @@ const menuItems = [
       },
     ],
   },
-  {
-    title: "OTHER",
-    items: [
-      {
-        icon: "/icon/profile.svg",
-        label: "Profile",
-        href: "/profile",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-      {
-        icon: "/icon/setting.svg",
-        label: "Settings",
-        href: "/settings",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-      {
-        icon: "/icon/logout.svg",
-        label: "Logout",
-        href: "/logout",
-        visible: ["admin", "teacher", "student", "parent"],
-      },
-    ],
-  },
+  // {
+  //   title: "OTHER",
+  //   items: [
+  //     {
+  //       icon: "/icon/profile.svg",
+  //       label: "Profile",
+  //       href: "/profile",
+  //       visible: ["admin", "teacher", "student", "parent"],
+  //     },
+  //     {
+  //       icon: "/icon/setting.svg",
+  //       label: "Settings",
+  //       href: "/settings",
+  //       visible: ["admin", "teacher", "student", "parent"],
+  //     },
+  //     {
+  //       icon: "/icon/logout.svg",
+  //       label: "Logout",
+  //       href: "/logout",
+  //       visible: ["admin", "teacher", "student", "parent"],
+  //     },
+  //   ],
+  // },
 ];
 
 
@@ -159,6 +160,16 @@ const Sidebar = () => {
   const pathname = usePathname();
   return (
     <div className="mt-4 text-sm">
+      <div className="flex flex-col gap-2">
+        <span className="hidden lg:block text-gray-400 font-light my-4"></span>
+        <Link
+          className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === "/" ? "md:bg-primary-light" : ""}`}
+          href={"/"}
+        >
+          <Image src={"/icon/dashboard.svg"} width={20} height={20} alt={"Dashboard"} />
+          <span className={`hidden lg:block ${pathname === "/" ? "text-black font-semibold" : ""}`}>{"Dashboard"}</span>
+        </Link>
+      </div>
       {menuItems.map(el => (
         <div className="flex flex-col gap-2" key={el.title}>
           <span className="hidden lg:block text-gray-400 font-light my-4">
@@ -182,6 +193,32 @@ const Sidebar = () => {
         </div>
       ))
       }
+      <div className="flex flex-col gap-2">
+        <span className="hidden lg:block text-gray-400 font-light my-4">LAINNYA</span>
+        <Link
+          className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === "/profile" ? "md:bg-primary-light" : ""}`}
+          href={"/profile"}
+        >
+          <Image src={"/icon/profile.svg"} width={20} height={20} alt={"Profile"} />
+          <span className={`hidden lg:block ${pathname === "/profile" ? "text-black font-semibold" : ""}`}>{"Profile"}</span>
+        </Link>
+        <Link
+          className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === "/settings" ? "md:bg-primary-light" : ""}`}
+          href={"/settings"}
+        >
+          <Image src={"/icon/setting.svg"} width={20} height={20} alt={"Settings"} />
+          <span className={`hidden lg:block ${pathname === "/settings" ? "text-black font-semibold" : ""}`}>{"Settings"}</span>
+        </Link>
+        <form action={logout}>
+          <button
+            type="submit"
+            className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2 md:px-2 rounded-md hover:cursor-pointer`}
+          >
+            <Image src={"/icon/logout.svg"} width={20} height={20} alt={"Logout"} />
+            <span className={`hidden lg:block`}>{"Logout"}</span>
+          </button>
+        </form>
+      </div>
     </div >
   )
 }

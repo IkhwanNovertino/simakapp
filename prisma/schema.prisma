@@ -47,8 +47,19 @@ model User {
   lecturer Lecturer?
   operator Operator?
   student  Student?
+  Session  Session[]
 
   @@map("sb25_users")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+
+  @@map("sb25_sessions")
 }
 
 model Major {

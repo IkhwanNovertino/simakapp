@@ -3,8 +3,31 @@ import BigCalendar from "@/component/BigCalendar";
 import CountChart from "@/component/CountChart";
 import EventCalender from "@/component/EventCalender";
 import UserCard from "@/component/UserCard";
+import { prisma } from "@/lib/prisma";
+import { getDbSession } from "@/lib/session-db";
+import { dashboardRouter } from "@/lib/utils";
+import { redirect } from "next/navigation";
 
-const AdminPage = () => {
+const AdminPage = async () => {
+  // const session = await getDbSession()
+
+  // // If not authenticated, send to sign-in
+  // if (!session) {
+  //   redirect('/sign-in')
+  // }
+
+  // // Fetch user's role
+  // const user = await prisma.user.findUnique({
+  //   where: { id: session.userId },
+  //   include: { role: true },
+  // })
+
+  // if (user) {
+  //   const dashboardPathname = await dashboardRouter(user?.role?.roleType!)
+  //   redirect(`${dashboardPathname}`);
+  // }
+
+
   return (
     <div className="p-4 flex flex-col md:flex-row gap-4">
       {/* LEFT */}
