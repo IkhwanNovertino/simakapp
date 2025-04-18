@@ -3,29 +3,15 @@ import BigCalendar from "@/component/BigCalendar";
 import CountChart from "@/component/CountChart";
 import EventCalender from "@/component/EventCalender";
 import UserCard from "@/component/UserCard";
-import { prisma } from "@/lib/prisma";
-import { getDbSession } from "@/lib/session-db";
-import { dashboardRouter } from "@/lib/utils";
+import { redirectDashboardByRole } from "@/lib/dal";
+import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
 const AdminPage = async () => {
-  // const session = await getDbSession()
-
-  // // If not authenticated, send to sign-in
-  // if (!session) {
-  //   redirect('/sign-in')
-  // }
-
-  // // Fetch user's role
-  // const user = await prisma.user.findUnique({
-  //   where: { id: session.userId },
-  //   include: { role: true },
-  // })
-
-  // if (user) {
-  //   const dashboardPathname = await dashboardRouter(user?.role?.roleType!)
-  //   redirect(`${dashboardPathname}`);
-  // }
+  const dashboardByRole = await redirectDashboardByRole();
+  if (dashboardByRole !== "admin") {
+    return redirect("/" + dashboardByRole);
+  }
 
 
   return (

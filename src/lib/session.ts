@@ -1,44 +1,66 @@
-import "server-only";
-
-import { jwtVerify, SignJWT } from "jose";
+'use server';
+import { SignJWT } from "jose";
+import { prisma } from "./prisma";
 import { cookies } from "next/headers";
 
-const secretKey = process.env.SESSION_SECRET as string;
-const encodedKey = new TextEncoder().encode(secretKey);
+const SESSION_NAME = "session";
 
-export const encrypt = async (payload: {userId: string, roleId: number, expiresAt: Date}) => {
-  return new SignJWT(payload)
-    .setProtectedHeader({ alg: "HS256" })
-    .setIssuedAt()
-    .setExpirationTime('7d')
-    .sign(encodedKey);
-};
+export const createSession = async (userId: string) => {
+  const expiresAt = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
+  const sessionInsert = await prisma.session.create({
+    data: {
+      userId,
+      expiresAt,
+    },
+  });
 
-export const decrypt = async (session: string | undefined = '') => {
-  try {
-    const { payload } = await jwtVerify(session, encodedKey, { algorithms: ["HS256"] });
-    
-    return payload;
-  } catch (err: any) {
-    console.log('Failed to verify session')
-  }
+  const sessionId = sessionInsert.id;
+  const cookieStore = await cookies();
+  cookieStore.set(SESSION_NAME, sessionId, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    expires: expiresAt,
+    path: "/",
+    sameSite: "lax",
+  });
+
+  return true;
 }
 
-export const createSession = async ({ userId, roleId }:{ userId: string, roleId: number}) => {
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  const session = await encrypt({ userId, roleId, expiresAt });
+export const getSession = async () => {
+  // Get session from cookie
   const cookieStore = await cookies();
+  const session = cookieStore.get(SESSION_NAME)?.value;
+  if (!session) return null;
 
-  cookieStore.set('session', session, {
-    httpOnly: true,
-    secure: true,
-    expires: expiresAt,
-    sameSite: 'lax',
-    path: '/',
+  // Get session from database
+  const sessionData = await prisma.session.findUnique({
+    where: { id: session },
+    include: {
+      user: {
+        include: {
+          role: true,
+        }
+      }
+    },
   });
+
+  if (!sessionData || sessionData.expiresAt.getTime() < Date.now()) return null;
+  return {
+    sessionId: sessionData.id,
+    userId: sessionData.userId,
+    roleType: sessionData.user.role?.roleType,
+  };
 }
 
 export const deleteSession = async () => {
   const cookieStore = await cookies();
-  cookieStore.delete('session');
+  const session = cookieStore.get(SESSION_NAME)?.value;
+  if (session) {
+    await prisma.session.delete({
+      where: { id: session},
+    })
+  };
+  cookieStore.delete(SESSION_NAME);
+  return true;
 }

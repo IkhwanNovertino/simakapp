@@ -1,49 +1,36 @@
-import "server-only";
-import { NextResponse } from 'next/server'
-import type { NextRequest } from 'next/server'
-import { getDbSession } from '@/lib/session-db'
-import { prisma } from './lib/prisma'
-import { dashboardRouter } from './lib/utils'
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+  
+  // 1. Specify protected and public routes
+  const publicRoutes = ['/', '/sign-in'];
 
-  // whitelist public routes
-  if (
-    pathname.startsWith('/api') ||
-    pathname.startsWith('/_next') ||
-    pathname === '/favicon.ico'
-  ) {
-    return NextResponse.next()
+  // 2. Check if the current route is protected or public
+  const isProtectedRoute = !publicRoutes.includes(pathname);
+  const isPublicRoute = publicRoutes.includes(pathname);
+
+  // 3. Get the session from the cookie
+  // const getSessionFromCookie = await getSession();
+  const getSessionFromCookie = req.cookies.get('session')?.value;
+  // Get session from database
+
+  // 4. Redirect to /login if the user is not authenticated and trying to access a protected route
+  if (isProtectedRoute && !getSessionFromCookie) {
+    const loginUrl = new URL('/sign-in', req.nextUrl);
+    return NextResponse.redirect(loginUrl);
   }
 
-  // verifikasi session dari DB
-  const session = await getDbSession()
-
-  // If logged in and accessing sign-in page, redirect to dashboard
-  if (session && pathname.startsWith('/sign-in')) {
-    const user = await prisma.user.findUnique({
-      where: { id: session.userId },
-      include: { role: true },
-    })
-    const dashboardPathname = await dashboardRouter(user?.role?.roleType!);
-    const dashboardPath = `/admin`
-    return NextResponse.redirect(new URL(dashboardPath, req.url))
+  // 5. Redirect to /dashboard if the user is authenticated and trying to access a public route
+  if (isPublicRoute && getSessionFromCookie) {
+    const dashboardUrl = new URL('/admin', req.nextUrl);
+    return NextResponse.redirect(dashboardUrl);
   }
 
-  // If not logged in and accessing protected pages (not sign-in), redirect to sign-in
-  if (!session && !pathname.startsWith('/sign-in')) {
-    const signInUrl = req.nextUrl.clone()
-    signInUrl.pathname = '/sign-in'
-    return NextResponse.redirect(signInUrl)
-  }
-
-  // kirim header untuk downstream
-  const res = NextResponse.next()
-  res.headers.set('x-user-id', session?.userId!)
-  return res
+  return NextResponse.next();
 }
 
+// Routes Middleware should not run on
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
 }

@@ -1,5 +1,6 @@
 import { Location, PrismaClient, RoleType } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { connect } from "http2";
 
 const prisma = new PrismaClient();
 
@@ -50,18 +51,69 @@ async function main() {
     })
   }
 
+  // await prisma.role.create({
+  //   data: {
+  //     name: "admin",
+  //     description: "admin role",
+  //     roleType: "OPERATOR" as RoleType,
+  //   },
+  // })
+  // await prisma.role.create({
+  //   data: {
+  //     name: "dosen",
+  //     description: "dosen role",
+  //     roleType: "LECTURER" as RoleType,
+  //   },
+  // })
+
+  // rolePermission
+  await prisma.rolePermission.createMany({
+    data: [
+      { roleId: 1, permissionId: 1 },
+      { roleId: 1, permissionId: 2 },
+      { roleId: 1, permissionId: 3 },
+      { roleId: 1, permissionId: 4 },
+      { roleId: 1, permissionId: 5 },
+      { roleId: 1, permissionId: 6 },
+      { roleId: 1, permissionId: 7 },
+      { roleId: 1, permissionId: 8 },
+      { roleId: 1, permissionId: 9 },
+      { roleId: 1, permissionId: 10 },
+      { roleId: 1, permissionId: 11 },
+      { roleId: 1, permissionId: 12 },
+      { roleId: 1, permissionId: 13 },
+      { roleId: 1, permissionId: 14 },
+      { roleId: 1, permissionId: 15 },
+      { roleId: 1, permissionId: 16 },
+      { roleId: 2, permissionId: 9 },
+      { roleId: 2, permissionId: 10 },
+      { roleId: 2, permissionId: 11 },
+      { roleId: 2, permissionId: 12 },
+      { roleId: 2, permissionId: 13 },
+      { roleId: 2, permissionId: 14 },
+      { roleId: 2, permissionId: 15 },
+      { roleId: 2, permissionId: 16 },
+      { roleId: 2, permissionId: 17 },
+      { roleId: 2, permissionId: 18 },
+    ]
+  })
+
   // user
   const hashPassword = bcrypt.hashSync("admin", 10);
-  await prisma.user.createMany({
-    data: [
-      {
-        email: "admin@stmik.com",
-        password: hashPassword,
-        roleId: 1,
-        isStatus: true,
+  await prisma.operator.create({
+    data: {
+      name: "operator1",
+      department: "",
+      user: {
+        create: {
+          email: "admin1@gmail.com",
+          password: hashPassword,
+          roleId: 1,
+          isStatus: true,
+        }
       }
-    ]
-  });
+    }
+  })
 
   // prodi/major
   await prisma.major.createMany({
