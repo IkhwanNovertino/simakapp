@@ -112,7 +112,6 @@ const SidebarContainer = async () => {
       ),
     };
   });
-  console.log(filteredMenuItems);
 
   return (
     <>

@@ -13,11 +13,6 @@ const AdminPage = async () => {
     return redirect("/" + dashboardByRole);
   }
 
-  const getSidebarItem = await getSidebarItemsByRole();
-  console.log(getSidebarItem);
-
-
-
   return (
     <div className="p-4 flex flex-col md:flex-row gap-4">
       {/* LEFT */}
@@ -45,10 +40,10 @@ const AdminPage = async () => {
         </div>
 
         {/* BOTTOM CHART */}
-        <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
+        {/* <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
           <h1>Student&apos;s Schedule</h1>
           <BigCalendar />
-        </div>
+        </div> */}
         {/* <div className="w-full h-[500px]"> */}
         {/* <FinanceChart /> */}
         {/* </div> */}
