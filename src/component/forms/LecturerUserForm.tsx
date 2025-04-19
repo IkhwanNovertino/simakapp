@@ -20,12 +20,13 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
   const { role } = relatedData;
   const [isChecked, setIsChecked] = useState(false)
 
+  // const zodResolverForUpdateUser = type === "updateUser" ? zodResolver(userSchema.omit({ password: true })) : zodResolver(userSchema)
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<UserInputs>({
-    resolver: zodResolver(userSchema)
+    resolver: zodResolver(userSchema),
   })
 
   const action = type === "createUser" ? createUserLecturer : updateUserLecturer;
@@ -77,7 +78,7 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
             label="Password"
             name="password"
             type="password"
-            defaultValue={data?.user?.password}
+            defaultValue={type === "createUser" ? "" : "password"}
             register={register}
             error={errors?.password}
             required={true}

@@ -75,7 +75,7 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
             label="Password"
             name="password"
             type="password"
-            defaultValue={data?.user?.password}
+            defaultValue={type === "createUser" ? "" : "password"}
             register={register}
             error={errors?.password}
             required={true}
