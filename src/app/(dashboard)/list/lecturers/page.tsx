@@ -9,6 +9,7 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Lecturer, Major, Prisma, Role, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 type LecturerDataType = Lecturer & { user: User & { role: Role } } & { major: Major };
 
@@ -20,6 +21,10 @@ const LecturerListPage = async (
   const canDeleteData = await canRoleDeleteData("lecturers");
   const canViewData = await canRoleViewData("lecturers");
   const canCreateUser = await canRoleCreateDataUser();
+
+  if (!canViewData) {
+    redirect("/")
+  }
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;

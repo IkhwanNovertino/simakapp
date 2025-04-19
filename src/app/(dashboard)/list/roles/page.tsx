@@ -2,11 +2,13 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Permission, Prisma, Role, RolePermission } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 type RoleDataType = Role & {
   rolePermission: {
@@ -17,6 +19,12 @@ type RoleDataType = Role & {
 const RoleListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
+  const canCreateData = await canRoleCreateData("roles");
+  const canDeleteData = await canRoleDeleteData("roles");
+  const canViewData = await canRoleViewData("roles");
+  if (!canViewData) {
+    redirect("/")
+  }
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
@@ -76,12 +84,15 @@ const RoleListPage = async (
       </td >
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/roles/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-              <Image src="/icon/view.svg" alt="" width={20} height={20} />
-            </button>
-          </Link>
-          <FormContainer table="role" type="delete" id={item.id} />
+          {canViewData && (
+            <Link href={`/list/roles/${item.id}`}>
+              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                <Image src="/icon/view.svg" alt="" width={20} height={20} />
+              </button>
+            </Link>
+          )}
+          {canDeleteData && (<FormContainer table="role" type="delete" id={item.id} />)}
+
         </div>
       </td>
     </tr >
@@ -117,10 +128,10 @@ const RoleListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
+            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
               <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <FormContainer table="role" type="create" />
+            </button> */}
+            {canCreateData && (<FormContainer table="role" type="create" />)}
           </div>
         </div>
       </div>

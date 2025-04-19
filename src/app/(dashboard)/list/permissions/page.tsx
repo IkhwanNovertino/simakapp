@@ -2,10 +2,12 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Prisma } from "@prisma/client";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 type PermissionDataType = {
   id: number;
@@ -18,6 +20,14 @@ type PermissionDataType = {
 const PermissionListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
+  const canCreateData = await canRoleCreateData("permissions");
+  const canUpdateData = await canRoleUpdateData("permissions");
+  const canDeleteData = await canRoleDeleteData("permissions");
+  const canViewData = await canRoleViewData("permissions");
+
+  if (!canViewData) {
+    redirect("/")
+  }
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
@@ -58,8 +68,8 @@ const PermissionListPage = async (
       <td className="hidden md:table-cell">{item.description}</td>
       <td>
         <div className="flex items-center gap-2">
-          <FormContainer table="permission" type="update" data={item} />
-          <FormContainer table="permission" type="delete" id={item.id} />
+          {canUpdateData && (<FormContainer table="permission" type="update" data={item} />)}
+          {canDeleteData && (<FormContainer table="permission" type="delete" id={item.id} />)}
         </div>
       </td>
     </tr>
@@ -90,10 +100,10 @@ const PermissionListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
+            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
               <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
-            <FormContainer table="permission" type="create" />
+            </button> */}
+            {canCreateData && (<FormContainer table="permission" type="create" />)}
           </div>
         </div>
       </div>

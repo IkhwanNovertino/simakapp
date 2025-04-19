@@ -3,15 +3,25 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Course, Major, Prisma } from "@prisma/client";
+import { redirect } from "next/navigation";
 
 type CourseDataType = Course & { major: Major };
 
 const CourseListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
+  const canCreateData = await canRoleCreateData("courses");
+  const canUpdateData = await canRoleUpdateData("courses");
+  const canDeleteData = await canRoleDeleteData("courses");
+  const canViewData = await canRoleViewData("courses");
+
+  if (!canViewData) {
+    redirect("/")
+  }
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
@@ -95,8 +105,8 @@ const CourseListPage = async (
       <td className="hidden lg:table-cell lg:capitalize">{item.major?.name}</td>
       <td>
         <div className="flex items-center gap-2">
-          <FormContainer table="course" type="update" data={item} />
-          <FormContainer table="course" type="delete" id={item.id} />
+          {canUpdateData && <FormContainer table="course" type="update" id={item.id} />}
+          {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
         </div>
       </td>
     </tr>
@@ -110,7 +120,9 @@ const CourseListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer table="course" type="create" />
+            {canCreateData && (
+              <FormContainer table="course" type="create" />
+            )}
           </div>
         </div>
       </div>

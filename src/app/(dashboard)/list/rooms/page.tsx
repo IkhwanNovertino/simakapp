@@ -2,16 +2,25 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Prisma, Room } from "@prisma/client";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 type RoomDataType = Room;
 
 const RoomListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
+  const canCreateData = await canRoleCreateData("rooms");
+  const canUpdateData = await canRoleUpdateData("rooms");
+  const canDeleteData = await canRoleDeleteData("rooms");
+  const canViewData = await canRoleViewData("rooms");
+  if (!canViewData) {
+    redirect("/")
+  }
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
@@ -54,8 +63,8 @@ const RoomListPage = async (
       <td className="hidden md:table-cell">{item.capacity}</td>
       <td>
         <div className="flex items-center gap-2">
-          <FormContainer table="room" type="update" data={item} />
-          <FormContainer table="room" type="delete" id={item.id} />
+          {canUpdateData && <FormContainer table="room" type="update" data={item} />}
+          {canDeleteData && <FormContainer table="room" type="delete" id={item.id} />}
         </div>
       </td>
     </tr>
@@ -93,7 +102,8 @@ const RoomListPage = async (
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
               <Image src="/filter.png" alt="" width={14} height={14} />
             </button>
-            <FormContainer table="room" type="create" />
+            {canCreateData && (<FormContainer table="room" type="create" />)}
+
           </div>
         </div>
       </div>

@@ -2,16 +2,28 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Operator, Prisma, Role, User } from "@prisma/client";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 
 type OperatorDataType = Operator & { user: { role: Role } };
 
 const OperatorListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
+  const canCreateData = await canRoleCreateData("operators");
+  const canUpdateData = await canRoleUpdateData("operators");
+  const canDeleteData = await canRoleDeleteData("operators");
+  const canViewData = await canRoleViewData("operators");
+  const canCreateUser = await canRoleCreateDataUser();
+
+  if (!canViewData) {
+    redirect("/")
+  }
+
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
 
@@ -93,9 +105,9 @@ const OperatorListPage = async (
       <td className="hidden md:table-cell">{item?.user?.role?.name || ""}</td>
       <td>
         <div className="flex items-center gap-2">
-          <FormContainer table="operator" type="update" data={item} />
-          <FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />
-          <FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />
+          {canUpdateData && <FormContainer table="operator" type="update" data={item} />}
+          {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+          {canDeleteData && <FormContainer table="operator" type="delete" id={item.id} />}
         </div>
       </td>
     </tr>
@@ -112,7 +124,7 @@ const OperatorListPage = async (
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
               <Image src="/filter.png" alt="" width={14} height={14} />
             </button>
-            <FormContainer table="operator" type="create" />
+            {canCreateData && (<FormContainer table="operator" type="create" />)}
           </div>
         </div>
       </div>

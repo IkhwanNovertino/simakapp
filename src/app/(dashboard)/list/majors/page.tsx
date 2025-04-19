@@ -2,15 +2,25 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Major, Prisma } from "@prisma/client";
+import { redirect } from "next/navigation";
 
 type MajorDataType = Major;
 
 const MajorListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
+  const canCreateData = await canRoleCreateData("majors");
+  const canUpdateData = await canRoleUpdateData("majors");
+  const canDeleteData = await canRoleDeleteData("majors");
+  const canViewData = await canRoleViewData("majors");
+
+  if (!canViewData) {
+    redirect("/")
+  }
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
@@ -51,8 +61,8 @@ const MajorListPage = async (
       <td className="flex items-center gap-4 p-4 md:px-0">{item.name}</td>
       <td>
         <div className="flex items-center gap-2">
-          <FormContainer table="major" type="update" data={item} />
-          <FormContainer table="major" type="delete" id={item.id} />
+          {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
+          {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
         </div>
       </td>
     </tr>
@@ -83,7 +93,7 @@ const MajorListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer table="major" type="create" />
+            {canCreateData && (<FormContainer table="major" type="create" />)}
           </div>
         </div>
       </div>
