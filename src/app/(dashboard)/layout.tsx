@@ -1,7 +1,7 @@
 // import Menu from "@/components/Menu";
 import Navbar from "@/component/Navbar";
 import Sidebar from "@/component/Sidebar";
-import { getSidebarItems } from "@/lib/getSidebarItems";
+import SidebarContainer from "@/component/SidebarContainer";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -10,10 +10,6 @@ export default async function DashboardLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-
-  // const sidebarItems = await getSidebarItems();
-  // console.log(sidebarItems);
-
   return (
     <div
       className="min-h-screen max-h-fit flex overflow-scroll"
@@ -28,7 +24,7 @@ export default async function DashboardLayout({
           <span className="hidden lg:block">STIMIK</span>
         </Link>
         {/* <Menu /> */}
-        <Sidebar />
+        <SidebarContainer />
       </div>
       {/* RIGHT */}
       <div className="bg-[#f3f5fa] w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] overflow-hidden flex flex-col">

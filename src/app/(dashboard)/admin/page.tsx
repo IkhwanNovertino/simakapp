@@ -3,7 +3,7 @@ import BigCalendar from "@/component/BigCalendar";
 import CountChart from "@/component/CountChart";
 import EventCalender from "@/component/EventCalender";
 import UserCard from "@/component/UserCard";
-import { redirectDashboardByRole } from "@/lib/dal";
+import { getSidebarItemsByRole, redirectDashboardByRole } from "@/lib/dal";
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
@@ -12,6 +12,10 @@ const AdminPage = async () => {
   if (dashboardByRole !== "admin") {
     return redirect("/" + dashboardByRole);
   }
+
+  const getSidebarItem = await getSidebarItemsByRole();
+  console.log(getSidebarItem);
+
 
 
   return (
