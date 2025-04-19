@@ -3,6 +3,7 @@ import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Lecturer, Major, Prisma, Role, User } from "@prisma/client";
@@ -11,12 +12,14 @@ import Link from "next/link";
 
 type LecturerDataType = Lecturer & { user: User & { role: Role } } & { major: Major };
 
-
-
 const LecturerListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
-
+  const canCreateData = await canRoleCreateData("lecturers");
+  const canUpdateData = await canRoleUpdateData("lecturers");
+  const canDeleteData = await canRoleDeleteData("lecturers");
+  const canViewData = await canRoleViewData("lecturers");
+  const canCreateUser = await canRoleCreateDataUser();
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
@@ -121,14 +124,16 @@ const LecturerListPage = async (
       <td className="hidden md:table-cell capitalize">{item?.user?.role?.name || ""}</td>
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/lecturers/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-              <Image src="/icon/view.svg" alt="" width={20} height={20} />
-            </button>
-          </Link>
-          <FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />
-          <FormContainer table="lecturer" type="update" data={item} />
-          <FormContainer table="lecturer" type="delete" id={item.id} />
+          {canViewData && (
+            <Link href={`/list/lecturers/${item.id}`}>
+              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                <Image src="/icon/view.svg" alt="" width={20} height={20} />
+              </button>
+            </Link>
+          )}
+          {canUpdateData && (<FormContainer table="lecturer" type="update" data={item} />)}
+          {canCreateUser && (<FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+          {canDeleteData && (<FormContainer table="lecturer" type="delete" id={item.id} />)}
         </div>
       </td>
     </tr>
@@ -142,7 +147,7 @@ const LecturerListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer table="lecturer" type="create" />
+            {canCreateData && (<FormContainer table="lecturer" type="create" />)}
           </div>
         </div>
       </div>
