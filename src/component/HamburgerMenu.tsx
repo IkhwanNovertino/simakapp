@@ -1,10 +1,16 @@
 'use client'
 import Image from "next/image";
-import { useState } from "react";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const HamburgerMenu = ({ sidebar }: { sidebar: React.ReactNode }) => {
   const [openSidebar, setOpenSidebar] = useState(false);
   console.log(openSidebar);
+
+  const pathname = usePathname();
+  useEffect(() => {
+    setOpenSidebar(false)
+  }, [pathname])
 
   return (
     <div>
