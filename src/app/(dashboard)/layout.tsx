@@ -13,7 +13,7 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen max-h-fit flex overflow-scroll">
       {/* LEFT */}
-      <div className="w-0 md:w-[8%] lg:w-[16%] xl:w-[14%] md:p-4 ">
+      <div className="w-0 md:w-[10%] lg:w-[16%] xl:w-[14%] md:p-4 ">
         <Link
           href={"/"}
           className="flex items-center justify-center lg:justify-start gap-2"
@@ -24,7 +24,7 @@ export default async function DashboardLayout({
         <SidebarContainer />
       </div>
       {/* RIGHT */}
-      <div className="bg-[#f3f5fa] w-[100%] md:w-[92%] lg:w-[84%] xl:w-[86%] overflow-hidden flex flex-col">
+      <div className="bg-[#f3f5fa] w-[100%] md:w-[90%] lg:w-[84%] xl:w-[86%] overflow-hidden flex flex-col">
         <Navbar />
         {children}
       </div>
