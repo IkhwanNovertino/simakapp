@@ -102,6 +102,7 @@ const LecturerListPage = async (
     {
       header: "Actions",
       accessor: "action",
+      className: "hidden md:table-cell",
     },
   ];
   const renderRow = (item: LecturerDataType) => (
@@ -115,7 +116,7 @@ const LecturerListPage = async (
           alt=""
           width={40}
           height={40}
-          className="md:hidden xl:block w-16 h-16 rounded-full object-cover"
+          className="hidden xl:block w-16 h-16 rounded-full object-cover"
         />
         <div className="flex flex-col">
           <h3 className="text-sm font-semibold">{`${item.frontTitle} ${item.name}, ${item.backTitle}`}</h3>

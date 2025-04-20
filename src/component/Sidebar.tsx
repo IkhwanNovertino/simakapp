@@ -19,20 +19,20 @@ const Sidebar = ({ menuItems }: { menuItems: MenuItem[] }) => {
   const pathname = usePathname();
   return (
     <div className="mt-4 text-sm mb-10">
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 items-start md:items-center lg:items-start">
         <span className="hidden lg:block text-gray-400 font-light my-4"></span>
         <Link
           className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === "/" ? "md:bg-primary-light" : ""}`}
           href={"/"}
         >
           <Image src={"/icon/dashboard.svg"} width={20} height={20} alt={"Dashboard"} />
-          <span className={`hidden lg:block ${pathname === "/" ? "text-black font-semibold" : ""}`}>{"Dashboard"}</span>
+          <span className={`md:hidden lg:block ${pathname === "/" ? "text-black font-semibold" : ""}`}>{"Dashboard"}</span>
         </Link>
       </div>
       {menuItems.map(el => (
         el.items.length > 0 ? (
-          <div className="flex flex-col gap-2" key={el.title}>
-            <span className="hidden lg:block text-gray-400 font-light my-4">
+          <div className="flex flex-col gap-2 items-start md:items-center lg:items-start" key={el.title}>
+            <span className="md:hidden lg:block text-gray-400 font-light my-4">
               {el.title}
             </span>
 
@@ -44,28 +44,28 @@ const Sidebar = ({ menuItems }: { menuItems: MenuItem[] }) => {
                   key={item.href}
                 >
                   <Image src={item.icon} width={20} height={20} alt={item.label} />
-                  <span className={`hidden lg:block ${pathname === item.href ? "text-black font-semibold" : ""}`}>{item.label}</span>
+                  <span className={`md:hidden lg:block ${pathname === item.href ? "text-black font-semibold" : ""}`}>{item.label}</span>
                 </Link>
               ))
             }
           </div>
         ) : null
       ))}
-      <div className="flex flex-col gap-2">
-        <span className="hidden lg:block text-gray-400 font-light my-4">LAINNYA</span>
+      <div className="flex flex-col gap-2 items-start md:items-center lg:items-start">
+        <span className="md:hidden lg:block text-gray-400 font-light my-4">LAINNYA</span>
         <Link
           className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === "/profile" ? "md:bg-primary-light" : ""}`}
           href={"/profile"}
         >
           <Image src={"/icon/profile.svg"} width={20} height={20} alt={"Profile"} />
-          <span className={`hidden lg:block ${pathname === "/profile" ? "text-black font-semibold" : ""}`}>{"Profile"}</span>
+          <span className={`md:hidden lg:block ${pathname === "/profile" ? "text-black font-semibold" : ""}`}>{"Profile"}</span>
         </Link>
         <Link
           className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === "/settings" ? "md:bg-primary-light" : ""}`}
           href={"/settings"}
         >
           <Image src={"/icon/setting.svg"} width={20} height={20} alt={"Settings"} />
-          <span className={`hidden lg:block ${pathname === "/settings" ? "text-black font-semibold" : ""}`}>{"Settings"}</span>
+          <span className={`md:hidden lg:block ${pathname === "/settings" ? "text-black font-semibold" : ""}`}>{"Settings"}</span>
         </Link>
         <form
           action={logout}
@@ -76,7 +76,7 @@ const Sidebar = ({ menuItems }: { menuItems: MenuItem[] }) => {
             className={`flex items-center justify-center lg:justify-start gap-4 text-gray-400 rounded-md hover:cursor-pointer`}
           >
             <Image src={"/icon/logout.svg"} width={20} height={20} alt={"Logout"} />
-            <span className={`hidden lg:block`}>{"Logout"}</span>
+            <span className={`md:hidden lg:block`}>{"Logout"}</span>
           </button>
         </form>
       </div>
