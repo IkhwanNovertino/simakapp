@@ -1,4 +1,5 @@
 import FormContainer from "@/component/FormContainer";
+import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
@@ -84,15 +85,31 @@ const RoleListPage = async (
       </td >
       <td>
         <div className="flex items-center gap-2">
-          {canViewData && (
-            <Link href={`/list/roles/${item.id}`}>
-              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                <Image src="/icon/view.svg" alt="" width={20} height={20} />
-              </button>
-            </Link>
-          )}
-          {canDeleteData && (<FormContainer table="role" type="delete" id={item.id} />)}
+          <div className="md:hidden relative flex items-center justify-end gap-2">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                {canViewData && (
+                  <Link href={`/list/roles/${item.id}`}>
+                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                    </button>
+                  </Link>
+                )}
+                {canDeleteData && (<FormContainer table="role" type="delete" id={item.id} />)}
+              </div>
+            </ModalAction>
+          </div>
 
+          <div className="hidden md:flex items-center gap-2">
+            {canViewData && (
+              <Link href={`/list/roles/${item.id}`}>
+                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                </button>
+              </Link>
+            )}
+            {canDeleteData && (<FormContainer table="role" type="delete" id={item.id} />)}
+          </div>
         </div>
       </td>
     </tr >
@@ -117,6 +134,7 @@ const RoleListPage = async (
     {
       header: "Actions",
       accessor: "action",
+      className: "hidden lg:table-cell",
     },
   ];
 

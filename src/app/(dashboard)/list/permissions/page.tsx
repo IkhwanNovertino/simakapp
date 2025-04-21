@@ -1,4 +1,5 @@
 import FormContainer from "@/component/FormContainer";
+import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
@@ -68,8 +69,19 @@ const PermissionListPage = async (
       <td className="hidden md:table-cell">{item.description}</td>
       <td>
         <div className="flex items-center gap-2">
-          {canUpdateData && (<FormContainer table="permission" type="update" data={item} />)}
-          {canDeleteData && (<FormContainer table="permission" type="delete" id={item.id} />)}
+          <div className="md:hidden flex items-center justify-end gap-2">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                {canUpdateData && (<FormContainer table="permission" type="update" data={item} />)}
+                {canDeleteData && (<FormContainer table="permission" type="delete" id={item.id} />)}
+              </div>
+            </ModalAction>
+          </div>
+
+          <div className="hidden md:flex items-center gap-2">
+            {canUpdateData && (<FormContainer table="permission" type="update" data={item} />)}
+            {canDeleteData && (<FormContainer table="permission" type="delete" id={item.id} />)}
+          </div>
         </div>
       </td>
     </tr>
@@ -89,6 +101,7 @@ const PermissionListPage = async (
     {
       header: "Actions",
       accessor: "action",
+      className: "hidden md:table-cell",
     },
   ];
 

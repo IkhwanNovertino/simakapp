@@ -1,4 +1,5 @@
 import FormContainer from "@/component/FormContainer";
+import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
@@ -61,8 +62,19 @@ const MajorListPage = async (
       <td className="flex items-center gap-4 p-4 md:px-0">{item.name}</td>
       <td>
         <div className="flex items-center gap-2">
-          {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
-          {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
+          <div className="md:hidden relative flex items-center justify-end gap-2">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
+                {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
+              </div>
+            </ModalAction>
+          </div>
+          <div className="hidden md:flex items-center gap-2">
+            {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
+            {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
+          </div>
+
         </div>
       </td>
     </tr>
@@ -82,6 +94,7 @@ const MajorListPage = async (
     {
       header: "Actions",
       accessor: "action",
+      className: "hidden md:table-cell",
     },
   ];
 

@@ -1,4 +1,5 @@
 import FormContainer from "@/component/FormContainer";
+import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
@@ -90,6 +91,7 @@ const OperatorListPage = async (
     {
       header: "Actions",
       accessor: "action",
+      className: "hidden md:table-cell",
     },
   ];
 
@@ -105,9 +107,20 @@ const OperatorListPage = async (
       <td className="hidden md:table-cell">{item?.user?.role?.name || ""}</td>
       <td>
         <div className="flex items-center gap-2">
-          {canUpdateData && <FormContainer table="operator" type="update" data={item} />}
-          {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-          {canDeleteData && <FormContainer table="operator" type="delete" id={item.id} />}
+          <div className="md:hidden relative flex items-center justify-end gap-2">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                {canUpdateData && (<FormContainer table="operator" type="update" data={item} />)}
+                {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+                {canDeleteData && (<FormContainer table="operator" type="delete" id={item.id} />)}
+              </div>
+            </ModalAction>
+          </div>
+          <div className="hidden md:flex items-center gap-2">
+            {canUpdateData && <FormContainer table="operator" type="update" data={item} />}
+            {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+            {canDeleteData && <FormContainer table="operator" type="delete" id={item.id} />}
+          </div>
         </div>
       </td>
     </tr>
@@ -121,9 +134,9 @@ const OperatorListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
+            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
               <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
+            </button> */}
             {canCreateData && (<FormContainer table="operator" type="create" />)}
           </div>
         </div>

@@ -1,5 +1,6 @@
 import FilterSearch from "@/component/FilterSearch";
 import FormContainer from "@/component/FormContainer";
+import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
@@ -97,6 +98,7 @@ const StudentListPage = async (
     {
       header: "Actions",
       accessor: "action",
+      className: "hidden md:table-cell",
     },
   ];
 
@@ -123,16 +125,35 @@ const StudentListPage = async (
       <td className="hidden lg:table-cell">{item.lecturer?.name || "-"}</td>
       <td>
         <div className="flex items-center gap-2">
-          {canViewData && (
-            <Link href={`/list/stundents/${item.id}`}>
-              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                <Image src="/icon/view.svg" alt="" width={20} height={20} />
-              </button>
-            </Link>
-          )}
-          {canUpdateData && <FormContainer table="student" type="update" data={item} />}
-          {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-          {canDeleteData && (<FormContainer table="student" type="delete" id={item.id} />)}
+          <div className="md:hidden relative flex items-center justify-end gap-2">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                {canViewData && (
+                  <Link href={`/list/stundents/${item.id}`}>
+                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                    </button>
+                  </Link>
+                )}
+                {canUpdateData && <FormContainer table="student" type="update" data={item} />}
+                {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+                {canDeleteData && (<FormContainer table="student" type="delete" id={item.id} />)}
+              </div>
+            </ModalAction>
+          </div>
+          <div className="hidden md:flex items-center gap-2">
+            {canViewData && (
+              <Link href={`/list/stundents/${item.id}`}>
+                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                </button>
+              </Link>
+            )}
+            {canUpdateData && <FormContainer table="student" type="update" data={item} />}
+            {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+            {canDeleteData && (<FormContainer table="student" type="delete" id={item.id} />)}
+          </div>
+
         </div>
       </td>
     </tr>

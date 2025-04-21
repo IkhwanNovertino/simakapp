@@ -1,5 +1,6 @@
 import FilterSearch from "@/component/FilterSearch";
 import FormContainer from "@/component/FormContainer";
+import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
@@ -91,6 +92,7 @@ const CourseListPage = async (
     {
       header: "Actions",
       accessor: "action",
+      className: "hidden md:table-cell",
     },
   ];
 
@@ -99,14 +101,24 @@ const CourseListPage = async (
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
-      <td className="flex items-center p-4">{item.name}</td>
+      <td className="flex items-center p-4 sm:w-20">{item.name}</td>
       <td className="hidden md:table-cell">{item.code}</td>
       <td className="hidden lg:table-cell">{item.sks}</td>
       <td className="hidden lg:table-cell lg:capitalize">{item.major?.name}</td>
       <td>
         <div className="flex items-center gap-2">
-          {canUpdateData && <FormContainer table="course" type="update" id={item.id} />}
-          {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
+          <div className="md:hidden flex items-center justify-end gap-2">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                {canUpdateData && <FormContainer table="course" type="update" data={item} />}
+                {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
+              </div>
+            </ModalAction>
+          </div>
+          <div className="hidden md:flex items-center gap-2">
+            {canUpdateData && <FormContainer table="course" type="update" data={item} />}
+            {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
+          </div>
         </div>
       </td>
     </tr>
