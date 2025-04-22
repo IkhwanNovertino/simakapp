@@ -3,7 +3,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const HamburgerMenu = ({ sidebar }: { sidebar: React.ReactNode }) => {
+const HamburgerMenu = ({ sidebar, userProfile }: { sidebar: React.ReactNode, userProfile: { name: string, role: string, avatar: string } }) => {
   const [openSidebar, setOpenSidebar] = useState(false);
   console.log(openSidebar);
 
@@ -22,8 +22,18 @@ const HamburgerMenu = ({ sidebar }: { sidebar: React.ReactNode }) => {
       </button>
       {
         openSidebar && (
-          <div className="absolute z-20 w-2/3 left-2 mt-4 py-2 px-4 rounded-lg shadow-lg bg-neutral-50 md:hidden">
-            {sidebar}
+          <div className="absolute z-20 w-48 right-6 mt-4 py-2 px-4 rounded-lg shadow-xl shadow-black/20 bg-neutral-50 md:hidden">
+            <div className="flex flex-col items-start justify-start mb-2 gap-2 w-full">
+              <div className="flex flex-row items-center justify-start w-full mt-2 gap-2 ">
+                <Image src={userProfile.avatar} width={40} height={40} alt={"avatar"} className="rounded-full" />
+                <div className="flex flex-col items-start justify-start text-wrap w-28">
+                  <p className="text-xs leading-3 font-semibold truncate text-ellipsis w-full">{userProfile.name}</p>
+                  <span className="text-[10px] text-gray-500">{userProfile.role}</span>
+                </div>
+
+              </div>
+              {sidebar}
+            </div>
           </div>
         )
       }
