@@ -221,8 +221,8 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
       </button>
 
       {open && (
-        <div className="w-screen h-lvw absolute left-0 top-0 md:bg-black/60 z-50 flex items-start justify-center">
-          <div className="bg-white p-4 relative rounded-md mt-8  w-[88%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%]">
+        <div className="w-screen h-screen fixed z-[9999] left-0 top-0 bg-black/60  flex items-start justify-center overflow-scroll">
+          <div className="bg-white p-4 relative rounded-md mt-8  w-[88%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] h-fit">
             <Form />
             <div
               className="absolute top-4 right-4 cursor-pointer"

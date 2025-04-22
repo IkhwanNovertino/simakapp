@@ -85,7 +85,7 @@ const RoleListPage = async (
       </td >
       <td>
         <div className="flex items-center gap-2">
-          <div className="md:hidden relative flex items-center justify-end gap-2">
+          <div className="md:hidden flex items-center justify-end gap-2">
             <ModalAction>
               <div className="flex items-center gap-3">
                 {canViewData && (

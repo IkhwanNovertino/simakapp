@@ -43,7 +43,7 @@ const LoginForm = () => {
   }, [state, router]);
 
   return (
-    <form onSubmit={onSubmit} className="bg-white p-12 rounded-md shadow-2xl flex flex-col gap-2">
+    <form onSubmit={onSubmit} className="bg-white p-6 md:p-12 rounded-md shadow-2xl flex flex-col gap-2">
       <h1 className="text-xl font-bold flex items-center gap-2">
         <Image src="/logo.png" alt="" width={24} height={24} />
         STMIK BANJARBARU

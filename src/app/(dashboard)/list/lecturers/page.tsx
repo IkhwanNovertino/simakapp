@@ -96,11 +96,6 @@ const LecturerListPage = async (
       className: "hidden md:table-cell",
     },
     {
-      header: "Role",
-      accessor: "role",
-      className: "hidden md:table-cell",
-    },
-    {
       header: "Actions",
       accessor: "action",
       className: "hidden md:table-cell",
@@ -128,11 +123,10 @@ const LecturerListPage = async (
       <td className="hidden md:table-cell">{item.npk || ""}</td>
       <td className="hidden md:table-cell">{item.nidn}</td>
       <td className="hidden md:table-cell capitalize">{item.major?.name || ""}</td>
-      <td className="hidden md:table-cell capitalize">{item?.user?.role?.name || ""}</td>
       <td>
         <div className="flex items-center gap-2">
           {/* MOBILE-only */}
-          <div className="md:hidden flex items-center justify-end gap-2">
+          <div className="md:hidden flex items-center justify-end gap-2 z-10">
             <ModalAction>
               <div className="flex items-center gap-3">
                 {canViewData && (
