@@ -108,7 +108,7 @@ const PermissionForm = ({ setOpen, type, data, relatedData }: PermissionFormProp
             {...register("resource")}
             defaultValue={data?.name.split(":")[1]}
           >
-            {resourceData.map((item: { pathname: string, name: string, nama: string }) => (
+            {resourceData.map((item: any) => (
               <option
                 value={item.pathname}
                 key={item.name}

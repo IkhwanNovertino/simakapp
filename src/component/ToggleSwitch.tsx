@@ -9,15 +9,10 @@ const ToggleSwitch = ({ id }: { id: string }) => {
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const data = e.target.id;
     if (!isChecked) {
-      // false to true createRolepermission
       const rolepermission = await createRolePermissions(data);
-      console.log(`true ${rolepermission}`);
-
       rolepermission.success && setIsChecked(!isChecked);
     } else {
-      // true to false deleteRolePermission
       const rolepermission = await deleteRolePermissions(data);
-      console.log(`false ${rolepermission}`);
       rolepermission.success && setIsChecked(!isChecked);
     }
   };

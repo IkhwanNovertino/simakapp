@@ -1,5 +1,3 @@
-import { File } from "buffer";
-import formidable from "formidable";
 import { z } from "zod";
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
@@ -8,7 +6,6 @@ export const permissionSchema = z.object({
   id: z.coerce.number().optional(),
   action: z.string().min(1, { message: "pilih aksi yang diinginkan!" }),
   resource: z.string().min(1, { message: "pilih modul/domain yang diinginkan!" }),
-  // name: z.string().min(1, { message: "Hak akses harus diisi!" }),
   description: z.string().optional(),
 })
 
@@ -96,7 +93,6 @@ export type LecturerInputs = z.infer<typeof lecturerSchema>;
 
 export const operatorSchema = z.object({
   id: z.string().optional(),
-  // information data operation
   name: z.string().min(1, { message: "nama dosen harus diisi" }),
   department: z.string().optional(),
 })

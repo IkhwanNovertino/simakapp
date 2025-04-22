@@ -61,7 +61,6 @@ const SingleRolePage = async (
       <td>
         <div className="flex items-center gap-2">
           <ToggleSwitch id={`${id}:${item.id}`} />
-          {/* <FormContainer table="rolePermission" type="delete" id={`${id}:${item.id}`} /> */}
         </div>
       </td>
     </tr >

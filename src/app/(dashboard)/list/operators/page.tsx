@@ -6,8 +6,7 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Operator, Prisma, Role, User } from "@prisma/client";
-import Image from "next/image";
+import { Operator, Prisma, Role } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 type OperatorDataType = Operator & { user: { role: Role } };
@@ -68,9 +67,6 @@ const OperatorListPage = async (
     }),
     prisma.operator.count({ where: query }),
   ]);
-
-  console.log(data);
-
 
   const columns = [
     {

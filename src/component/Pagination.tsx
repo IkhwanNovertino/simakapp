@@ -60,21 +60,6 @@ const Pagination = ({ page, count }: { page: number, count: number }) => {
             </button>
           )
         )}
-        {/* {Array.from(
-          { length: Math.ceil(count / ITEM_PER_PAGE) },
-          (_, i) => {
-            const pageIndex = i + 1;
-            return (
-              <button
-                key={pageIndex}
-                className={`px-2 rounded-sm hover:bg-primary cursor-pointer ${page === pageIndex ? "bg-primary-light" : ""}`}
-                onClick={() => { changePage(pageIndex) }}
-              >
-                {pageIndex}
-              </button>
-            )
-          }
-        )} */}
       </div>
       <button
         className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold hover:cursor-pointer hover:bg-primary disabled:opacity-50  disabled:cursor-not-allowed"

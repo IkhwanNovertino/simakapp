@@ -82,7 +82,6 @@ export const deleteSession = async () => {
   const session = cookieStore.get(SESSION_NAME)?.value!;
   const decryptedSession = await decrypt(session);
   if (!decryptedSession) {
-    console.log("Session not found");
     return null
   };
 

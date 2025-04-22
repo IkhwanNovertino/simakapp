@@ -1,8 +1,5 @@
 import Announcements from "@/component/Announcements";
 import BigCalendar from "@/component/BigCalendar";
-import CountChart from "@/component/CountChart";
-import EventCalender from "@/component/EventCalender";
-import UserCard from "@/component/UserCard";
 import { redirectDashboardByRole } from "@/lib/dal";
 import { redirect } from "next/navigation";
 

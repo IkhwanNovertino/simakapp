@@ -1,7 +1,10 @@
 "use server";
 
 import path from "path";
-import { CourseInputs, LecturerInputs, lecturerSchema, MajorInputs, OperatorInputs, PermissionInputs, RoleInputs,  RoomInputs, StudentInputs, studentSchema, UserInputs } from "./formValidationSchema";
+import {
+  CourseInputs, lecturerSchema, MajorInputs, OperatorInputs,
+  PermissionInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
+} from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { Gender, Religion } from "@prisma/client";
 import bcrypt from "bcryptjs";
@@ -17,9 +20,7 @@ const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/web
 
 export const createPermission = async (state: stateType, data: PermissionInputs) => {
   try {
-    console.log("actionCreatePermission running");
     const name = data.action + ":" + data.resource;
-    
     await prisma.permission.create({
       data: {
         name: name,
@@ -28,7 +29,6 @@ export const createPermission = async (state: stateType, data: PermissionInputs)
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -45,7 +45,6 @@ export const updatePermission = async (state: stateType, data: PermissionInputs)
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -68,7 +67,6 @@ export const deletePermission = async (state: stateType, data: FormData) => {
   
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -91,13 +89,11 @@ export const createRole = async (state: stateType, data: RoleInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
 export const updateRole = async (state: stateType, data: RoleInputs) => {
   try {
-    console.log(data);   
     await prisma.role.update({
       where: {
         id: data.id,
@@ -105,14 +101,10 @@ export const updateRole = async (state: stateType, data: RoleInputs) => {
       data: {
         name: data.name,
         description: data.description,
-        // RolePermission: {
-        //   set: data?.rolePermission.map((id: number) => ({permissionId: id})),
-        // }
       }
     })
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -133,11 +125,8 @@ export const deleteRole = async (state: stateType, data: FormData) => {
         }
       }),
     ])
-
-
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -153,7 +142,6 @@ export const createRolePermissions = async (id: string) => {
 
     return {success: true, error: false};
   } catch (err) {
-    console.log(err);
     return {success: false, error: true};
   }
 }
@@ -169,7 +157,6 @@ export const deleteRolePermissions = async (id: string) => {
     })
     return {success: true, error: false};
   } catch (err) {
-    console.log(err);
     return {success: false, error: true};
   }
 }
@@ -183,7 +170,6 @@ export const getRolePermission = async (id: string) => {
     })
     return {success: (get ? true : false), error: false};
   } catch (err) {
-    console.log(err);
     return {success: false, error: true};
   }
 }
@@ -199,7 +185,6 @@ export const createMajor = async (state: stateType, data: MajorInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -217,7 +202,6 @@ export const updateMajor = async (state: stateType, data: MajorInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -231,7 +215,6 @@ export const deleteMajor = async (state: stateType, data: FormData) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -247,7 +230,6 @@ export const createRoom = async (state: stateType, data: RoomInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -265,7 +247,6 @@ export const updateRoom = async (state: stateType, data: RoomInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -279,15 +260,12 @@ export const deleteRoom = async (state: stateType, data: FormData) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
 
 export const createCourse = async (state: stateType, data: CourseInputs) => {
   try {
-    console.log(data);
-    
     await prisma.course.create({
       data: {
         name: data.name,
@@ -300,7 +278,6 @@ export const createCourse = async (state: stateType, data: CourseInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -321,7 +298,6 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -335,14 +311,12 @@ export const deleteCourse = async (state: stateType, data: FormData) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
 
 export const createUserLecturer = async (state: stateType, data: UserInputs) => {
   try {
-    console.log(data);
     const hashedPassword = await bcrypt.hash(data.password, 10);
     await prisma.user.create({
       data: {
@@ -360,13 +334,11 @@ export const createUserLecturer = async (state: stateType, data: UserInputs) => 
 
     return {success: true, error:false}
   } catch (err) {
-    console.log(err);
     return {success: false, error:true}
   }
 }
 export const updateUserLecturer = async (state: stateType, data: UserInputs) => {
   try {
-    console.log(data);
     let dataUpdate = {};
     if (data.password === "password") {
       dataUpdate = {
@@ -393,13 +365,11 @@ export const updateUserLecturer = async (state: stateType, data: UserInputs) => 
 
     return {success: true, error:false}
   } catch (err) {
-    console.log(err);
     return {success: false, error:true}
   }
 }
 export const createUserStudent = async (state: stateType, data: UserInputs) => {
   try {
-    console.log(data);
     const hashedPassword = await bcrypt.hash(data.password, 10);
     await prisma.user.create({
       data: {
@@ -417,13 +387,11 @@ export const createUserStudent = async (state: stateType, data: UserInputs) => {
 
     return { success: true, error: false }
   } catch (err) {
-    console.log(err);
     return { success: false, error: true }
   }
 };
 export const updateUserStudent = async (state: stateType, data: UserInputs) => {
   try {
-    console.log(data);
     let dataUpdate = {};
     if (data.password === "password") {
       dataUpdate = {
@@ -450,13 +418,11 @@ export const updateUserStudent = async (state: stateType, data: UserInputs) => {
 
     return { success: true, error: false }
   } catch (err) {
-    console.log(err);
     return { success: false, error: true }
   }
 };
 export const createUserOperator = async (state: stateType, data: UserInputs) => {
   try {
-    console.log(data);
     const hashedPassword = await bcrypt.hash(data.password, 10);
     await prisma.user.create({
       data: {
@@ -474,13 +440,11 @@ export const createUserOperator = async (state: stateType, data: UserInputs) => 
 
     return {success: true, error:false}
   } catch (err) {
-    console.log(err);
     return {success: false, error:true}
   }
 }
 export const updateUserOperator = async (state: stateType, data: UserInputs) => {
   try {
-    console.log(data);
     let dataUpdate = {};
     if (data.password === "password") {
       dataUpdate = {
@@ -507,14 +471,12 @@ export const updateUserOperator = async (state: stateType, data: UserInputs) => 
 
     return {success: true, error:false}
   } catch (err) {
-    console.log(err);
     return {success: false, error:true}
   }
 }
 
 export const createLecturer = async (state: stateType, data: FormData) => {
   try {
-    console.log(data)
     const dataLecturerRaw = {
       npk: data.get('npk')?.toString(),
       nidn: data.get('nidn')?.toString(),
@@ -553,7 +515,6 @@ export const createLecturer = async (state: stateType, data: FormData) => {
     })
 
     if (!validation.success) {
-      console.log(validation.error.flatten().fieldErrors);
       return { success: false, error: true, fieldErrors: validation.error };
     }
 
@@ -577,7 +538,6 @@ export const createLecturer = async (state: stateType, data: FormData) => {
     })
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -604,7 +564,6 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
 
     const parsed = lecturerSchema.omit({ photo: true }).safeParse(dataLecturerRaw);
     if (!parsed.success) {
-      console.log(parsed.error.flatten().fieldErrors);
       return { success: false, error: true }
     }
 
@@ -627,7 +586,6 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
         try {
           await unlink(oldPath)
         } catch (err) {
-          console.log(err);
           
         }
       }
@@ -656,7 +614,6 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
     })
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -694,13 +651,11 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
         await unlink(filePath)
       } catch (err) {
         console.error('Gagal hapus file:', err)
-        // Tidak perlu return error, lanjutkan saja — file mungkin sudah tidak ada
       }
     }
     
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -764,7 +719,6 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
     })
 
     if (!validation.success) {
-      console.log(validation.error.flatten().fieldErrors);
       return { success: false, error: true, fieldErrors: validation.error };
     }
 
@@ -790,13 +744,11 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
     })
     return { success: true, error: false, fieldErrors: {} };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true, fieldErrors: {}}
   }
 }
 export const updateStudent = async (state: {success: boolean, error: boolean, fieldErrors: {}}, data: FormData) => {
   try {
-    console.log(data);
 
     const dataRaw = {
       id:data.get('id')?.toString(),
@@ -823,7 +775,6 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
     const parsed = studentSchema.omit({ photo: true }).safeParse(dataRaw);
 
     if (!parsed.success) {
-      console.log(parsed.error.flatten().fieldErrors);
       return { success: false, error: true, fieldErrors: parsed.error };
     }
 
@@ -846,7 +797,6 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
         try {
           await unlink(oldPath)
         } catch (err) {
-          console.log(err);
           
         }
       }
@@ -878,7 +828,6 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
 
     return { success: true, error: false, fieldErrors: {} };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true, fieldErrors: {}}
   }
 }
@@ -922,7 +871,6 @@ export const deleteStudent = async (state: stateType, data: FormData) => {
     
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -937,7 +885,6 @@ export const createOperator = async (state: stateType, data: OperatorInputs) => 
   })
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
@@ -954,15 +901,12 @@ export const updateOperator = async (state: stateType, data: OperatorInputs) => 
     })
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }
 export const deleteOperator = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    console.log(id.split(":")[0]);
-    console.log(id.split(":")[1]);
     
 
     await prisma.$transaction([
@@ -979,7 +923,6 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
     ])
     return { success: true, error: false };
   } catch (err: any) {
-    console.log(`${err.name}: ${err.message}`);
     return {success: false, error:true}
   }
 }

@@ -11,9 +11,7 @@ export function middleware(req: NextRequest) {
   const isPublicRoute = publicRoutes.includes(pathname);
 
   // 3. Get the session from the cookie
-  // const getSessionFromCookie = await getSession();
   const getSessionFromCookie = req.cookies.get('session')?.value;
-  // Get session from database
 
   // 4. Redirect to /login if the user is not authenticated and trying to access a protected route
   if (isProtectedRoute && !getSessionFromCookie) {

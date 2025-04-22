@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect, useRef, useState } from "react";
+import { Dispatch, SetStateAction, useActionState, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { LecturerInputs, lecturerSchema } from "@/lib/formValidationSchema";
@@ -30,9 +30,6 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
     resolver: zodResolver(lecturerSchema.omit({ photo: true }))
   })
 
-  console.log('is running');
-
-
   const action = type === "create" ? createLecturer : updateLecturer;
   const [state, formAction] = useActionState(action, { success: false, error: false });
 
@@ -59,7 +56,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
       router.refresh();
       setOpen(false);
     }
-  }, [state, router])
+  }, [state, router, setOpen, type])
 
   return (
     <form ref={formRef} action={formAction} className="flex flex-col gap-8">

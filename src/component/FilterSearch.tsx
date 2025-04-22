@@ -3,14 +3,10 @@
 import { useRouter } from "next/navigation";
 import React from "react";
 
-
 const FilterSearch = ({ data }: { data: any }) => {
   const router = useRouter();
 
   const handleClik = (itemFilter: any) => {
-
-    // const value = (event.currentTarget[0] as HTMLInputElement).value;
-
     const params = new URLSearchParams(window.location.search);
     params.delete("page");
     params.set("filter", itemFilter);

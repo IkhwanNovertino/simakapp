@@ -30,7 +30,6 @@ const HamburgerMenu = ({ sidebar, userProfile }: { sidebar: React.ReactNode, use
                   <p className="text-xs leading-3 font-semibold truncate text-ellipsis w-full">{userProfile.name}</p>
                   <span className="text-[10px] text-gray-500">{userProfile.role}</span>
                 </div>
-
               </div>
               {sidebar}
             </div>

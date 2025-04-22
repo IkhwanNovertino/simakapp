@@ -1,6 +1,4 @@
 import LoginForm from "@/component/forms/LoginForm";
-import { redirectDashboardByRole } from "@/lib/dal";
-import { redirect } from "next/navigation";
 
 const LoginPage = async () => {
   return (
