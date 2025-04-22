@@ -20,7 +20,7 @@ async function main() {
     { pathname: "krs", name: "krs", nama: "krs" },
     { pathname: "schedules", name: "schedule", nama: "jadwal" },
     { pathname: "classes", name: "class", nama: "kelas" },
-    { pathnaume: "khs", name: "khr", nama: "khs" },
+    { pathname: "khs", name: "khs", nama: "khs" },
     { pathname: "attendances", name: "attendance", nama: "presensi" },
     { pathname: "transkip", name: "transkip", nama: "transkip" },
     { pathname: "events", name: "Event", nama: "Event" },

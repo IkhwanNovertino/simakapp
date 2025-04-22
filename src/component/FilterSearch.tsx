@@ -12,6 +12,7 @@ const FilterSearch = ({ data }: { data: any }) => {
     // const value = (event.currentTarget[0] as HTMLInputElement).value;
 
     const params = new URLSearchParams(window.location.search);
+    params.delete("page");
     params.set("filter", itemFilter);
     router.push(`${window.location.pathname}?${params}`);
   };
