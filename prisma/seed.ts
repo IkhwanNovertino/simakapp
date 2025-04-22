@@ -1,31 +1,33 @@
+import { resourceData } from "@/lib/setting";
 import { Location, PrismaClient, RoleType } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { connect } from "http2";
 
 const prisma = new PrismaClient();
 
 async function main() {
   // Permission
-  const resourceData = [
+  const permissionData = [
     { pathname: "permissions", name: "permission", nama: "hak akses" },
     { pathname: "roles", name: "role", nama: "role" },
     { pathname: "users", name: "user", nama: "pengguna" },
     { pathname: "lecturers", name: "lecturer", nama: "dosen" },
     { pathname: "operators", name: "operator", nama: "operator" },
     { pathname: "students", name: "student", nama: "mahasiswa" },
-    { pathname: "courses", name: "course", nama: "mata kuliah" },
     { pathname: "majors", name: "major", nama: "program studi" },
-    { pathname: "rooms", name: "room", nama: "ruangan" },
-    { pathname: "classes", name: "class", nama: "kelas" },
-    { pathname: "krs", name: "ksr", nama: "krs" },
-    { pathname: "schedules", name: "schedule", nama: "jadwal" },
-    { pathname: "attendances", name: "attendance", nama: "presensi" },
-    { pathname: "khs", name: "khr", nama: "khs" },
     { pathname: "herregistrations", name: "herregistration", nama: "herregistrasi" },
+    { pathname: "courses", name: "course", nama: "mata kuliah" },
+    { pathname: "rooms", name: "room", nama: "ruangan" },
+    { pathname: "krs", name: "krs", nama: "krs" },
+    { pathname: "schedules", name: "schedule", nama: "jadwal" },
+    { pathname: "classes", name: "class", nama: "kelas" },
+    { pathnaume: "khs", name: "khr", nama: "khs" },
+    { pathname: "attendances", name: "attendance", nama: "presensi" },
+    { pathname: "transkip", name: "transkip", nama: "transkip" },
+    { pathname: "events", name: "Event", nama: "Event" },
+    { pathname: "announcements", name: "Announcements", nama: "Pengumuman" },
   ];
-
   const action = ["view", "create", "edit", "delete"];
-  for (const resource of resourceData) {
+  for (const resource of permissionData) {
     for (const act of action) {
       await prisma.permission.create({
         data: {
@@ -51,52 +53,40 @@ async function main() {
     })
   }
 
-  // await prisma.role.create({
-  //   data: {
-  //     name: "admin",
-  //     description: "admin role",
-  //     roleType: "OPERATOR" as RoleType,
-  //   },
-  // })
-  // await prisma.role.create({
-  //   data: {
-  //     name: "dosen",
-  //     description: "dosen role",
-  //     roleType: "LECTURER" as RoleType,
-  //   },
-  // })
+  const permissions = 72;
 
   // rolePermission
-  await prisma.rolePermission.createMany({
-    data: [
-      { roleId: 1, permissionId: 1 },
-      { roleId: 1, permissionId: 2 },
-      { roleId: 1, permissionId: 3 },
-      { roleId: 1, permissionId: 4 },
-      { roleId: 1, permissionId: 5 },
-      { roleId: 1, permissionId: 6 },
-      { roleId: 1, permissionId: 7 },
-      { roleId: 1, permissionId: 8 },
-      { roleId: 1, permissionId: 9 },
-      { roleId: 1, permissionId: 10 },
-      { roleId: 1, permissionId: 11 },
-      { roleId: 1, permissionId: 12 },
-      { roleId: 1, permissionId: 13 },
-      { roleId: 1, permissionId: 14 },
-      { roleId: 1, permissionId: 15 },
-      { roleId: 1, permissionId: 16 },
-      { roleId: 2, permissionId: 9 },
-      { roleId: 2, permissionId: 10 },
-      { roleId: 2, permissionId: 11 },
-      { roleId: 2, permissionId: 12 },
-      { roleId: 2, permissionId: 13 },
-      { roleId: 2, permissionId: 14 },
-      { roleId: 2, permissionId: 15 },
-      { roleId: 2, permissionId: 16 },
-      { roleId: 2, permissionId: 17 },
-      { roleId: 2, permissionId: 18 },
-    ]
-  })
+  for (let i = 1; i <= permissions; i++) {
+    await prisma.rolePermission.create({
+      data: {
+        roleId: 1,
+        permissionId: i,
+      }
+    })
+  };
+  // await prisma.rolePermission.createMany({
+  //   data: [
+  //     { roleId: 1, permissionId: 1 },
+  //     { roleId: 1, permissionId: 2 },
+  //     { roleId: 1, permissionId: 3 },
+  //     { roleId: 1, permissionId: 4 },
+  //     { roleId: 1, permissionId: 5 },
+  //     { roleId: 1, permissionId: 6 },
+  //     { roleId: 1, permissionId: 7 },
+  //     { roleId: 1, permissionId: 8 },
+  //     { roleId: 1, permissionId: 9 },
+  //     { roleId: 1, permissionId: 10 },
+  //     { roleId: 1, permissionId: 11 },
+  //     { roleId: 1, permissionId: 12 },
+  //     { roleId: 1, permissionId: 13 },
+  //     { roleId: 1, permissionId: 14 },
+  //     { roleId: 1, permissionId: 15 },
+  //     { roleId: 1, permissionId: 16 },
+  //     { roleId: 2, permissionId: 13 },
+  //     { roleId: 2, permissionId: 17 },
+  //     { roleId: 2, permissionId: 18 },
+  //   ]
+  // })
 
   // user
   const hashPassword = bcrypt.hashSync("admin", 10);

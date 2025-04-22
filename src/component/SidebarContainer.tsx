@@ -48,23 +48,8 @@ const menuItems = [
       },
       {
         icon: "/icon/room.svg",
-        label: "Lokal",
+        label: "Lokal/Ruangan",
         href: "/list/rooms",
-      },
-      {
-        icon: "/icon/class.svg",
-        label: "Kelas",
-        href: "/list/classes",
-      },
-      {
-        icon: "/icon/schedule.svg",
-        label: "Jadwal",
-        href: "/list/schedules",
-      },
-      {
-        icon: "/icon/attendance.svg",
-        label: "Presensi",
-        href: "/list/attendance",
       },
       {
         icon: "/icon/krs.svg",
@@ -85,6 +70,21 @@ const menuItems = [
         icon: "/icon/transkip.svg",
         label: "Transkip",
         href: "/list/transkip",
+      },
+      {
+        icon: "/icon/class.svg",
+        label: "Kelas",
+        href: "/list/classes",
+      },
+      {
+        icon: "/icon/schedule.svg",
+        label: "Jadwal",
+        href: "/list/schedules",
+      },
+      {
+        icon: "/icon/attendance.svg",
+        label: "Presensi",
+        href: "/list/attendance",
       },
       {
         icon: "/icon/event.svg",
