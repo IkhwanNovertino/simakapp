@@ -29,6 +29,7 @@ export const createPermission = async (state: stateType, data: PermissionInputs)
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -45,6 +46,7 @@ export const updatePermission = async (state: stateType, data: PermissionInputs)
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -67,6 +69,7 @@ export const deletePermission = async (state: stateType, data: FormData) => {
   
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -89,6 +92,7 @@ export const createRole = async (state: stateType, data: RoleInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -105,6 +109,7 @@ export const updateRole = async (state: stateType, data: RoleInputs) => {
     })
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -127,6 +132,7 @@ export const deleteRole = async (state: stateType, data: FormData) => {
     ])
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -141,7 +147,8 @@ export const createRolePermissions = async (id: string) => {
     })
 
     return {success: true, error: false};
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error: true};
   }
 }
@@ -156,7 +163,8 @@ export const deleteRolePermissions = async (id: string) => {
       }
     })
     return {success: true, error: false};
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error: true};
   }
 }
@@ -169,7 +177,8 @@ export const getRolePermission = async (id: string) => {
       }
     })
     return {success: (get ? true : false), error: false};
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error: true};
   }
 }
@@ -185,6 +194,7 @@ export const createMajor = async (state: stateType, data: MajorInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -202,6 +212,7 @@ export const updateMajor = async (state: stateType, data: MajorInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -215,6 +226,7 @@ export const deleteMajor = async (state: stateType, data: FormData) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -230,6 +242,7 @@ export const createRoom = async (state: stateType, data: RoomInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -247,6 +260,7 @@ export const updateRoom = async (state: stateType, data: RoomInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -260,6 +274,7 @@ export const deleteRoom = async (state: stateType, data: FormData) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -278,6 +293,7 @@ export const createCourse = async (state: stateType, data: CourseInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -298,6 +314,7 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -311,6 +328,7 @@ export const deleteCourse = async (state: stateType, data: FormData) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -333,7 +351,8 @@ export const createUserLecturer = async (state: stateType, data: UserInputs) => 
     })
 
     return {success: true, error:false}
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -364,7 +383,8 @@ export const updateUserLecturer = async (state: stateType, data: UserInputs) => 
     })
 
     return {success: true, error:false}
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -386,7 +406,8 @@ export const createUserStudent = async (state: stateType, data: UserInputs) => {
     })
 
     return { success: true, error: false }
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return { success: false, error: true }
   }
 };
@@ -417,7 +438,8 @@ export const updateUserStudent = async (state: stateType, data: UserInputs) => {
     })
 
     return { success: true, error: false }
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return { success: false, error: true }
   }
 };
@@ -439,7 +461,8 @@ export const createUserOperator = async (state: stateType, data: UserInputs) => 
     })
 
     return {success: true, error:false}
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -470,7 +493,8 @@ export const updateUserOperator = async (state: stateType, data: UserInputs) => 
     })
 
     return {success: true, error:false}
-  } catch (err) {
+  } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -538,6 +562,7 @@ export const createLecturer = async (state: stateType, data: FormData) => {
     })
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -585,7 +610,8 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
         const oldPath = path.join(process.cwd(), 'public', oldPhoto);
         try {
           await unlink(oldPath)
-        } catch (err) {
+        } catch (err: any) {
+          console.error(`errName: ${err.name}, errMessage: ${err.message}`)
           
         }
       }
@@ -614,6 +640,7 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
     })
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -649,18 +676,19 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
       const filePath = path.join(process.cwd(), 'public', dataLecturer.photo);
       try {
         await unlink(filePath)
-      } catch (err) {
-        console.error('Gagal hapus file:', err)
+      } catch (err: any) {
+        console.error(`errName: ${err.name}, errMessage: ${err.message}`)
       }
     }
     
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
 
-export const createStudent = async (state: {success: boolean, error: boolean, fieldErrors: {}}, data: FormData) => {
+export const createStudent = async (state: {success: boolean, error: boolean, fieldErrors: object}, data: FormData) => {
   try {
     const id=data.get('id')?.toString()
     const name = data.get('name')?.toString();
@@ -744,10 +772,11 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
     })
     return { success: true, error: false, fieldErrors: {} };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true, fieldErrors: {}}
   }
 }
-export const updateStudent = async (state: {success: boolean, error: boolean, fieldErrors: {}}, data: FormData) => {
+export const updateStudent = async (state: {success: boolean, error: boolean, fieldErrors: object}, data: FormData) => {
   try {
 
     const dataRaw = {
@@ -796,8 +825,8 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
         const oldPath = path.join(process.cwd(), 'public', oldPhoto);
         try {
           await unlink(oldPath)
-        } catch (err) {
-          
+        } catch (err: any) {
+          console.error(`errName: ${err.name}, errMessage: ${err.message}`)
         }
       }
     }
@@ -828,6 +857,7 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
 
     return { success: true, error: false, fieldErrors: {} };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true, fieldErrors: {}}
   }
 }
@@ -863,14 +893,14 @@ export const deleteStudent = async (state: stateType, data: FormData) => {
       const filePath = path.join(process.cwd(), 'public', dataStudent.photo);
       try {
         await unlink(filePath)
-      } catch (err) {
-        console.error('Gagal hapus file:', err)
-        // Tidak perlu return error, lanjutkan saja — file mungkin sudah tidak ada
+      } catch (err: any) {
+        console.error(`errName: ${err.name}, errMessage: ${err.message}`)
       }
     }
     
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -885,6 +915,7 @@ export const createOperator = async (state: stateType, data: OperatorInputs) => 
   })
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -901,6 +932,7 @@ export const updateOperator = async (state: stateType, data: OperatorInputs) => 
     })
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }
@@ -923,6 +955,7 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
     ])
     return { success: true, error: false };
   } catch (err: any) {
+    console.error(`errName: ${err.name}, errMessage: ${err.message}`)
     return {success: false, error:true}
   }
 }

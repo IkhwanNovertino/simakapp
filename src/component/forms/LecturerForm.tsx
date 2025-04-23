@@ -33,7 +33,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
   const action = type === "create" ? createLecturer : updateLecturer;
   const [state, formAction] = useActionState(action, { success: false, error: false });
 
-  const onValid = (data: LecturerInputs) => {
+  const onValid = () => {
     formRef.current?.requestSubmit()
   }
 
@@ -251,7 +251,13 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           <label className="text-xs text-gray-500">Preview Foto</label>
           {preview && (
             <div>
-              <img src={preview} alt="Preview" className="w-20 h-20 object-cover border border-gray-200 rounded-full" />
+              <Image
+                src={preview}
+                width={80}
+                height={80}
+                alt="Preview"
+                className="w-20 h-20 object-cover border border-gray-200 rounded-full"
+              />
             </div>
           )}
         </div>

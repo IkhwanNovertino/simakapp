@@ -42,7 +42,7 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
       router.refresh();
       setOpen(false);
     }
-  }, [state, router])
+  }, [state, router, setOpen, type])
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">

@@ -25,7 +25,7 @@ export const teachersData = [
   },
 ];
 
-const menuItems = [
+export const menuItems = [
   {
     title: "",
     items: [

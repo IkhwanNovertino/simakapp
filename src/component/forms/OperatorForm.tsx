@@ -16,9 +16,7 @@ interface OperatorFormProps {
   relatedData?: any;
 }
 
-const OperatorForm = ({ setOpen, type, data, relatedData }: OperatorFormProps) => {
-  const { role } = relatedData;
-
+const OperatorForm = ({ setOpen, type, data }: OperatorFormProps) => {
   const {
     register,
     handleSubmit,
@@ -41,7 +39,7 @@ const OperatorForm = ({ setOpen, type, data, relatedData }: OperatorFormProps) =
       router.refresh();
       setOpen(false);
     }
-  }, [state, router])
+  }, [state, router, setOpen, type])
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">

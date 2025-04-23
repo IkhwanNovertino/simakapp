@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 const HamburgerMenu = ({ sidebar, userProfile }: { sidebar: React.ReactNode, userProfile: { name: string, role: string, avatar: string } }) => {
   const [openSidebar, setOpenSidebar] = useState(false);
-  console.log(openSidebar);
 
   const pathname = usePathname();
   useEffect(() => {

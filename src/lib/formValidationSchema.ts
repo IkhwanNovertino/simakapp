@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
-
 export const permissionSchema = z.object({
   id: z.coerce.number().optional(),
   action: z.string().min(1, { message: "pilih aksi yang diinginkan!" }),

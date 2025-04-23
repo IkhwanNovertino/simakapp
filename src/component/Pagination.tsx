@@ -33,8 +33,6 @@ const Pagination = ({ page, count }: { page: number, count: number }) => {
     return pages;
   };
 
-  console.log(getPageNumbers());
-
   return (
     <div className="p-4 flex flex-wrap gap-2 items-center justify-center sm:justify-between text-gray-500">
       <button

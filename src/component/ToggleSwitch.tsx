@@ -10,10 +10,10 @@ const ToggleSwitch = ({ id }: { id: string }) => {
     const data = e.target.id;
     if (!isChecked) {
       const rolepermission = await createRolePermissions(data);
-      rolepermission.success && setIsChecked(!isChecked);
+      setIsChecked(rolepermission.success && !isChecked);
     } else {
       const rolepermission = await deleteRolePermissions(data);
-      rolepermission.success && setIsChecked(!isChecked);
+      setIsChecked(rolepermission.success && !isChecked);
     }
   };
 

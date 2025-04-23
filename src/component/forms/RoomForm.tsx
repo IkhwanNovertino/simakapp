@@ -16,7 +16,7 @@ interface RoomFormProps {
   relatedData?: any;
 }
 
-const RoomForm = ({ setOpen, type, data, relatedData }: RoomFormProps) => {
+const RoomForm = ({ setOpen, type, data }: RoomFormProps) => {
 
   const {
     register,
@@ -39,7 +39,7 @@ const RoomForm = ({ setOpen, type, data, relatedData }: RoomFormProps) => {
       router.refresh();
       setOpen(false);
     }
-  }, [state, router])
+  }, [state, router, setOpen, type])
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">

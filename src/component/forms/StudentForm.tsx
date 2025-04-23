@@ -20,7 +20,7 @@ interface StudentFormProps {
 }
 
 const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => {
-  const { majors, role, lecturer } = relatedData;
+  const { majors, lecturer } = relatedData;
   const formRef = useRef<HTMLFormElement>(null);
   const [preview, setPreview] = useState<string | null>(data?.photo ? data?.photo : null);
   const {
@@ -34,7 +34,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
   const action = type === "create" ? createStudent : updateStudent;
   const [state, formAction] = useActionState(action, { success: false, error: false, fieldErrors: {} });
 
-  const onValid = (data: StudentInputs) => {
+  const onValid = () => {
     formRef.current?.requestSubmit()
   }
 
@@ -61,7 +61,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
     return (() => {
       if (preview) URL.revokeObjectURL(preview)
     })
-  }, [state, router, preview])
+  }, [state, router, preview, setOpen, type])
 
   return (
     <form ref={formRef} action={formAction} className="flex flex-col gap-8">
@@ -242,7 +242,13 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           <label className="text-xs text-gray-500">Preview Foto</label>
           {preview && (
             <div>
-              <img src={preview} alt="Preview" className="w-20 h-20 object-cover border border-gray-200 rounded-full" />
+              <Image
+                src={preview}
+                alt="Preview"
+                height={80}
+                width={80}
+                className="w-20 h-20 object-cover border border-gray-200 rounded-full"
+              />
             </div>
           )}
         </div>

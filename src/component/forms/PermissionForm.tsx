@@ -17,7 +17,7 @@ interface PermissionFormProps {
   relatedData?: any;
 }
 
-const PermissionForm = ({ setOpen, type, data, relatedData }: PermissionFormProps) => {
+const PermissionForm = ({ setOpen, type, data }: PermissionFormProps) => {
 
   const {
     register,
@@ -44,7 +44,7 @@ const PermissionForm = ({ setOpen, type, data, relatedData }: PermissionFormProp
       router.refresh();
       setOpen(false);
     }
-  }, [state, router])
+  }, [state, router, setOpen, type])
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">

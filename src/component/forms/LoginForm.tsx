@@ -5,7 +5,7 @@ import { redirectDashboardByRole } from "@/lib/dal";
 import { LoginInputs, loginSchema } from "@/lib/formValidationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -31,14 +31,13 @@ const LoginForm = () => {
       toast.error(state.message);
     } else if (state?.success) {
       toast.success(state.message);
-      const dashboardByRole = redirectDashboardByRole()
+      redirectDashboardByRole()
         .then((res) => {
           router.push("/" + res);
         })
         .catch((err) => {
           console.error(err);
         });
-      dashboardByRole;
     }
   }, [state, router]);
 

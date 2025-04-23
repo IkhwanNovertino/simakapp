@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { UserInputs, userSchema } from "@/lib/formValidationSchema";
@@ -18,9 +18,7 @@ interface LecturerUserFormProps {
 
 const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserFormProps) => {
   const { role } = relatedData;
-  const [isChecked, setIsChecked] = useState(false)
 
-  // const zodResolverForUpdateUser = type === "updateUser" ? zodResolver(userSchema.omit({ password: true })) : zodResolver(userSchema)
   const {
     register,
     handleSubmit,
@@ -44,7 +42,7 @@ const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserForm
       router.refresh();
       setOpen(false);
     }
-  }, [state, router])
+  }, [state, router, setOpen, type])
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
