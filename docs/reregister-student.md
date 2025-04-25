@@ -7,8 +7,7 @@
 
 ## Data Model and Form
 
-- id
-  - @@id [reregisterId, studentId]
+- @@id ([reregisterId, studentId])
 - reregisterId
   - String?
   - Required
