@@ -158,6 +158,27 @@ model Room {
   @@map("sb25_rooms")
 }
 
+model Period {
+  id           String        @id @default(uuid())
+  year         Int?
+  semesterType SemesterType?
+  name         String?       @unique
+  isActive     Boolean?      @default(false)
+  reregister   reregister[]
+
+  @@map("sb25_periods")
+}
+
+model reregister {
+  id                 String   @id @default(uuid())
+  name               String?
+  periodId           String?
+  period             Period?  @relation(fields: [periodId], references: [id])
+  isReregisterActive Boolean? @default(false)
+
+  @@map("sb25_reregisters")
+}
+
 enum SemesterType {
   GANJIL
   GENAP
