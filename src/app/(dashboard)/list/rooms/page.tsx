@@ -7,7 +7,6 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Prisma, Room } from "@prisma/client";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 
 type RoomDataType = Room;
