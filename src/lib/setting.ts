@@ -1,6 +1,7 @@
 export const ITEM_PER_PAGE = 10;
 
 export const resourceData = [
+  { pathname: "periods", name: "period", nama: "periode" },
   { pathname: "permissions", name: "permission", nama: "hak akses" },
   { pathname: "roles", name: "role", nama: "role" },
   { pathname: "users", name: "user", nama: "pengguna" },
@@ -14,11 +15,11 @@ export const resourceData = [
   { pathname: "krs", name: "krs", nama: "krs" },
   { pathname: "schedules", name: "schedule", nama: "jadwal" },
   { pathname: "classes", name: "class", nama: "kelas" },
-  { pathnaume: "khs", name: "khr", nama: "khs" },
+  { pathname: "khs", name: "khs", nama: "khs" },
   { pathname: "attendances", name: "attendance", nama: "presensi" },
   { pathname: "transkip", name: "transkip", nama: "transkip" },
-  { pathname: "events", name: "Event", nama: "Event" },
-  { pathname: "announcements", name: "Announcements", nama: "Pengumuman" },
+  { pathname: "events", name: "event", nama: "event" },
+  { pathname: "announcements", name: "announcements", nama: "pengumuman" },
 ];
 
 export const degree = ["S1", "S2", "S3"];
