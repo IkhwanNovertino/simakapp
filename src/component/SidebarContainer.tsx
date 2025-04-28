@@ -57,9 +57,14 @@ const menuItems = [
         href: "/list/krs",
       },
       {
+        icon: "/icon/period.svg",
+        label: "Periode Akademik",
+        href: "/list/periods",
+      },
+      {
         icon: "/icon/reregister.svg",
         label: "Her Registrasi",
-        href: "/list/reregisters",
+        href: "/list/reregistrations",
       },
       {
         icon: "/icon/khs.svg",

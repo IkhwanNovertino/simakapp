@@ -127,3 +127,11 @@ export const loginSchema = z.object({
 })
 
 export type LoginInputs = z.infer<typeof loginSchema>;
+
+export const periodSchema = z.object({
+  id: z.string().optional(),
+  year: z.string().min(1, { message: "tahun akademik harus diisi" }),
+  semesterType: z.enum(["GANJIL", "GENAP"], { message: "tipe semester harus diisi" }),
+})
+
+export type PeriodInputs = z.infer<typeof periodSchema>;

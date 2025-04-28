@@ -3,6 +3,7 @@
 import path from "path";
 import {
   CourseInputs, lecturerSchema, MajorInputs, OperatorInputs,
+  PeriodInputs,
   PermissionInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
@@ -954,6 +955,25 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
         }
       })
     ])
+    return { success: true, error: false };
+  } catch (err: any) {
+    logger.error(err)
+    return {success: false, error:true}
+  }
+}
+
+export const createPeriod = async (state: stateType, data: PeriodInputs) => {
+  try {
+    logger.info(data)
+    return { success: true, error: false };
+  } catch (err: any) {
+    logger.error(err)
+    return {success: false, error:true}
+  }
+}
+export const updatePeriod = async (state: stateType, data: PeriodInputs) => {
+  try {
+    logger.info(data)
     return { success: true, error: false };
   } catch (err: any) {
     logger.error(err)

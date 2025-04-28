@@ -19,6 +19,8 @@ export interface FormModalProps {
   | "course"
   | "major"
   | "room"
+  | "period"
+  | "reregistration"
   type: "create" | "update" | "delete" | "createUser" | "updateUser";
   data?: any;
   id?: any;
@@ -55,6 +57,9 @@ const StudentForm = dynamic(() => import("./forms/StudentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const StudentUserForm = dynamic(() => import("./forms/StudentUserForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const PeriodForm = dynamic(() => import("./forms/PeriodForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -143,6 +148,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  period: (setOpen, type, data, relatedData) =>
+    <PeriodForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -157,6 +169,8 @@ const deleteActionMap = {
   major: deleteMajor,
   room: deleteRoom,
   course: deleteCourse,
+  period: deleteCourse,
+  reregistration: deleteCourse,
 };
 
 const namaTabelMap = {
@@ -171,6 +185,8 @@ const namaTabelMap = {
   major: "program studi",
   room: "ruang/lokal",
   course: "mata kuliah",
+  period: "periode akademik",
+  reregistration: "herregistrasi",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
