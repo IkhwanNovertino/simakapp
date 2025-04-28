@@ -7,7 +7,6 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Prisma, Room } from "@prisma/client";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 
 type RoomDataType = Room;
@@ -111,9 +110,6 @@ const RoomListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
-              <Image src="/filter.png" alt="" width={14} height={14} />
-            </button>
             {canCreateData && (<FormContainer table="room" type="create" />)}
 
           </div>
