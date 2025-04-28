@@ -1,4 +1,3 @@
-import { resourceData } from "@/lib/setting";
 import { Location, PrismaClient, RoleType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -7,6 +6,7 @@ const prisma = new PrismaClient();
 async function main() {
   // Permission
   const permissionData = [
+    { pathname: "periods", name: "period", nama: "periode" },
     { pathname: "permissions", name: "permission", nama: "hak akses" },
     { pathname: "roles", name: "role", nama: "role" },
     { pathname: "users", name: "user", nama: "pengguna" },
@@ -14,7 +14,7 @@ async function main() {
     { pathname: "operators", name: "operator", nama: "operator" },
     { pathname: "students", name: "student", nama: "mahasiswa" },
     { pathname: "majors", name: "major", nama: "program studi" },
-    { pathname: "herregistrations", name: "herregistration", nama: "herregistrasi" },
+    { pathname: "reregistrations", name: "reregistration", nama: "herregistrasi" },
     { pathname: "courses", name: "course", nama: "mata kuliah" },
     { pathname: "rooms", name: "room", nama: "ruangan" },
     { pathname: "krs", name: "krs", nama: "krs" },
