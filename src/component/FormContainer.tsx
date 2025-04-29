@@ -77,6 +77,12 @@ const FormContainer = async (
         });
         relatedData = { role: roleStudentUser, };
         break;
+      case "reregistration":
+        const periodReregister = await prisma.period.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { period: periodReregister };
+        break;
       default:
         break;
     }

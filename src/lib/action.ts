@@ -4,7 +4,7 @@ import path from "path";
 import {
   CourseInputs, lecturerSchema, MajorInputs, OperatorInputs,
   PeriodInputs,
-  PermissionInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
+  PermissionInputs, ReregistrationInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { Gender, Religion } from "@prisma/client";
@@ -1008,6 +1008,54 @@ export const deletePeriod = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     await prisma.period.delete({
+      where: {
+        id: id
+      }
+    })
+    return { success: true, error: false };
+  } catch (err: any) {
+    logger.error(err)
+    return {success: false, error:true}
+  }
+}
+
+export const createReregistration = async (state: stateType, data: ReregistrationInputs) => {
+  try {
+    logger.info(data)
+    await prisma.reregister.create({
+      data: {
+        periodId: data.periodId,
+        name: data.name,
+      }
+    })
+    return { success: true, error: false };
+  } catch (err: any) {
+    logger.error(err)
+    return {success: false, error:true}
+  }
+}
+export const updateReregistration = async (state: stateType, data: ReregistrationInputs) => {
+  try {
+    logger.info(data)
+    await prisma.reregister.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        periodId: data.periodId,
+        name: data.name,
+      }
+    })
+    return { success: true, error: false };
+  } catch (err: any) {
+    logger.error(err)
+    return {success: false, error:true}
+  }
+}
+export const deleteReregistration = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.reregister.delete({
       where: {
         id: id
       }

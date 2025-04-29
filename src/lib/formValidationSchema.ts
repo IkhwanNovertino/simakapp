@@ -135,3 +135,11 @@ export const periodSchema = z.object({
 })
 
 export type PeriodInputs = z.infer<typeof periodSchema>;
+
+export const reregistrationSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, { message: "nama herregistrasi harus diisi" }),
+  periodId: z.string().min(1, { message: "periode akademik harus diisi" }),
+})
+
+export type ReregistrationInputs = z.infer<typeof reregistrationSchema>;

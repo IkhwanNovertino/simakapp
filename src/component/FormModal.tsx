@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
+import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -60,6 +60,9 @@ const StudentUserForm = dynamic(() => import("./forms/StudentUserForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const PeriodForm = dynamic(() => import("./forms/PeriodForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ReregistrationForm = dynamic(() => import("./forms/ReregistrationForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -155,6 +158,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  reregistration: (setOpen, type, data, relatedData) =>
+    <ReregistrationForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -170,7 +180,7 @@ const deleteActionMap = {
   room: deleteRoom,
   course: deleteCourse,
   period: deletePeriod,
-  reregistration: deleteCourse,
+  reregistration: deleteReregistration,
 };
 
 const namaTabelMap = {
