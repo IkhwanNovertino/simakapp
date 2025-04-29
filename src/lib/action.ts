@@ -964,7 +964,20 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
 
 export const createPeriod = async (state: stateType, data: PeriodInputs) => {
   try {
-    logger.info(data)
+    logger.info(data.year.split("/"))
+    const yearData = data.semesterType === "GANJIL" ? data.year.split("/")[0] : data.year.split("/")[1]
+    await prisma.period.create({
+      data: {
+        semesterType: data.semesterType,
+        year: parseInt(yearData),
+        name: `${data.semesterType} ${data.year}`,
+        reregister: {
+          create: {
+            name: `reregister ${data.semesterType} ${data.year}`,
+          }
+        }
+      }
+    })
     return { success: true, error: false };
   } catch (err: any) {
     logger.error(err)
@@ -974,6 +987,31 @@ export const createPeriod = async (state: stateType, data: PeriodInputs) => {
 export const updatePeriod = async (state: stateType, data: PeriodInputs) => {
   try {
     logger.info(data)
+    const yearData = data.semesterType === "GANJIL" ? data.year.split("/")[0] : data.year.split("/")[1]
+    await prisma.period.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        semesterType: data.semesterType,
+        year: parseInt(yearData),
+        name: `${data.semesterType} ${data.year}`,
+      }
+    })
+    return { success: true, error: false };
+  } catch (err: any) {
+    logger.error(err)
+    return {success: false, error:true}
+  }
+}
+export const deletePeriod = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.period.delete({
+      where: {
+        id: id
+      }
+    })
     return { success: true, error: false };
   } catch (err: any) {
     logger.error(err)

@@ -2,8 +2,8 @@
 
 ## Translate
 
-- en: reregister student
-- id: heregister mahasiswa
+- en: reregister detail
+- id: heregister detail
 
 ## Data Model and Form
 
@@ -16,6 +16,7 @@
   - String?
   - Required
   - uuid
+  - me-edit data student itu harus paymentStatus=LUNAS, semesterStatus=ACTIVE
 - semester
   - Int?
   - Required
@@ -40,6 +41,8 @@
   - Required
   - default(NONAKTIF)
   - --diproses oleh operator
+- isUpdated
+  - enum [false, true]
 - campusType
   - CampusType?
   - Required

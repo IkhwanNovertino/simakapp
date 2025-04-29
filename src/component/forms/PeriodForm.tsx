@@ -67,7 +67,7 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("year")}
-            defaultValue={data?.year}
+            defaultValue={data?.name.split(" ")[1]}
           >
             <option
               value=""
