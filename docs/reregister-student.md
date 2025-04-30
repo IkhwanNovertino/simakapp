@@ -36,6 +36,7 @@
   - default(BELUM_LUNAS)
   - Required
   - --diproses oleh finance, seletah selesai kemudian diproses oleh operator
+  - --Kalau LUNAS, maka semesterStatus menjadi AKTIF
 - semesterStatus
   - SemesterStatus?
   - Required

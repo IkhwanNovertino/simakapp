@@ -2,12 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { CourseInputs, courseSchema } from "@/lib/formValidationSchema";
 import { createCourse, updateCourse } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Select from "react-select";
 
 interface CourseFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -17,12 +18,13 @@ interface CourseFormProps {
 }
 
 const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
-  const { majors } = relatedData;
+  const { majors, courses } = relatedData;
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<CourseInputs>({
     resolver: zodResolver(courseSchema)
   })
@@ -69,17 +71,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             required={true}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/2">
-          <InputField
-            label="Nama Mata Kuliah"
-            name="name"
-            defaultValue={data?.name}
-            register={register}
-            error={errors?.name}
-            required={true}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/6">
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
           <InputField
             label="SKS"
             name="sks"
@@ -90,9 +82,55 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             inputProps={{ pattern: "[0-9]*", inputMode: "numeric" }}
           />
         </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/2">
+          <InputField
+            label="Nama Mata Kuliah"
+            name="name"
+            defaultValue={data?.name}
+            register={register}
+            error={errors?.name}
+            required={true}
+          />
+        </div>
       </div>
-      <div className="flex justify-start flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+      <div className="flex justify-between flex-wrap gap-4">
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Kategori Matkul</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full overflow-hidden"
+            {...register("courseType")}
+            size={3}
+            defaultValue={data?.courseType}
+          >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih kategori mata kuliah
+            </option>
+            <option
+              value={"Wajib"}
+              key={"wajib"}
+              className="text-sm py-0.5"
+
+            >
+              Wajib
+            </option>
+            <option
+              value={"Pilihan"}
+              key={"pilihan"}
+              className="text-sm py-0.5"
+
+            >
+              Pilihan
+            </option>
+          </select>
+          {errors.courseType?.message && (
+            <p className="text-xs text-red-400">
+              {errors.courseType.message.toString()}
+            </p>
+          )}
+        </div>
+
+
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Program Studi</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -120,7 +158,61 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             </p>
           )}
         </div>
-        <div className="flex flex-col items-start gap-2 w-full md:w-1/2">
+        <div className="flex flex-col gap-2 w-full md:w-1/2">
+          <label className="text-xs text-gray-500">Mata Kuliah Terdahulu</label>
+          <Controller
+            name="predecessorId"
+            control={control}
+            defaultValue={data?.predecessorId || ""}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={courses.map((course: any) => ({
+                  value: course.id,
+                  label: course.name,
+                }))}
+                isClearable
+                placeholder="-- Pilih mata kuliah terdahulu"
+                classNamePrefix="react-select"
+                className="text-sm rounded-md"
+                onChange={(selected: any) => field.onChange(selected ? selected.value : "")}
+                value={
+                  courses
+                    .map((course: any) => ({
+                      value: course.id,
+                      label: course.name,
+                    }))
+                    .find((option: any) => option.value === field.value) || null
+                }
+              />
+            )}
+          />
+          {/* <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("predecessorId")}
+            defaultValue={data?.predecessorId}
+          >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih mata kuliah terdahulu
+            </option>
+
+            {courses.map((item: any) => (
+              <option
+                value={item.id}
+                key={item.id}
+                className="text-sm py-0.5"
+              >
+                {item.name}
+              </option>
+            ))}
+          </select> */}
+          {errors.predecessorId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.predecessorId.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col items-start gap-2 w-full md:w-1/3">
           <label className="text-xs text-gray-500">Mata Kuliah PKL atau Skripsi</label>
           <div className="flex flex-col md:flex-row gap-4">
             <div className="flex items-center justify-center gap-2 w-full">

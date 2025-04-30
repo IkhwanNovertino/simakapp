@@ -283,6 +283,8 @@ export const deleteRoom = async (state: stateType, data: FormData) => {
 
 export const createCourse = async (state: stateType, data: CourseInputs) => {
   try {
+    console.log(data);
+    
     await prisma.course.create({
       data: {
         name: data.name,
@@ -291,6 +293,7 @@ export const createCourse = async (state: stateType, data: CourseInputs) => {
         majorId: data.majorId,
         isPKL: data.isPKL,
         isSkripsi: data.isSkripsi,
+        predecessorId: data.predecessorId,
       }
     });
     return { success: true, error: false };
@@ -312,6 +315,7 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
         majorId: data.majorId,
         isPKL: data.isPKL,
         isSkripsi: data.isSkripsi,
+        predecessorId: data.predecessorId,
       }
     });
     return { success: true, error: false };
@@ -323,11 +327,27 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
 export const deleteCourse = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    await prisma.course.delete({
-      where: {
-        id: id,
-      }
-    });
+
+    await prisma.$transaction([
+      prisma.course.update({
+        where: {
+          id: id
+        },
+        data: {
+          predecessor: {
+            disconnect: true
+          },
+          successor: {
+            disconnect: true
+          }
+        }
+      }),
+      prisma.course.delete({
+        where: {
+          id: id,
+        }
+      })
+    ])
     return { success: true, error: false };
   } catch (err: any) {
     logger.error(err)
@@ -506,6 +526,7 @@ export const createLecturer = async (state: stateType, data: FormData) => {
     const dataLecturerRaw = {
       npk: data.get('npk')?.toString(),
       nidn: data.get('nidn')?.toString(),
+      nuptk: data.get('nuptk')?.toString(),
       name: data.get('name')?.toString(),
       frontTitle: data.get('frontTitle')?.toString(),
       backTitle: data.get('backTitle')?.toString(),
@@ -548,6 +569,7 @@ export const createLecturer = async (state: stateType, data: FormData) => {
       data: {
         npk: validation.data.npk,
         nidn: validation.data.nidn,
+        nuptk: validation.data.nuptk,
         name: validation.data.name,
         frontTitle: validation.data.frontTitle,
         backTitle: validation.data.backTitle,
@@ -574,6 +596,7 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
       id: data.get('id')?.toString(),
       npk: data.get('npk')?.toString(),
       nidn: data.get('nidn')?.toString(),
+      nuptk: data.get('nuptk')?.toString(),
       name: data.get('name')?.toString(),
       frontTitle: data.get('frontTitle')?.toString(),
       backTitle: data.get('backTitle')?.toString(),
@@ -626,6 +649,7 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
       data: {
         npk: parsed.data.npk,
         nidn: parsed.data.nidn,
+        nuptk: parsed.data.nuptk,
         name: parsed.data.name,
         frontTitle: parsed.data.frontTitle,
         backTitle: parsed.data.backTitle,
@@ -712,12 +736,10 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
 
     let fileUrl: string | undefined = undefined;
     if (photo && photo.size > 0) {
-
       const photoType = ACCEPTED_IMAGE_TYPES.includes(photo.type)
 
       if (!photoType) throw new Error("Tipe file tidak sesuai");
       
-
       const bytes = await photo.arrayBuffer()
       const buffer = Buffer.from(bytes)
   

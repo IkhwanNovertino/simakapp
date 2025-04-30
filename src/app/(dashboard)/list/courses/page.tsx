@@ -101,7 +101,7 @@ const CourseListPage = async (
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
-      <td className="flex items-center p-4 sm:w-20">{item.name}</td>
+      <td className="flex items-center p-4 sm:w-20 md:w-60">{item.name}</td>
       <td className="hidden md:table-cell">{item.code}</td>
       <td className="hidden lg:table-cell">{item.sks}</td>
       <td className="hidden lg:table-cell lg:capitalize">{item.major?.name}</td>

@@ -84,6 +84,10 @@ model Course {
   isSkripsi Boolean @default(false)
   major     Major?  @relation(fields: [majorId], references: [id])
 
+  predecessorId String? @unique
+  predecessor   Course? @relation("CourseHistory", fields: [predecessorId], references: [id])
+  successor     Course? @relation("CourseHistory")
+
   @@map("sb25_courses")
 }
 

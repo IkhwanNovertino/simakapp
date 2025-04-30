@@ -72,3 +72,22 @@ id = 1234
 name = data science
 code = SB-ITI-102
 prevId = 123 -->
+
+<!--
+Contoh table courseCompetence
+- id Int autoIncrement
+- name String?
+
+const data = prisma.krs.findMany({});
+const courseTypePilihan = data.courseType;
+== id = 1
+
+SC
+prisma.course.findMany({
+  where: {
+  OR: [
+  {courseType: {1}}
+  ]
+  }
+})
+ -->

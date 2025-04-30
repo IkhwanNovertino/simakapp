@@ -51,8 +51,10 @@ export const courseSchema = z.object({
   code: z.string().min(1, {message: "kode mata kuliah harus diisi"}),
   name: z.string().min(1, {message: "nama mata kuliah harus diisi"}),
   sks: z.coerce.number().min(1, { message: "sks harus diisi" }),
+  predecessorId: z.string().optional(),
   isPKL: z.boolean().default(false),
   isSkripsi: z.boolean().default(false),
+  courseType: z.string().min(1, {message: "tipe mata kuliah"}),
   majorId: z.coerce.number().min(1, { message: "program studi harus diisi" })
 })
 
