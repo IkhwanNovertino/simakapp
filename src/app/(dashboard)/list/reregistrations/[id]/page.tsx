@@ -11,11 +11,15 @@ import Link from "next/link";
 
 type ReregisterDataType = Reregister & { period: Period };
 
-const ReregisterListPage = async (
-  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
+const ReregisterSinglePage = async (
+  { searchParams, params }: {
+    searchParams: Promise<{ [key: string]: string | undefined }>,
+    params: Promise<{ id: string }>
+  }
 ) => {
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
+  const { id } = await params;
 
   const query: Prisma.ReregisterWhereInput = {}
   if (queryParams) {
@@ -128,4 +132,4 @@ const ReregisterListPage = async (
   )
 }
 
-export default ReregisterListPage;
+export default ReregisterSinglePage;

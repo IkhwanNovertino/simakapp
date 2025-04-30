@@ -13,6 +13,12 @@
   - String
   - PK
   - uuid
+- prevId
+  - String?
+  - uuid
+  - FK
+  - relasi ke dirinya sendiri
+  - optional
 - code
   - --kode mata kuliah
   - String?
@@ -25,6 +31,11 @@
   - --jumlah sks mata kuliah
   - Int?
   - Required
+- courseType
+  - string?
+  - enum [wajib, pilihan]
+  - default(wajib)
+  - required
 - majorId
   - --Prodi mata kuliah
   - String?
@@ -51,3 +62,13 @@
     - Tugas Kelompok: 15%
     - UTS: 20%
     - UAS: 20%
+
+<!-- id = 123
+name = machine learing
+-code = SB-ITI-010
+prevId = null
+
+id = 1234
+name = data science
+code = SB-ITI-102
+prevId = 123 -->

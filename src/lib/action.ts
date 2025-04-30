@@ -973,7 +973,7 @@ export const createPeriod = async (state: stateType, data: PeriodInputs) => {
         name: `${data.semesterType} ${data.year}`,
         reregister: {
           create: {
-            name: `reregister ${data.semesterType} ${data.year}`,
+            name: `herregistrasi ${data.semesterType} ${data.year}`,
           }
         }
       }
