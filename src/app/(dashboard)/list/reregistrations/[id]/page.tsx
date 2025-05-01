@@ -12,7 +12,9 @@ import Link from "next/link";
 type ReregisterDataType = Reregister & { period: Period };
 
 const ReregisterSinglePage = async (
-  { searchParams, params }: {
+  {
+    searchParams, params
+  }: {
     searchParams: Promise<{ [key: string]: string | undefined }>,
     params: Promise<{ id: string }>
   }
@@ -38,7 +40,10 @@ const ReregisterSinglePage = async (
     }
   };
 
-  const [data, count] = await prisma.$transaction([
+  const [dataCreate, data, count] = await prisma.$transaction([
+    prisma.reregister.findUnique({
+      where: { id: id }
+    }),
     prisma.reregister.findMany({
       where: query,
       include: {
@@ -119,7 +124,7 @@ const ReregisterSinglePage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer table="reregistration" type="create" />
+            <FormContainer table="reregistrationCreateAll" type="create" data={dataCreate} />
           </div>
         </div>
       </div>

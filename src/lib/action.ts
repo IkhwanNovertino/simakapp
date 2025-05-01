@@ -1088,3 +1088,14 @@ export const deleteReregistration = async (state: stateType, data: FormData) => 
     return {success: false, error:true}
   }
 }
+
+export const reregisterCreateAll = async (state: stateType, data: FormData) => {
+  try {
+    const students = await prisma.student.findMany({});
+    console.log(students);
+    return {success: true, error:false}
+  } catch (err: any) {
+    logger.error(err)
+    return {success: false, error:true}
+  }
+}

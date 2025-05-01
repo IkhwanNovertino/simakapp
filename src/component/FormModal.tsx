@@ -1,10 +1,10 @@
 "use client";
 
-import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
-import dynamic from "next/dynamic";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } from "react";
+import Image from "next/image";
+import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
+import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
@@ -21,6 +21,7 @@ export interface FormModalProps {
   | "room"
   | "period"
   | "reregistration"
+  | "reregistrationCreateAll"
   type: "create" | "update" | "delete" | "createUser" | "updateUser";
   data?: any;
   id?: any;
@@ -63,6 +64,9 @@ const PeriodForm = dynamic(() => import("./forms/PeriodForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const ReregistrationForm = dynamic(() => import("./forms/ReregistrationForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ReregistrationCreateAllForm = dynamic(() => import("./forms/ReregisterCreateAll"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -165,6 +169,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  reregistrationCreateAll: (setOpen, type, data, relatedData) =>
+    <ReregistrationCreateAllForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -181,6 +192,7 @@ const deleteActionMap = {
   course: deleteCourse,
   period: deletePeriod,
   reregistration: deleteReregistration,
+  reregistrationCreateAll: deleteReregistration,
 };
 
 const namaTabelMap = {
@@ -197,6 +209,7 @@ const namaTabelMap = {
   course: "mata kuliah",
   period: "periode akademik",
   reregistration: "herregistrasi",
+  reregistrationCreateAll: "herregistrasi",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {

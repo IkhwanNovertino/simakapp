@@ -145,3 +145,9 @@ export const reregistrationSchema = z.object({
 })
 
 export type ReregistrationInputs = z.infer<typeof reregistrationSchema>;
+
+export const reregistrationCreateAllSchema = z.object({
+  id: z.string().optional(),
+})
+
+export type ReregistrationCreateAllInputs = z.infer<typeof reregistrationCreateAllSchema>;

@@ -38,7 +38,7 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data periode akademik`);
+      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data herregistrasi`);
       router.refresh();
       setOpen(false);
     }
