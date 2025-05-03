@@ -1,6 +1,9 @@
 'use server';
+import { Permission, RolePermission } from "@prisma/client";
 import { prisma } from "./prisma";
 import { getSession } from "./session"
+
+type PermissionDataType = RolePermission & {permission: Permission};
 
 export const getSidebarItemsByRole = async () => {
   const getSessionData = await getSession();
@@ -15,9 +18,9 @@ export const getSidebarItemsByRole = async () => {
     },
   });
   const viewPermission = permissionByRole
-    .map((permission) => permission?.permission?.name)
-    .filter((permissionName) => permissionName?.startsWith('view:'))
-    .map((pathname) => pathname?.split(':')[1]);
+    .map((permission:PermissionDataType) => permission?.permission?.name)
+    .filter((permissionName: string) => permissionName?.startsWith('view:'))
+    .map((pathname: string) => pathname?.split(':')[1]);
   
   return viewPermission
   
@@ -36,9 +39,9 @@ export const canRoleCreateData = async (pathname: string) => {
   });
 
   const createPermission = permissionByRole
-    .map((permission) => permission?.permission?.name)
-    .filter((permissionName) => permissionName?.startsWith('create:'))
-    .map((pathname) => pathname?.split(':')[1]);
+    .map((permission: PermissionDataType) => permission?.permission?.name)
+    .filter((permissionName: string) => permissionName?.startsWith('create:'))
+    .map((pathname: string) => pathname?.split(':')[1]);
   
   return createPermission.includes(pathname);
 };
@@ -56,8 +59,8 @@ export const canRoleCreateDataUser = async () => {
   });
 
   const createUserPermission = permissionByRole
-    .map((permission) => permission?.permission?.name)
-    .filter((permissionName) => permissionName?.includes('users') && permissionName?.includes('create:'))
+    .map((permission: PermissionDataType) => permission?.permission?.name)
+    .filter((permissionName: string) => permissionName?.includes('users') && permissionName?.includes('create:'))
   
   return createUserPermission.length > 0 ? true : false;
 }
@@ -75,9 +78,9 @@ export const canRoleViewData = async (pathname: string) => {
   });
 
   const viewPermission = permissionByRole
-    .map((permission) => permission?.permission?.name)
-    .filter((permissionName) => permissionName?.startsWith('view:'))
-    .map((pathname) => pathname?.split(':')[1]);
+    .map((permission: PermissionDataType) => permission?.permission?.name)
+    .filter((permissionName: string) => permissionName?.startsWith('view:'))
+    .map((pathname: string) => pathname?.split(':')[1]);
   
   return viewPermission.includes(pathname);
 };
@@ -95,9 +98,9 @@ export const canRoleUpdateData = async (pathname: string) => {
   });
 
   const updatePermission = permissionByRole
-    .map((permission) => permission?.permission?.name)
-    .filter((permissionName) => permissionName?.startsWith('edit:'))
-    .map((pathname) => pathname?.split(':')[1]);
+    .map((permission: PermissionDataType) => permission?.permission?.name)
+    .filter((permissionName: string) => permissionName?.startsWith('edit:'))
+    .map((pathname: string) => pathname?.split(':')[1]);
   
   return updatePermission.includes(pathname);
 };
@@ -114,13 +117,12 @@ export const canRoleDeleteData = async (pathname: string) => {
   });
 
   const deletePermission = permissionByRole
-    .map((permission) => permission?.permission?.name)
-    .filter((permissionName) => permissionName?.startsWith('delete:'))
-    .map((pathname) => pathname?.split(':')[1]);
+    .map((permission: PermissionDataType) => permission?.permission?.name)
+    .filter((permissionName: string) => permissionName?.startsWith('delete:'))
+    .map((pathname: string) => pathname?.split(':')[1]);
   
   return deletePermission.includes(pathname);
 };
-  
 
 export const redirectDashboardByRole = async () => {
   const getSessionData = await getSession();

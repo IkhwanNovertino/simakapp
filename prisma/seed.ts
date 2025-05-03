@@ -1,4 +1,4 @@
-import { Location, PrismaClient, RoleType } from "@prisma/client";
+import { Location, PrismaClient, RoleType, SemesterType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -53,7 +53,7 @@ async function main() {
     })
   }
 
-  const permissions = 72;
+  const permissions = 76;
 
   // rolePermission
   for (let i = 1; i <= permissions; i++) {
@@ -64,29 +64,6 @@ async function main() {
       }
     })
   };
-  // await prisma.rolePermission.createMany({
-  //   data: [
-  //     { roleId: 1, permissionId: 1 },
-  //     { roleId: 1, permissionId: 2 },
-  //     { roleId: 1, permissionId: 3 },
-  //     { roleId: 1, permissionId: 4 },
-  //     { roleId: 1, permissionId: 5 },
-  //     { roleId: 1, permissionId: 6 },
-  //     { roleId: 1, permissionId: 7 },
-  //     { roleId: 1, permissionId: 8 },
-  //     { roleId: 1, permissionId: 9 },
-  //     { roleId: 1, permissionId: 10 },
-  //     { roleId: 1, permissionId: 11 },
-  //     { roleId: 1, permissionId: 12 },
-  //     { roleId: 1, permissionId: 13 },
-  //     { roleId: 1, permissionId: 14 },
-  //     { roleId: 1, permissionId: 15 },
-  //     { roleId: 1, permissionId: 16 },
-  //     { roleId: 2, permissionId: 13 },
-  //     { roleId: 2, permissionId: 17 },
-  //     { roleId: 2, permissionId: 18 },
-  //   ]
-  // })
 
   // user
   const hashPassword = bcrypt.hashSync("admin", 10);
@@ -96,7 +73,7 @@ async function main() {
       department: "",
       user: {
         create: {
-          email: "admin1@gmail.com",
+          email: "admin1@stmik.com",
           password: hashPassword,
           roleId: 1,
           isStatus: true,
@@ -179,6 +156,35 @@ async function main() {
         name: rooms.name,
         location: rooms.location as Location,
         capacity: rooms.capacity,
+      }
+    })
+  }
+
+  // Periode Akademik
+  const periodData = [
+    {semesterType: "GANJIL", year: 2020, name: "GANJIL 2020/2021"},
+    {semesterType: "GENAP", year: 2021, name: "GENAP 2020/2021"},
+    {semesterType: "GANJIL", year: 2021, name: "GANJIL 2021/2022"},
+    {semesterType: "GENAP", year: 2022, name: "GENAP 2021/2022"},
+    {semesterType: "GANJIL", year: 2022, name: "GANJIL 2022/2023"},
+    {semesterType: "GENAP", year: 2023, name: "GENAP 2022/2023"},
+    {semesterType: "GANJIL", year: 2023, name: "GANJIL 2023/2024"},
+    {semesterType: "GENAP", year: 2024, name: "GENAP 2023/2024"},
+    {semesterType: "GANJIL", year: 2024, name: "GANJIL 2024/2025"},
+    {semesterType: "GENAP", year: 2025, name: "GENAP 2024/2025"},
+  ]
+
+  for (const period of periodData) {
+    await prisma.period.create({
+      data: {
+        semesterType: period.semesterType as SemesterType,
+        year: period.year,
+        name: period.name,
+        reregister: {
+          create: {
+            name: `Herregistrasi ${period.name}`
+          }
+        }
       }
     })
   }

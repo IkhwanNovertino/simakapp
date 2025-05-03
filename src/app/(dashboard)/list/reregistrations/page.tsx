@@ -8,6 +8,7 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Period, Prisma, Reregister } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import Year from "react-calendar/src/DecadeView/Year.jsx";
 
 type ReregisterDataType = Reregister & { period: Period };
 
@@ -38,10 +39,22 @@ const ReregisterListPage = async (
     prisma.reregister.findMany({
       where: query,
       include: {
-        period: true,
+        period: true
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
+      orderBy: [
+        {
+          period: {
+            year: "asc",
+          }
+        },
+        {
+          period: {
+            semesterType: "desc"
+          }
+        }
+      ]
     }),
     prisma.reregister.count({ where: query }),
   ]);

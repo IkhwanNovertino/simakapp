@@ -61,6 +61,13 @@ const FormContainer = async (
           select: { id: true, name: true },
         });
         const lecturerstudent = await prisma.lecturer.findMany({
+          where: {
+            user: {
+              role: {
+                roleType: "ADVISOR"
+              }
+            }
+          },
           select: { id: true, name: true },
         });
         const rolestudent = await prisma.role.findMany({

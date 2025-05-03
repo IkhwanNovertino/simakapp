@@ -39,21 +39,24 @@ const ReregisterSinglePage = async (
       }
     }
   };
+  const dataCreate = await prisma.reregister.findUnique({
+    where: { id: id }
+  });
 
-  const [dataCreate, data, count] = await prisma.$transaction([
-    prisma.reregister.findUnique({
-      where: { id: id }
-    }),
-    prisma.reregister.findMany({
-      where: query,
-      include: {
-        period: true,
-      },
-      take: ITEM_PER_PAGE,
-      skip: ITEM_PER_PAGE * (p - 1),
-    }),
-    prisma.reregister.count({ where: query }),
-  ]);
+  // const [dataCreate, data, count] = await prisma.$transaction([
+  //   prisma.reregister.findUnique({
+  //     where: { id: id }
+  //   }),
+  //   prisma.reregister.findMany({
+  //     where: query,
+  //     include: {
+  //       period: true,
+  //     },
+  //     take: ITEM_PER_PAGE,
+  //     skip: ITEM_PER_PAGE * (p - 1),
+  //   }),
+  //   prisma.reregister.count({ where: query }),
+  // ]);
 
   const columns = [
     {
@@ -120,7 +123,7 @@ const ReregisterSinglePage = async (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">Herregistrasi</h1>
+        <h1 className="hidden md:block text-lg font-semibold"> {dataCreate?.name}</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
@@ -130,9 +133,9 @@ const ReregisterSinglePage = async (
       </div>
       {/* BOTTOM */}
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
+      {/* <Table columns={columns} renderRow={renderRow} data={data} /> */}
       {/* PAGINATION */}
-      <Pagination page={p} count={count} />
+      {/* <Pagination page={p} count={count} /> */}
     </div>
   )
 }

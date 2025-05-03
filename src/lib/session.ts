@@ -26,19 +26,33 @@ export const decrypt = async (token: string) => {
 
 export const createSession = async (userId: string) => {
   const expiresAt = new Date(Date.now() + 2 * 24 * 60 * 60 * 1000)
-  const sessionInsert = await prisma.session.create({
-    data: {
-      userId,
-      expiresAt,
-    },
+  let session;
+  const sessionCheck = await prisma.session.findFirst({
+    where: { userId: userId }
   });
-
-  const sessionId = sessionInsert.id;
+  if (sessionCheck) {
+    session = await prisma.session.update({
+      where: {
+        id: sessionCheck.id,
+      },
+      data: {
+        expiresAt: expiresAt,
+      }
+    })
+  } else {
+    session = await prisma.session.create({
+      data: {
+        userId: userId,
+        expiresAt: expiresAt,
+      }
+    })
+  }
+  const sessionId = session.id;
   const encryptedSession = await encrypt(sessionId);
   const cookieStore = await cookies();
   cookieStore.set(SESSION_NAME, encryptedSession, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: true,
     expires: expiresAt,
     path: "/",
     sameSite: "lax",
@@ -50,11 +64,10 @@ export const createSession = async (userId: string) => {
 export const getSession = async () => {
   // Get session from cookie
   const cookieStore = await cookies();
-  const session = cookieStore.get(SESSION_NAME)?.value;
-  if (!session) return null;
-
+  const session = cookieStore.get(SESSION_NAME)?.value!;
   const decryptedSession = await decrypt(session);
-  if (!decryptedSession) return null;
+
+  if (!session || !decryptedSession) return null;
 
   // Get session from database
   const sessionData = await prisma.session.findUnique({
@@ -78,19 +91,23 @@ export const getSession = async () => {
 }
 
 export const deleteSession = async () => {
-  const cookieStore = await cookies();
-  const session = cookieStore.get(SESSION_NAME)?.value || null;
-  if (!session) return null;
-  const decryptedSession = await decrypt(session);
-  if (!decryptedSession) {
-    return null
-  };
+  // const cookieStore = await cookies();
+  // const session = cookieStore.get(SESSION_NAME)?.value!;
+  // const decryptedSession = await decrypt(session);
+  // if (!session || !decryptedSession) return null;
 
-  if (session && decryptedSession) {
-    await prisma.session.delete({
-      where: { id: decryptedSession.toString() },
-    })
-  };
-  cookieStore.delete(SESSION_NAME);
+  // if (session && decryptedSession) {
+  //   await prisma.session.delete({
+  //     where: { id: decryptedSession.toString() },
+  //   })
+  // };
+  // cookieStore.delete(SESSION_NAME);
+  // return true;
+
+  const session = await getSession();
+  await prisma.session.delete({
+    where: {id: session?.sessionId}
+  })
+    (await cookies()).delete(SESSION_NAME)
   return true;
 }

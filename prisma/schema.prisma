@@ -54,7 +54,7 @@ model User {
 
 model Session {
   id        String   @id @default(uuid())
-  userId    String
+  userId    String   @unique
   user      User     @relation(fields: [userId], references: [id])
   expiresAt DateTime
   createdAt DateTime @default(now())
@@ -128,27 +128,28 @@ model Operator {
 }
 
 model Student {
-  id             String    @id @default(uuid())
-  nim            String?   @unique
-  name           String?
-  year           Int?
-  religion       Religion?
-  gender         Gender?
-  address        String?
-  email          String?
-  hp             String?
-  photo          String?
-  fatherName     String?
-  motherName     String?
-  guardianName   String?
-  guardianHp     String?
-  majorId        Int?
-  major          Major?    @relation(fields: [majorId], references: [id])
-  lecturerId     String?
-  lecturer       Lecturer? @relation(fields: [lecturerId], references: [id])
-  statusRegister String?
-  userId         String?   @unique
-  user           User?     @relation(fields: [userId], references: [id])
+  id               String             @id @default(uuid())
+  nim              String?            @unique
+  name             String?
+  year             Int?
+  religion         Religion?
+  gender           Gender?
+  address          String?
+  email            String?
+  hp               String?
+  photo            String?
+  fatherName       String?
+  motherName       String?
+  guardianName     String?
+  guardianHp       String?
+  majorId          Int?
+  major            Major?             @relation(fields: [majorId], references: [id])
+  lecturerId       String?
+  lecturer         Lecturer?          @relation(fields: [lecturerId], references: [id])
+  statusRegister   String?
+  userId           String?            @unique
+  user             User?              @relation(fields: [userId], references: [id])
+  ReregisterDetail ReregisterDetail[]
 
   @@map("sb25_students")
 }
@@ -174,13 +175,30 @@ model Period {
 }
 
 model Reregister {
-  id                 String   @id @default(uuid())
+  id                 String             @id @default(uuid())
   name               String?
   periodId           String?
-  period             Period?  @relation(fields: [periodId], references: [id])
-  isReregisterActive Boolean? @default(false)
+  period             Period?            @relation(fields: [periodId], references: [id])
+  isReregisterActive Boolean?           @default(false)
+  ReregisterDetail   ReregisterDetail[]
 
   @@map("sb25_reregisters")
+}
+
+model ReregisterDetail {
+  reregisterId       String
+  reregister         Reregister     @relation(fields: [reregisterId], references: [id])
+  studentId          String
+  student            Student        @relation(fields: [studentId], references: [id])
+  nominal            Decimal?
+  paymentReceiptFile String?
+  paymentStatus      PaymentStatus  @default(BELUM_LUNAS)
+  semester           Int?
+  semesterStatus     SemesterStatus @default(NONAKTIF)
+  campusType         CampusType?
+
+  @@id([reregisterId, studentId])
+  @@map("sb25_reregisterDetail")
 }
 
 enum SemesterType {

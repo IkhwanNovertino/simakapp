@@ -9,7 +9,7 @@ import {
 import { prisma } from "./prisma";
 import { Gender, Religion } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { unlink, writeFile } from "fs/promises";
+import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
 import logger from "./logger";
 
@@ -19,6 +19,7 @@ type stateType = {
 }
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
+const avatarFilePath = process.env.AVATAR_FOLDER as string;
 
 export const createPermission = async (state: stateType, data: PermissionInputs) => {
   try {
@@ -293,12 +294,14 @@ export const createCourse = async (state: stateType, data: CourseInputs) => {
         majorId: data.majorId,
         isPKL: data.isPKL,
         isSkripsi: data.isSkripsi,
-        predecessorId: data.predecessorId,
+        predecessorId: data?.predecessorId || null,
       }
     });
     return { success: true, error: false };
   } catch (err: any) {
-    logger.error(err)
+    // logger.error(err)
+    console.error(err);
+    
     return {success: false, error:true}
   }
 }
@@ -550,9 +553,10 @@ export const createLecturer = async (state: stateType, data: FormData) => {
       const buffer = Buffer.from(bytes)
   
       const fileName = `${v4()}-${photo.name}`
-      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
-      fileUrl = `/uploads/${fileName}`
-  
+      const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
+      const filePath = path.join(dirPath, fileName)
+      fileUrl = `/${avatarFilePath}/${fileName}`
+      await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
     }
 
@@ -626,9 +630,10 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
       const buffer = Buffer.from(bytes)
   
       const fileName = `${v4()}-${photo.name}`
-      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
-      fileUrl = `/uploads/${fileName}`
-  
+      const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
+      const filePath = path.join(dirPath, fileName)
+      fileUrl = `/${avatarFilePath}/${fileName}`
+      await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
 
       if (oldPhoto) {
@@ -744,9 +749,10 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
       const buffer = Buffer.from(bytes)
   
       const fileName = `${v4()}-${photo.name}`
-      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
-      fileUrl = `/uploads/${fileName}`
-  
+      const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
+      const filePath = path.join(dirPath, fileName)
+      fileUrl = `/${avatarFilePath}/${fileName}`
+      await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
     }
 
@@ -840,9 +846,10 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
       const buffer = Buffer.from(bytes)
   
       const fileName = `${v4()}-${photo.name}`
-      const filePath = path.join(process.cwd(), 'public', 'uploads', fileName)
-      fileUrl = `/uploads/${fileName}`
-  
+      const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
+      const filePath = path.join(dirPath, fileName)
+      fileUrl = `/${avatarFilePath}/${fileName}`
+      await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
 
       if (oldPhoto) {
@@ -1091,8 +1098,73 @@ export const deleteReregistration = async (state: stateType, data: FormData) => 
 
 export const reregisterCreateAll = async (state: stateType, data: FormData) => {
   try {
-    const students = await prisma.student.findMany({});
-    console.log(students);
+    const id = data.get("id") as string;
+    // Jika mengambil langsung ke table reregisterDetail
+    // terdapat banyak kondisi :
+    // 1. Jika baru pertama kali, getData akan mengembalikan data kosong, maka harus mengambil data dari table student
+    // ... const students = await prisma.student.findMany({});
+    // 2. Jika Data id yang diterima adalah semester ganjil,
+    // ... maka terdapat banyak proses yang harus dilakukan:
+    // ... mulai data?.id yg dikirim form -> apakah data itu adalah semester ganjil -> maka data reregisterDetail yang diambil adalah data semester genap sebelumnya
+    // ... 
+    // ... const currentReregister = await prisma.reregister.findFirst({
+    // ...   where: { id: id },
+    // ...   include: {period: true},
+    // ... });
+    // ... const yearCurrentReregister = currentReregister?.period?.year;
+    // ... const prevReregister = await prisma.reregister.findFirst({
+    // ...   where: {
+    // ...     period: {
+    // ...       semesterType: "GENAP",
+    // ...       year: yearCurrentReregister
+    // ...     }
+    // ...   }
+    // ... })
+    // ... const studentReregisterData = await prisma.reregister.findMany({
+    // ...   where: {
+    // ...     OR: [
+    // ...       {id: prevReregister?.id},
+    // ...       {name: "NONAKTIF"}
+    // ...     ]
+    // ...   }
+    // ... })
+    // 3. Jika Data id yang diterima adalah semester genap,
+    // ... proses yang harus dilakukan
+    // ... mulai data?.id yg dikirim form -> apakah data itu adalah semester genap -> maka data reregisterDetail yang diambil adalah data semester ganjil sebelumnya
+    // ...
+    // ... const currentReregister = await prisma.reregister.findFirst({
+    // ...   where: { id: id },
+    // ...   include: {period: true},
+    // ... });
+    // ... const yearCurrentReregister = currentReregister?.period?.year;
+    // ... const prevReregister = await prisma.reregister.findFirst({
+    // ...   where: {
+    // ...     period: {
+    // ...       semesterType: "GENAP",
+    // ...       year: yearCurrentReregister - 1 ===> klo genap 2025, artinya ganjilnya ada di 2024
+    // ...     }
+    // ...   }
+    // ... })
+    // ... const studentReregisterData = await prisma.reregister.findMany({
+    // ...   where: {
+    // ...     OR: [
+    // ...       {id: prevReregister?.id},
+    // ...       {name: "NONAKTIF"}
+    // ...     ]
+    // ...   }
+    // ... })
+    
+    // Cara mencari data mahasiswa langsun ditable reregister Detail
+    // const studentReregisterData = await prisma.reregisterDetail.findMany({
+    //   where: {
+    //     reregister: {
+    //       period: {
+    //         semesterType: currentReregister === "GANJIL" ? "GENAP" : "GANJIL",
+    //         year: currentReregister === "GANJIL" ? currentReregister.period.year : currentReregister.period.year
+    //       }
+    //     }
+    //   }
+    // })
     return {success: true, error:false}
   } catch (err: any) {
     logger.error(err)
