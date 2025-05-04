@@ -6,8 +6,6 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Period, Prisma } from "@prisma/client";
-import Image from "next/image";
-import Link from "next/link";
 
 type PeriodDataType = Period;
 

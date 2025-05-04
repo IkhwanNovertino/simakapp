@@ -4,7 +4,6 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
-import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Period, Prisma, Reregister } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -133,9 +132,9 @@ const ReregisterSinglePage = async (
       </div>
       {/* BOTTOM */}
       {/* LIST */}
-      {/* <Table columns={columns} renderRow={renderRow} data={data} /> */}
+      <Table columns={columns} renderRow={renderRow} data={[]} />
       {/* PAGINATION */}
-      {/* <Pagination page={p} count={count} /> */}
+      <Pagination page={p} count={0} />
     </div>
   )
 }

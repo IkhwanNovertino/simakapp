@@ -1099,6 +1099,7 @@ export const deleteReregistration = async (state: stateType, data: FormData) => 
 export const reregisterCreateAll = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
+    logger.info(id);
     // Jika mengambil langsung ke table reregisterDetail
     // terdapat banyak kondisi :
     // 1. Jika baru pertama kali, getData akan mengembalikan data kosong, maka harus mengambil data dari table student

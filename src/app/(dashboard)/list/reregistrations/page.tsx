@@ -8,7 +8,6 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Period, Prisma, Reregister } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
-import Year from "react-calendar/src/DecadeView/Year.jsx";
 
 type ReregisterDataType = Reregister & { period: Period };
 

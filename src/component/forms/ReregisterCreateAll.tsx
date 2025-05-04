@@ -2,11 +2,7 @@
 "use client";
 
 import { reregisterCreateAll } from "@/lib/action";
-import { ReregistrationCreateAllInputs, reregistrationCreateAllSchema, ReregistrationInputs, reregistrationSchema } from "@/lib/formValidationSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
-import InputField from "../InputField";
+import { Dispatch, SetStateAction, useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
@@ -17,7 +13,7 @@ interface ReregistrationFormProps {
   relatedData?: any;
 }
 
-const ReregisterCreateAll = ({ setOpen, type, data, relatedData }: ReregistrationFormProps) => {
+const ReregisterCreateAll = ({ setOpen, type, data }: ReregistrationFormProps) => {
   console.log(data);
 
   const [state, formAction] = useActionState(reregisterCreateAll, { success: false, error: false });

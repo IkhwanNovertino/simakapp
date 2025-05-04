@@ -16,6 +16,7 @@ const encrypt = async (sessionId: string) => {
 }
 
 export const decrypt = async (token: string) => {
+  if (!token) return null;
   const secret = new TextEncoder().encode(process.env.SESSION_SECRET);
   const { payload } = await jwtVerify(token, secret, {
     algorithms: ["HS256"],
@@ -64,7 +65,7 @@ export const createSession = async (userId: string) => {
 export const getSession = async () => {
   // Get session from cookie
   const cookieStore = await cookies();
-  const session = cookieStore.get(SESSION_NAME)?.value!;
+  const session = cookieStore.get(SESSION_NAME)?.value || "";
   const decryptedSession = await decrypt(session);
 
   if (!session || !decryptedSession) return null;
@@ -91,23 +92,12 @@ export const getSession = async () => {
 }
 
 export const deleteSession = async () => {
-  // const cookieStore = await cookies();
-  // const session = cookieStore.get(SESSION_NAME)?.value!;
-  // const decryptedSession = await decrypt(session);
-  // if (!session || !decryptedSession) return null;
-
-  // if (session && decryptedSession) {
-  //   await prisma.session.delete({
-  //     where: { id: decryptedSession.toString() },
-  //   })
-  // };
-  // cookieStore.delete(SESSION_NAME);
-  // return true;
-
+  const cookieStore = await cookies();
+  
   const session = await getSession();
   await prisma.session.delete({
     where: {id: session?.sessionId}
   })
-    (await cookies()).delete(SESSION_NAME)
+  cookieStore.delete(SESSION_NAME);
   return true;
 }

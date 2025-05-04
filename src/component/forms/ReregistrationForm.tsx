@@ -4,8 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { PeriodInputs, periodSchema, ReregistrationInputs, reregistrationSchema } from "@/lib/formValidationSchema";
-import { createPeriod, createReregistration, createRoom, updatePeriod, updateReregistration, updateRoom } from "@/lib/action";
+import { ReregistrationInputs, reregistrationSchema } from "@/lib/formValidationSchema";
+import { createReregistration, updateReregistration } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
