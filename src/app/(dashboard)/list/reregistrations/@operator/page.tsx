@@ -4,23 +4,26 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
+import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Period, Prisma, Reregister } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 type ReregisterDataType = Reregister & { period: Period };
 
-const ReregisterSinglePage = async (
-  {
-    searchParams, params
-  }: {
-    searchParams: Promise<{ [key: string]: string | undefined }>,
-    params: Promise<{ id: string }>
-  }
+const ReregisterOperatorPage = async (
+  { searchParams }: { searchParams: { [key: string]: string | undefined } }
 ) => {
+
+  const getSessionFunc = await getSession();
+  if (!getSessionFunc || getSessionFunc.roleType !== "OPERATOR") {
+    redirect("/");
+  }
+
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
-  const { id } = await params;
 
   const query: Prisma.ReregisterWhereInput = {}
   if (queryParams) {
@@ -38,24 +41,30 @@ const ReregisterSinglePage = async (
       }
     }
   };
-  const dataCreate = await prisma.reregister.findUnique({
-    where: { id: id }
-  });
 
-  // const [dataCreate, data, count] = await prisma.$transaction([
-  //   prisma.reregister.findUnique({
-  //     where: { id: id }
-  //   }),
-  //   prisma.reregister.findMany({
-  //     where: query,
-  //     include: {
-  //       period: true,
-  //     },
-  //     take: ITEM_PER_PAGE,
-  //     skip: ITEM_PER_PAGE * (p - 1),
-  //   }),
-  //   prisma.reregister.count({ where: query }),
-  // ]);
+  const [data, count] = await prisma.$transaction([
+    prisma.reregister.findMany({
+      where: query,
+      include: {
+        period: true
+      },
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (p - 1),
+      orderBy: [
+        {
+          period: {
+            year: "asc",
+          }
+        },
+        {
+          period: {
+            semesterType: "desc"
+          }
+        }
+      ]
+    }),
+    prisma.reregister.count({ where: query }),
+  ]);
 
   const columns = [
     {
@@ -71,6 +80,11 @@ const ReregisterSinglePage = async (
     {
       header: "Tahun",
       accessor: "tahun",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "isActivated",
+      accessor: "isActivated",
       className: "hidden md:table-cell",
     },
     {
@@ -90,6 +104,11 @@ const ReregisterSinglePage = async (
       </td>
       <td className="hidden md:table-cell">{item.period?.name || "-"}</td>
       <td className="hidden md:table-cell">{item.period?.year || "-"}</td>
+      <td className="hidden md:table-cell text-[10px] font-bold">
+        <span className={item.isReregisterActive ? "text-lime-500 bg-lime-100 p-1 rounded-lg" : "text-red-700 bg-red-100 p-1 rounded-lg"}>
+          {item.isReregisterActive ? "AKTIF" : "NONAKTIF"}
+        </span>
+      </td>
       <td>
         <div className="flex items-center gap-2">
           <div className="md:hidden relative flex items-center justify-end gap-2">
@@ -116,27 +135,27 @@ const ReregisterSinglePage = async (
           </div>
         </div>
       </td>
-    </tr>
+    </tr >
   );
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold"> {dataCreate?.name}</h1>
+        <h1 className="hidden md:block text-lg font-semibold">Daftar Herregistrasi</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer table="reregistrationCreateAll" type="create" data={dataCreate} />
+            <FormContainer table="reregistration" type="create" />
           </div>
         </div>
       </div>
       {/* BOTTOM */}
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={[]} />
+      <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
-      <Pagination page={p} count={0} />
+      <Pagination page={p} count={count} />
     </div>
   )
 }
 
-export default ReregisterSinglePage;
+export default ReregisterOperatorPage;

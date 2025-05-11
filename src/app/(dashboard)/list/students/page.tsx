@@ -67,6 +67,9 @@ const StudentListPage = async (
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
+      orderBy: [
+        {nim: "desc"}
+      ],
     }),
     prisma.student.count({ where: query }),
     prisma.major.findMany({

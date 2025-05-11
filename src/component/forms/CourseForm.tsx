@@ -12,7 +12,7 @@ import Select from "react-select";
 
 interface CourseFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser";
+  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
   data?: any;
   relatedData?: any;
 }
@@ -128,8 +128,6 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             </p>
           )}
         </div>
-
-
         <div className="flex flex-col gap-2 w-full md:w-1/5">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Program Studi</label>
           <select

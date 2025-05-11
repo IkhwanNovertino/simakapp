@@ -108,14 +108,14 @@ const LecturerListPage = async (
     >
       <td className="flex items-center gap-4 p-4">
         <Image
-          src={`/${item.photo}` || '/avatar.png'}
+          src={item.photo || '/avatar.png'}
           alt=""
           width={40}
           height={40}
           className="hidden xl:block w-16 h-16 rounded-full object-cover"
         />
         <div className="flex flex-col">
-          <h3 className="text-sm font-semibold">{`${item.frontTitle} ${item.name}, ${item.backTitle}`}</h3>
+          <h3 className="text-sm font-semibold">{`${item.frontTitle || ""} ${item.name}, ${item.backTitle || ""}`}</h3>
           <p className="text-xs text-gray-500 italic">NUPTK : {item.nuptk || "-"}</p>
           <p className="text-xs text-gray-500 ">{item?.user?.email || ""}</p>
         </div>

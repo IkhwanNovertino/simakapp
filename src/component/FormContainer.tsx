@@ -93,6 +93,44 @@ const FormContainer = async (
         });
         relatedData = { period: periodReregister };
         break;
+      case "reregistrationDetail":
+        const students = await prisma.student.findMany({
+          include: {
+            major: true,
+            lecturer: true,
+          },
+        });
+        const lecturer = await prisma.lecturer.findMany({
+          where: {
+            user: {
+              role: {
+                roleType: "ADVISOR"
+              }
+            }
+          },
+          select: { id: true, name: true, frontTitle: true, backTitle: true }
+        });
+        relatedData = { students: students, lecturers: lecturer };
+        break;
+      case "reregistrationStudent":
+        const student = await prisma.student.findMany({
+          include: {
+            major: true,
+            lecturer: true,
+          },
+        });
+        const lecturers = await prisma.lecturer.findMany({
+          where: {
+            user: {
+              role: {
+                roleType: "ADVISOR"
+              }
+            }
+          },
+          select: { id: true, name: true, frontTitle: true, backTitle: true }
+        });
+        relatedData = { students: student, lecturers: lecturers };
+        break;
       default:
         break;
     }

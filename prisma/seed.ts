@@ -1,4 +1,4 @@
-import { Location, PrismaClient, RoleType, SemesterType } from "@prisma/client";
+import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -188,6 +188,101 @@ async function main() {
       }
     })
   }
+
+  // Lecturer
+  // await prisma.user.create({
+  //   data: {
+  //     email: `lecturer${1}@stmik.com`,
+  //     password: bcrypt.hashSync(`lecturer1`, 10),
+  //     roleId: 3,
+  //     isStatus: true,
+  //     lecturer: {
+  //       create: {
+  //         npk: `110.01`,
+  //         nidn: `12340001`,
+  //         name: `Lecturer1`,
+  //         degree: DegreeStatus.S3,
+  //         gender: Gender.WANITA,
+  //         religion: Religion.KATOLIK,
+  //         majorId: 1,
+  //         year: 2014,
+  //       }
+  //     }
+  //   }
+  // })
+  for (let i = 1; i <= 10; i++) {
+    await prisma.user.create({
+      data: {
+        email: `lecturer${i}@stmik.com`,
+        password: bcrypt.hashSync(`lecturer`, 10),
+        roleId: (i % 2 === 0 ? 3: 2),
+        isStatus: true,
+        lecturer: {
+          create: {
+            npk: `110.0${i}`,
+            nidn: `12340001${i}`,
+            name: `Lecturer${i}`,
+            degree: (i % 2 === 0 ? DegreeStatus.S3 : DegreeStatus.S2) ,
+            gender: Gender.WANITA,
+            religion: Religion.KATOLIK,
+            majorId: (i % 2 === 0 ? 1 : 2),
+            year: 2014,
+          }
+        }
+      }
+    })
+  }
+
+  const lecturer = await prisma.lecturer.findMany({
+    where: {
+      user: {
+        roleId: 3,
+      }
+    }
+  })
+  const students = []
+  for (let i = 0; i < 10; i++) {
+    students.push({
+      nim: `310118${i % 2 === 0 ? '01' : '02'}210${i}`,
+      name: `Student${i + 1}`,
+      year: 2018,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 === 0 ? 1 : 2),
+      statusRegister: "BARU",
+      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+    })
+    
+  };
+  for (let i = 0; i < 10; i++) {
+    students.push({
+      nim: `310119${i % 2 === 0 ? '01' : '02'}220${i}`,
+      name: `Student1${i + 1}`,
+      year: 2019,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 === 0 ? 1 : 2),
+      statusRegister: "BARU",
+      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+    })
+    
+  };
+  for (let i = 0; i < 10; i++) {
+    students.push({
+      nim: `310120${i % 2 === 0 ? '01' : '02'}230${i}`,
+      name: `Student2${i + 1}`,
+      year: 2020,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 === 0 ? 1 : 2),
+      statusRegister: "BARU",
+      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+    })
+    
+  }
+  await prisma.student.createMany({
+    data: students,
+  })
 };
 
 main()

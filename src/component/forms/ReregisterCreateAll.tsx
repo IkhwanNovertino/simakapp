@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 
 interface ReregistrationFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser";
+  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
   data?: any;
   relatedData?: any;
 }
@@ -31,14 +31,14 @@ const ReregisterCreateAll = ({ setOpen, type, data }: ReregistrationFormProps) =
       <h1 className="text-xl font-semibold">Manambahkan data mahasiswa</h1>
 
       <div className="flex justify-center flex-wrap gap-4">
-        <input type="string | number" name="id" value={data?.id} readOnly hidden />
+        <input type="string | number" name="id" value={data?.reregisterId} readOnly hidden />
         <div className="flex flex-col gap-2 w-full md:w-full">
           Data mahasiswa akan ditambahkan pada {data?.name}
         </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
-        {type === "create" ? "Tambah" : "Ubah"}
+        {type === "createMany" ? "Tambah" : "Ubah"}
       </button>
     </form >
   )

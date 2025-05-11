@@ -14,7 +14,7 @@ import { StatusRegistrasi } from "@/lib/data";
 
 interface StudentFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser";
+  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
   data?: any;
   relatedData?: any;
 }
@@ -312,24 +312,6 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
         Informasi Ortu/Wali Mahasiswa
       </span>
       <div className="flex justify-between flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Nama Ayah"
-            name="fatherName"
-            defaultValue={data?.fatherName}
-            register={register}
-            error={errors?.fatherName}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Nama Ayah"
-            name="fatherName"
-            defaultValue={data?.fatherName}
-            register={register}
-            error={errors?.fatherName}
-          />
-        </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
             label="Nama Ibu Kandung"

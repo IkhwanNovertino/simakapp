@@ -13,7 +13,7 @@ import Image from "next/image";
 
 interface LecturerFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser";
+  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
   data?: any;
   relatedData?: any;
 }

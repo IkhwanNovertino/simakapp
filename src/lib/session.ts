@@ -2,6 +2,7 @@
 import { jwtVerify, SignJWT } from "jose";
 import { prisma } from "./prisma";
 import { cookies } from "next/headers";
+import { NextRequest, NextResponse } from "next/server";
 
 const SESSION_NAME = "session";
 
@@ -95,6 +96,7 @@ export const deleteSession = async () => {
   const cookieStore = await cookies();
   
   const session = await getSession();
+  if (!session) return null;
   await prisma.session.delete({
     where: {id: session?.sessionId}
   })

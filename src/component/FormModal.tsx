@@ -4,7 +4,7 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
+import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
@@ -22,7 +22,9 @@ export interface FormModalProps {
   | "period"
   | "reregistration"
   | "reregistrationCreateAll"
-  type: "create" | "update" | "delete" | "createUser" | "updateUser";
+  | "reregistrationDetail"
+  | "reregistrationStudent"
+  type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
   data?: any;
   id?: any;
 }
@@ -69,11 +71,17 @@ const ReregistrationForm = dynamic(() => import("./forms/ReregistrationForm"), {
 const ReregistrationCreateAllForm = dynamic(() => import("./forms/ReregisterCreateAll"), {
   loading: () => <h1>Loading...</h1>,
 });
+const ReregistrationDetailForm = dynamic(() => import("./forms/ReregisterCreateOne"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ReregistrationStudentForm = dynamic(() => import("./forms/ReregisterStudent"), {
+  loading: () => <h1>Loading...</h1>,
+});
 
 const forms: {
   [key: string]: (
     setOpen: Dispatch<SetStateAction<boolean>>,
-    type: "create" | "update" | "createUser" | "updateUser",
+    type: "create" | "update" | "createUser" | "updateUser" | "createMany",
     data?: any,
     relatedData?: any,
   ) => JSX.Element;
@@ -176,6 +184,20 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  reregistrationDetail: (setOpen, type, data, relatedData) =>
+    <ReregistrationDetailForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
+  reregistrationStudent: (setOpen, type, data, relatedData) =>
+    <ReregistrationStudentForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -193,6 +215,8 @@ const deleteActionMap = {
   period: deletePeriod,
   reregistration: deleteReregistration,
   reregistrationCreateAll: deleteReregistration,
+  reregistrationDetail: deleteReregisterDetail,
+  reregistrationStudent: deleteReregisterDetail,
 };
 
 const namaTabelMap = {
@@ -210,13 +234,15 @@ const namaTabelMap = {
   period: "periode akademik",
   reregistration: "herregistrasi",
   reregistrationCreateAll: "herregistrasi",
+  reregistrationDetail: "herregistrasi mahasiswa",
+  reregistrationStudent: "herregistrasi mahasiswa",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
-  const size = type === "create" ? "w-8 h-8" : "w-7 h-7";
+  const size = type === "create" || type === "createMany" ? "w-8 h-8" : "w-7 h-7";
   const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary")
     || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-purple-500/60")
-    || (type === "delete" && "bg-accent");
+    || (type === "delete" && "bg-accent") || (type === "createMany" && "bg-secondary");
   const [open, setOpen] = useState(false);
 
   const Form = () => {
@@ -243,7 +269,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
           Hapus
         </button>
       </form>
-    ) : type === "create" || type === "update" || type === "createUser" || type === "updateUser" ? (
+    ) : type === "create" || type === "update" || type === "createUser" || type === "updateUser" || type === "createMany" ? (
       forms[table](setOpen, type, data, relatedData)
     ) : (
       "Form not found!"

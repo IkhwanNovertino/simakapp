@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { ReregistrationInputs, reregistrationSchema } from "@/lib/formValidationSchema";
 import { createReregistration, updateReregistration } from "@/lib/action";
@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 interface ReregistrationFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser";
+  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
   data?: any;
   relatedData?: any;
 }
@@ -22,6 +22,7 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<ReregistrationInputs>({
     resolver: zodResolver(reregistrationSchema)
   })
@@ -69,7 +70,7 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
             error={errors?.name}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/3">
+        <div className="flex flex-col gap-2 w-full md:w-2/5">
           <label className="text-xs text-gray-500">Semester</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -97,6 +98,28 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
               {errors.periodId.message.toString()}
             </p>
           )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/2">
+          <label className="text-xs text-gray-500">Status Herregistrasi</label>
+          <Controller
+            name="isReregisterActive"
+            control={control}
+            defaultValue={!!data?.isReregisterActive}
+            render={({ field }) => (
+              <div className="flex items-center gap-2">
+                <input
+                  id="isReregisterActive"
+                  type="checkbox"
+                  checked={field.value}
+                  onChange={(e) => field.onChange(e.target.checked)}
+                  className="w-4 h-4 has-checked:text-indigo-900"
+                />
+                <label htmlFor="isReregisterActive" className="text-sm text-gray-600">
+                  Mengaktifkan Herregistrasi
+                </label>
+              </div>
+            )}
+          />
         </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}

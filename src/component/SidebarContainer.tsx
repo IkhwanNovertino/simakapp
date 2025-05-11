@@ -18,6 +18,21 @@ const menuItems = [
     ],
   },
   {
+    title: "HERREGISTRASI",
+    items: [
+      {
+        icon: "/icon/period.svg",
+        label: "Periode Akademik",
+        href: "/list/periods",
+      },
+      {
+        icon: "/icon/reregister.svg",
+        label: "Her Registrasi",
+        href: "/list/reregistrations",
+      },
+    ]
+  },
+  {
     title: "MENU MASTER",
     items: [
 
@@ -55,16 +70,6 @@ const menuItems = [
         icon: "/icon/krs.svg",
         label: "KRS",
         href: "/list/krs",
-      },
-      {
-        icon: "/icon/period.svg",
-        label: "Periode Akademik",
-        href: "/list/periods",
-      },
-      {
-        icon: "/icon/reregister.svg",
-        label: "Her Registrasi",
-        href: "/list/reregistrations",
       },
       {
         icon: "/icon/khs.svg",

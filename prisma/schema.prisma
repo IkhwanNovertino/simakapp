@@ -138,7 +138,7 @@ model Student {
   email            String?
   hp               String?
   photo            String?
-  fatherName       String?
+  statusRegister   String?
   motherName       String?
   guardianName     String?
   guardianHp       String?
@@ -146,10 +146,14 @@ model Student {
   major            Major?             @relation(fields: [majorId], references: [id])
   lecturerId       String?
   lecturer         Lecturer?          @relation(fields: [lecturerId], references: [id])
-  statusRegister   String?
   userId           String?            @unique
   user             User?              @relation(fields: [userId], references: [id])
-  ReregisterDetail ReregisterDetail[]
+  reregisterDetail ReregisterDetail[]
+
+  domicile        String?
+  guardianJob     String?
+  guardianAddress String?
+  motherId        String?
 
   @@map("sb25_students")
 }
@@ -180,7 +184,7 @@ model Reregister {
   periodId           String?
   period             Period?            @relation(fields: [periodId], references: [id])
   isReregisterActive Boolean?           @default(false)
-  ReregisterDetail   ReregisterDetail[]
+  reregisterDetail   ReregisterDetail[]
 
   @@map("sb25_reregisters")
 }
@@ -197,9 +201,19 @@ model ReregisterDetail {
   semesterStatus     SemesterStatus @default(NONAKTIF)
   campusType         CampusType?
 
+  // untuk memeriksa apakah student sudah mengisi data
+  // isStatusForm FormStatus? @default(PENDING)
+
   @@id([reregisterId, studentId])
-  @@map("sb25_reregisterDetail")
+  @@map("sb25_reregisterDetails")
 }
+
+// enum FormStatus {
+//   PENDING
+//   SUBMITTED
+//   REJECTED
+//   APPROVED
+// }
 
 enum SemesterType {
   GANJIL

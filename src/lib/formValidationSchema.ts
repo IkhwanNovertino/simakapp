@@ -112,7 +112,6 @@ export const studentSchema = z.object({
   phone: z.string().optional(),
   majorId: z.coerce.number().min(1, { message: "Program studi harus diisi" }),
   lecturerId: z.string().min(1, { message: "Perwalian akademik harus diisi" }),
-  fatherName: z.string().optional(),
   motherName: z.string().optional(),
   guardianName: z.string().optional(),
   guardianHp: z.string().optional(),
@@ -142,6 +141,7 @@ export const reregistrationSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, { message: "nama herregistrasi harus diisi" }),
   periodId: z.string().min(1, { message: "periode akademik harus diisi" }),
+  isReregisterActive: z.boolean().default(false),
 })
 
 export type ReregistrationInputs = z.infer<typeof reregistrationSchema>;
@@ -151,3 +151,26 @@ export const reregistrationCreateAllSchema = z.object({
 })
 
 export type ReregistrationCreateAllInputs = z.infer<typeof reregistrationCreateAllSchema>;
+
+export const reregistrationDetail = z.object({
+  id: z.string().optional(),
+  reregisterId: z.string().optional(),
+  studentId: z.string().optional(),
+  semester: z.string().optional(),
+  year: z.string().optional(),
+  major: z.string().optional(),
+  lecturerId: z.string().optional(),
+  campusType: z.string().optional(),
+  nominal: z.string().optional(),
+  paymentStatus: z.string().optional(),
+  semesterStatus: z.string().optional(),
+  guardianName: z.string().optional(),
+  guardianID: z.string().optional(),
+  guardianJob: z.string().optional(),
+  guardianHP: z.string().optional(),
+  guardianAddress: z.string().optional(),
+  motherName: z.string().optional(),
+  motherID: z.string().optional(),
+})
+
+export type ReregistrationDetailInputs = z.infer<typeof reregistrationDetail>;

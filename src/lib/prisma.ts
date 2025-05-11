@@ -14,19 +14,19 @@ const prismaClientSingleton: any = globalForPrisma.prisma || new PrismaClient({
   ]
 })
 
-prismaClientSingleton.$on('query', (e: any) => {
-  console.log(e);
-})
-prismaClientSingleton.$on('info', (e: any) => {
-  console.log(e);
-})
+// prismaClientSingleton.$on('query', (e: any) => {
+//   // console.log(e);
+// })
+// prismaClientSingleton.$on('info', (e: any) => {
+//   // console.log(e);
+// })
 prismaClientSingleton.$on('warn', (e: any) => {
   console.log(e);
-  logger.warn(e);
+  // logger.warn(e);
 })
 prismaClientSingleton.$on('error', (e: any) => {
   console.error(e);
-  logger.error(e);
+  // logger.error(e);
 })
 
 export const prisma = prismaClientSingleton;

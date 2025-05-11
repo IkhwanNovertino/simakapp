@@ -4,10 +4,10 @@ import path from "path";
 import {
   CourseInputs, lecturerSchema, MajorInputs, OperatorInputs,
   PeriodInputs,
-  PermissionInputs, ReregistrationInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
+  PermissionInputs, reregistrationDetail, ReregistrationDetailInputs, ReregistrationInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { Gender, Religion } from "@prisma/client";
+import { Gender, PaymentStatus, Religion, SemesterStatus, SemesterType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
@@ -733,7 +733,6 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
     const phone = data.get('phone')?.toString();
     const majorId = parseInt(data.get('majorId') as string);
     const lecturerId = data.get('lecturerId')?.toString();
-    const fatherName = data.get('fatherName')?.toString();
     const motherName = data.get('motherName')?.toString();
     const guardianName = data.get('guardianName')?.toString();
     const guardianHp = data.get('guardianHp')?.toString();
@@ -768,7 +767,6 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
       phone,
       majorId,
       lecturerId,
-      fatherName,
       motherName,
       guardianName,
       guardianHp,
@@ -780,7 +778,7 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
       return { success: false, error: true, fieldErrors: validation.error };
     }
 
-    await prisma.student.create({
+    const student = await prisma.student.create({
       data: {
         name: validation.data?.name,
         nim: validation.data?.nim,
@@ -792,12 +790,11 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
         hp : validation.data?.phone,
         majorId: validation.data?.majorId,
         lecturerId : validation.data?.lecturerId,
-        fatherName : validation.data?.fatherName,
         motherName : validation.data?.motherName,
         guardianName : validation.data?.guardianName,
         guardianHp : validation.data?.guardianHp,
         statusRegister : validation.data?.statusRegister,
-        photo: fileUrl ?? '', // boleh string kosong
+        photo: fileUrl ?? '', // boleh string kosong  
       },
     })
     return { success: true, error: false, fieldErrors: {} };
@@ -821,7 +818,6 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
       phone : data.get('phone')?.toString(),
       majorId : parseInt(data.get('majorId') as string),
       lecturerId : data.get('lecturerId')?.toString(),
-      fatherName : data.get('fatherName')?.toString(),
       motherName : data.get('motherName')?.toString(),
       guardianName : data.get('guardianName')?.toString(),
       guardianHp : data.get('guardianHp')?.toString(),
@@ -877,7 +873,6 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
         hp : parsed.data?.phone,
         majorId: parsed.data?.majorId,
         lecturerId : parsed.data?.lecturerId,
-        fatherName : parsed.data?.fatherName,
         motherName : parsed.data?.motherName,
         guardianName : parsed.data?.guardianName,
         guardianHp : parsed.data?.guardianHp,
@@ -1055,6 +1050,7 @@ export const createReregistration = async (state: stateType, data: Reregistratio
       data: {
         periodId: data.periodId,
         name: data.name,
+        isReregisterActive: data.isReregisterActive,
       }
     })
     return { success: true, error: false };
@@ -1073,6 +1069,7 @@ export const updateReregistration = async (state: stateType, data: Reregistratio
       data: {
         periodId: data.periodId,
         name: data.name,
+        isReregisterActive: data.isReregisterActive,
       }
     })
     return { success: true, error: false };
@@ -1100,75 +1097,129 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     logger.info(id);
-    // Jika mengambil langsung ke table reregisterDetail
-    // terdapat banyak kondisi :
-    // 1. Jika baru pertama kali, getData akan mengembalikan data kosong, maka harus mengambil data dari table student
-    // ... const students = await prisma.student.findMany({});
-    // 2. Jika Data id yang diterima adalah semester ganjil,
-    // ... maka terdapat banyak proses yang harus dilakukan:
-    // ... mulai data?.id yg dikirim form -> apakah data itu adalah semester ganjil -> maka data reregisterDetail yang diambil adalah data semester genap sebelumnya
-    // ... 
-    // ... const currentReregister = await prisma.reregister.findFirst({
-    // ...   where: { id: id },
-    // ...   include: {period: true},
-    // ... });
-    // ... const yearCurrentReregister = currentReregister?.period?.year;
-    // ... const prevReregister = await prisma.reregister.findFirst({
-    // ...   where: {
-    // ...     period: {
-    // ...       semesterType: "GENAP",
-    // ...       year: yearCurrentReregister
-    // ...     }
-    // ...   }
-    // ... })
-    // ... const studentReregisterData = await prisma.reregister.findMany({
-    // ...   where: {
-    // ...     OR: [
-    // ...       {id: prevReregister?.id},
-    // ...       {name: "NONAKTIF"}
-    // ...     ]
-    // ...   }
-    // ... })
-    // 3. Jika Data id yang diterima adalah semester genap,
-    // ... proses yang harus dilakukan
-    // ... mulai data?.id yg dikirim form -> apakah data itu adalah semester genap -> maka data reregisterDetail yang diambil adalah data semester ganjil sebelumnya
-    // ...
-    // ... const currentReregister = await prisma.reregister.findFirst({
-    // ...   where: { id: id },
-    // ...   include: {period: true},
-    // ... });
-    // ... const yearCurrentReregister = currentReregister?.period?.year;
-    // ... const prevReregister = await prisma.reregister.findFirst({
-    // ...   where: {
-    // ...     period: {
-    // ...       semesterType: "GENAP",
-    // ...       year: yearCurrentReregister - 1 ===> klo genap 2025, artinya ganjilnya ada di 2024
-    // ...     }
-    // ...   }
-    // ... })
-    // ... const studentReregisterData = await prisma.reregister.findMany({
-    // ...   where: {
-    // ...     OR: [
-    // ...       {id: prevReregister?.id},
-    // ...       {name: "NONAKTIF"}
-    // ...     ]
-    // ...   }
-    // ... })
     
-    // Cara mencari data mahasiswa langsun ditable reregister Detail
-    // const studentReregisterData = await prisma.reregisterDetail.findMany({
-    //   where: {
-    //     reregister: {
-    //       period: {
-    //         semesterType: currentReregister === "GANJIL" ? "GENAP" : "GANJIL",
-    //         year: currentReregister === "GANJIL" ? currentReregister.period.year : currentReregister.period.year
-    //       }
-    //     }
-    //   }
-    // })
+    const reregisterDetails = await prisma.reregisterDetail.findMany({});
+    const currentReregister = await prisma.reregister.findUnique({
+      where: {
+        id: id,
+      },
+      include: {
+        period: true,
+      },
+    });
+    const currentReregisterYear = currentReregister?.period?.year;
+    const currentReregisterSemesterType = currentReregister?.period?.semesterType === "GANJIL" ? 1 : 0;
+    
+    let previousSemesterType;
+    let previousYear;
+
+    if (currentReregisterSemesterType === 1) {
+      previousSemesterType = "GENAP";
+      previousYear = currentReregisterYear;
+    } else if (currentReregisterSemesterType === 0) {
+      previousSemesterType = "GANJIL";
+      previousYear = currentReregisterYear - 1;   
+    }
+
+    if (reregisterDetails.length === 0) {
+      const students = await prisma.student.findMany({});
+      const insertDataStudents = students.map((student: any) => ({
+        reregisterId: id,
+        studentId: student.id,
+        semester: (currentReregisterYear - student.year) * 2 + currentReregisterSemesterType,
+      }));
+      await prisma.reregisterDetail.createMany({
+        data: insertDataStudents,
+      });
+    } else {
+      // Kode tidak dapat memastikan bagaimana jika previousReregister = 0;
+
+      const previousReregister = await prisma.reregister.findFirst({
+        where: {
+          period: {
+            year: previousYear,
+            semesterType: previousSemesterType,
+          }
+        },
+        include: {
+          period: true,
+          reregisterDetail: {
+            include: {
+              student: true,
+            },
+          },
+        }
+      })
+
+      const eligibleReregisterDetails = previousReregister?.reregisterDetail.filter((reregisterStudent: any) => ["NONAKTIF", "AKTIF", "CUTI"].includes(reregisterStudent.semesterStatus)) ?? [];
+      const newReregisterDetails = eligibleReregisterDetails.map((reregisterStudent: any) => ({
+        reregisterId: id,
+        studentId: reregisterStudent.studentId,
+        semester: (currentReregisterYear - reregisterStudent.student.year) * 2 + currentReregisterSemesterType,
+      }));
+
+      await prisma.reregisterDetail.createMany({
+        data: newReregisterDetails,
+      });
+
+
+      console.log(previousReregister?.reregisterDetail.length);
+    }
+    
     return {success: true, error:false}
   } catch (err: any) {
     logger.error(err)
+    return {success: false, error:true}
+  }
+}
+
+export const createReregisterDetail = async (state: stateType, data: ReregistrationDetailInputs) => {
+  try {
+    return {success: true, error:false}
+  } catch (err: any) {
+    return {success: false, error:true}
+  }
+}
+export const updateReregisterDetail = async (state: stateType, data: ReregistrationDetailInputs) => {
+  try {
+    console.log(data);
+    
+    await prisma.reregisterDetail.update({
+      where: {
+        reregisterId_studentId: {
+          reregisterId: data.reregisterId,
+          studentId: data.studentId,
+        }
+      },
+      data: {
+        paymentStatus: data.paymentStatus as PaymentStatus,
+        semesterStatus: data.semesterStatus as SemesterStatus, 
+      },
+    })
+    
+    return {success: true, error:false}
+  } catch (err: any) {
+    console.log(err);
+    
+    return {success: false, error:true}
+  }
+}
+export const deleteReregisterDetail = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    logger.info(id);
+
+    await prisma.reregisterDetail.delete({
+      where: {
+        reregisterId_studentId: {
+          reregisterId: id.split(":")[0],
+          studentId: id.split(":")[1]
+        }
+      }
+    })
+    
+    return {success: true, error:false}
+  } catch (err: any) {
     return {success: false, error:true}
   }
 }

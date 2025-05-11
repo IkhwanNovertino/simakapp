@@ -2,12 +2,16 @@ import Image from "next/image";
 import HamburgerMenu from "./HamburgerMenu";
 import SidebarContainer from "./SidebarContainer";
 import Link from "next/link";
-import { getSession } from "@/lib/session";
+import { deleteSession, getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
+import { redirect } from "next/navigation";
 
 const Navbar = async () => {
   const sidebarContainerWrapper = await SidebarContainer();
   const getSessionFunc = await getSession();
+  if (!getSessionFunc) {
+    redirect("/sign-in")
+  }
 
   const user = await prisma.user.findUnique({
     where: { id: getSessionFunc?.userId },
