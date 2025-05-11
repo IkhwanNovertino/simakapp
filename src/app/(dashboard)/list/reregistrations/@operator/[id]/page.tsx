@@ -157,23 +157,12 @@ const ReregisterSinglePage = async (
             <div className="md:hidden relative flex items-center justify-end gap-2">
               <ModalAction>
                 <div className="flex items-center gap-3">
-                  {/* <Link href={`/list/reregistrations/${item.studentId}`}>
-                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                  </button>
-                </Link> */}
                   <FormContainer table="reregistrationDetail" type="update" data={item} />
                   <FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />
                 </div>
               </ModalAction>
             </div>
             <div className="hidden md:flex items-center gap-2">
-              {/* <Link href={`/list/reregistrations/${item.studentId}`}>
-              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                <Image src="/icon/view.svg" alt="" width={20} height={20} />
-              </button>
-            </Link> */}
-              <FormContainer table="reregistrationStudent" type="update" data={item} />
               <FormContainer table="reregistrationDetail" type="update" data={item} />
               <FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />
             </div>

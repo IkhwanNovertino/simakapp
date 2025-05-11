@@ -92,26 +92,27 @@ model Course {
 }
 
 model Lecturer {
-  id         String        @id @default(uuid())
-  npk        String?
-  nidn       String?
-  nuptk      String?
-  name       String?
-  frontTitle String?
-  backTitle  String?
-  degree     DegreeStatus?
-  year       Int?
-  religion   Religion?
-  gender     Gender?
-  address    String?
-  email      String?
-  hp         String?
-  photo      String?
-  majorId    Int?
-  major      Major?        @relation(fields: [majorId], references: [id])
-  userId     String?       @unique
-  user       User?         @relation(fields: [userId], references: [id])
-  student    Student[]
+  id               String             @id @default(uuid())
+  npk              String?
+  nidn             String?
+  nuptk            String?
+  name             String?
+  frontTitle       String?
+  backTitle        String?
+  degree           DegreeStatus?
+  year             Int?
+  religion         Religion?
+  gender           Gender?
+  address          String?
+  email            String?
+  hp               String?
+  photo            String?
+  majorId          Int?
+  major            Major?             @relation(fields: [majorId], references: [id])
+  userId           String?            @unique
+  user             User?              @relation(fields: [userId], references: [id])
+  student          Student[]
+  ReregisterDetail ReregisterDetail[]
 
   @@map("sb25_lecturers")
 }
@@ -200,20 +201,15 @@ model ReregisterDetail {
   semester           Int?
   semesterStatus     SemesterStatus @default(NONAKTIF)
   campusType         CampusType?
+  lecturerId         String?
+  lecturer           Lecturer?      @relation(fields: [lecturerId], references: [id])
 
   // untuk memeriksa apakah student sudah mengisi data
-  // isStatusForm FormStatus? @default(PENDING)
+  isStatusForm Boolean @default(false)
 
   @@id([reregisterId, studentId])
   @@map("sb25_reregisterDetails")
 }
-
-// enum FormStatus {
-//   PENDING
-//   SUBMITTED
-//   REJECTED
-//   APPROVED
-// }
 
 enum SemesterType {
   GANJIL
