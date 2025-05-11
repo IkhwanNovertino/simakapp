@@ -136,13 +136,18 @@ model Student {
   religion         Religion?
   gender           Gender?
   address          String?
+  domicile         String?
   email            String?
   hp               String?
   photo            String?
   statusRegister   String?
   motherName       String?
+  motherNIK        String?
   guardianName     String?
+  guardianNIK      String?
   guardianHp       String?
+  guardianJob      String?
+  guardianAddress  String?
   majorId          Int?
   major            Major?             @relation(fields: [majorId], references: [id])
   lecturerId       String?
@@ -150,11 +155,6 @@ model Student {
   userId           String?            @unique
   user             User?              @relation(fields: [userId], references: [id])
   reregisterDetail ReregisterDetail[]
-
-  domicile        String?
-  guardianJob     String?
-  guardianAddress String?
-  motherId        String?
 
   @@map("sb25_students")
 }

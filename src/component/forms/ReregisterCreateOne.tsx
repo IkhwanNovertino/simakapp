@@ -54,7 +54,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <div className="visible">
+          <div className="hidden">
             <InputField
               label="reregisterId"
               name="reregisterId"
@@ -95,11 +95,12 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
                     setValue("year", studentYear.toString());
                     setValue('semester', semesterInt.toString());
                     setValue("major", selectedStudent.major?.name?.toString());
-                    setValue("lecturerId", selectedStudent?.lecturerId)
+                    setValue("lecturerId", selectedStudent?.lecturerId.toString())
                   } else {
                     setValue("year", "");
                     setValue("semester", "");
                     setValue("major", "")
+                    setValue("lecturerId", "")
                   }
                 }}
                 value={
@@ -145,7 +146,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Perwalian Akademik</label>
+          <label className="text-xs text-gray-500">Dosen Wali</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("lecturerId")}
@@ -166,9 +167,9 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
               </option>
             ))}
           </select>
-          {errors.semesterStatus?.message && (
+          {errors.lecturerId?.message && (
             <p className="text-xs text-red-400">
-              {errors.semesterStatus.message.toString()}
+              {errors.lecturerId.message.toString()}
             </p>
           )}
         </div>
@@ -311,9 +312,58 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
+            label="Tempat Lahir"
+            name="birthOfPlace"
+            register={register}
+            error={errors?.lecturerId}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
+          <InputField
+            label="Tanggal Lahir"
+            name="birthday"
+            register={register}
+            error={errors?.lecturerId}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
+          <InputField
+            label="No. Telp/HP"
+            name="hp"
+            defaultValue={data?.student?.hp || "No. Telp/HP"}
+            register={register}
+            error={errors?.lecturerId}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
+          <InputField
+            label="Email"
+            name="lecturerId"
+            defaultValue={data?.student?.email || "email"}
+            register={register}
+            error={errors?.lecturerId}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-11/12">
+          <label className="text-xs text-gray-500">Alamat Asal/Domisili</label>
+          <textarea
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            placeholder="Alamat"
+          ></textarea>
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-11/12">
+          <label className="text-xs text-gray-500">Alamat Sekarang</label>
+          <textarea
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            placeholder="Alamat"
+          ></textarea>
+        </div>
+      </div>
+      <div className="flex justify-between flex-wrap gap-4">
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
+          <InputField
             label="Nama Orang Tua/Wali"
             name="guardianName"
-            defaultValue={data?.student?.lecturerId}
             register={register}
             error={errors?.lecturerId}
           />
@@ -322,7 +372,6 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           <InputField
             label="NIK Orang Tua/Wali"
             name="guardianID"
-            defaultValue={data?.student?.lecturerId}
             register={register}
             error={errors?.guardianID}
           />
@@ -331,7 +380,6 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           <InputField
             label="Pekerjaan Orang Tua/Wali"
             name="guardianJob"
-            defaultValue={data?.student?.lecturerId}
             register={register}
             error={errors?.guardianJob}
           />
@@ -340,23 +388,27 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           <InputField
             label="No. Telp/HP Orang Tua/Wali"
             name="guardianHP"
-            defaultValue={data?.student?.lecturerId}
             register={register}
             error={errors?.guardianHP}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-11/12 mb-8">
+        <div className="flex flex-col gap-2 w-full md:w-11/12">
           <label className="text-xs text-gray-500">Alamat Orang Tua/Wali</label>
           <textarea
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             placeholder="Alamat"
           ></textarea>
         </div>
+
+      </div>
+      <span className="text-xs text-gray-400 font-medium">
+        Informasi Ibu Kandung
+      </span>
+      <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-2/5">
           <InputField
             label="Nama Gadis Ibu Kandung"
             name="motherName"
-            defaultValue={data?.student?.lecturerId}
             register={register}
             error={errors?.motherName}
           />
@@ -365,7 +417,6 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           <InputField
             label="NIK Ibu Kandung"
             name="motherID"
-            defaultValue={data?.student?.lecturerId}
             register={register}
             error={errors?.motherID}
           />
