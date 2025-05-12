@@ -1,4 +1,5 @@
-import { z } from "zod";
+import { CampusType, PaymentStatus, StudentStatus } from "@prisma/client";
+import { optional, z } from "zod";
 
 export const permissionSchema = z.object({
   id: z.coerce.number().optional(),
@@ -108,15 +109,23 @@ export const studentSchema = z.object({
   religion: z.enum(["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"], {message: "agama harus diisi"}),
   gender: z.enum(["PRIA", "WANITA"], { message: "Gender harus diisi" }),
   address: z.string().optional(),
+  domicile: z.string().optional(),
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),
   phone: z.string().optional(),
   majorId: z.coerce.number().min(1, { message: "Program studi harus diisi" }),
   lecturerId: z.string().min(1, { message: "Perwalian akademik harus diisi" }),
-  motherName: z.string().optional(),
-  guardianName: z.string().optional(),
-  guardianHp: z.string().optional(),
   statusRegister: z.string().min(1, {message: "status registrasi harus diisi"}),
   photo: z.string().optional().or(z.literal("")),
+  guardianName: z.string().optional(),
+  guardianNIK: z.string().optional(),
+  guardianJob: z.string().optional(),
+  guardianHp: z.string().optional(),
+  guardianAddress: z.string().optional(),
+  motherName: z.string().optional(),
+  motherNIK: z.string().optional(),
+
+  placeOfBirth: z.string().optional(),
+  birthday: z.string().optional(),
   
 })
 
@@ -152,25 +161,58 @@ export const reregistrationCreateAllSchema = z.object({
 
 export type ReregistrationCreateAllInputs = z.infer<typeof reregistrationCreateAllSchema>;
 
-export const reregistrationDetail = z.object({
-  id: z.string().optional(),
-  reregisterId: z.string().optional(),
-  studentId: z.string().optional(),
-  semester: z.string().optional(),
-  year: z.string().optional(),
-  major: z.string().optional(),
-  lecturerId: z.string().optional(),
-  campusType: z.string().optional(),
+export const reregistrationDetailSchema = z.object({
+  reregisterId: z.string().min(1, {message: "id Herregister harus diisi"}),
+  studentId: z.string().min(1, {message: "pilih mahasiswa"}),
+  semester: z.string().min(1, {message: "semester harus diisi"}),
+  year: z.string().min(4, {message: "Tahun masuk/angkatan harus diisi"}),
+  major: z.string().min(1, {message: "Pilih program studi"}),
+  lecturerId: z.string().min(1, {message: "Pilih perwalian akademik"}),
+  campusType: z.string().default("BJB"),
   nominal: z.string().optional(),
-  paymentStatus: z.string().optional(),
-  semesterStatus: z.string().optional(),
+  paymentReceiptFile: z.string().optional().or(z.literal("")),
+  paymentStatus: z.string().default("BELUM_LUNAS"),
+  semesterStatus: z.string().default("NONAKTIF"),
+  placeOfBirth: z.string().optional(),
+  birthday: z.string().optional(),
+  domicile: z.string().optional(),
+  address: z.string().optional(),
+  hp: z.string().optional(),
+  email: z.string().optional(),
   guardianName: z.string().optional(),
-  guardianID: z.string().optional(),
+  guardianNIK: z.string().optional(),
   guardianJob: z.string().optional(),
-  guardianHP: z.string().optional(),
+  guardianHp: z.string().optional(),
   guardianAddress: z.string().optional(),
   motherName: z.string().optional(),
-  motherID: z.string().optional(),
+  motherNIK: z.string().optional(),
 })
 
-export type ReregistrationDetailInputs = z.infer<typeof reregistrationDetail>;
+export type ReregistrationDetailInputs = z.infer<typeof reregistrationDetailSchema>;
+
+export const reregistrationStudentSchema = z.object({
+  reregisterId: z.string().min(1, {message: "id Herregister harus diisi"}),
+  studentId: z.string().min(1, { message: "pilih mahasiswa" }),
+  nim: z.string().optional(),
+  name: z.string().optional(),
+  semester: z.string().optional(),
+  year: z.string().min(4, {message: "Tahun masuk/angkatan harus diisi"}),
+  major: z.string().min(1, {message: "Pilih program studi"}),
+  lecturerId: z.string().min(1, {message: "Pilih perwalian akademik"}),
+  campusType: z.string().default("BJB"),
+  placeOfBirth: z.string().min(1, {message: "Tempat lahir harus diisi"}),
+  birthday: z.string().min(1, {message: "Tempat lahir harus diisi"}),
+  domicile: z.string().min(1, {message: "Alamat asal/domisili harus diisi"}),
+  address: z.string().min(1, {message: "Alamat sekarang harus diisi"}),
+  hp: z.string().min(1, {message: "No. Telp/HP harus diisi"}),
+  email: z.string().min(1, {message: "email harus diisi"}),
+  guardianName: z.string().min(1, {message: "nama orang tua/wali harus diisi"}),
+  guardianNIK: z.string().min(1, {message: "NIK orang tua/wali harus diisi"}),
+  guardianJob: z.string().min(1, {message: "pekerjaan orang tua/wali harus diisi"}),
+  guardianHp: z.string().min(1, {message: "No. Telp/HP orang tua/wali harus diisi"}),
+  guardianAddress: z.string().min(1, {message: "alamat orang tua/wali harus diisi"}),
+  motherName: z.string().min(1, {message: "nama gadis ibu kandung harus diisi"}),
+  motherNIK: z.string().min(1, {message: "NIK ibu kandung harus diisi"}),
+})
+
+export type ReregistrationStudentInputs = z.infer<typeof reregistrationStudentSchema>;

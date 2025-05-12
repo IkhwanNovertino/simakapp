@@ -4,11 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { reregistrationDetail, ReregistrationDetailInputs } from "@/lib/formValidationSchema";
 import { createReregisterDetail, updateReregisterDetail } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import { ReregistrationDetailInputs, reregistrationDetailSchema } from "@/lib/formValidationSchema";
+import { StudentStatus } from "@prisma/client";
+import moment from "moment";
 
 interface ReregiterCreateOneFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -18,7 +20,7 @@ interface ReregiterCreateOneFormProps {
 }
 
 const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterCreateOneFormProps) => {
-  const { students, lecturers } = relatedData;
+  const { students, lecturers, role } = relatedData;
   const {
     register,
     handleSubmit,
@@ -26,7 +28,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
     control,
     setValue,
   } = useForm<ReregistrationDetailInputs>({
-    resolver: zodResolver(reregistrationDetail)
+    resolver: zodResolver(reregistrationDetailSchema)
   })
 
 
@@ -60,7 +62,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
               name="reregisterId"
               defaultValue={data?.reregisterId || data?.idReregister}
               register={register}
-              error={errors?.id}
+              error={errors?.reregisterId}
             />
           </div>
         )}
@@ -88,19 +90,21 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
                   if (selectedStudent) {
                     const studentYear: number = selectedStudent?.year;
                     const currentReregisterYear: number = data?.year;
-                    const currentReregisterSemesterType: number = data.period?.semesterType === "GANJIL" ? 1 : 0;
-                    const semesterInt = (currentReregisterYear - studentYear) * 2 + currentReregisterSemesterType
-                    console.log(currentReregisterSemesterType, currentReregisterYear, studentYear, semesterInt);
-
+                    const currentReregisterSemesterType: number = data?.semesterType === "GANJIL" ? 1 : 0;
+                    const semesterInt = (currentReregisterYear - studentYear) * 2 + currentReregisterSemesterType;
                     setValue("year", studentYear.toString());
                     setValue('semester', semesterInt.toString());
                     setValue("major", selectedStudent.major?.name?.toString());
-                    setValue("lecturerId", selectedStudent?.lecturerId.toString())
+                    setValue("lecturerId", selectedStudent?.lecturerId.toString());
+                    setValue("placeOfBirth", selectedStudent?.placeOfBirth);
+                    setValue("birthday", moment(selectedStudent?.birthday).format("YYYY-MM-DD"));
                   } else {
                     setValue("year", "");
                     setValue("semester", "");
                     setValue("major", "")
                     setValue("lecturerId", "")
+                    setValue("placeOfBirth", "")
+                    setValue("birthday", moment(Date.now()).format("YYYY-MM-DD"))
                   }
                 }}
                 value={
@@ -114,6 +118,11 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
               />
             )}
           />
+          {errors.studentId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.studentId?.message.toString()}
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
@@ -151,6 +160,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("lecturerId")}
             defaultValue={data?.student?.lecturerId}
+            disabled={role !== "admin" ? true : false}
           >
             <option
               value={""} key={""}
@@ -179,6 +189,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("semesterStatus")}
             defaultValue={data?.semesterStatus}
+            disabled={role !== "admin" ? true : false}
           >
             <option
               value={""} key={""}
@@ -223,25 +234,26 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
               LULUS
             </option>
           </select>
-          {errors.lecturerId?.message && (
+          {errors.semesterStatus?.message && (
             <p className="text-xs text-red-400">
-              {errors.lecturerId.message.toString()}
+              {errors.semesterStatus.message.toString()}
             </p>
           )}
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Lokasi</label>
+          <label className="text-xs text-gray-500">Tipe Perkuliahan</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("campusType")}
             defaultValue={data?.campusType}
+            disabled={role !== "admin" ? true : false}
           >
             <option
               value={""} key={""}
               className="text-sm py-0.5 capitalize"
             >
-              -- Pilih Kampus
+              -- Pilih Tipe Perkuliahan
             </option>
             <option
               value={"BJM"} key={"bjm"}
@@ -254,6 +266,18 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
               className="text-sm py-0.5 capitalize"
             >
               Banjarbaru
+            </option>
+            <option
+              value={"ONLINE"} key={"online"}
+              className="text-sm py-0.5 capitalize"
+            >
+              Online
+            </option>
+            <option
+              value={"SORE"} key={"sore"}
+              className="text-sm py-0.5 capitalize"
+            >
+              Sore
             </option>
           </select>
           {errors.campusType?.message && (
@@ -306,57 +330,249 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
         </div>
       </div>
 
-      <span className="text-xs text-gray-400 font-medium">
+      {role === "admin" && (
+        <>
+          <div className="text-xs text-gray-400 font-medium">
+            Informasi Form Herregistrasi
+            <span className={data?.isStatusForm ? "after:content-['*'] after:text-emerald-400 after:text-sm after:ml-1 px-1 text-emerald-400" : "after:content-['*'] after:text-red-400 after:text-sm after:ml-1 px-1 text-red-400"}>
+              {data?.isStatusForm ? `(Data sudah diisi oleh mahasiswa)` : `(Data belum diisi oleh mahasiswa)`}
+            </span>
+          </div>
+          <div className="flex justify-between flex-wrap gap-4">
+            <div className="flex flex-col gap-2 w-full md:w-5/12">
+              <InputField
+                label="Tempat Lahir"
+                name="placeOfBirth"
+                defaultValue={data?.student?.placeOfBirth}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.placeOfBirth}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-5/12">
+              <InputField
+                label="Tanggal Lahir"
+                name="birthday"
+                type="date"
+                defaultValue={moment(data?.student?.birthday).format("YYYY-MM-DD")}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.birthday}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-5/12">
+              <InputField
+                label="No. Telp/HP"
+                name="hp"
+                defaultValue={data?.student?.hp}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.hp}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-5/12">
+              <InputField
+                label="Email"
+                name="email"
+                defaultValue={data?.student?.email}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.email}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-11/12">
+              <label className="text-xs text-gray-500">Alamat Asal/Domisili</label>
+              <textarea
+                {...register("domicile")}
+                className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+                placeholder="Alamat asal/domisili"
+                defaultValue={data?.student?.domicile}
+                readOnly={true}
+              ></textarea>
+              {errors.domicile?.message && (
+                <p className="text-xs text-red-400">
+                  {errors.domicile.message.toString()}
+                </p>
+              )}
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-11/12">
+              <label className="text-xs text-gray-500">Alamat Sekarang</label>
+              <textarea
+                {...register("address")}
+                className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+                placeholder="Isi dengan alamat asal jika sama dengan alamat asal"
+                defaultValue={data?.student?.address}
+                readOnly={true}
+              ></textarea>
+              {errors.address?.message && (
+                <p className="text-xs text-red-400">
+                  {errors.address.message.toString()}
+                </p>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-between flex-wrap gap-4">
+            <div className="flex flex-col gap-2 w-full md:w-5/12">
+              <InputField
+                label="Nama Orang Tua/Wali"
+                name="guardianName"
+                defaultValue={data?.student?.guardianName}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.guardianName}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-5/12">
+              <InputField
+                label="NIK Orang Tua/Wali"
+                name="guardianNIK"
+                defaultValue={data?.student?.guardianNIK}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.guardianNIK}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-5/12">
+              <InputField
+                label="Pekerjaan Orang Tua/Wali"
+                name="guardianJob"
+                defaultValue={data?.student?.guardianJob}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.guardianJob}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-5/12">
+              <InputField
+                label="No. Telp/HP Orang Tua/Wali"
+                name="guardianHp"
+                defaultValue={data?.student?.guardianHp}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.guardianHp}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-11/12">
+              <label className="text-xs text-gray-500">Alamat Orang Tua/Wali</label>
+              <textarea
+                {...register("guardianAddress")}
+                className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+                placeholder="Alamat orang tua/wali"
+                defaultValue={data?.student?.guardianAddress}
+                readOnly={true}
+              ></textarea>
+              {errors.guardianAddress?.message && (
+                <p className="text-xs text-red-400">
+                  {errors.guardianAddress.message.toString()}
+                </p>
+              )}
+            </div>
+
+          </div>
+          <span className="text-xs text-gray-400 font-medium">
+            Informasi Ibu Kandung
+          </span>
+          <div className="flex justify-between flex-wrap gap-4">
+            <div className="flex flex-col gap-2 w-full md:w-2/5">
+              <InputField
+                label="Nama Gadis Ibu Kandung"
+                name="motherName"
+                defaultValue={data?.student?.motherName}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.motherName}
+              />
+            </div>
+            <div className="flex flex-col gap-2 w-full md:w-2/5">
+              <InputField
+                label="NIK Ibu Kandung"
+                name="motherNIK"
+                defaultValue={data?.student?.motherNIK}
+                register={register}
+                inputProps={{ readOnly: true }}
+                error={errors?.motherNIK}
+              />
+            </div>
+          </div>
+        </>
+      )}
+      {/* <div className="text-xs text-gray-400 font-medium">
         Informasi Form Herregistrasi
-      </span>
+        <span className={data?.isStatusForm ? "after:content-['*'] after:text-emerald-400 after:text-sm after:ml-1 px-1 text-emerald-400" : "after:content-['*'] after:text-red-400 after:text-sm after:ml-1 px-1 text-red-400"}>
+          {data?.isStatusForm ? `(Data sudah diisi oleh mahasiswa)` : `(Data belum diisi oleh mahasiswa)`}
+        </span>
+      </div>
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="Tempat Lahir"
-            name="birthOfPlace"
+            name="placeOfBirth"
+            defaultValue={data?.student?.placeOfBirth}
             register={register}
-            error={errors?.lecturerId}
+            inputProps={{ readOnly: true }}
+            error={errors?.placeOfBirth}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="Tanggal Lahir"
             name="birthday"
+            type="date"
+            defaultValue={moment(data?.student?.birthday).format("YYYY-MM-DD")}
             register={register}
-            error={errors?.lecturerId}
+            inputProps={{ readOnly: true }}
+            error={errors?.birthday}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="No. Telp/HP"
             name="hp"
-            defaultValue={data?.student?.hp || "No. Telp/HP"}
+            defaultValue={data?.student?.hp}
             register={register}
-            error={errors?.lecturerId}
+            inputProps={{ readOnly: true }}
+            error={errors?.hp}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="Email"
-            name="lecturerId"
-            defaultValue={data?.student?.email || "email"}
+            name="email"
+            defaultValue={data?.student?.email}
             register={register}
-            error={errors?.lecturerId}
+            inputProps={{ readOnly: true }}
+            error={errors?.email}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-11/12">
           <label className="text-xs text-gray-500">Alamat Asal/Domisili</label>
           <textarea
+            {...register("domicile")}
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Alamat"
+            placeholder="Alamat asal/domisili"
+            defaultValue={data?.student?.domicile}
+            readOnly={true}
           ></textarea>
+          {errors.domicile?.message && (
+            <p className="text-xs text-red-400">
+              {errors.domicile.message.toString()}
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-11/12">
           <label className="text-xs text-gray-500">Alamat Sekarang</label>
           <textarea
+            {...register("address")}
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Alamat"
+            placeholder="Isi dengan alamat asal jika sama dengan alamat asal"
+            defaultValue={data?.student?.address}
+            readOnly={true}
           ></textarea>
+          {errors.address?.message && (
+            <p className="text-xs text-red-400">
+              {errors.address.message.toString()}
+            </p>
+          )}
         </div>
       </div>
       <div className="flex justify-between flex-wrap gap-4">
@@ -364,40 +580,56 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           <InputField
             label="Nama Orang Tua/Wali"
             name="guardianName"
+            defaultValue={data?.student?.guardianName}
             register={register}
-            error={errors?.lecturerId}
+            inputProps={{ readOnly: true }}
+            error={errors?.guardianName}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="NIK Orang Tua/Wali"
-            name="guardianID"
+            name="guardianNIK"
+            defaultValue={data?.student?.guardianNIK}
             register={register}
-            error={errors?.guardianID}
+            inputProps={{ readOnly: true }}
+            error={errors?.guardianNIK}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="Pekerjaan Orang Tua/Wali"
             name="guardianJob"
+            defaultValue={data?.student?.guardianJob}
             register={register}
+            inputProps={{ readOnly: true }}
             error={errors?.guardianJob}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="No. Telp/HP Orang Tua/Wali"
-            name="guardianHP"
+            name="guardianHp"
+            defaultValue={data?.student?.guardianHp}
             register={register}
-            error={errors?.guardianHP}
+            inputProps={{ readOnly: true }}
+            error={errors?.guardianHp}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-11/12">
           <label className="text-xs text-gray-500">Alamat Orang Tua/Wali</label>
           <textarea
+            {...register("guardianAddress")}
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Alamat"
+            placeholder="Alamat orang tua/wali"
+            defaultValue={data?.student?.guardianAddress}
+            readOnly={true}
           ></textarea>
+          {errors.guardianAddress?.message && (
+            <p className="text-xs text-red-400">
+              {errors.guardianAddress.message.toString()}
+            </p>
+          )}
         </div>
 
       </div>
@@ -409,19 +641,23 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           <InputField
             label="Nama Gadis Ibu Kandung"
             name="motherName"
+            defaultValue={data?.student?.motherName}
             register={register}
+            inputProps={{ readOnly: true }}
             error={errors?.motherName}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-2/5">
           <InputField
             label="NIK Ibu Kandung"
-            name="motherID"
+            name="motherNIK"
+            defaultValue={data?.student?.motherNIK}
             register={register}
-            error={errors?.motherID}
+            inputProps={{ readOnly: true }}
+            error={errors?.motherNIK}
           />
         </div>
-      </div>
+      </div> */}
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Tambah" : "Ubah"}

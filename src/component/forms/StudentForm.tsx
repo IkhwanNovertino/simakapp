@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { gender, religion } from "@/lib/setting";
 import Image from "next/image";
 import { StatusRegistrasi } from "@/lib/data";
+import moment from "moment";
 
 interface StudentFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -281,6 +282,25 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
+            label="Tempat lahir"
+            name="placeOfBirth"
+            defaultValue={data?.placeOfBirth}
+            register={register}
+            error={errors?.placeOfBirth}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="Tanggal lahir"
+            name="birthday"
+            type="date"
+            defaultValue={moment(data?.birthday).format("YYYY-MM-DD")}
+            register={register}
+            error={errors?.birthday}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
             label="Personal Email"
             name="email"
             defaultValue={data?.email}
@@ -292,51 +312,114 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           <InputField
             label="No. Handphone"
             name="phone"
-            defaultValue={data?.phone}
+            defaultValue={data?.hp}
             register={register}
             error={errors?.phone}
           />
         </div>
 
-        <div className="flex flex-col gap-2 w-full md:w-5/8">
-          <InputField
-            label="Alamat"
-            name="address"
+        <div className="flex flex-col gap-2 w-full md:w-11/12">
+          <label className="text-xs text-gray-500">Alamat Asal/Domisili</label>
+          <textarea
+            {...register("domicile")}
+            defaultValue={data?.domicile}
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+          ></textarea>
+          {errors.domicile?.message && (
+            <p className="text-xs text-red-400">
+              {errors.domicile.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-11/12">
+          <label className="text-xs text-gray-500">Alamat Sekarang</label>
+          <textarea
+            {...register("address")}
             defaultValue={data?.address}
-            register={register}
-            error={errors?.address}
-          />
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+          ></textarea>
+          {errors.address?.message && (
+            <p className="text-xs text-red-400">
+              {errors.address.message.toString()}
+            </p>
+          )}
         </div>
       </div>
       <span className="text-xs text-gray-400 font-medium">
         Informasi Ortu/Wali Mahasiswa
       </span>
       <div className="flex justify-between flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
-            label="Nama Ibu Kandung"
+            label="Nama Orang Tua/Wali"
+            name="guardianName"
+            register={register}
+            defaultValue={data?.guardianName}
+            error={errors?.guardianName}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
+          <InputField
+            label="NIK Orang Tua/Wali"
+            name="guardianNIK"
+            defaultValue={data?.guardianNIK}
+            register={register}
+            error={errors?.guardianNIK}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
+          <InputField
+            label="Pekerjaan Orang Tua/Wali"
+            name="guardianJob"
+            register={register}
+            defaultValue={data?.guardianJob}
+            error={errors?.guardianJob}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
+          <InputField
+            label="No. Telp/HP Orang Tua/Wali"
+            name="guardianHp"
+            register={register}
+            defaultValue={data?.guardianHp}
+            error={errors?.guardianHp}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-11/12">
+          <label className="text-xs text-gray-500">Alamat Orang Tua/Wali</label>
+          <textarea
+            {...register("guardianAddress")}
+            defaultValue={data?.guardianAddress}
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            placeholder="Alamat orang tua/wali"
+          ></textarea>
+          {errors.guardianAddress?.message && (
+            <p className="text-xs text-red-400">
+              {errors.guardianAddress.message.toString()}
+            </p>
+          )}
+        </div>
+      </div>
+      <span className="text-xs text-gray-400 font-medium">
+        Informasi Ibu Kandung
+      </span>
+      <div className="flex justify-between flex-wrap gap-4">
+        <div className="flex flex-col gap-2 w-full md:w-2/5">
+          <InputField
+            label="Nama Gadis Ibu Kandung"
             name="motherName"
             defaultValue={data?.motherName}
             register={register}
             error={errors?.motherName}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-2/5">
           <InputField
-            label="Nama Wali Mahasiswa"
-            name="guardianName"
-            defaultValue={data?.guardianName}
+            label="NIK Ibu Kandung"
+            name="motherNIK"
+            defaultValue={data?.motherNIK}
             register={register}
-            error={errors?.guardianName}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="No. Hp Wali Mahasiswa"
-            name="guardianHp"
-            defaultValue={data?.guardianHp}
-            register={register}
-            error={errors?.guardianHp}
+            error={errors?.motherNIK}
           />
         </div>
       </div>

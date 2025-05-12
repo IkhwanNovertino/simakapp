@@ -45,6 +45,7 @@ const ReregisterSinglePage = async (
   const dataCreate = {
     reregisterId: dataReregis.id,
     name: dataReregis.name,
+    semesterType: dataReregis.period.semesterType,
     year: dataReregis.period.year,
   }
 
@@ -62,6 +63,11 @@ const ReregisterSinglePage = async (
             major: true,
           }
         },
+        reregister: {
+          include: {
+            period: true,
+          }
+        }
       },
       orderBy: [
         {
@@ -82,6 +88,7 @@ const ReregisterSinglePage = async (
       },
     }),
   ]);
+  data.nominal = parseInt(data?.nominal)
 
   const columns = [
     {
@@ -107,6 +114,11 @@ const ReregisterSinglePage = async (
     {
       header: "Status",
       accessor: "status",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "isSubmited",
+      accessor: "isSubmited",
       className: "hidden md:table-cell",
     },
     {
@@ -150,6 +162,11 @@ const ReregisterSinglePage = async (
         <td className="hidden md:table-cell text-[10px] font-bold">
           <span className={semesterStyle.join(" ")}>
             {item.semesterStatus}
+          </span>
+        </td>
+        <td className="hidden md:table-cell text-[10px] font-bold">
+          <span className={item.isStatusForm ? "p-1 rounded-lg bg-emerald-100 text-emerald-500" : "p-1 rounded-lg bg-red-100 text-red-500"}>
+            {item.isStatusForm ? "Telah Diisi" : "Belum Diisi"}
           </span>
         </td>
         <td>

@@ -88,6 +88,7 @@ export const getSession = async () => {
     sessionId: sessionData.id,
     userId: sessionData.userId,
     roleId: sessionData.user.roleId,
+    roleName: sessionData.user.role?.name,
     roleType: sessionData.user.role?.roleType,
   };
 }

@@ -4,10 +4,10 @@ import path from "path";
 import {
   CourseInputs, lecturerSchema, MajorInputs, OperatorInputs,
   PeriodInputs,
-  PermissionInputs, reregistrationDetail, ReregistrationDetailInputs, ReregistrationInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
+  PermissionInputs, ReregistrationDetailInputs, ReregistrationInputs, ReregistrationStudentInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { Gender, PaymentStatus, Religion, SemesterStatus, SemesterType } from "@prisma/client";
+import { CampusType, Gender, PaymentStatus, Religion, SemesterStatus, SemesterType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
@@ -724,19 +724,26 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
     const id=data.get('id')?.toString()
     const name = data.get('name')?.toString();
     const nim = data.get('nim')?.toString();
-    const photo = data.get('photo') as File
+    const majorId = parseInt(data.get('majorId') as string);
+    const statusRegister = data.get('statusRegister')?.toString();
+    const lecturerId = data.get('lecturerId')?.toString();
     const year = parseInt(data.get('year') as string);
+    const placeOfBirth = data.get('placeOfBirth');
+    const birthday = data.get('birthday');
+    const photo = data.get('photo') as File;
     const religion = data.get('religion')?.toString() as Religion;
     const gender = data.get('gender')?.toString() as Gender;
-    const address = data.get('address')?.toString();
     const email = data.get('email')?.toString();
     const phone = data.get('phone')?.toString();
-    const majorId = parseInt(data.get('majorId') as string);
-    const lecturerId = data.get('lecturerId')?.toString();
-    const motherName = data.get('motherName')?.toString();
+    const domicile = data.get('domicile')?.toString();
+    const address = data.get('address')?.toString();
     const guardianName = data.get('guardianName')?.toString();
+    const guardianNIK = data.get('guardianNIK')?.toString();
+    const guardianJob = data.get('guardianJob')?.toString();
     const guardianHp = data.get('guardianHp')?.toString();
-    const statusRegister = data.get('statusRegister')?.toString();
+    const guardianAddress = data.get('guardianAddress')?.toString();
+    const motherName = data.get('motherName')?.toString();
+    const motherNIK = data.get('motherNIK')?.toString();
 
     let fileUrl: string | undefined = undefined;
     if (photo && photo.size > 0) {
@@ -759,18 +766,25 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
       id,
       name,
       nim,
+      lecturerId,
+      majorId,
+      statusRegister,
       year,
+      placeOfBirth,
+      birthday,
       religion,
       gender,
-      address,
       email,
       phone,
-      majorId,
-      lecturerId,
-      motherName,
+      address,
+      domicile,
       guardianName,
+      guardianNIK,
+      guardianJob,
       guardianHp,
-      statusRegister,
+      guardianAddress,
+      motherName,
+      motherNIK,
       photo: fileUrl ?? '', // boleh string kosong
     })
 
@@ -782,18 +796,25 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
       data: {
         name: validation.data?.name,
         nim: validation.data?.nim,
-        year: validation.data?.year,
-        religion : validation.data?.religion as Religion,
-        gender : validation.data?.gender,
-        address : validation.data?.address,
-        email : validation.data?.email,
-        hp : validation.data?.phone,
         majorId: validation.data?.majorId,
         lecturerId : validation.data?.lecturerId,
-        motherName : validation.data?.motherName,
-        guardianName : validation.data?.guardianName,
-        guardianHp : validation.data?.guardianHp,
         statusRegister : validation.data?.statusRegister,
+        year: validation.data?.year,
+        placeOfBirth: validation.data?.placeOfBirth,
+        birthday: validation.data?.birthday,
+        religion : validation.data?.religion as Religion,
+        email : validation.data?.email,
+        hp : validation.data?.phone,
+        gender : validation.data?.gender,
+        address : validation.data?.address,
+        domicile : validation.data?.domicile,
+        guardianName : validation.data?.guardianName,
+        guardianNIK : validation.data?.guardianNIK,
+        guardianJob : validation.data?.guardianJob,
+        guardianHp : validation.data?.guardianHp,
+        guardianAddress : validation.data?.guardianAddress,
+        motherName : validation.data?.motherName,
+        motherNIK : validation.data?.motherNIK,
         photo: fileUrl ?? '', // boleh string kosong  
       },
     })
@@ -810,18 +831,25 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
       id:data.get('id')?.toString(),
       name : data.get('name')?.toString(),
       nim : data.get('nim')?.toString(),
-      year : parseInt(data.get('year') as string),
+      lecturerId : data.get('lecturerId')?.toString(),
+      majorId : parseInt(data.get('majorId') as string),
+      statusRegister : data.get('statusRegister')?.toString(),
+      year: parseInt(data.get('year') as string),
+      placeOfBirth: data.get('placeOfBirth'),
+      birthday: data.get('birthday'),
       religion : data.get('religion')?.toString() as Religion,
       gender : data.get('gender')?.toString() as Gender,
-      address : data.get('address')?.toString(),
       email : data.get('email')?.toString(),
       phone : data.get('phone')?.toString(),
-      majorId : parseInt(data.get('majorId') as string),
-      lecturerId : data.get('lecturerId')?.toString(),
-      motherName : data.get('motherName')?.toString(),
+      address : data.get('address')?.toString(),
+      domicile : data.get('domicile')?.toString(),
       guardianName : data.get('guardianName')?.toString(),
+      guardianNIK : data.get('guardianNIK')?.toString(),
+      guardianJob : data.get('guardianJob')?.toString(),
       guardianHp : data.get('guardianHp')?.toString(),
-      statusRegister : data.get('statusRegister')?.toString(),
+      guardianAddress : data.get('guardianAddress')?.toString(),
+      motherName : data.get('motherName')?.toString(),
+      motherNIK : data.get('motherNIK')?.toString(),
     }
 
     const photo = data.get('photo') as File;
@@ -865,18 +893,25 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
       data: {
         name: parsed.data?.name,
         nim: parsed.data?.nim,
-        year: parsed.data?.year,
-        religion : parsed.data?.religion as Religion,
-        gender : parsed.data?.gender,
-        address : parsed.data?.address,
-        email : parsed.data?.email,
-        hp : parsed.data?.phone,
         majorId: parsed.data?.majorId,
         lecturerId : parsed.data?.lecturerId,
-        motherName : parsed.data?.motherName,
-        guardianName : parsed.data?.guardianName,
-        guardianHp : parsed.data?.guardianHp,
         statusRegister : parsed.data?.statusRegister,
+        year: parsed.data?.year,
+        placeOfBirth: parsed.data?.placeOfBirth,
+        birthday: new Date(parsed.data?.birthday || Date.now()),
+        religion : parsed.data?.religion as Religion,
+        gender : parsed.data?.gender,
+        email : parsed.data?.email,
+        hp : parsed.data?.phone,
+        domicile : parsed.data?.domicile,
+        address : parsed.data?.address,
+        guardianName : parsed.data?.guardianName,
+        guardianNIK : parsed.data?.guardianNIK,
+        guardianJob : parsed.data?.guardianJob,
+        guardianHp : parsed.data?.guardianHp,
+        guardianAddress : parsed.data?.guardianAddress,
+        motherName : parsed.data?.motherName,
+        motherNIK : parsed.data?.motherNIK,
         photo: fileUrl,
       }
     })
@@ -1175,11 +1210,27 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
 
 export const createReregisterDetail = async (state: stateType, data: ReregistrationDetailInputs) => {
   try {
-    return {success: true, error:false}
+    console.log(data);
+
+    await prisma.reregisterDetail.create({
+      data: {
+        reregisterId: data.reregisterId,
+        studentId: data.studentId,
+        lecturerId: data.lecturerId,
+        campusType: data?.campusType || "BJB" as CampusType,
+        semesterStatus: data?.semesterStatus || "NONAKTIF" as SemesterStatus,
+        semester: parseInt(data?.semester),
+        nominal: parseInt(data.nominal || "0"),
+        paymentStatus: data?.paymentStatus || "BELUM_LUNAS" as PaymentStatus,
+      },
+    });
+    
+    return { success: true, error: false }
   } catch (err: any) {
-    return {success: false, error:true}
+    console.log(err);
+    return { success: false, error: true }
   }
-}
+};
 export const updateReregisterDetail = async (state: stateType, data: ReregistrationDetailInputs) => {
   try {
     console.log(data);
@@ -1192,18 +1243,22 @@ export const updateReregisterDetail = async (state: stateType, data: Reregistrat
         }
       },
       data: {
-        paymentStatus: data.paymentStatus as PaymentStatus,
-        semesterStatus: data.semesterStatus as SemesterStatus, 
+        lecturerId: data.lecturerId,
+        campusType: data?.campusType || "BJB" as CampusType,
+        semesterStatus: data?.semesterStatus as SemesterStatus,
+        semester: parseInt(data?.semester),
+        nominal: parseInt(data.nominal || "0"),
+        paymentStatus: data?.paymentStatus as PaymentStatus,
       },
     })
     
-    return {success: true, error:false}
+    return { success: true, error: false }
   } catch (err: any) {
     console.log(err);
     
-    return {success: false, error:true}
+    return { success: false, error: true }
   }
-}
+};
 export const deleteReregisterDetail = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
@@ -1218,8 +1273,76 @@ export const deleteReregisterDetail = async (state: stateType, data: FormData) =
       }
     })
     
+    return { success: true, error: false }
+  } catch (err: any) {
+    return { success: false, error: true }
+  }
+};
+
+export const createReregisterStudent = async (state: stateType, data: ReregistrationStudentInputs) => {
+  try {
+    console.log(data);
+
+    await prisma.$transaction([
+      prisma.student.update({
+        where: {
+          id: data.studentId,
+        },
+        data: {
+          placeOfBirth: data?.placeOfBirth,
+          birthday: new Date(data?.birthday || Date.now()) ,
+          domicile: data?.domicile,
+          address: data?.address,
+          hp: data?.hp,
+          email: data?.email,
+          guardianName: data?.guardianName,
+          guardianNIK: data?.guardianNIK,
+          guardianJob: data?.guardianJob,
+          guardianHp: data?.guardianHp,
+          guardianAddress: data?.guardianAddress,
+          motherName: data?.motherName,
+          motherNIK: data?.motherNIK,
+        }
+      }),
+      prisma.reregisterDetail.update({
+        where: {
+          reregisterId_studentId: {
+            reregisterId: data.reregisterId,
+            studentId: data.studentId,
+          },
+        },
+        data: {
+          isStatusForm: true,
+        }
+      })
+    ])
+    
     return {success: true, error:false}
   } catch (err: any) {
     return {success: false, error:true}
   }
 }
+export const updateReregisterStudent = async (state: stateType, data: ReregistrationStudentInputs) => {
+  try {
+    console.log(data);
+    
+    // await prisma.reregisterDetail.update({
+    //   where: {
+    //     reregisterId_studentId: {
+    //       reregisterId: data.reregisterId,
+    //       studentId: data.studentId,
+    //     }
+    //   },
+    //   data: {
+    //     paymentStatus: data.paymentStatus as PaymentStatus,
+    //     semesterStatus: data.semesterStatus as SemesterStatus, 
+    //   },
+    // })
+    
+    return { success: true, error: false }
+  } catch (err: any) {
+    console.log(err);
+    
+    return { success: false, error: true }
+  }
+};

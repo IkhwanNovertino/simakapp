@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import FormModal, { FormModalProps } from "./FormModal";
+import { getSession } from "@/lib/session";
 
 const FormContainer = async (
   { table, type, data, id }: FormModalProps
@@ -110,7 +111,8 @@ const FormContainer = async (
           },
           select: { id: true, name: true, frontTitle: true, backTitle: true }
         });
-        relatedData = { students: students, lecturers: lecturer };
+        const userRole = await getSession();
+        relatedData = { students: students, lecturers: lecturer, role: userRole?.roleName };
         break;
       case "reregistrationStudent":
         const student = await prisma.student.findMany({

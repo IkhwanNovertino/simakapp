@@ -2,13 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { reregistrationDetail, ReregistrationDetailInputs } from "@/lib/formValidationSchema";
-import { createReregisterDetail, updateReregisterDetail } from "@/lib/action";
+import { createReregisterDetail, createReregisterStudent, updateReregisterDetail, updateReregisterStudent } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Select from "react-select";
+import { ReregistrationStudentInputs, reregistrationStudentSchema } from "@/lib/formValidationSchema";
+import moment from "moment";
 
 interface ReregisterStudentFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -25,13 +25,13 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
     formState: { errors },
     control,
     setValue,
-  } = useForm<ReregistrationDetailInputs>({
-    resolver: zodResolver(reregistrationDetail)
+  } = useForm<ReregistrationStudentInputs>({
+    resolver: zodResolver(reregistrationStudentSchema)
   })
 
 
-  const action = type === "create" ? createReregisterDetail : updateReregisterDetail;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  // const action = type === "create" ? createReregisterStudent : updateReregisterStudent;
+  const [state, formAction] = useActionState(createReregisterStudent, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -65,7 +65,14 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
               name="reregisterId"
               defaultValue={data?.reregisterId || data?.idReregister}
               register={register}
-              error={errors?.id}
+              error={errors?.reregisterId}
+            />
+            <InputField
+              label="studentId"
+              name="studentId"
+              defaultValue={data?.studentId}
+              register={register}
+              error={errors?.studentId}
             />
           </div>
         )}
@@ -76,7 +83,7 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
             defaultValue={data?.student?.nim}
             register={register}
             inputProps={{ disabled: true }}
-            error={errors?.year}
+            error={errors?.nim}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-8/12">
@@ -86,7 +93,7 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
             defaultValue={data?.student?.name}
             register={register}
             inputProps={{ disabled: true }}
-            error={errors?.year}
+            error={errors?.name}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -120,17 +127,18 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Lokasi</label>
+          <label className="text-xs text-gray-500">Tipe Perkuliahan</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("campusType")}
+            disabled={true}
             defaultValue={data?.campusType}
           >
             <option
               value={""} key={""}
               className="text-sm py-0.5 capitalize"
             >
-              -- Pilih Kampus
+              -- Pilih Tipe Perkuliahan
             </option>
             <option
               value={"BJM"} key={"bjm"}
@@ -143,6 +151,18 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
               className="text-sm py-0.5 capitalize"
             >
               Banjarbaru
+            </option>
+            <option
+              value={"ONLINE"} key={"online"}
+              className="text-sm py-0.5 capitalize"
+            >
+              Online
+            </option>
+            <option
+              value={"SORE"} key={"sore"}
+              className="text-sm py-0.5 capitalize"
+            >
+              Sore
             </option>
           </select>
           {errors.campusType?.message && (
@@ -169,50 +189,67 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="Tempat Lahir"
-            name="birthOfPlace"
+            name="placeOfBirth"
+            defaultValue={data?.student?.placeOfBirth}
             register={register}
-            error={errors?.lecturerId}
+            error={errors?.placeOfBirth}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="Tanggal Lahir"
             name="birthday"
+            type="date"
+            defaultValue={moment(data?.student?.birthday).format("YYYY-MM-DD")}
             register={register}
-            error={errors?.lecturerId}
+            error={errors?.birthday}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="No. Telp/HP"
             name="hp"
-            defaultValue={data?.student?.hp || "No. Telp/HP"}
+            defaultValue={data?.student?.hp}
             register={register}
-            error={errors?.lecturerId}
+            error={errors?.hp}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="Email"
-            name="lecturerId"
-            defaultValue={data?.student?.email || "email"}
+            name="email"
+            defaultValue={data?.student?.email}
             register={register}
-            error={errors?.lecturerId}
+            error={errors?.email}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-11/12">
           <label className="text-xs text-gray-500">Alamat Asal/Domisili</label>
           <textarea
+            {...register("domicile")}
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Alamat"
+            placeholder="Alamat asal/domisili"
+            defaultValue={data?.student?.domicile}
           ></textarea>
+          {errors.domicile?.message && (
+            <p className="text-xs text-red-400">
+              {errors.domicile.message.toString()}
+            </p>
+          )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-11/12">
           <label className="text-xs text-gray-500">Alamat Sekarang</label>
           <textarea
+            {...register("address")}
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Alamat"
+            placeholder="Isi dengan alamat asal jika sama dengan alamat asal"
+            defaultValue={data?.student?.address}
           ></textarea>
+          {errors.address?.message && (
+            <p className="text-xs text-red-400">
+              {errors.address.message.toString()}
+            </p>
+          )}
         </div>
       </div>
       <span className="text-xs text-gray-400 font-medium">
@@ -223,22 +260,25 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
           <InputField
             label="Nama Orang Tua/Wali"
             name="guardianName"
+            defaultValue={data?.student?.guardianName}
             register={register}
-            error={errors?.lecturerId}
+            error={errors?.guardianName}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="NIK Orang Tua/Wali"
-            name="guardianID"
+            name="guardianNIK"
+            defaultValue={data?.student?.guardianNIK}
             register={register}
-            error={errors?.guardianID}
+            error={errors?.guardianNIK}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="Pekerjaan Orang Tua/Wali"
             name="guardianJob"
+            defaultValue={data?.student?.guardianJob}
             register={register}
             error={errors?.guardianJob}
           />
@@ -246,17 +286,25 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
         <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="No. Telp/HP Orang Tua/Wali"
-            name="guardianHP"
+            name="guardianHp"
+            defaultValue={data?.student?.guardianHp}
             register={register}
-            error={errors?.guardianHP}
+            error={errors?.guardianHp}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-11/12">
           <label className="text-xs text-gray-500">Alamat Orang Tua/Wali</label>
           <textarea
+            {...register("guardianAddress")}
+            defaultValue={data?.student?.guardianAddress}
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Alamat"
+            placeholder="Alamat orang tua/wali"
           ></textarea>
+          {errors.guardianAddress?.message && (
+            <p className="text-xs text-red-400">
+              {errors.guardianAddress.message.toString()}
+            </p>
+          )}
         </div>
 
       </div>
@@ -268,6 +316,7 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
           <InputField
             label="Nama Gadis Ibu Kandung"
             name="motherName"
+            defaultValue={data?.student?.motherName}
             register={register}
             error={errors?.motherName}
           />
@@ -275,14 +324,18 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
         <div className="flex flex-col gap-2 w-full md:w-2/5">
           <InputField
             label="NIK Ibu Kandung"
-            name="motherID"
+            name="motherNIK"
+            defaultValue={data?.student?.motherNIK}
             register={register}
-            error={errors?.motherID}
+            error={errors?.motherNIK}
           />
         </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+      <button
+        className="bg-blue-400 text-white p-2 rounded-md disabled:bg-blue-500/30 disabled:cursor-not-allowed"
+        disabled={data?.isStatusForm}
+      >
         {type === "create" ? "Tambah" : "Ubah"}
       </button>
     </form >
