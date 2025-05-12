@@ -136,6 +136,8 @@ model Student {
   religion         Religion?
   gender           Gender?
   address          String?
+  placeOfBirth     String?
+  birthday         DateTime?
   domicile         String?
   email            String?
   hp               String?
