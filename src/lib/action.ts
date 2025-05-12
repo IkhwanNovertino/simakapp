@@ -1133,7 +1133,7 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
     const id = data.get("id") as string;
     logger.info(id);
     
-    const reregisterDetails = await prisma.reregisterDetail.findMany({});
+    const reregisterDetailCount = await prisma.reregisterDetail.count({});
     const currentReregister = await prisma.reregister.findUnique({
       where: {
         id: id,
@@ -1145,31 +1145,18 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
     const currentReregisterYear = currentReregister?.period?.year;
     const currentReregisterSemesterType = currentReregister?.period?.semesterType === "GANJIL" ? 1 : 0;
     
-    let previousSemesterType;
-    let previousYear;
+    const previousSemesterType = currentReregister?.period?.semesterType === "GANJIL" ? "GENAP" : "GANJIL";
+    const previousYear = currentReregister?.period?.semesterType === "GANJIL" ? currentReregisterYear : currentReregisterYear -1;
 
-    if (currentReregisterSemesterType === 1) {
-      previousSemesterType = "GENAP";
-      previousYear = currentReregisterYear;
-    } else if (currentReregisterSemesterType === 0) {
-      previousSemesterType = "GANJIL";
-      previousYear = currentReregisterYear - 1;   
-    }
+    // if (currentReregisterSemesterType === 1) {
+    //   previousSemesterType = "GENAP";
+    //   previousYear = currentReregisterYear;
+    // } else if (currentReregisterSemesterType === 0) {
+    //   previousSemesterType = "GANJIL";
+    //   previousYear = currentReregisterYear - 1;   
+    // }
 
-    if (reregisterDetails.length === 0) {
-      const students = await prisma.student.findMany({});
-      const insertDataStudents = students.map((student: any) => ({
-        reregisterId: id,
-        studentId: student.id,
-        semester: (currentReregisterYear - student.year) * 2 + currentReregisterSemesterType,
-      }));
-      await prisma.reregisterDetail.createMany({
-        data: insertDataStudents,
-      });
-    } else {
-      // Kode tidak dapat memastikan bagaimana jika previousReregister = 0;
-
-      const previousReregister = await prisma.reregister.findFirst({
+    const previousReregister = await prisma.reregister.findFirst({
         where: {
           period: {
             year: previousYear,
@@ -1186,19 +1173,30 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
         }
       })
 
+    if (reregisterDetailCount === 0 || previousReregister.reregisterDetail.length === 0) {
+      const students = await prisma.student.findMany({});
+      const insertDataStudents = students.map((student: any) => ({
+        reregisterId: id,
+        studentId: student.id,
+        semester: (currentReregisterYear - student.year) * 2 + currentReregisterSemesterType,
+        lecturerId: student.lecturerId,
+      }));
+      await prisma.reregisterDetail.createMany({
+        data: insertDataStudents,
+      });
+    } else {
+      // Kode tidak dapat memastikan bagaimana jika previousReregister = 0;
       const eligibleReregisterDetails = previousReregister?.reregisterDetail.filter((reregisterStudent: any) => ["NONAKTIF", "AKTIF", "CUTI"].includes(reregisterStudent.semesterStatus)) ?? [];
       const newReregisterDetails = eligibleReregisterDetails.map((reregisterStudent: any) => ({
         reregisterId: id,
         studentId: reregisterStudent.studentId,
         semester: (currentReregisterYear - reregisterStudent.student.year) * 2 + currentReregisterSemesterType,
+        lecturerId: reregisterStudent.lecturerId,
       }));
 
       await prisma.reregisterDetail.createMany({
         data: newReregisterDetails,
       });
-
-
-      console.log(previousReregister?.reregisterDetail.length);
     }
     
     return {success: true, error:false}

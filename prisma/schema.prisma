@@ -197,7 +197,7 @@ model ReregisterDetail {
   reregister         Reregister     @relation(fields: [reregisterId], references: [id])
   studentId          String
   student            Student        @relation(fields: [studentId], references: [id])
-  nominal            Decimal?
+  nominal            Int?
   paymentReceiptFile String?
   paymentStatus      PaymentStatus  @default(BELUM_LUNAS)
   semester           Int?
