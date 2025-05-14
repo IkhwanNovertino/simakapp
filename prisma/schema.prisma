@@ -150,6 +150,7 @@ model Student {
   guardianHp       String?
   guardianJob      String?
   guardianAddress  String?
+  studentStatus    StudentStatus      @default(NONAKTIF)
   majorId          Int?
   major            Major?             @relation(fields: [majorId], references: [id])
   lecturerId       String?
