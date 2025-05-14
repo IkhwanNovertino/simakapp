@@ -8,7 +8,7 @@ import { StudentInputs, studentSchema } from "@/lib/formValidationSchema";
 import { createStudent, updateStudent } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { gender, religion } from "@/lib/setting";
+import { gender, religion, status } from "@/lib/setting";
 import Image from "next/image";
 import { StatusRegistrasi } from "@/lib/data";
 import moment from "moment";
@@ -197,6 +197,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             </p>
           )}
         </div>
+
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Gender</label>
           <select
@@ -225,6 +226,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             </p>
           )}
         </div>
+
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
           <label
             className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
@@ -251,6 +253,29 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
                 className="w-20 h-20 object-cover border border-gray-200 rounded-full"
               />
             </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Status Mahasiswa</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            {...register("studentStatus")}
+            defaultValue={data?.studentStatus}
+          >
+            {status.map((item: any) => (
+              <option
+                value={item}
+                key={item}
+                className="text-sm py-0.5"
+              >
+                {item}
+              </option>
+            ))}
+          </select>
+          {errors.studentStatus?.message && (
+            <p className="text-xs text-red-400">
+              {errors.studentStatus.message.toString()}
+            </p>
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -282,6 +307,15 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
+            label="Personal Email"
+            name="email"
+            defaultValue={data?.email}
+            register={register}
+            error={errors?.email}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
             label="Tempat lahir"
             name="placeOfBirth"
             defaultValue={data?.placeOfBirth}
@@ -297,15 +331,6 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             defaultValue={moment(data?.birthday).format("YYYY-MM-DD")}
             register={register}
             error={errors?.birthday}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Personal Email"
-            name="email"
-            defaultValue={data?.email}
-            register={register}
-            error={errors?.email}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -406,7 +431,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-2/5">
           <InputField
-            label="Nama Gadis Ibu Kandung"
+            label="Nama Ibu Kandung"
             name="motherName"
             defaultValue={data?.motherName}
             register={register}

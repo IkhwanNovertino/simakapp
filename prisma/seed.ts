@@ -189,27 +189,6 @@ async function main() {
     })
   }
 
-  // Lecturer
-  // await prisma.user.create({
-  //   data: {
-  //     email: `lecturer${1}@stmik.com`,
-  //     password: bcrypt.hashSync(`lecturer1`, 10),
-  //     roleId: 3,
-  //     isStatus: true,
-  //     lecturer: {
-  //       create: {
-  //         npk: `110.01`,
-  //         nidn: `12340001`,
-  //         name: `Lecturer1`,
-  //         degree: DegreeStatus.S3,
-  //         gender: Gender.WANITA,
-  //         religion: Religion.KATOLIK,
-  //         majorId: 1,
-  //         year: 2014,
-  //       }
-  //     }
-  //   }
-  // })
   for (let i = 1; i <= 10; i++) {
     await prisma.user.create({
       data: {

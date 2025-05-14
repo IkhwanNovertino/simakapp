@@ -88,7 +88,6 @@ const ReregisterSinglePage = async (
       },
     }),
   ]);
-  data.nominal = parseInt(data?.nominal)
 
   const columns = [
     {
@@ -133,7 +132,7 @@ const ReregisterSinglePage = async (
     const semesterStyle = ["p-1 rounded-lg"];
     if (item.paymentStatus === "BELUM_LUNAS") paymentStyle.push("text-red-700 bg-red-100");
     if (item.paymentStatus === "LUNAS") paymentStyle.push("text-lime-500 bg-lime-100");
-    if (item.semesterStatus === "NONAKTIF") semesterStyle.push("text-rose-700 bg-rose-100");
+    if (item.semesterStatus === "NONAKTIF") semesterStyle.push("text-rose-500 bg-rose-100");
     if (item.semesterStatus === "AKTIF") semesterStyle.push("text-green-500 bg-green-100");
     if (item.semesterStatus === "CUTI") semesterStyle.push("text-amber-500 bg-amber-100");
     if (item.semesterStatus === "MENGUNDURKAN_DIRI") semesterStyle.push("text-slate-600 bg-slate-100");
@@ -165,7 +164,7 @@ const ReregisterSinglePage = async (
           </span>
         </td>
         <td className="hidden md:table-cell text-[10px] font-bold">
-          <span className={item.isStatusForm ? "p-1 rounded-lg bg-emerald-100 text-emerald-500" : "p-1 rounded-lg bg-red-100 text-red-500"}>
+          <span className={item.isStatusForm ? "p-1 rounded-lg bg-emerald-100 text-emerald-500" : "p-1 rounded-lg bg-red-100 text-red-700"}>
             {item.isStatusForm ? "Telah Diisi" : "Belum Diisi"}
           </span>
         </td>

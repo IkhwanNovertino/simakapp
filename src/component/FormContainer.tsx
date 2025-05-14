@@ -100,6 +100,11 @@ const FormContainer = async (
             major: true,
             lecturer: true,
           },
+          orderBy: [
+            {
+              nim: 'asc'
+            }
+          ],
         });
         const lecturer = await prisma.lecturer.findMany({
           where: {

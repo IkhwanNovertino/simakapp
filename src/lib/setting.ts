@@ -25,3 +25,5 @@ export const resourceData = [
 export const degree = ["S1", "S2", "S3"];
 export const gender = ["PRIA", "WANITA"];
 export const religion = ["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"];
+export const status = ["NONAKTIF", "AKTIF", "CUTI", "DO", "MENGUNDURKAN_DIRI", "LULUS"];
+

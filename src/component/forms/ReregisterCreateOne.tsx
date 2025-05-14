@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { Dispatch, SetStateAction, startTransition, useActionState, useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { createReregisterDetail, updateReregisterDetail } from "@/lib/action";
@@ -11,6 +11,7 @@ import Select from "react-select";
 import { ReregistrationDetailInputs, reregistrationDetailSchema } from "@/lib/formValidationSchema";
 import { StudentStatus } from "@prisma/client";
 import moment from "moment";
+import { status } from "@/lib/setting";
 
 interface ReregiterCreateOneFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -21,6 +22,7 @@ interface ReregiterCreateOneFormProps {
 
 const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterCreateOneFormProps) => {
   const { students, lecturers, role } = relatedData;
+  const formRef = useRef<HTMLFormElement>(null);
   const {
     register,
     handleSubmit,
@@ -28,16 +30,23 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
     control,
     setValue,
   } = useForm<ReregistrationDetailInputs>({
-    resolver: zodResolver(reregistrationDetailSchema)
+    resolver: zodResolver(reregistrationDetailSchema.omit({ paymentReceiptFile: true }))
   })
-
 
   const action = type === "create" ? createReregisterDetail : updateReregisterDetail;
   const [state, formAction] = useActionState(action, { success: false, error: false });
 
-  const onSubmit = handleSubmit((data) => {
-    startTransition(() => formAction(data))
-  })
+  const onValid = () => {
+    formRef.current?.requestSubmit()
+  }
+
+  const handleDownloadFile = () => {
+    console.log(formRef);
+  }
+
+  // const onSubmit = handleSubmit((data) => {
+  //   startTransition(() => formAction(data))
+  // })
 
   const router = useRouter();
   useEffect(() => {
@@ -49,20 +58,36 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
   }, [state, router, setOpen, type])
 
   return (
-    <form onSubmit={onSubmit} className="flex flex-col gap-8">
+    <form ref={formRef} action={formAction} className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data herregistrasi mahasiswa baru" : "Ubah data herregister mahasiswa"}</h1>
       <span className="text-xs text-gray-400 font-medium">
         Informasi Mahasiswa
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <div className="hidden">
+          <div className="visible">
             <InputField
               label="reregisterId"
               name="reregisterId"
               defaultValue={data?.reregisterId || data?.idReregister}
               register={register}
               error={errors?.reregisterId}
+            />
+            <InputField
+              label="studentId"
+              name="studentId"
+              defaultValue={data?.studentId}
+              inputProps={{ disabled: type === 'create' && true }}
+              register={register}
+              error={errors?.studentId}
+            />
+            <InputField
+              label="lecturerId"
+              name="lecturerId"
+              defaultValue={data?.student?.lecturerId}
+              inputProps={{ disabled: type === 'create' && true }}
+              register={register}
+              error={errors?.lecturerId}
             />
           </div>
         )}
@@ -80,9 +105,9 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
                   label: `${student.nim} - ${student.name}`,
                 }))}
                 isClearable
+                isDisabled={type === "update" && true}
                 placeholder="-- Pilih Mahasiswa"
                 classNamePrefix="react-select"
-                isDisabled={type === "update" && true}
                 className="text-sm rounded-md"
                 onChange={(selected: any) => {
                   const selectedStudent = students.find((s: any) => s.id === selected?.value);
@@ -92,18 +117,26 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
                     const currentReregisterYear: number = data?.year;
                     const currentReregisterSemesterType: number = data?.semesterType === "GANJIL" ? 1 : 0;
                     const semesterInt = (currentReregisterYear - studentYear) * 2 + currentReregisterSemesterType;
-                    setValue("year", studentYear.toString());
+                    setValue("year", studentYear);
                     setValue('semester', semesterInt.toString());
                     setValue("major", selectedStudent.major?.name?.toString());
                     setValue("lecturerId", selectedStudent?.lecturerId.toString());
-                    setValue("placeOfBirth", selectedStudent?.placeOfBirth);
+                    setValue("placeOfBirth", selectedStudent?.placeOfBirth || "");
                     setValue("birthday", moment(selectedStudent?.birthday).format("YYYY-MM-DD"));
+                    setValue("hp", selectedStudent?.hp || "");
+                    setValue("email", selectedStudent?.email || "");
+                    setValue("domicile", selectedStudent?.domicile || "");
+                    setValue("address", selectedStudent?.address || "");
                   } else {
-                    setValue("year", "");
+                    setValue("year", 0);
                     setValue("semester", "");
                     setValue("major", "")
                     setValue("lecturerId", "")
                     setValue("placeOfBirth", "")
+                    setValue("hp", "")
+                    setValue("email", "")
+                    setValue("domicile", "")
+                    setValue("address", "")
                     setValue("birthday", moment(Date.now()).format("YYYY-MM-DD"))
                   }
                 }}
@@ -126,11 +159,21 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
+            label="Program Studi"
+            name="major"
+            defaultValue={data?.student?.major?.name}
+            register={register}
+            inputProps={{ readOnly: true }}
+            error={errors?.major}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
             label="Angkatan"
             name="year"
             defaultValue={data?.student?.year}
             register={register}
-            inputProps={{ disabled: true }}
+            inputProps={{ readOnly: true }}
             error={errors?.year}
           />
         </div>
@@ -140,18 +183,8 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
             name="semester"
             defaultValue={data?.semester}
             register={register}
-            inputProps={{ disabled: true }}
+            inputProps={{ readOnly: true }}
             error={errors?.semester}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="Program Studi"
-            name="major"
-            defaultValue={data?.student?.major?.name}
-            register={register}
-            inputProps={{ disabled: true }}
-            error={errors?.major}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -189,7 +222,6 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("semesterStatus")}
             defaultValue={data?.semesterStatus}
-            disabled={role !== "admin" ? true : false}
           >
             <option
               value={""} key={""}
@@ -197,42 +229,14 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
             >
               -- Status Herregistrasi
             </option>
-            <option
-              value={"NONAKTIF"} key={"NONAKTIF"}
-              className="text-sm py-0.5 capitalize"
-            >
-              NONAKTIF
-            </option>
-            <option
-              value={"AKTIF"} key={"AKTIF"}
-              className="text-sm py-0.5 capitalize"
-            >
-              AKTIF
-            </option>
-            <option
-              value={"CUTI"} key={"CUTI"}
-              className="text-sm py-0.5 capitalize"
-            >
-              CUTI
-            </option>
-            <option
-              value={"MENGUNDURKAN_DIRI"} key={"MENGUNDURKAN_DIRI"}
-              className="text-sm py-0.5 capitalize"
-            >
-              MENGUNDURKAN DIRI
-            </option>
-            <option
-              value={"DO"} key={"DO"}
-              className="text-sm py-0.5 capitalize"
-            >
-              DO
-            </option>
-            <option
-              value={"LULUS"} key={"LULUS"}
-              className="text-sm py-0.5 capitalize"
-            >
-              LULUS
-            </option>
+            {status.map((item: any) => (
+              <option
+                value={item} key={item}
+                className="text-sm py-0.5 capitalize"
+              >
+                {item}
+              </option>
+            ))}
           </select>
           {errors.semesterStatus?.message && (
             <p className="text-xs text-red-400">
@@ -240,7 +244,6 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
             </p>
           )}
         </div>
-
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Tipe Perkuliahan</label>
           <select
@@ -299,6 +302,18 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
             defaultValue={data?.nominal}
             register={register}
             error={errors?.nominal}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label
+            className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
+            htmlFor="paymentReceiptFile"
+          >
+            <span>Upload bukti pembayaran</span>
+          </label>
+          <input type="file" id="paymentReceiptFile" name="paymentReceiptFile"
+            className="file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-violet-700 hover:file:bg-violet-100 dark:file:bg-violet-600 dark:file:text-violet-100 dark:hover:file:bg-violet-500"
+            accept="image/jpeg, image/jpg, image/png"
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -475,7 +490,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           <div className="flex justify-between flex-wrap gap-4">
             <div className="flex flex-col gap-2 w-full md:w-2/5">
               <InputField
-                label="Nama Gadis Ibu Kandung"
+                label="Nama Ibu Kandung"
                 name="motherName"
                 defaultValue={data?.student?.motherName}
                 register={register}
@@ -496,171 +511,12 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           </div>
         </>
       )}
-      {/* <div className="text-xs text-gray-400 font-medium">
-        Informasi Form Herregistrasi
-        <span className={data?.isStatusForm ? "after:content-['*'] after:text-emerald-400 after:text-sm after:ml-1 px-1 text-emerald-400" : "after:content-['*'] after:text-red-400 after:text-sm after:ml-1 px-1 text-red-400"}>
-          {data?.isStatusForm ? `(Data sudah diisi oleh mahasiswa)` : `(Data belum diisi oleh mahasiswa)`}
-        </span>
-      </div>
-      <div className="flex justify-between flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-5/12">
-          <InputField
-            label="Tempat Lahir"
-            name="placeOfBirth"
-            defaultValue={data?.student?.placeOfBirth}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.placeOfBirth}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-5/12">
-          <InputField
-            label="Tanggal Lahir"
-            name="birthday"
-            type="date"
-            defaultValue={moment(data?.student?.birthday).format("YYYY-MM-DD")}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.birthday}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-5/12">
-          <InputField
-            label="No. Telp/HP"
-            name="hp"
-            defaultValue={data?.student?.hp}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.hp}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-5/12">
-          <InputField
-            label="Email"
-            name="email"
-            defaultValue={data?.student?.email}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.email}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-11/12">
-          <label className="text-xs text-gray-500">Alamat Asal/Domisili</label>
-          <textarea
-            {...register("domicile")}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Alamat asal/domisili"
-            defaultValue={data?.student?.domicile}
-            readOnly={true}
-          ></textarea>
-          {errors.domicile?.message && (
-            <p className="text-xs text-red-400">
-              {errors.domicile.message.toString()}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-11/12">
-          <label className="text-xs text-gray-500">Alamat Sekarang</label>
-          <textarea
-            {...register("address")}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Isi dengan alamat asal jika sama dengan alamat asal"
-            defaultValue={data?.student?.address}
-            readOnly={true}
-          ></textarea>
-          {errors.address?.message && (
-            <p className="text-xs text-red-400">
-              {errors.address.message.toString()}
-            </p>
-          )}
-        </div>
-      </div>
-      <div className="flex justify-between flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-5/12">
-          <InputField
-            label="Nama Orang Tua/Wali"
-            name="guardianName"
-            defaultValue={data?.student?.guardianName}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.guardianName}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-5/12">
-          <InputField
-            label="NIK Orang Tua/Wali"
-            name="guardianNIK"
-            defaultValue={data?.student?.guardianNIK}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.guardianNIK}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-5/12">
-          <InputField
-            label="Pekerjaan Orang Tua/Wali"
-            name="guardianJob"
-            defaultValue={data?.student?.guardianJob}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.guardianJob}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-5/12">
-          <InputField
-            label="No. Telp/HP Orang Tua/Wali"
-            name="guardianHp"
-            defaultValue={data?.student?.guardianHp}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.guardianHp}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-11/12">
-          <label className="text-xs text-gray-500">Alamat Orang Tua/Wali</label>
-          <textarea
-            {...register("guardianAddress")}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Alamat orang tua/wali"
-            defaultValue={data?.student?.guardianAddress}
-            readOnly={true}
-          ></textarea>
-          {errors.guardianAddress?.message && (
-            <p className="text-xs text-red-400">
-              {errors.guardianAddress.message.toString()}
-            </p>
-          )}
-        </div>
-
-      </div>
-      <span className="text-xs text-gray-400 font-medium">
-        Informasi Ibu Kandung
-      </span>
-      <div className="flex justify-between flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-2/5">
-          <InputField
-            label="Nama Gadis Ibu Kandung"
-            name="motherName"
-            defaultValue={data?.student?.motherName}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.motherName}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-2/5">
-          <InputField
-            label="NIK Ibu Kandung"
-            name="motherNIK"
-            defaultValue={data?.student?.motherNIK}
-            register={register}
-            inputProps={{ readOnly: true }}
-            error={errors?.motherNIK}
-          />
-        </div>
-      </div> */}
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
-      <button className="bg-blue-400 text-white p-2 rounded-md">
-        {type === "create" ? "Tambah" : "Ubah"}
+      <button
+        className="bg-blue-400 text-white p-2 rounded-md"
+        onClick={handleSubmit(onValid)}
+      >
+        {type === "create" ? "Tambah" : "Simpan"}
       </button>
     </form >
   )

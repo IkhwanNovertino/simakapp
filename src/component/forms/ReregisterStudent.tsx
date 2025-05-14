@@ -314,7 +314,7 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-2/5">
           <InputField
-            label="Nama Gadis Ibu Kandung"
+            label="Nama Ibu Kandung"
             name="motherName"
             defaultValue={data?.student?.motherName}
             register={register}

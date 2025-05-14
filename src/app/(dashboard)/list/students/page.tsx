@@ -68,7 +68,7 @@ const StudentListPage = async (
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
       orderBy: [
-        {nim: "desc"}
+        { nim: "desc" }
       ],
     }),
     prisma.student.count({ where: query }),
@@ -105,62 +105,74 @@ const StudentListPage = async (
     },
   ];
 
-  const renderRow = (item: StudentDataType) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
-    >
-      <td className="flex items-center gap-4 p-4">
-        <Image
-          src={item.photo || '/avatar.png'}
-          alt=""
-          width={40}
-          height={40}
-          className="hidden lg:block w-16 h-16 rounded-full object-cover"
-        />
-        <div className="flex flex-col">
-          <h3 className="font-semibold">{item.name}</h3>
-          <p className="text-xs text-gray-500">{item.user?.email || ""}</p>
-        </div>
-      </td>
-      <td className="hidden md:table-cell">{item?.nim || "-"}</td>
-      <td className="hidden md:table-cell">{item.major?.name || "-"}</td>
-      <td className="hidden lg:table-cell">{item.lecturer?.name || "-"}</td>
-      <td>
-        <div className="flex items-center gap-2">
-          <div className="md:hidden relative flex items-center justify-end gap-2">
-            <ModalAction>
-              <div className="flex items-center gap-3">
-                {canViewData && (
-                  <Link href={`/list/stundents/${item.id}`}>
-                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                    </button>
-                  </Link>
-                )}
-                {canUpdateData && <FormContainer table="student" type="update" data={item} />}
-                {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-                {canDeleteData && (<FormContainer table="student" type="delete" id={item.id} />)}
-              </div>
-            </ModalAction>
+  const renderRow = (item: StudentDataType) => {
+    const semesterStyle = ["p-1 rounded-lg text-[10px] font-bold self-start"];
+    if (item.studentStatus === "NONAKTIF") semesterStyle.push("text-rose-500 bg-rose-100");
+    if (item.studentStatus === "AKTIF") semesterStyle.push("text-green-500 bg-green-100");
+    if (item.studentStatus === "CUTI") semesterStyle.push("text-amber-500 bg-amber-100");
+    if (item.studentStatus === "MENGUNDURKAN_DIRI") semesterStyle.push("text-slate-600 bg-slate-100");
+    if (item.studentStatus === "DO") semesterStyle.push("text-gray-500 bg-gray-200");
+    if (item.studentStatus === "LULUS") semesterStyle.push("text-violet-600 bg-violet-100");
+    return (
+      <tr
+        key={item.id}
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      >
+        <td className="flex items-center gap-4 p-4">
+          <Image
+            src={item.photo || '/avatar.png'}
+            alt=""
+            width={40}
+            height={40}
+            className="hidden lg:block w-16 h-16 rounded-full object-cover"
+          />
+          <div className="flex flex-col">
+            <h3 className="font-semibold">{item.name}</h3>
+            <p className="hidden md:flex text-xs text-gray-500">Angkatan: {item.year}</p>
+            <p className="flex md:hidden text-xs text-gray-500">{item?.nim || "-"}</p>
+            <p className="text-xs text-gray-500">{item.user?.email || ""}</p>
+            <p className={semesterStyle.join(" ")}>{item.studentStatus}</p>
           </div>
-          <div className="hidden md:flex items-center gap-2">
-            {canViewData && (
-              <Link href={`/list/stundents/${item.id}`}>
-                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                </button>
-              </Link>
-            )}
-            {canUpdateData && <FormContainer table="student" type="update" data={item} />}
-            {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-            {canDeleteData && (<FormContainer table="student" type="delete" id={item.id} />)}
-          </div>
+        </td>
+        <td className="hidden md:table-cell">{item?.nim || "-"}</td>
+        <td className="hidden md:table-cell">{item.major?.name || "-"}</td>
+        <td className="hidden lg:table-cell">{item.lecturer?.name || "-"}</td>
+        <td>
+          <div className="flex items-center gap-2">
+            <div className="md:hidden relative flex items-center justify-end gap-2">
+              <ModalAction>
+                <div className="flex items-center gap-3">
+                  {canViewData && (
+                    <Link href={`/list/stundents/${item.id}`}>
+                      <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                        <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                      </button>
+                    </Link>
+                  )}
+                  {canUpdateData && <FormContainer table="student" type="update" data={item} />}
+                  {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+                  {canDeleteData && (<FormContainer table="student" type="delete" id={item.id} />)}
+                </div>
+              </ModalAction>
+            </div>
+            <div className="hidden md:flex items-center gap-2">
+              {canViewData && (
+                <Link href={`/list/stundents/${item.id}`}>
+                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                  </button>
+                </Link>
+              )}
+              {canUpdateData && <FormContainer table="student" type="update" data={item} />}
+              {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+              {canDeleteData && (<FormContainer table="student" type="delete" id={item.id} />)}
+            </div>
 
-        </div>
-      </td>
-    </tr>
-  );
+          </div>
+        </td>
+      </tr>
+    );
+  }
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">

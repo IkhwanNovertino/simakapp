@@ -4,7 +4,7 @@ import path from "path";
 import {
   CourseInputs, lecturerSchema, MajorInputs, OperatorInputs,
   PeriodInputs,
-  PermissionInputs, ReregistrationDetailInputs, ReregistrationInputs, ReregistrationStudentInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
+  PermissionInputs, ReregistrationDetailInputs, reregistrationDetailSchema, ReregistrationInputs, ReregistrationStudentInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { CampusType, Gender, PaymentStatus, Religion, SemesterStatus, SemesterType } from "@prisma/client";
@@ -20,6 +20,7 @@ type stateType = {
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 const avatarFilePath = process.env.AVATAR_FOLDER as string;
+const paymentFilePath = process.env.PAYMENT_FOLDER as string;
 
 export const createPermission = async (state: stateType, data: PermissionInputs) => {
   try {
@@ -726,6 +727,7 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
     const nim = data.get('nim')?.toString();
     const majorId = parseInt(data.get('majorId') as string);
     const statusRegister = data.get('statusRegister')?.toString();
+    const studentStatus = data.get('studentStatus')?.toString();
     const lecturerId = data.get('lecturerId')?.toString();
     const year = parseInt(data.get('year') as string);
     const placeOfBirth = data.get('placeOfBirth');
@@ -769,6 +771,7 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
       lecturerId,
       majorId,
       statusRegister,
+      studentStatus,
       year,
       placeOfBirth,
       birthday,
@@ -799,9 +802,10 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
         majorId: validation.data?.majorId,
         lecturerId : validation.data?.lecturerId,
         statusRegister : validation.data?.statusRegister,
+        studentStatus : validation.data?.studentStatus,
         year: validation.data?.year,
         placeOfBirth: validation.data?.placeOfBirth,
-        birthday: validation.data?.birthday,
+        birthday:  new Date(validation.data?.birthday || Date.now()),
         religion : validation.data?.religion as Religion,
         email : validation.data?.email,
         hp : validation.data?.phone,
@@ -834,6 +838,7 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
       lecturerId : data.get('lecturerId')?.toString(),
       majorId : parseInt(data.get('majorId') as string),
       statusRegister : data.get('statusRegister')?.toString(),
+      studentStatus : data.get('studentStatus')?.toString(),
       year: parseInt(data.get('year') as string),
       placeOfBirth: data.get('placeOfBirth'),
       birthday: data.get('birthday'),
@@ -896,6 +901,7 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
         majorId: parsed.data?.majorId,
         lecturerId : parsed.data?.lecturerId,
         statusRegister : parsed.data?.statusRegister,
+        studentStatus : parsed.data?.studentStatus,
         year: parsed.data?.year,
         placeOfBirth: parsed.data?.placeOfBirth,
         birthday: new Date(parsed.data?.birthday || Date.now()),
@@ -1133,7 +1139,7 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
     const id = data.get("id") as string;
     logger.info(id);
     
-    const reregisterDetailCount = await prisma.reregisterDetail.count({});
+    // const reregisterDetailCount = await prisma.reregisterDetail.count({});
     const currentReregister = await prisma.reregister.findUnique({
       where: {
         id: id,
@@ -1145,59 +1151,63 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
     const currentReregisterYear = currentReregister?.period?.year;
     const currentReregisterSemesterType = currentReregister?.period?.semesterType === "GANJIL" ? 1 : 0;
     
-    const previousSemesterType = currentReregister?.period?.semesterType === "GANJIL" ? "GENAP" : "GANJIL";
-    const previousYear = currentReregister?.period?.semesterType === "GANJIL" ? currentReregisterYear : currentReregisterYear -1;
+    // const previousSemesterType = currentReregister?.period?.semesterType === "GANJIL" ? "GENAP" : "GANJIL";
+    // const previousYear = currentReregister?.period?.semesterType === "GANJIL" ? currentReregisterYear : currentReregisterYear -1;
 
-    // if (currentReregisterSemesterType === 1) {
-    //   previousSemesterType = "GENAP";
-    //   previousYear = currentReregisterYear;
-    // } else if (currentReregisterSemesterType === 0) {
-    //   previousSemesterType = "GANJIL";
-    //   previousYear = currentReregisterYear - 1;   
-    // }
-
-    const previousReregister = await prisma.reregister.findFirst({
-        where: {
-          period: {
-            year: previousYear,
-            semesterType: previousSemesterType,
-          }
-        },
-        include: {
-          period: true,
-          reregisterDetail: {
-            include: {
-              student: true,
-            },
-          },
+    // const previousReregister = await prisma.reregister.findFirst({
+    //     where: {
+    //       period: {
+    //         year: previousYear,
+    //         semesterType: previousSemesterType,
+    //       }
+    //     },
+    //     include: {
+    //       period: true,
+    //       reregisterDetail: {
+    //         include: {
+    //           student: true,
+    //         },
+    //       },
+    //     }
+    // })
+    
+    const students = await prisma.student.findMany({
+      where: {
+        studentStatus: {
+          in: ['NONAKTIF', 'AKTIF', 'CUTI'],
         }
-      })
+      },
+      include: {
+        reregisterDetail: true,
+      }
+    });
+    console.log(students.length);
+    
+    const dataReregisterDetails = students.map((student: any) => ({
+      reregisterId: id,
+      studentId: student.id,
+      semester: (currentReregisterYear - student.year) * 2 + currentReregisterSemesterType,
+      lecturerId: student.lecturerId,
+    }));
 
-    if (reregisterDetailCount === 0 || previousReregister.reregisterDetail.length === 0) {
-      const students = await prisma.student.findMany({});
-      const insertDataStudents = students.map((student: any) => ({
-        reregisterId: id,
-        studentId: student.id,
-        semester: (currentReregisterYear - student.year) * 2 + currentReregisterSemesterType,
-        lecturerId: student.lecturerId,
-      }));
-      await prisma.reregisterDetail.createMany({
-        data: insertDataStudents,
-      });
-    } else {
-      // Kode tidak dapat memastikan bagaimana jika previousReregister = 0;
-      const eligibleReregisterDetails = previousReregister?.reregisterDetail.filter((reregisterStudent: any) => ["NONAKTIF", "AKTIF", "CUTI"].includes(reregisterStudent.semesterStatus)) ?? [];
-      const newReregisterDetails = eligibleReregisterDetails.map((reregisterStudent: any) => ({
-        reregisterId: id,
-        studentId: reregisterStudent.studentId,
-        semester: (currentReregisterYear - reregisterStudent.student.year) * 2 + currentReregisterSemesterType,
-        lecturerId: reregisterStudent.lecturerId,
-      }));
-
-      await prisma.reregisterDetail.createMany({
-        data: newReregisterDetails,
-      });
-    }
+    const insertDataStudents = dataReregisterDetails.filter((student: any) => student.semester > 0)
+    await prisma.reregisterDetail.createMany({
+      data: insertDataStudents,
+    });
+    // if (reregisterDetailCount === 0 || previousReregister === null || previousReregister.reregisterDetail.length === 0) {
+    // } else {
+    //   // Kode tidak dapat memastikan bagaimana jika previousReregister = 0;
+    //   const eligibleReregisterDetails = previousReregister?.reregisterDetail.filter((reregisterStudent: any) => ["NONAKTIF", "AKTIF", "CUTI"].includes(reregisterStudent.semesterStatus)) ?? [];
+    //   const newReregisterDetails = eligibleReregisterDetails.map((reregisterStudent: any) => ({
+    //     reregisterId: id,
+    //     studentId: reregisterStudent.studentId,
+    //     semester: (currentReregisterYear - reregisterStudent.student.year) * 2 + currentReregisterSemesterType,
+    //     lecturerId: reregisterStudent.lecturerId,
+    //   }));
+    //   await prisma.reregisterDetail.createMany({
+    //     data: newReregisterDetails,
+    //   });
+    // }
     
     return {success: true, error:false}
   } catch (err: any) {
@@ -1206,20 +1216,61 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
   }
 }
 
-export const createReregisterDetail = async (state: stateType, data: ReregistrationDetailInputs) => {
+// Apakah studentStatus di student model akan mengikuti semesterStatus di reregisterDetail model
+export const createReregisterDetail = async (state: stateType, data: FormData) => {
   try {
     console.log(data);
+    const dataRaw = {
+      reregisterId: data.get("reregisterId")?.toString(),
+      studentId: data.get("studentId")?.toString(),
+      lecturerId: data.get("lecturerId")?.toString(),
+      semesterStatus: data.get("semesterStatus")?.toString(),
+      paymentStatus: data.get("paymentStatus")?.toString(),
+      campusType: data.get("campusType")?.toString(),
+      nominal: parseInt(data.get("nominal") as string) || 0,
+      year: data.get("year"),
+      semester: data.get("semester")?.toString(),
+      major: data.get("major")?.toString(),
+    }
+    const paymentReceiptFile = data.get("paymentReceiptFile") as File;
 
+    let fileUrl: string | undefined = undefined;
+    if (paymentReceiptFile && paymentReceiptFile.size > 0) {
+      const fileTypeCheck = ACCEPTED_IMAGE_TYPES.includes(paymentReceiptFile.type)
+      if (!fileTypeCheck) throw new Error("Tipe file tidak sesuai");
+
+      const bytes = await paymentReceiptFile.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+
+      const fileName = `${v4()}-${paymentReceiptFile.name}`
+      const dirPath = path.join(process.cwd(), 'public', paymentFilePath)
+      const filePath = path.join(dirPath, fileName)
+      fileUrl = `/${paymentFilePath}/${fileName}`
+      await mkdir(dirPath, { recursive: true });
+      await writeFile(filePath, buffer)
+    }
+    const validation = reregistrationDetailSchema.safeParse({
+      ...dataRaw,
+      paymentReceiptFile: fileUrl ?? '',
+    });
+    
+    
+    if (!validation.success) {
+      console.log(validation.error);
+      return { success: false, error: true }
+    };
+    
     await prisma.reregisterDetail.create({
       data: {
-        reregisterId: data.reregisterId,
-        studentId: data.studentId,
-        lecturerId: data.lecturerId,
-        campusType: data?.campusType || "BJB" as CampusType,
-        semesterStatus: data?.semesterStatus || "NONAKTIF" as SemesterStatus,
-        semester: parseInt(data?.semester),
-        nominal: parseInt(data.nominal || "0"),
-        paymentStatus: data?.paymentStatus || "BELUM_LUNAS" as PaymentStatus,
+        reregisterId: validation.data.reregisterId,
+        studentId: validation.data.studentId,
+        lecturerId: validation.data.lecturerId,
+        campusType: validation.data?.campusType || "BJB" as CampusType,
+        semesterStatus: validation.data?.semesterStatus || "NONAKTIF" as SemesterStatus,
+        semester: parseInt(validation.data?.semester),
+        nominal: validation.data.nominal,
+        paymentStatus: validation.data?.paymentStatus || "BELUM_LUNAS" as PaymentStatus,
+        paymentReceiptFile: validation.data?.paymentReceiptFile,
       },
     });
     
@@ -1229,26 +1280,110 @@ export const createReregisterDetail = async (state: stateType, data: Reregistrat
     return { success: false, error: true }
   }
 };
-export const updateReregisterDetail = async (state: stateType, data: ReregistrationDetailInputs) => {
+export const updateReregisterDetail = async (state: stateType, data: FormData) => {
   try {
     console.log(data);
-    
-    await prisma.reregisterDetail.update({
+    const dataRaw = {
+      reregisterId: data.get("reregisterId")?.toString(),
+      studentId: data.get("studentId")?.toString(),
+      lecturerId: data.get("lecturerId")?.toString(),
+      semesterStatus: data.get("semesterStatus")?.toString(),
+      paymentStatus: data.get("paymentStatus")?.toString(),
+      campusType: data.get("campusType")?.toString(),
+      nominal: parseInt(data.get("nominal") as string) || 0,
+      year: data.get("year"),
+      semester: data.get("semester")?.toString(),
+      major: data.get("major")?.toString(),
+    }
+    const paymentReceiptFile = data.get("paymentReceiptFile") as File;
+
+    const oldPaymentFile = await prisma.reregisterDetail.findFirst({
       where: {
-        reregisterId_studentId: {
-          reregisterId: data.reregisterId,
-          studentId: data.studentId,
+          reregisterId: dataRaw?.reregisterId,
+          studentId: dataRaw?.studentId,
+      },
+    });
+
+    let fileUrl: string | undefined = undefined;
+    if (paymentReceiptFile && paymentReceiptFile.size > 0) {
+      const fileTypeCheck = ACCEPTED_IMAGE_TYPES.includes(paymentReceiptFile.type)
+      if (!fileTypeCheck) throw new Error("Tipe file tidak sesuai");
+
+      const bytes = await paymentReceiptFile.arrayBuffer()
+      const buffer = Buffer.from(bytes)
+
+      const fileName = `${v4()}-${paymentReceiptFile.name}`
+      const dirPath = path.join(process.cwd(), 'public', paymentFilePath)
+      const filePath = path.join(dirPath, fileName)
+      fileUrl = `/${paymentFilePath}/${fileName}`
+      await mkdir(dirPath, { recursive: true });
+      await writeFile(filePath, buffer)
+
+      if (oldPaymentFile.paymentReceiptFile) {
+        const oldPath = path.join(process.cwd(), 'public', oldPaymentFile.paymentReceiptFile);
+        try {
+          await unlink(oldPath)
+        } catch (err: any) {
+          logger.warn(err)
         }
-      },
-      data: {
-        lecturerId: data.lecturerId,
-        campusType: data?.campusType || "BJB" as CampusType,
-        semesterStatus: data?.semesterStatus as SemesterStatus,
-        semester: parseInt(data?.semester),
-        nominal: parseInt(data.nominal || "0"),
-        paymentStatus: data?.paymentStatus as PaymentStatus,
-      },
-    })
+      }
+    }
+    const validation = reregistrationDetailSchema.safeParse({
+      ...dataRaw,
+      paymentReceiptFile: fileUrl ?? '',
+    });
+    
+    
+    if (!validation.success) {
+      console.log(validation.error);
+      return { success: false, error: true }
+    };
+
+    await prisma.$transaction([
+      prisma.student.update({
+        where: {
+          id: validation?.data.studentId
+        },
+        data: {
+          studentStatus: validation?.data?.semesterStatus,
+        }
+      }),
+      prisma.reregisterDetail.update({
+        where: {
+          reregisterId_studentId: {
+            reregisterId: validation?.data.reregisterId,
+            studentId: validation?.data.studentId,
+          }
+        },
+        data: {
+          lecturerId: validation?.data.lecturerId,
+          campusType: validation?.data?.campusType || "BJB" as CampusType,
+          semesterStatus: validation?.data?.semesterStatus as SemesterStatus,
+          semester: parseInt(validation?.data?.semester),
+          nominal: validation?.data.nominal,
+          paymentStatus: validation?.data?.paymentStatus as PaymentStatus,
+          paymentReceiptFile: validation.data?.paymentReceiptFile,
+        },
+      })
+    ])
+    
+    // await prisma.reregisterDetail.update({
+    //   where: {
+    //     reregisterId_studentId: {
+    //       reregisterId: validation?.data.reregisterId,
+    //       studentId: validation?.data.studentId,
+    //     }
+    //   },
+    //   data: {
+    //     lecturerId: validation?.data.lecturerId,
+    //     campusType: validation?.data?.campusType || "BJB" as CampusType,
+    //     semesterStatus: validation?.data?.semesterStatus as SemesterStatus,
+    //     semester: parseInt(validation?.data?.semester),
+    //     nominal: validation?.data.nominal,
+    //     paymentStatus: validation?.data?.paymentStatus as PaymentStatus,
+    //     paymentReceiptFile: validation.data?.paymentReceiptFile,
+    //   },
+    // })
     
     return { success: true, error: false }
   } catch (err: any) {
@@ -1262,14 +1397,25 @@ export const deleteReregisterDetail = async (state: stateType, data: FormData) =
     const id = data.get("id") as string;
     logger.info(id);
 
-    await prisma.reregisterDetail.delete({
+    const deleteData = await prisma.reregisterDetail.delete({
       where: {
         reregisterId_studentId: {
           reregisterId: id.split(":")[0],
           studentId: id.split(":")[1]
         }
-      }
+      },
+      select: {
+        paymentReceiptFile: true,
+      },
     })
+    if (deleteData.paymentReceiptFile) {
+      const oldPath = path.join(process.cwd(), 'public', deleteData.paymentReceiptFile);
+      try {
+        await unlink(oldPath)
+      } catch (err: any) {
+        logger.warn(err)
+      }
+    }
     
     return { success: true, error: false }
   } catch (err: any) {
