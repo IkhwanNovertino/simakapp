@@ -3,11 +3,12 @@
 import path from "path";
 import {
   CourseInputs, lecturerSchema, MajorInputs, OperatorInputs,
-  PeriodInputs,
-  PermissionInputs, ReregistrationDetailInputs, reregistrationDetailSchema, ReregistrationInputs, ReregistrationStudentInputs, RoleInputs, RoomInputs, studentSchema, UserInputs
+  PeriodInputs, PermissionInputs, reregistrationDetailSchema,
+  ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
+  RoomInputs, studentSchema, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { CampusType, Gender, PaymentStatus, Religion, SemesterStatus, SemesterType } from "@prisma/client";
+import { CampusType, Gender, PaymentStatus, Religion, SemesterStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
@@ -795,7 +796,7 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
       return { success: false, error: true, fieldErrors: validation.error };
     }
 
-    const student = await prisma.student.create({
+    await prisma.student.create({
       data: {
         name: validation.data?.name,
         nim: validation.data?.nim,
@@ -1419,6 +1420,7 @@ export const deleteReregisterDetail = async (state: stateType, data: FormData) =
     
     return { success: true, error: false }
   } catch (err: any) {
+    logger.error(err)
     return { success: false, error: true }
   }
 };
@@ -1463,30 +1465,7 @@ export const createReregisterStudent = async (state: stateType, data: Reregistra
     
     return {success: true, error:false}
   } catch (err: any) {
+    logger.error(err)
     return {success: false, error:true}
   }
 }
-export const updateReregisterStudent = async (state: stateType, data: ReregistrationStudentInputs) => {
-  try {
-    console.log(data);
-    
-    // await prisma.reregisterDetail.update({
-    //   where: {
-    //     reregisterId_studentId: {
-    //       reregisterId: data.reregisterId,
-    //       studentId: data.studentId,
-    //     }
-    //   },
-    //   data: {
-    //     paymentStatus: data.paymentStatus as PaymentStatus,
-    //     semesterStatus: data.semesterStatus as SemesterStatus, 
-    //   },
-    // })
-    
-    return { success: true, error: false }
-  } catch (err: any) {
-    console.log(err);
-    
-    return { success: false, error: true }
-  }
-};

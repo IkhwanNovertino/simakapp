@@ -2,7 +2,7 @@ import Image from "next/image";
 import HamburgerMenu from "./HamburgerMenu";
 import SidebarContainer from "./SidebarContainer";
 import Link from "next/link";
-import { deleteSession, getSession } from "@/lib/session";
+import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 

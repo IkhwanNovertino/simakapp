@@ -2,7 +2,6 @@
 import { jwtVerify, SignJWT } from "jose";
 import { prisma } from "./prisma";
 import { cookies } from "next/headers";
-import { NextRequest, NextResponse } from "next/server";
 
 const SESSION_NAME = "session";
 

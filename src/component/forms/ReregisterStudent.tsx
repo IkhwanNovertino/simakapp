@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { createReregisterDetail, createReregisterStudent, updateReregisterDetail, updateReregisterStudent } from "@/lib/action";
+import { createReregisterStudent } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ReregistrationStudentInputs, reregistrationStudentSchema } from "@/lib/formValidationSchema";
@@ -17,20 +17,15 @@ interface ReregisterStudentFormProps {
   relatedData?: any;
 }
 
-const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterStudentFormProps) => {
-  const { students, lecturers } = relatedData;
+const ReregisterStudentForm = ({ setOpen, type, data }: ReregisterStudentFormProps) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    control,
-    setValue,
   } = useForm<ReregistrationStudentInputs>({
     resolver: zodResolver(reregistrationStudentSchema)
   })
 
-
-  // const action = type === "create" ? createReregisterStudent : updateReregisterStudent;
   const [state, formAction] = useActionState(createReregisterStudent, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
@@ -40,7 +35,7 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data herregistrasi`);
+      toast.success(`Berhasil menyimpan data herregistrasi`);
       router.refresh();
       setOpen(false);
     }
@@ -200,7 +195,7 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
             label="Tanggal Lahir"
             name="birthday"
             type="date"
-            defaultValue={moment(data?.student?.birthday).format("YYYY-MM-DD")}
+            defaultValue={moment(data?.student?.birthday).format("yyyy-MM-dd")}
             register={register}
             error={errors?.birthday}
           />
@@ -336,7 +331,7 @@ const ReregisterStudentForm = ({ setOpen, type, data, relatedData }: ReregisterS
         className="bg-blue-400 text-white p-2 rounded-md disabled:bg-blue-500/30 disabled:cursor-not-allowed"
         disabled={data?.isStatusForm}
       >
-        {type === "create" ? "Tambah" : "Ubah"}
+        Kirim Data
       </button>
     </form >
   )

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect, useRef } from "react";
+import { Dispatch, SetStateAction, useActionState, useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { createReregisterDetail, updateReregisterDetail } from "@/lib/action";
@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Select from "react-select";
 import { ReregistrationDetailInputs, reregistrationDetailSchema } from "@/lib/formValidationSchema";
-import { StudentStatus } from "@prisma/client";
 import moment from "moment";
 import { status } from "@/lib/setting";
 
@@ -40,18 +39,10 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
     formRef.current?.requestSubmit()
   }
 
-  const handleDownloadFile = () => {
-    console.log(formRef);
-  }
-
-  // const onSubmit = handleSubmit((data) => {
-  //   startTransition(() => formAction(data))
-  // })
-
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data herregistrasi`);
+      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data herregistrasi mahasiswa`);
       router.refresh();
       setOpen(false);
     }
@@ -65,7 +56,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <div className="visible">
+          <div className="hidden">
             <InputField
               label="reregisterId"
               name="reregisterId"

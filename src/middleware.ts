@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getSession } from './lib/session';
 
 export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -13,7 +12,6 @@ export default async function middleware(req: NextRequest) {
 
   // 3. Get the session from the cookie
   const getSessionFromCookie = req.cookies.get('session')?.value;
-  // const getSessionData = await getSession();
 
   // 4. Redirect to /login if the user is not authenticated and trying to access a protected route
   if (isProtectedRoute && !getSessionFromCookie) {
