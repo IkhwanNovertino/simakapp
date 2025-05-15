@@ -246,6 +246,7 @@ async function main() {
     })
     
   };
+
   for (let i = 0; i < 10; i++) {
     students.push({
       nim: `310120${i % 2 === 0 ? '01' : '02'}230${i}`,
@@ -257,8 +258,20 @@ async function main() {
       statusRegister: "BARU",
       lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
     })
-    
   }
+  for (let i = 0; i < 10; i++) {
+    students.push({
+      nim: `310121${i % 2 === 0 ? '01' : '02'}230${i}`,
+      name: `Student3${i + 1}`,
+      year: 2021,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 === 0 ? 1 : 2),
+      statusRegister: "BARU",
+      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+    })
+  }
+
   await prisma.student.createMany({
     data: students,
   })
