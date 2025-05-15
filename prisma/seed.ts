@@ -231,7 +231,6 @@ async function main() {
       statusRegister: "BARU",
       lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
     })
-    
   };
   for (let i = 0; i < 10; i++) {
     students.push({
@@ -244,7 +243,6 @@ async function main() {
       statusRegister: "BARU",
       lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
     })
-    
   };
 
   for (let i = 0; i < 10; i++) {
