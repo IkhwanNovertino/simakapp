@@ -554,12 +554,12 @@ export const createLecturer = async (state: stateType, data: FormData) => {
       const bytes = await photo.arrayBuffer()
       const buffer = Buffer.from(bytes)
   
-      const fileName = `${v4()}-${photo.name}`
-      const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
-      const filePath = path.join(dirPath, fileName)
-      fileUrl = `/${avatarFilePath}/${fileName}`
+      const fileName = `${v4()}-${photo.name}`;
+      const dirPath = path.join(process.cwd(), 'public', avatarFilePath);
+      const filePath = path.join(dirPath, fileName);
+      fileUrl = `${fileName}`;
       await mkdir(dirPath, { recursive: true });
-      await writeFile(filePath, buffer)
+      await writeFile(filePath, buffer);
     }
 
     const validation = lecturerSchema.safeParse({
@@ -634,17 +634,16 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
       const fileName = `${v4()}-${photo.name}`
       const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
       const filePath = path.join(dirPath, fileName)
-      fileUrl = `/${avatarFilePath}/${fileName}`
+      fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
 
       if (oldPhoto) {
-        const oldPath = path.join(process.cwd(), 'public', oldPhoto);
+        const oldPath = path.join(process.cwd(), 'public', avatarFilePath, oldPhoto);
         try {
           await unlink(oldPath)
         } catch (err: any) {
           logger.warn(err)
-          
         }
       }
     }
@@ -706,7 +705,7 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
     })
 
     if (dataLecturer?.photo) {
-      const filePath = path.join(process.cwd(), 'public', dataLecturer.photo);
+      const filePath = path.join(process.cwd(), 'public', avatarFilePath, dataLecturer.photo);
       try {
         await unlink(filePath)
       } catch (err: any) {
@@ -760,7 +759,7 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
       const fileName = `${v4()}-${photo.name}`
       const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
       const filePath = path.join(dirPath, fileName)
-      fileUrl = `/${avatarFilePath}/${fileName}`
+      fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
     }
@@ -878,12 +877,12 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
       const fileName = `${v4()}-${photo.name}`
       const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
       const filePath = path.join(dirPath, fileName)
-      fileUrl = `/${avatarFilePath}/${fileName}`
+      fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
 
       if (oldPhoto) {
-        const oldPath = path.join(process.cwd(), 'public', oldPhoto);
+        const oldPath = path.join(process.cwd(), 'public', avatarFilePath, oldPhoto);
         try {
           await unlink(oldPath)
         } catch (err: any) {
@@ -958,7 +957,7 @@ export const deleteStudent = async (state: stateType, data: FormData) => {
     })
 
     if (dataStudent?.photo) {
-      const filePath = path.join(process.cwd(), 'public', dataStudent.photo);
+      const filePath = path.join(process.cwd(), 'public', avatarFilePath, dataStudent.photo);
       try {
         await unlink(filePath)
       } catch (err: any) {
@@ -1195,20 +1194,6 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
     await prisma.reregisterDetail.createMany({
       data: insertDataStudents,
     });
-    // if (reregisterDetailCount === 0 || previousReregister === null || previousReregister.reregisterDetail.length === 0) {
-    // } else {
-    //   // Kode tidak dapat memastikan bagaimana jika previousReregister = 0;
-    //   const eligibleReregisterDetails = previousReregister?.reregisterDetail.filter((reregisterStudent: any) => ["NONAKTIF", "AKTIF", "CUTI"].includes(reregisterStudent.semesterStatus)) ?? [];
-    //   const newReregisterDetails = eligibleReregisterDetails.map((reregisterStudent: any) => ({
-    //     reregisterId: id,
-    //     studentId: reregisterStudent.studentId,
-    //     semester: (currentReregisterYear - reregisterStudent.student.year) * 2 + currentReregisterSemesterType,
-    //     lecturerId: reregisterStudent.lecturerId,
-    //   }));
-    //   await prisma.reregisterDetail.createMany({
-    //     data: newReregisterDetails,
-    //   });
-    // }
     
     return {success: true, error:false}
   } catch (err: any) {
@@ -1246,7 +1231,7 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
       const fileName = `${v4()}-${paymentReceiptFile.name}`
       const dirPath = path.join(process.cwd(), 'public', paymentFilePath)
       const filePath = path.join(dirPath, fileName)
-      fileUrl = `/${paymentFilePath}/${fileName}`
+      fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
     }
@@ -1316,12 +1301,12 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
       const fileName = `${v4()}-${paymentReceiptFile.name}`
       const dirPath = path.join(process.cwd(), 'public', paymentFilePath)
       const filePath = path.join(dirPath, fileName)
-      fileUrl = `/${paymentFilePath}/${fileName}`
+      fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
 
       if (oldPaymentFile.paymentReceiptFile) {
-        const oldPath = path.join(process.cwd(), 'public', oldPaymentFile.paymentReceiptFile);
+        const oldPath = path.join(process.cwd(), 'public', paymentFilePath, oldPaymentFile.paymentReceiptFile);
         try {
           await unlink(oldPath)
         } catch (err: any) {
@@ -1410,7 +1395,7 @@ export const deleteReregisterDetail = async (state: stateType, data: FormData) =
       },
     })
     if (deleteData.paymentReceiptFile) {
-      const oldPath = path.join(process.cwd(), 'public', deleteData.paymentReceiptFile);
+      const oldPath = path.join(process.cwd(), 'public', paymentFilePath, deleteData.paymentReceiptFile);
       try {
         await unlink(oldPath)
       } catch (err: any) {
