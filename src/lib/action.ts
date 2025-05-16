@@ -555,7 +555,7 @@ export const createLecturer = async (state: stateType, data: FormData) => {
       const buffer = Buffer.from(bytes)
   
       const fileName = `${v4()}-${photo.name}`;
-      const dirPath = path.join(process.cwd(), 'public', avatarFilePath);
+      const dirPath = path.join(process.cwd(), avatarFilePath);
       const filePath = path.join(dirPath, fileName);
       fileUrl = `${fileName}`;
       await mkdir(dirPath, { recursive: true });
@@ -632,14 +632,14 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
       const buffer = Buffer.from(bytes)
   
       const fileName = `${v4()}-${photo.name}`
-      const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
+      const dirPath = path.join(process.cwd(), avatarFilePath)
       const filePath = path.join(dirPath, fileName)
       fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
 
       if (oldPhoto) {
-        const oldPath = path.join(process.cwd(), 'public', avatarFilePath, oldPhoto);
+        const oldPath = path.join(process.cwd(), avatarFilePath, oldPhoto);
         try {
           await unlink(oldPath)
         } catch (err: any) {
@@ -705,7 +705,7 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
     })
 
     if (dataLecturer?.photo) {
-      const filePath = path.join(process.cwd(), 'public', avatarFilePath, dataLecturer.photo);
+      const filePath = path.join(process.cwd(), avatarFilePath, dataLecturer.photo);
       try {
         await unlink(filePath)
       } catch (err: any) {
@@ -757,7 +757,7 @@ export const createStudent = async (state: {success: boolean, error: boolean, fi
       const buffer = Buffer.from(bytes)
   
       const fileName = `${v4()}-${photo.name}`
-      const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
+      const dirPath = path.join(process.cwd(), avatarFilePath)
       const filePath = path.join(dirPath, fileName)
       fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
@@ -875,14 +875,14 @@ export const updateStudent = async (state: {success: boolean, error: boolean, fi
       const buffer = Buffer.from(bytes)
   
       const fileName = `${v4()}-${photo.name}`
-      const dirPath = path.join(process.cwd(), 'public', avatarFilePath)
+      const dirPath = path.join(process.cwd(), avatarFilePath)
       const filePath = path.join(dirPath, fileName)
       fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
 
       if (oldPhoto) {
-        const oldPath = path.join(process.cwd(), 'public', avatarFilePath, oldPhoto);
+        const oldPath = path.join(process.cwd(), avatarFilePath, oldPhoto);
         try {
           await unlink(oldPath)
         } catch (err: any) {
@@ -957,7 +957,7 @@ export const deleteStudent = async (state: stateType, data: FormData) => {
     })
 
     if (dataStudent?.photo) {
-      const filePath = path.join(process.cwd(), 'public', avatarFilePath, dataStudent.photo);
+      const filePath = path.join(process.cwd(), avatarFilePath, dataStudent.photo);
       try {
         await unlink(filePath)
       } catch (err: any) {
@@ -1229,7 +1229,7 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
       const buffer = Buffer.from(bytes)
 
       const fileName = `${v4()}-${paymentReceiptFile.name}`
-      const dirPath = path.join(process.cwd(), 'public', paymentFilePath)
+      const dirPath = path.join(process.cwd(), paymentFilePath)
       const filePath = path.join(dirPath, fileName)
       fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
@@ -1299,14 +1299,14 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
       const buffer = Buffer.from(bytes)
 
       const fileName = `${v4()}-${paymentReceiptFile.name}`
-      const dirPath = path.join(process.cwd(), 'public', paymentFilePath)
+      const dirPath = path.join(process.cwd(), paymentFilePath)
       const filePath = path.join(dirPath, fileName)
       fileUrl = `${fileName}`
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
 
       if (oldPaymentFile.paymentReceiptFile) {
-        const oldPath = path.join(process.cwd(), 'public', paymentFilePath, oldPaymentFile.paymentReceiptFile);
+        const oldPath = path.join(process.cwd(), paymentFilePath, oldPaymentFile.paymentReceiptFile);
         try {
           await unlink(oldPath)
         } catch (err: any) {
@@ -1395,7 +1395,7 @@ export const deleteReregisterDetail = async (state: stateType, data: FormData) =
       },
     })
     if (deleteData.paymentReceiptFile) {
-      const oldPath = path.join(process.cwd(), 'public', paymentFilePath, deleteData.paymentReceiptFile);
+      const oldPath = path.join(process.cwd(), paymentFilePath, deleteData.paymentReceiptFile);
       try {
         await unlink(oldPath)
       } catch (err: any) {

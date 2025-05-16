@@ -108,8 +108,8 @@ const LecturerListPage = async (
     >
       <td className="flex items-center gap-4 p-4">
         <Image
-          src={item.photo ? `/uploads/avatar/${item.photo}` : '/avatar.png'}
-          alt=""
+          src={item.photo ? `/api/avatar?file=${item.photo}` : '/avatar.png'}
+          alt="foto profil"
           width={40}
           height={40}
           className="hidden xl:block w-16 h-16 rounded-full object-cover"

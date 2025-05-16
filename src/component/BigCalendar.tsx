@@ -16,7 +16,7 @@ const BigCalendar = () => {
   };
 
   return (
-    < Calendar
+    <Calendar
       localizer={localizer}
       events={calendarEvents}
       startAccessor="start"

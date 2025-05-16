@@ -24,7 +24,7 @@ const HamburgerMenu = ({ sidebar, userProfile }: { sidebar: React.ReactNode, use
           <div className="absolute z-20 w-48 right-6 mt-4 py-2 px-4 rounded-lg shadow-xl shadow-black/20 bg-neutral-50 md:hidden">
             <div className="flex flex-col items-start justify-start mb-2 gap-2 w-full">
               <div className="flex flex-row items-center justify-start w-full mt-2 gap-2 ">
-                <Image src={userProfile.avatar} width={40} height={40} alt={"avatar"} className="rounded-full" />
+                <Image src={userProfile.avatar ? `/api/avatar?file=${userProfile.avatar}` : '/avatar.puserProfile.avatarng'} width={40} height={40} alt={"avatar"} className="rounded-full object-cover w-10 h-10" />
                 <div className="flex flex-col items-start justify-start text-wrap w-28">
                   <p className="text-xs leading-3 font-semibold truncate text-ellipsis w-full">{userProfile.name}</p>
                   <span className="text-[10px] text-gray-500">{userProfile.role}</span>
