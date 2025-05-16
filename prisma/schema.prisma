@@ -206,6 +206,7 @@ model ReregisterDetail {
   campusType         CampusType?
   lecturerId         String?
   lecturer           Lecturer?      @relation(fields: [lecturerId], references: [id])
+  paymentDescription String?
 
   // untuk memeriksa apakah student sudah mengisi data
   isStatusForm Boolean @default(false)

@@ -21,7 +21,7 @@ interface LecturerFormProps {
 const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) => {
   const { majors } = relatedData;
   const formRef = useRef<HTMLFormElement>(null);
-  const [preview, setPreview] = useState<string | null>(data?.photo ? data?.photo : null);
+  const [preview, setPreview] = useState<string | null>(data?.photo ? `/api/avatar?file=${data?.photo}` : null);
   const {
     register,
     handleSubmit,
@@ -45,7 +45,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
       const objectUrl = URL.createObjectURL(file)
       setPreview(objectUrl)
     } else {
-      setPreview(data?.photo ?? null)
+      setPreview(data?.photo ? `/api/avatar?file=${data?.photo}` : null)
     }
   };
 

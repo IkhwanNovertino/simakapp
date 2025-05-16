@@ -1151,26 +1151,6 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
     const currentReregisterYear = currentReregister?.period?.year;
     const currentReregisterSemesterType = currentReregister?.period?.semesterType === "GANJIL" ? 1 : 0;
     
-    // const previousSemesterType = currentReregister?.period?.semesterType === "GANJIL" ? "GENAP" : "GANJIL";
-    // const previousYear = currentReregister?.period?.semesterType === "GANJIL" ? currentReregisterYear : currentReregisterYear -1;
-
-    // const previousReregister = await prisma.reregister.findFirst({
-    //     where: {
-    //       period: {
-    //         year: previousYear,
-    //         semesterType: previousSemesterType,
-    //       }
-    //     },
-    //     include: {
-    //       period: true,
-    //       reregisterDetail: {
-    //         include: {
-    //           student: true,
-    //         },
-    //       },
-    //     }
-    // })
-    
     const students = await prisma.student.findMany({
       where: {
         studentStatus: {
@@ -1181,7 +1161,6 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
         reregisterDetail: true,
       }
     });
-    console.log(students.length);
     
     const dataReregisterDetails = students.map((student: any) => ({
       reregisterId: id,
@@ -1205,13 +1184,13 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
 // Apakah studentStatus di student model akan mengikuti semesterStatus di reregisterDetail model
 export const createReregisterDetail = async (state: stateType, data: FormData) => {
   try {
-    console.log(data);
     const dataRaw = {
       reregisterId: data.get("reregisterId")?.toString(),
       studentId: data.get("studentId")?.toString(),
       lecturerId: data.get("lecturerId")?.toString(),
       semesterStatus: data.get("semesterStatus")?.toString(),
       paymentStatus: data.get("paymentStatus")?.toString(),
+      paymentDescription: data.get("paymentDescription")?.toString(),
       campusType: data.get("campusType")?.toString(),
       nominal: parseInt(data.get("nominal") as string) || 0,
       year: data.get("year"),
@@ -1240,9 +1219,7 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
       paymentReceiptFile: fileUrl ?? '',
     });
     
-    
     if (!validation.success) {
-      console.log(validation.error);
       return { success: false, error: true }
     };
     
@@ -1257,24 +1234,25 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
         nominal: validation.data.nominal,
         paymentStatus: validation.data?.paymentStatus || "BELUM_LUNAS" as PaymentStatus,
         paymentReceiptFile: validation.data?.paymentReceiptFile,
+        paymentDescription: validation.data?.paymentDescription,
       },
     });
     
     return { success: true, error: false }
   } catch (err: any) {
-    console.log(err);
+    logger.error(err)
     return { success: false, error: true }
   }
 };
 export const updateReregisterDetail = async (state: stateType, data: FormData) => {
   try {
-    console.log(data);
     const dataRaw = {
       reregisterId: data.get("reregisterId")?.toString(),
       studentId: data.get("studentId")?.toString(),
       lecturerId: data.get("lecturerId")?.toString(),
       semesterStatus: data.get("semesterStatus")?.toString(),
       paymentStatus: data.get("paymentStatus")?.toString(),
+      paymentDescription: data.get("paymentDescription")?.toString(),
       campusType: data.get("campusType")?.toString(),
       nominal: parseInt(data.get("nominal") as string) || 0,
       year: data.get("year"),
@@ -1321,7 +1299,6 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
     
     
     if (!validation.success) {
-      console.log(validation.error);
       return { success: false, error: true }
     };
 
@@ -1348,40 +1325,21 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
           semester: parseInt(validation?.data?.semester),
           nominal: validation?.data.nominal,
           paymentStatus: validation?.data?.paymentStatus as PaymentStatus,
-          paymentReceiptFile: validation.data?.paymentReceiptFile,
+          paymentReceiptFile: validation?.data?.paymentReceiptFile,
+          paymentDescription: validation?.data?.paymentDescription,
         },
       })
     ])
     
-    // await prisma.reregisterDetail.update({
-    //   where: {
-    //     reregisterId_studentId: {
-    //       reregisterId: validation?.data.reregisterId,
-    //       studentId: validation?.data.studentId,
-    //     }
-    //   },
-    //   data: {
-    //     lecturerId: validation?.data.lecturerId,
-    //     campusType: validation?.data?.campusType || "BJB" as CampusType,
-    //     semesterStatus: validation?.data?.semesterStatus as SemesterStatus,
-    //     semester: parseInt(validation?.data?.semester),
-    //     nominal: validation?.data.nominal,
-    //     paymentStatus: validation?.data?.paymentStatus as PaymentStatus,
-    //     paymentReceiptFile: validation.data?.paymentReceiptFile,
-    //   },
-    // })
-    
     return { success: true, error: false }
   } catch (err: any) {
-    console.log(err);
-    
+    logger.error(err)
     return { success: false, error: true }
   }
 };
 export const deleteReregisterDetail = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    logger.info(id);
 
     const deleteData = await prisma.reregisterDetail.delete({
       where: {
@@ -1412,8 +1370,6 @@ export const deleteReregisterDetail = async (state: stateType, data: FormData) =
 
 export const createReregisterStudent = async (state: stateType, data: ReregistrationStudentInputs) => {
   try {
-    console.log(data);
-
     await prisma.$transaction([
       prisma.student.update({
         where: {
@@ -1421,7 +1377,7 @@ export const createReregisterStudent = async (state: stateType, data: Reregistra
         },
         data: {
           placeOfBirth: data?.placeOfBirth,
-          birthday: new Date(data?.birthday || Date.now()) ,
+          birthday: new Date(data?.birthday || Date.now()),
           domicile: data?.domicile,
           address: data?.address,
           hp: data?.hp,
@@ -1448,9 +1404,9 @@ export const createReregisterStudent = async (state: stateType, data: Reregistra
       })
     ])
     
-    return {success: true, error:false}
+    return { success: true, error: false }
   } catch (err: any) {
     logger.error(err)
-    return {success: false, error:true}
+    return { success: false, error: true }
   }
-}
+};

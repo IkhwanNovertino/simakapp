@@ -173,6 +173,7 @@ export const reregistrationDetailSchema = z.object({
   paymentReceiptFile: z.string().optional().or(z.literal("")),
   paymentStatus: z.string().default("BELUM_LUNAS"),
   semesterStatus: z.string().default("NONAKTIF"),
+  paymentDescription: z.string().optional(),
   placeOfBirth: z.string().optional(),
   birthday: z.string().optional(),
   domicile: z.string().optional(),

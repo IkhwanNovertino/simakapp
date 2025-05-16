@@ -50,7 +50,7 @@ const Navbar = async () => {
             <span className="text-[10px] text-gray-500 text-right">{userProfile.role}</span>
           </div>
           <div>
-            <Image src={userProfile.avatar ? `/api/avatar?file=${userProfile.avatar}` : '/avatar.png'} alt="profile-icon" width={36} height={36} className="rounded-full object-cover w-10 h-10" />
+            <Image src={userProfile.avatar !== '/avatar.png' ? `/api/avatar?file=${userProfile.avatar}` : '/avatar.png'} alt="profile-icon" width={36} height={36} className="rounded-full object-cover w-10 h-10" />
           </div>
         </div>
       </div>

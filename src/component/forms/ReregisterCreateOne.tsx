@@ -300,7 +300,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
             className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
             htmlFor="paymentReceiptFile"
           >
-            <span>Upload bukti pembayaran</span>
+            <span>Upload Bukti Pembayaran</span>
           </label>
           <input type="file" id="paymentReceiptFile" name="paymentReceiptFile"
             className="file:mr-4 file:rounded-full file:border-0 file:bg-violet-50 file:px-4 file:py-2 file:text-xs file:font-semibold file:text-violet-700 hover:file:bg-violet-100 dark:file:bg-violet-600 dark:file:text-violet-100 dark:hover:file:bg-violet-500"
@@ -331,6 +331,20 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           {errors.paymentStatus?.message && (
             <p className="text-xs text-red-400">
               {errors.paymentStatus.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-11/12">
+          <label className="text-xs text-gray-500">Keterangan Pembayaran Herregistrasi</label>
+          <textarea
+            {...register("paymentDescription")}
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+            placeholder="keterangan..."
+            defaultValue={data?.paymentDescription}
+          ></textarea>
+          {errors.paymentDescription?.message && (
+            <p className="text-xs text-red-400">
+              {errors.paymentDescription.message.toString()}
             </p>
           )}
         </div>

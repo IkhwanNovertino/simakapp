@@ -23,7 +23,7 @@ interface StudentFormProps {
 const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => {
   const { majors, lecturer } = relatedData;
   const formRef = useRef<HTMLFormElement>(null);
-  const [preview, setPreview] = useState<string | null>(data?.photo ? data?.photo : null);
+  const [preview, setPreview] = useState<string | null>(data?.photo ? `/api/avatar?file=${data?.photo}` : null);
   const {
     register,
     handleSubmit,
@@ -47,7 +47,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
       const objectUrl = URL.createObjectURL(file)
       setPreview(objectUrl)
     } else {
-      setPreview(data?.photo ?? null)
+      setPreview(data?.photo ? `/api/avatar?file=${data?.photo}` : null)
     }
   }
 
