@@ -63,13 +63,14 @@ model Session {
 }
 
 model Major {
-  id         Int        @id @default(autoincrement())
+  id         Int          @id @default(autoincrement())
   name       String?
-  numberCode Int?       @unique
-  stringCode String?    @unique
+  numberCode Int?         @unique
+  stringCode String?      @unique
   course     Course[]
   lecturer   Lecturer[]
   student    Student[]
+  Curriculum Curriculum[]
 
   @@map("sb25_majors")
 }
@@ -215,6 +216,18 @@ model ReregisterDetail {
 
   @@id([reregisterId, studentId])
   @@map("sb25_reregisterDetails")
+}
+
+model Curriculum {
+  id        String    @id @default(uuid())
+  name      String?
+  majorId   Int?
+  major     Major?    @relation(fields: [majorId], references: [id])
+  startDate DateTime?
+  endDate   DateTime?
+  isActive  Boolean?  @default(false)
+
+  @@map("sb25_curriculums")
 }
 
 enum SemesterType {
