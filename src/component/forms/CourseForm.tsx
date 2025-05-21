@@ -9,6 +9,7 @@ import { createCourse, updateCourse } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import { courseType } from "@/lib/setting";
 
 interface CourseFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -105,22 +106,16 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             <option value="" className="text-sm py-0.5">
               -- Pilih kategori mata kuliah
             </option>
-            <option
-              value={"Wajib"}
-              key={"wajib"}
-              className="text-sm py-0.5"
+            {courseType.map((item: string) => (
+              <option
+                value={item}
+                key={item}
+                className="text-sm py-0.5"
+              >
+                {item}
+              </option>
+            ))}
 
-            >
-              Wajib
-            </option>
-            <option
-              value={"Pilihan"}
-              key={"pilihan"}
-              className="text-sm py-0.5"
-
-            >
-              Pilihan
-            </option>
           </select>
           {errors.courseType?.message && (
             <p className="text-xs text-red-400">

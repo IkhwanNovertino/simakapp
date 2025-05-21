@@ -26,4 +26,5 @@ export const degree = ["S1", "S2", "S3"];
 export const gender = ["PRIA", "WANITA"];
 export const religion = ["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"];
 export const status = ["NONAKTIF", "AKTIF", "CUTI", "DO", "MENGUNDURKAN_DIRI", "LULUS"];
+export const courseType = ["WAJIB", "PILIHAN"];
 

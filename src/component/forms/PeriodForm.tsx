@@ -2,12 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { PeriodInputs, periodSchema } from "@/lib/formValidationSchema";
 import { createPeriod, updatePeriod } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import Select from "react-select";
 
 interface PeriodFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -21,12 +22,12 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
   // untuk membuat +10thn dan -10thn di dropdown select
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 21 }, (_, i) => `${currentYear - 10 + i}/${currentYear - 10 + i + 1}`);
-  console.log(years);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<PeriodInputs>({
     resolver: zodResolver(periodSchema)
   })
@@ -64,7 +65,7 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
         )}
         <div className="flex flex-col gap-2 w-full md:w-1/2">
           <label className="text-xs text-gray-500">Tahun Akademik</label>
-          <select
+          {/* <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("year")}
             defaultValue={data?.name.split(" ")[1]}
@@ -84,7 +85,34 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
               </option>
             ))}
 
-          </select>
+          </select> */}
+          <Controller
+            name="year"
+            control={control}
+            defaultValue={data?.name.split(" ")[1]}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={years.map((year: string) => ({
+                  value: year,
+                  label: year,
+                }))}
+                isClearable
+                placeholder="-- Pilih tahun akademik --"
+                classNamePrefix="react-select"
+                className="text-sm rounded-md"
+                onChange={(selected: any) => field.onChange(selected ? selected.value : "")}
+                value={
+                  years
+                    .map((year: any) => ({
+                      value: year,
+                      label: year,
+                    }))
+                    .find((option: any) => option.value === field.value) || null
+                }
+              />
+            )}
+          />
           {errors.year?.message && (
             <p className="text-xs text-red-400">
               {errors.year.message.toString()}

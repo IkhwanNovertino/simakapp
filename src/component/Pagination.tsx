@@ -34,7 +34,7 @@ const Pagination = ({ page, count }: { page: number, count: number }) => {
   };
 
   return (
-    <div className="p-4 flex flex-wrap gap-2 items-center justify-center sm:justify-between text-gray-500">
+    <div className="p-4 flex flex-col md:flex-row gap-2 items-center justify-center sm:justify-between text-gray-500">
       <button
         className="py-2 px-4 rounded-md bg-slate-200 text-xs font-semibold hover:cursor-pointer hover:not-disabled:bg-primary disabled:opacity-50  disabled:cursor-not-allowed"
         onClick={() => { changePage(page - 1) }}

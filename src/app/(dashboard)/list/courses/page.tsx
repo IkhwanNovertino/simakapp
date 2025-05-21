@@ -8,6 +8,7 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Course, Major, Prisma } from "@prisma/client";
+import { create } from "domain";
 import { redirect } from "next/navigation";
 
 type CourseDataType = Course & { major: Major };
@@ -56,9 +57,12 @@ const CourseListPage = async (
           select: {
             id: true,
             name: true
-          }
-        }
+          },
+        },
       },
+      orderBy: [
+        { createdAt: "desc" },
+      ],
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
@@ -67,6 +71,9 @@ const CourseListPage = async (
       select: { id: true, name: true }
     })
   ]);
+
+  console.log(data);
+
 
   const columns = [
     {

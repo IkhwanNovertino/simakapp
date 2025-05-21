@@ -308,6 +308,17 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <label className="text-xs text-gray-500">Unduh Bukti pembayaran</label>
+          <a
+            href={`/api/payment?file=${data.paymentReceiptFile}&download=true`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-blue-500 text-blue-50 w-fit p-2 px-3 inline rounded-full text-center text-xs font-semibold"
+          >
+            Unduh File
+          </a>
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Status Pembayaran</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
@@ -334,7 +345,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-11/12">
+        <div className="flex flex-col gap-2 w-full md:w-4/6">
           <label className="text-xs text-gray-500">Keterangan Pembayaran Herregistrasi</label>
           <textarea
             {...register("paymentDescription")}

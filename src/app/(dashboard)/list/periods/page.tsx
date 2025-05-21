@@ -38,8 +38,8 @@ const PeriodListPage = async (
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
       orderBy: [
-        { year: "asc" },
-        { semesterType: "desc" }
+        { year: "desc" },
+        { semesterType: "asc" }
       ]
     }),
     prisma.period.count({ where: query }),

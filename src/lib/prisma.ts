@@ -26,7 +26,7 @@ prismaClientSingleton.$on('warn', (e: any) => {
 })
 prismaClientSingleton.$on('error', (e: any) => {
   console.error(e);
-  logger.error(e);
+  // logger.error(e);
 })
 
 export const prisma = prismaClientSingleton;

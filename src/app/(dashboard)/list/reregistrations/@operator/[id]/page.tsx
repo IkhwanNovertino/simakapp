@@ -4,6 +4,7 @@ import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@prisma/client";
@@ -18,6 +19,12 @@ const ReregisterSinglePage = async (
     params: Promise<{ id: string }>
   }
 ) => {
+
+  const canCreateData = await canRoleCreateData("reregistrations");
+  const canUpdateData = await canRoleUpdateData("reregistrations");
+  const canDeleteData = await canRoleDeleteData("reregistrations");
+  const canViewData = await canRoleViewData("reregistrations");
+
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
   const { id } = await params;
@@ -29,7 +36,8 @@ const ReregisterSinglePage = async (
         switch (key) {
           case "search":
             query.OR = [
-              { reregisterId: id },
+              { student: { name: { contains: value, mode: "insensitive" } } },
+              { student: { nim: { contains: value, mode: "insensitive" } } },
             ]
             break;
           default:
@@ -52,10 +60,8 @@ const ReregisterSinglePage = async (
   const [data, count] = await prisma.$transaction([
     prisma.reregisterDetail.findMany({
       where: {
-        OR: [
-          { reregisterId: id, },
-          query,
-        ],
+        reregisterId: id,
+        ...query,
       },
       include: {
         student: {
@@ -81,10 +87,8 @@ const ReregisterSinglePage = async (
     }),
     prisma.reregisterDetail.count({
       where: {
-        OR: [
-          { reregisterId: id, },
-          query,
-        ],
+        reregisterId: id,
+        ...query,
       },
     }),
   ]);
@@ -173,14 +177,14 @@ const ReregisterSinglePage = async (
             <div className="md:hidden relative flex items-center justify-end gap-2">
               <ModalAction>
                 <div className="flex items-center gap-3">
-                  <FormContainer table="reregistrationDetail" type="update" data={item} />
-                  <FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />
+                  {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}
+                  {canDeleteData && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
                 </div>
               </ModalAction>
             </div>
             <div className="hidden md:flex items-center gap-2">
-              <FormContainer table="reregistrationDetail" type="update" data={item} />
-              <FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />
+              {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}
+              {canDeleteData && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
             </div>
           </div>
         </td>
@@ -195,10 +199,12 @@ const ReregisterSinglePage = async (
         <h1 className="hidden md:block text-lg font-semibold"> {dataCreate?.name}</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            <FormContainer table="reregistrationCreateAll" type="createMany" data={dataCreate} />
-            <FormContainer table="reregistrationDetail" type="create" data={dataCreate} />
-          </div>
+          {canCreateData && (
+            <div className="flex items-center gap-4 self-end">
+              <FormContainer table="reregistrationCreateAll" type="createMany" data={dataCreate} />
+              <FormContainer table="reregistrationDetail" type="create" data={dataCreate} />
+            </div>
+          )}
         </div>
       </div>
       {/* BOTTOM */}

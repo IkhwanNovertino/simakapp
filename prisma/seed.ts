@@ -1,3 +1,4 @@
+import { role } from "@/lib/data";
 import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -53,7 +54,7 @@ async function main() {
     })
   }
 
-  const permissions = 76;
+  const permissions = await prisma.permission.count();
 
   // rolePermission
   for (let i = 1; i <= permissions; i++) {
@@ -76,6 +77,20 @@ async function main() {
           email: "admin1@stmik.com",
           password: hashPassword,
           roleId: 1,
+          isStatus: true,
+        }
+      }
+    }
+  })
+  await prisma.operator.create({
+    data: {
+      name: "finance1",
+      department: "Keuangan",
+      user: {
+        create: {
+          email: "finance1@stmik.com",
+          password: bcrypt.hashSync("finance", 10),
+          roleId: 4,
           isStatus: true,
         }
       }
@@ -129,7 +144,7 @@ async function main() {
           connect: {
             id: course.prodi === "Sistem Informasi" ? 1 : 2,
           }
-        }
+        },
       }
 
     })

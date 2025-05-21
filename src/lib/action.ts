@@ -286,46 +286,104 @@ export const deleteRoom = async (state: stateType, data: FormData) => {
 
 export const createCourse = async (state: stateType, data: CourseInputs) => {
   try {
-    console.log(data);
-    
-    await prisma.course.create({
-      data: {
+    let dataPayload;
+    if (data?.predecessorId === "") {
+      dataPayload = {
         name: data.name,
         sks: data.sks,
         code: data.code,
-        majorId: data.majorId,
         isPKL: data.isPKL,
         isSkripsi: data.isSkripsi,
-        predecessorId: data?.predecessorId || null,
+        courseType: data?.courseType || null,
+        major: {
+          connect: {
+            id: data?.majorId
+          },
+        }
       }
+    } else {
+      dataPayload = {
+        name: data.name,
+        sks: data.sks,
+        code: data.code,
+        isPKL: data.isPKL,
+        isSkripsi: data.isSkripsi,
+        courseType: data?.courseType || null,
+        predecessor: {
+          connect: {
+            id: data?.predecessorId,
+          },
+        },
+        major: {
+          connect: {
+            id: data?.majorId
+          },
+        }
+      }
+    }
+    
+    await prisma.course.create({
+      data: dataPayload,
     });
     return { success: true, error: false };
   } catch (err: any) {
     // logger.error(err)
-    console.error(err);
+    // console.error(err);
+    console.log(data);
+    
     
     return {success: false, error:true}
   }
 }
 export const updateCourse = async (state: stateType, data: CourseInputs) => {
   try {
+    let dataPayload;
+    if (data?.predecessorId === "") {
+      dataPayload = {
+        name: data.name,
+        sks: data.sks,
+        code: data.code,
+        isPKL: data.isPKL,
+        isSkripsi: data.isSkripsi,
+        courseType: data?.courseType || null,
+        major: {
+          connect: {
+            id: data?.majorId
+          },
+        }
+      }
+    } else {
+      dataPayload = {
+        name: data.name,
+        sks: data.sks,
+        code: data.code,
+        isPKL: data.isPKL,
+        isSkripsi: data.isSkripsi,
+        courseType: data?.courseType || null,
+        predecessor: {
+          connect: {
+            id: data?.predecessorId,
+          },
+        },
+        major: {
+          connect: {
+            id: data?.majorId
+          },
+        }
+      }
+    }
     await prisma.course.update({
       where: {
         id: data.id
       },
-      data: {
-        name: data.name,
-        sks: data.sks,
-        code: data.code,
-        majorId: data.majorId,
-        isPKL: data.isPKL,
-        isSkripsi: data.isSkripsi,
-        predecessorId: data.predecessorId,
-      }
+      data: dataPayload
     });
     return { success: true, error: false };
   } catch (err: any) {
-    logger.error(err)
+    // logger.error(err)
+    console.error(err);
+    console.log(data);
+    
     return {success: false, error:true}
   }
 }

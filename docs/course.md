@@ -47,6 +47,10 @@
 - isSkripsi
   - boolean?
   - default false
+- createdAt
+  - Date?
+  - default Date.now()
+  - orderBy desc
 - assesmentType:
   - REGULAR
   - Komponen nilai:

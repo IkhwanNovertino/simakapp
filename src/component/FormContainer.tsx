@@ -91,6 +91,14 @@ const FormContainer = async (
       case "reregistration":
         const periodReregister = await prisma.period.findMany({
           select: { id: true, name: true },
+          orderBy: [
+            {
+              year: "desc"
+            },
+            {
+              semesterType: "asc"
+            }
+          ]
         });
         relatedData = { period: periodReregister };
         break;

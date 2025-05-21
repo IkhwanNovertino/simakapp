@@ -3,6 +3,7 @@ import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
@@ -21,6 +22,11 @@ const ReregisterOperatorPage = async (
   if (!getSessionFunc || getSessionFunc.roleType !== "OPERATOR") {
     redirect("/");
   }
+
+  const canCreateData = await canRoleCreateData("reregistrations");
+  const canUpdateData = await canRoleUpdateData("reregistrations");
+  const canDeleteData = await canRoleDeleteData("reregistrations");
+  const canViewData = await canRoleViewData("reregistrations");
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
@@ -53,12 +59,12 @@ const ReregisterOperatorPage = async (
       orderBy: [
         {
           period: {
-            year: "asc",
+            year: "desc",
           }
         },
         {
           period: {
-            semesterType: "desc"
+            semesterType: "asc"
           }
         }
       ]
@@ -119,8 +125,8 @@ const ReregisterOperatorPage = async (
                     <Image src="/icon/view.svg" alt="" width={20} height={20} />
                   </button>
                 </Link>
-                <FormContainer table="reregistration" type="update" data={item} />
-                <FormContainer table="reregistration" type="delete" id={item.id} />
+                {canUpdateData && (<FormContainer table="reregistration" type="update" data={item} />)}
+                {canDeleteData && (<FormContainer table="reregistration" type="delete" id={item.id} />)}
               </div>
             </ModalAction>
           </div>
@@ -130,8 +136,8 @@ const ReregisterOperatorPage = async (
                 <Image src="/icon/view.svg" alt="" width={20} height={20} />
               </button>
             </Link>
-            <FormContainer table="reregistration" type="update" data={item} />
-            <FormContainer table="reregistration" type="delete" id={item.id} />
+            {canUpdateData && (<FormContainer table="reregistration" type="update" data={item} />)}
+            {canDeleteData && (<FormContainer table="reregistration" type="delete" id={item.id} />)}
           </div>
         </div>
       </td>
@@ -145,7 +151,7 @@ const ReregisterOperatorPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer table="reregistration" type="create" />
+            {canCreateData && (<FormContainer table="reregistration" type="create" />)}
           </div>
         </div>
       </div>

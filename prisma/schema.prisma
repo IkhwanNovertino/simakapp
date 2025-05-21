@@ -75,14 +75,16 @@ model Major {
 }
 
 model Course {
-  id        String  @id @default(uuid())
-  name      String?
-  code      String?
-  sks       Int?
-  majorId   Int?
-  isPKL     Boolean @default(false)
-  isSkripsi Boolean @default(false)
-  major     Major?  @relation(fields: [majorId], references: [id])
+  id         String   @id @default(uuid())
+  name       String?
+  code       String?
+  sks        Int?
+  majorId    Int?
+  isPKL      Boolean  @default(false)
+  isSkripsi  Boolean  @default(false)
+  major      Major?   @relation(fields: [majorId], references: [id])
+  courseType String?
+  createdAt  DateTime @default(now())
 
   predecessorId String? @unique
   predecessor   Course? @relation("CourseHistory", fields: [predecessorId], references: [id])
