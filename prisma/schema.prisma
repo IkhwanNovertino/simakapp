@@ -87,9 +87,10 @@ model Course {
   courseType String?
   createdAt  DateTime @default(now())
 
-  predecessorId String? @unique
-  predecessor   Course? @relation("CourseHistory", fields: [predecessorId], references: [id])
-  successor     Course? @relation("CourseHistory")
+  predecessorId    String?            @unique
+  predecessor      Course?            @relation("CourseHistory", fields: [predecessorId], references: [id])
+  successor        Course?            @relation("CourseHistory")
+  CurriculumDetail CurriculumDetail[]
 
   @@map("sb25_courses")
 }
@@ -219,15 +220,27 @@ model ReregisterDetail {
 }
 
 model Curriculum {
-  id        String    @id @default(uuid())
-  name      String?
-  majorId   Int?
-  major     Major?    @relation(fields: [majorId], references: [id])
-  startDate DateTime?
-  endDate   DateTime?
-  isActive  Boolean?  @default(false)
+  id               String            @id @default(uuid())
+  name             String?
+  majorId          Int?
+  major            Major?            @relation(fields: [majorId], references: [id])
+  startDate        DateTime?
+  endDate          DateTime?
+  isActive         Boolean?          @default(false)
+  CurriculumDetail CurriculumDetail?
 
   @@map("sb25_curriculums")
+}
+
+model CurriculumDetail {
+  id           String     @id @default(uuid())
+  curriculumId String     @unique
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
+  courseId     String?
+  course       Course?    @relation(fields: [courseId], references: [id])
+  semester     Int?
+
+  @@map("sb25_curriculumDetails")
 }
 
 enum SemesterType {
