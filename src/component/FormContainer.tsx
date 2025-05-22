@@ -146,6 +146,12 @@ const FormContainer = async (
         });
         relatedData = { students: student, lecturers: lecturers };
         break;
+      case "curriculum":
+        const majorCurriculum = await prisma.major.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { majors: majorCurriculum };
+        break;
       default:
         break;
     }

@@ -7,14 +7,18 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Course, Major, Prisma } from "@prisma/client";
-import { create } from "domain";
+import { Course, Curriculum, Major, Prisma } from "@prisma/client";
+import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
-type CourseDataType = Course & { major: Major };
+type CurriculumDataType = Curriculum & { major: Major };
 
-const CourseListPage = async (
-  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
+const CurriculumSinglePage = async (
+  { searchParams, params }: {
+    searchParams: Promise<{ [key: string]: string | undefined }>,
+    params: Promise<{ id: string }>
+  }
 ) => {
   const canCreateData = await canRoleCreateData("courses");
   const canUpdateData = await canRoleUpdateData("courses");
@@ -27,17 +31,15 @@ const CourseListPage = async (
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
+  const { id } = await params;
 
-  const query: Prisma.CourseWhereInput = {}
+  const query: Prisma.CurriculumWhereInput = {}
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
         switch (key) {
           case "search":
-            query.OR = [
-              { code: { contains: value, mode: "insensitive" } },
-              { name: { contains: value, mode: "insensitive" } },
-            ]
+            query.name = { contains: value, mode: "insensitive" };
             break;
           case "filter":
             query.majorId = parseInt(value)
@@ -49,8 +51,14 @@ const CourseListPage = async (
     }
   };
 
+  // const data: any[] = [];
+  // const count = 0;
+  const dataCurriculum = await prisma.curriculum.findUnique({
+    where: { id: id },
+  });
+
   const [data, count, dataFilter] = await prisma.$transaction([
-    prisma.course.findMany({
+    prisma.curriculum.findMany({
       where: query,
       include: {
         major: {
@@ -61,37 +69,38 @@ const CourseListPage = async (
         },
       },
       orderBy: [
-        { createdAt: "desc" },
+        { startDate: "desc" },
       ],
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
-    prisma.course.count({ where: query }),
+    prisma.curriculum.count({ where: query }),
     prisma.major.findMany({
       select: { id: true, name: true }
     })
   ]);
 
+
   const columns = [
     {
-      header: "Mata Kuliah",
-      accessor: "mata kuliah",
+      header: "Info Kurikulum",
+      accessor: "info kurikulum",
       className: "px-4",
-    },
-    {
-      header: "Kode",
-      accessor: "kode",
-      className: "hidden md:table-cell",
-    },
-    {
-      header: "SKS",
-      accessor: "sks",
-      className: "hidden lg:table-cell",
     },
     {
       header: "Program Studi",
       accessor: "program studi",
-      className: "hidden lg:table-cell",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Tanggal Mulai",
+      accessor: "tanggal mulai",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Tanggal Selesai",
+      accessor: "tanggal selesai",
+      className: "hidden md:table-cell",
     },
     {
       header: "Actions",
@@ -100,28 +109,45 @@ const CourseListPage = async (
     },
   ];
 
-  const renderRow = (item: CourseDataType) => (
+  const renderRow = (item: CurriculumDataType) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
-      <td className="flex items-center p-4 sm:w-20 md:w-60">{item.name}</td>
-      <td className="hidden md:table-cell">{item.code}</td>
-      <td className="hidden lg:table-cell">{item.sks}</td>
-      <td className="hidden lg:table-cell lg:capitalize">{item.major?.name}</td>
+      <td className="flex items-center p-4 sm:w-20 md:w-60">
+        <div className="flex flex-col">
+          <h3 className="font-medium">{item.name}</h3>
+          <p className={`rounded-lg text-[10px] font-bold self-start p-1 ${item.isActive ? "text-green-500 bg-green-100" : "text-rose-500 bg-rose-100"}`}>
+            {item.isActive ? "AKTIF" : "NONAKTIF"}
+          </p>
+        </div>
+      </td>
+      <td className="hidden md:table-cell capitalize">{item.major?.name}</td>
+      <td className="hidden md:table-cell">{new Intl.DateTimeFormat("id-ID").format(item.startDate || Date.now())}</td>
+      <td className="hidden md:table-cell">{new Intl.DateTimeFormat("id-ID").format(item.endDate || Date.now())}</td>
       <td>
         <div className="flex items-center gap-2">
           <div className="md:hidden flex items-center justify-end gap-2">
             <ModalAction>
               <div className="flex items-center gap-3">
-                {canUpdateData && <FormContainer table="course" type="update" data={item} />}
-                {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
+                <Link href={`/list/curriculums/${item.id}`}>
+                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                  </button>
+                </Link>
+                {canUpdateData && <FormContainer table="curriculum" type="update" data={item} />}
+                {canDeleteData && <FormContainer table="curriculum" type="delete" id={item.id} />}
               </div>
             </ModalAction>
           </div>
           <div className="hidden md:flex items-center gap-2">
-            {canUpdateData && <FormContainer table="course" type="update" data={item} />}
-            {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
+            <Link href={`/list/curriculums/${item.id}`}>
+              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                <Image src="/icon/view.svg" alt="" width={20} height={20} />
+              </button>
+            </Link>
+            {canUpdateData && <FormContainer table="curriculum" type="update" data={item} />}
+            {canDeleteData && <FormContainer table="curriculum" type="delete" id={item.id} />}
           </div>
         </div>
       </td>
@@ -132,12 +158,12 @@ const CourseListPage = async (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">Data Mata Kuliah</h1>
+        <h1 className="hidden md:block text-lg font-semibold">Daftar Mata kuliah {dataCurriculum.name} </h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
             {canCreateData && (
-              <FormContainer table="course" type="create" />
+              <FormContainer table="curriculum" type="create" />
             )}
           </div>
         </div>
@@ -152,4 +178,4 @@ const CourseListPage = async (
   )
 }
 
-export default CourseListPage;
+export default CurriculumSinglePage;

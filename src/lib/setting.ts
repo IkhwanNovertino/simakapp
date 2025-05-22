@@ -10,6 +10,7 @@ export const resourceData = [
   { pathname: "students", name: "student", nama: "mahasiswa" },
   { pathname: "majors", name: "major", nama: "program studi" },
   { pathname: "reregistrations", name: "reregistration", nama: "herregistrasi" },
+  { pathname: "curriculums", name: "curruculum", nama: "kurikulum" },
   { pathname: "courses", name: "course", nama: "mata kuliah" },
   { pathname: "rooms", name: "room", nama: "ruangan" },
   { pathname: "krs", name: "krs", nama: "krs" },

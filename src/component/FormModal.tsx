@@ -4,7 +4,7 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteCourse, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
+import { deleteCourse, deleteCurriculum, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
@@ -24,6 +24,7 @@ export interface FormModalProps {
   | "reregistrationCreateAll"
   | "reregistrationDetail"
   | "reregistrationStudent"
+  | "curriculum";
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
   data?: any;
   id?: any;
@@ -75,6 +76,9 @@ const ReregistrationDetailForm = dynamic(() => import("./forms/ReregisterCreateO
   loading: () => <h1>Loading...</h1>,
 });
 const ReregistrationStudentForm = dynamic(() => import("./forms/ReregisterStudent"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const CurriculumForm = dynamic(() => import("./forms/CurriculumForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -198,6 +202,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  curriculum: (setOpen, type, data, relatedData) =>
+    <CurriculumForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -217,6 +228,7 @@ const deleteActionMap = {
   reregistrationCreateAll: deleteReregistration,
   reregistrationDetail: deleteReregisterDetail,
   reregistrationStudent: deleteReregisterDetail,
+  curriculum: deleteCurriculum,
 };
 
 const namaTabelMap = {
@@ -236,6 +248,7 @@ const namaTabelMap = {
   reregistrationCreateAll: "herregistrasi",
   reregistrationDetail: "herregistrasi mahasiswa",
   reregistrationStudent: "herregistrasi mahasiswa",
+  curriculum: "kurikulum",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {

@@ -1,3 +1,4 @@
+import { start } from "repl";
 import { z } from "zod";
 
 export const permissionSchema = z.object({
@@ -202,7 +203,7 @@ export const reregistrationStudentSchema = z.object({
   lecturerId: z.string().min(1, {message: "Pilih perwalian akademik"}),
   campusType: z.string().default("BJB"),
   placeOfBirth: z.string().min(1, {message: "Tempat lahir harus diisi"}),
-  birthday: z.string().min(1, {message: "Tempat lahir harus diisi"}),
+  birthday: z.string().min(1, {message: "Tanggal lahir harus diisi"}),
   domicile: z.string().min(1, {message: "Alamat asal/domisili harus diisi"}),
   address: z.string().min(1, {message: "Alamat sekarang harus diisi"}),
   hp: z.string().min(1, {message: "No. Telp/HP harus diisi"}),
@@ -217,3 +218,14 @@ export const reregistrationStudentSchema = z.object({
 })
 
 export type ReregistrationStudentInputs = z.infer<typeof reregistrationStudentSchema>;
+
+export const curriculumSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, { message: "nama kurikulum harus diisi" }),
+  majorId: z.coerce.number().min(1, { message: "program studi harus diisi" }),
+  startDate: z.string().min(1, { message: "tanggal mulai harus diisi" }),
+  endDate: z.string().min(1, { message: "tanggal selesai harus diisi" }),
+  isActive: z.boolean().default(false),
+})
+
+export type CurriculumInputs = z.infer<typeof curriculumSchema>;

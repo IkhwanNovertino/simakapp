@@ -18,7 +18,7 @@ const menuItems = [
     ],
   },
   {
-    title: "HERREGISTRASI",
+    title: "AKADEMIK",
     items: [
       {
         icon: "/icon/period.svg",
@@ -29,6 +29,11 @@ const menuItems = [
         icon: "/icon/reregister.svg",
         label: "Her Registrasi",
         href: "/list/reregistrations",
+      },
+      {
+        icon: "/icon/curriculum.svg",
+        label: "Kurikulum",
+        href: "/list/curriculums",
       },
     ]
   },

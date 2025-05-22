@@ -2,7 +2,7 @@
 
 import path from "path";
 import {
-  CourseInputs, lecturerSchema, MajorInputs, OperatorInputs,
+  CourseInputs, CurriculumInputs, lecturerSchema, MajorInputs, OperatorInputs,
   PeriodInputs, PermissionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, studentSchema, UserInputs
@@ -1461,6 +1461,70 @@ export const createReregisterStudent = async (state: stateType, data: Reregistra
         }
       })
     ])
+    
+    return { success: true, error: false }
+  } catch (err: any) {
+    logger.error(err)
+    return { success: false, error: true }
+  }
+};
+
+export const createCurriculum = async (state: stateType, data: CurriculumInputs) => {
+  try {
+    console.log(data);
+
+    // if ()
+
+    // const checkCurriculumActive
+
+    await prisma.curriculum.create({
+      data: {
+        name: data?.name,
+        majorId: data?.majorId,
+        startDate: new Date(data?.startDate || Date.now()),
+        endDate: new Date(data?.endDate || Date.now()),
+        isActive: data?.isActive,
+      }
+    });
+    
+    
+    return { success: true, error: false }
+  } catch (err: any) {
+    logger.error(err)
+    return { success: false, error: true }
+  }
+};
+export const updateCurriculum = async (state: stateType, data: CurriculumInputs) => {
+  try {
+    console.log(data);
+    await prisma.curriculum.update({
+      where: {
+        id: data?.id
+      },
+      data: {
+        name: data?.name,
+        majorId: data?.majorId,
+        startDate: new Date(data?.startDate || Date.now()),
+        endDate: new Date(data?.endDate || Date.now()),
+        isActive: data?.isActive,
+      }
+    });
+    
+    return { success: true, error: false }
+  } catch (err: any) {
+    logger.error(err)
+    return { success: false, error: true }
+  }
+};
+export const deleteCurriculum = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+
+    await prisma.curriculum.delete({
+      where: {
+        id: id
+      }
+    });
     
     return { success: true, error: false }
   } catch (err: any) {

@@ -21,7 +21,7 @@
   - Int?
   - Required
   - Otomatis
-  - --pertama kali terdaftar bernilai semester 1
+  - -- pertama kali terdaftar bernilai semester 1
   - -- rumus menemtukan semester otomatis berdasarkan tahun register dan tahun periode dan semester periode
 - paymentReceiptFile
   - String?
