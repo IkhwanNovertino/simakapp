@@ -2,7 +2,7 @@
 
 import path from "path";
 import {
-  CourseInputs, CurriculumInputs, lecturerSchema, MajorInputs, OperatorInputs,
+  CourseInputs, CurriculumDetailInputs, CurriculumInputs, lecturerSchema, MajorInputs, OperatorInputs,
   PeriodInputs, PermissionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, studentSchema, UserInputs
@@ -13,6 +13,7 @@ import bcrypt from "bcryptjs";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
 import logger from "./logger";
+import { connect } from "http2";
 
 type stateType = {
   success: boolean;
@@ -1526,6 +1527,41 @@ export const deleteCurriculum = async (state: stateType, data: FormData) => {
       }
     });
     
+    return { success: true, error: false }
+  } catch (err: any) {
+    logger.error(err)
+    return { success: false, error: true }
+  }
+};
+
+export const createCurriculumDetail = async (state: stateType, data: CurriculumDetailInputs) => {
+  try {
+    console.log(data);
+    for (const itemCourse of data.courseId) {
+      await prisma.curriculumDetail.create({
+        data: {
+          curriculumId: data?.curriculumId,
+          courseId: itemCourse,
+          semester: data?.semester,
+        }
+      });
+    }
+    return { success: true, error: false }
+  } catch (err: any) {
+    logger.error(err)
+    return { success: false, error: true }
+  }
+};
+export const deleteCurriculumDetail = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    
+    await prisma.curriculumDetail.delete({
+      where: {
+        id: id
+      }
+    });
+
     return { success: true, error: false }
   } catch (err: any) {
     logger.error(err)

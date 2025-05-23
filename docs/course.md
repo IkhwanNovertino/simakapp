@@ -51,7 +51,11 @@
   - Date?
   - default Date.now()
   - orderBy desc
-- assesmentType:
+- assesmentId
+  - String
+  - FK
+  -required
+  <!-- - assesmentType:
   - REGULAR
   - Komponen nilai:
     - Presensi: 10%
@@ -65,33 +69,4 @@
     - Tugas Mandiri: 35%
     - Tugas Kelompok: 15%
     - UTS: 20%
-    - UAS: 20%
-
-<!-- id = 123
-name = machine learing
--code = SB-ITI-010
-prevId = null
-
-id = 1234
-name = data science
-code = SB-ITI-102
-prevId = 123 -->
-
-<!--
-Contoh table courseCompetence
-- id Int autoIncrement
-- name String?
-
-const data = prisma.krs.findMany({});
-const courseTypePilihan = data.courseType;
-== id = 1
-
-SC
-prisma.course.findMany({
-  where: {
-  OR: [
-  {courseType: {1}}
-  ]
-  }
-})
- -->
+    - UAS: 20% -->

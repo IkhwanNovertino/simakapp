@@ -4,7 +4,7 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteCourse, deleteCurriculum, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
+import { deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
@@ -24,7 +24,8 @@ export interface FormModalProps {
   | "reregistrationCreateAll"
   | "reregistrationDetail"
   | "reregistrationStudent"
-  | "curriculum";
+  | "curriculum"
+  | "curriculumDetail"
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
   data?: any;
   id?: any;
@@ -79,6 +80,9 @@ const ReregistrationStudentForm = dynamic(() => import("./forms/ReregisterStuden
   loading: () => <h1>Loading...</h1>,
 });
 const CurriculumForm = dynamic(() => import("./forms/CurriculumForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const CurriculumDetailForm = dynamic(() => import("./forms/CurriculumDetailForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -209,6 +213,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  curriculumDetail: (setOpen, type, data, relatedData) =>
+    <CurriculumDetailForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -229,6 +240,7 @@ const deleteActionMap = {
   reregistrationDetail: deleteReregisterDetail,
   reregistrationStudent: deleteReregisterDetail,
   curriculum: deleteCurriculum,
+  curriculumDetail: deleteCurriculumDetail,
 };
 
 const namaTabelMap = {
@@ -249,6 +261,7 @@ const namaTabelMap = {
   reregistrationDetail: "herregistrasi mahasiswa",
   reregistrationStudent: "herregistrasi mahasiswa",
   curriculum: "kurikulum",
+  curriculumDetail: "",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {

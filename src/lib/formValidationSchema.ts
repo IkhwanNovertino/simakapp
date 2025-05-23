@@ -229,3 +229,13 @@ export const curriculumSchema = z.object({
 })
 
 export type CurriculumInputs = z.infer<typeof curriculumSchema>;
+
+export const curriculumDetailSchema = z.object({
+  id: z.string().optional(),
+  curriculumId: z.string().min(1, { message: "Id Kurikulum harus ada" }),
+  courseId: z.array(z.string()).min(1, { message: "pilih mata kuliah" }),
+  // courseId: z.string().min(1, { message: "pilih mata kuliah" }),
+  semester: z.coerce.number().min(1, { message: "semester harus diisi" }),
+})
+
+export type CurriculumDetailInputs = z.infer<typeof curriculumDetailSchema>;

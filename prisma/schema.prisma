@@ -220,21 +220,21 @@ model ReregisterDetail {
 }
 
 model Curriculum {
-  id               String            @id @default(uuid())
+  id               String             @id @default(uuid())
   name             String?
   majorId          Int?
-  major            Major?            @relation(fields: [majorId], references: [id])
+  major            Major?             @relation(fields: [majorId], references: [id])
   startDate        DateTime?
   endDate          DateTime?
-  isActive         Boolean?          @default(false)
-  CurriculumDetail CurriculumDetail?
+  isActive         Boolean?           @default(false)
+  CurriculumDetail CurriculumDetail[]
 
   @@map("sb25_curriculums")
 }
 
 model CurriculumDetail {
   id           String     @id @default(uuid())
-  curriculumId String     @unique
+  curriculumId String
   curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
   courseId     String?
   course       Course?    @relation(fields: [courseId], references: [id])

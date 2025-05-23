@@ -152,6 +152,13 @@ const FormContainer = async (
         });
         relatedData = { majors: majorCurriculum };
         break;
+      case "curriculumDetail":
+        const semesterInt = Array.from({ length: 8 }, (_, i) => i + 1);
+        const courseCurriculumDetail = await prisma.course.findMany({
+          select: { id: true, name: true, code: true, majorId: true },
+        });
+        relatedData = { semesterInt: semesterInt, courses: courseCurriculumDetail };
+        break;
       default:
         break;
     }

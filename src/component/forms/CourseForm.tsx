@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Select from "react-select";
 import { courseType } from "@/lib/setting";
+import InputSelect from "../InputSelect";
 
 interface CourseFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -180,25 +181,6 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
               />
             )}
           />
-          {/* <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("predecessorId")}
-            defaultValue={data?.predecessorId}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih mata kuliah terdahulu
-            </option>
-
-            {courses.map((item: any) => (
-              <option
-                value={item.id}
-                key={item.id}
-                className="text-sm py-0.5"
-              >
-                {item.name}
-              </option>
-            ))}
-          </select> */}
           {errors.predecessorId?.message && (
             <p className="text-xs text-red-400">
               {errors.predecessorId.message.toString()}
