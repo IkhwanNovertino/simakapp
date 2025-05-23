@@ -3,6 +3,7 @@ import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
+import TableFilter from "@/component/TableFilter";
 import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
@@ -144,8 +145,6 @@ const CurriculumSinglePage = async (
     } else if (item?.semester === 8) {
       style.push("bg-accent-light");
     }
-    // const stringSemester = arrSemester[item?.semester! - 1];
-    // console.log(semester);
 
     return (
       <tr
@@ -180,7 +179,7 @@ const CurriculumSinglePage = async (
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
-      <div className="flex flex-col md:flex-row items-center justify-between">
+      <div className="flex flex-col md:flex-row items-center justify-between md:mb-6">
         <div className="flex flex-col items-start mb-4 md:mb-0 ">
           <h1 className="text-lg font-semibold">Daftar Mata kuliah {dataCurriculum.name}</h1>
           <h2 className="text-sm font-semibold text-gray-500">Prodi {dataCurriculum.major?.name} </h2>
@@ -188,14 +187,13 @@ const CurriculumSinglePage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
+            <TableFilter data={dataFilter} />
             {canCreateData && (
               <FormContainer table="curriculumDetail" type="create" data={dataCreate} />
             )}
           </div>
         </div>
       </div>
-      {/* filter badge */}
-      <FilterSearch data={dataFilter} />
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
