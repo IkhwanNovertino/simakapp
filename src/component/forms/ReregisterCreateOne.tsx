@@ -11,6 +11,7 @@ import Select from "react-select";
 import { ReregistrationDetailInputs, reregistrationDetailSchema } from "@/lib/formValidationSchema";
 import moment from "moment";
 import { status } from "@/lib/setting";
+import InputSelect from "../InputSelect";
 
 interface ReregiterCreateOneFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -179,33 +180,17 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterC
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Dosen Wali</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("lecturerId")}
+          <InputSelect
+            label="Dosen Wali"
+            name="lecturerId"
             defaultValue={data?.student?.lecturerId}
-            disabled={role !== "admin" ? true : false}
-          >
-            <option
-              value={""} key={""}
-              className="text-sm py-0.5 capitalize"
-            >
-              -- Pilih Dosen Wali
-            </option>
-            {lecturers.map((lecturer: any) => (
-              <option
-                value={lecturer.id} key={lecturer.id}
-                className="text-sm py-0.5 capitalize"
-              >
-                {lecturer.name}
-              </option>
-            ))}
-          </select>
-          {errors.lecturerId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.lecturerId.message.toString()}
-            </p>
-          )}
+            control={control}
+            error={errors?.lecturerId}
+            options={lecturers.map((lecturer: any) => ({
+              value: lecturer.id,
+              label: `${lecturer.name}`,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Status Herregistrasi</label>

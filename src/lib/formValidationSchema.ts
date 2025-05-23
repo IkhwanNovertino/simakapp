@@ -1,4 +1,3 @@
-import { start } from "repl";
 import { z } from "zod";
 
 export const permissionSchema = z.object({

@@ -8,7 +8,8 @@ import { PermissionInputs, permissionSchema } from "@/lib/formValidationSchema";
 import { createPermission, updatePermission } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { resourceData } from "@/lib/setting";
+import { actionPermission, resourceData } from "@/lib/setting";
+import InputSelect from "../InputSelect";
 
 interface PermissionFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -23,6 +24,7 @@ const PermissionForm = ({ setOpen, type, data }: PermissionFormProps) => {
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<PermissionInputs>({
     resolver: zodResolver(permissionSchema)
   })
@@ -62,70 +64,35 @@ const PermissionForm = ({ setOpen, type, data }: PermissionFormProps) => {
             />
           </div>
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/7">
-          <label className="text-xs text-gray-500">Pilih aksi</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("action")}
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputSelect
+            label="Pilih Aksi"
+            name="action"
             defaultValue={data?.name.split(":")[0]}
-          >
-            <option
-              value={"view"}
-              className="text-sm py-0.5"
-
-            >
-              view
-            </option>
-            <option
-              value={"create"}
-              className="text-sm py-0.5"
-            >
-              create
-            </option>
-            <option
-              value={"edit"}
-              className="text-sm py-0.5"
-            >
-              edit
-            </option>
-            <option
-              value={"delete"}
-              className="text-sm py-0.5"
-            >
-              delete
-            </option>
-          </select>
-          {errors.action?.message && (
-            <p className="text-xs text-red-400">
-              {errors.action.message.toString()}
-            </p>
-          )}
+            control={control}
+            error={errors?.action}
+            required={true}
+            options={actionPermission.map((item: any) => ({
+              value: item,
+              label: item
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Modul/Domain</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("resource")}
+          <InputSelect
+            label="Pilih Modul/Domain"
+            name="resource"
             defaultValue={data?.name.split(":")[1]}
-          >
-            {resourceData.map((item: any) => (
-              <option
-                value={item.pathname}
-                key={item.name}
-                className="text-sm py-0.5"
-
-              >
-                {item.nama}
-              </option>
-            ))}
-          </select>
-          {errors.resource?.message && (
-            <p className="text-xs text-red-400">
-              {errors.resource.message.toString()}
-            </p>
-          )}
+            control={control}
+            error={errors?.resource}
+            required={true}
+            options={resourceData.map((item: any) => ({
+              value: item.pathname,
+              label: item.nama
+            }))}
+          />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/2">
+        <div className="flex flex-col gap-2 w-full md:w-3/8">
           <InputField
             label="Deskripsi Hak Akses"
             name="description"

@@ -12,6 +12,7 @@ import { gender, religion, status } from "@/lib/setting";
 import Image from "next/image";
 import { StatusRegistrasi } from "@/lib/data";
 import moment from "moment";
+import InputSelect from "../InputSelect";
 
 interface StudentFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -28,6 +29,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<StudentInputs>({
     resolver: zodResolver(studentSchema.omit({ photo: true })),
   })
@@ -144,7 +146,19 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Dosen Wali</label>
+          <InputSelect
+            label="Dosen Wali"
+            name="lecturerId"
+            control={control}
+            error={errors?.lecturerId}
+            defaultValue={data?.lecturerId}
+            required={true}
+            options={lecturer.map((item: any) => ({
+              value: item.id,
+              label: item.name
+            }))}
+          />
+          {/* <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Dosen Wali</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("lecturerId")}
@@ -168,7 +182,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             <p className="text-xs text-red-400">
               {errors.lecturerId.message.toString()}
             </p>
-          )}
+          )} */}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Status Registrasi</label>
@@ -279,7 +293,19 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Agama</label>
+          <InputSelect
+            label="Agama"
+            name="religion"
+            control={control}
+            error={errors?.religion}
+            defaultValue={data?.religion}
+            required={true}
+            options={religion.map((item: any) => ({
+              value: item,
+              label: item
+            }))}
+          />
+          {/* <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Agama</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("religion")}
@@ -303,7 +329,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
             <p className="text-xs text-red-400">
               {errors.religion.message.toString()}
             </p>
-          )}
+          )} */}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField

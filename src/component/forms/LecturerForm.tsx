@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { degree, gender, religion } from "@/lib/setting";
 import Image from "next/image";
+import InputSelect from "../InputSelect";
 
 interface LecturerFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -26,6 +27,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<LecturerInputs>({
     resolver: zodResolver(lecturerSchema.omit({ photo: true }))
   })
@@ -262,31 +264,18 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Agama</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("religion")}
+          <InputSelect
+            label="Agama"
+            name="religion"
+            control={control}
+            error={errors?.religion}
             defaultValue={data?.religion}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih agama
-            </option>
-            {religion.map((item: string) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.religion?.message && (
-            <p className="text-xs text-red-400">
-              {errors.religion.message.toString()}
-            </p>
-          )}
+            required={true}
+            options={religion.map((item: any) => ({
+              value: item,
+              label: item
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField

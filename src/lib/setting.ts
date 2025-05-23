@@ -22,6 +22,7 @@ export const resourceData = [
   { pathname: "events", name: "event", nama: "event" },
   { pathname: "announcements", name: "announcements", nama: "pengumuman" },
 ];
+export const actionPermission = ["view", "create", "edit", "delete"];
 
 export const degree = ["S1", "S2", "S3"];
 export const gender = ["PRIA", "WANITA"];

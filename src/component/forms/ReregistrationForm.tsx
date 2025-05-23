@@ -8,6 +8,7 @@ import { ReregistrationInputs, reregistrationSchema } from "@/lib/formValidation
 import { createReregistration, updateReregistration } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import InputSelect from "../InputSelect";
 
 interface ReregistrationFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -71,7 +72,19 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-2/5">
-          <label className="text-xs text-gray-500">Semester</label>
+          <InputSelect
+            label="Semester"
+            name="periodId"
+            control={control}
+            defaultValue={data?.periodId}
+            error={errors?.periodId}
+            required={true}
+            options={period.map((item: any) => ({
+              value: item.id,
+              label: item.name
+            }))}
+          />
+          {/* <label className="text-xs text-gray-500">Semester</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("periodId")}
@@ -97,7 +110,7 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
             <p className="text-xs text-red-400">
               {errors.periodId.message.toString()}
             </p>
-          )}
+          )} */}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/2">
           <label className="text-xs text-gray-500">Status Herregistrasi</label>
