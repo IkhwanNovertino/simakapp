@@ -51,7 +51,7 @@
   - Date?
   - default Date.now()
   - orderBy desc
-- assesmentId
+- assessmentId
   - String
   - FK
   -required

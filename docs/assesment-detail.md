@@ -1,8 +1,8 @@
-# Assesment Detail Specifications
+# Assessment Detail Specifications
 
 ## Translate
 
-- en: assesmentDetail
+- en: assessmentDetail
 - id: detail penilaian
 
 ## Examples of Data:

@@ -1,8 +1,8 @@
-# Assesment Specifications
+# Assessment Specifications
 
 ## Translate
 
-- en: assesment
+- en: assessment
 - id: bentuk penilaian
 
 ## Examples of Data:

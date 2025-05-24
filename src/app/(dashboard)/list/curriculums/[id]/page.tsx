@@ -79,7 +79,7 @@ const CurriculumSinglePage = async (
   ]
 
   const [data, count] = await prisma.$transaction([
-    prisma.curriculumDetail.findMany({
+    prisma.curriculumDetails.findMany({
       where: {
         curriculumId: id,
         ...query,
@@ -99,7 +99,27 @@ const CurriculumSinglePage = async (
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
-    prisma.curriculumDetail.count({
+    // prisma.curriculumDetails.findMany({
+    //   where: {
+    //     curriculumId: id,
+    //     ...query,
+    //   },
+    //   include: {
+    //     course: {
+    //       select: {
+    //         id: true,
+    //         name: true,
+    //         code: true,
+    //       },
+    //     },
+    //   },
+    //   orderBy: [
+    //     { semester: "asc" },
+    //   ],
+    //   take: ITEM_PER_PAGE,
+    //   skip: ITEM_PER_PAGE * (p - 1),
+    // }),
+    prisma.curriculumDetails.count({
       where: {
         curriculumId: id,
         ...query,

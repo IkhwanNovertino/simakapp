@@ -47,7 +47,7 @@ model User {
   lecturer Lecturer?
   operator Operator?
   student  Student?
-  Session  Session[]
+  session  Session[]
 
   @@map("sb25_users")
 }
@@ -70,29 +70,59 @@ model Major {
   course     Course[]
   lecturer   Lecturer[]
   student    Student[]
-  Curriculum Curriculum[]
+  curriculum Curriculum[]
 
   @@map("sb25_majors")
 }
 
 model Course {
-  id         String   @id @default(uuid())
-  name       String?
-  code       String?
-  sks        Int?
-  majorId    Int?
-  isPKL      Boolean  @default(false)
-  isSkripsi  Boolean  @default(false)
-  major      Major?   @relation(fields: [majorId], references: [id])
-  courseType String?
-  createdAt  DateTime @default(now())
+  id           String      @id @default(uuid())
+  name         String?
+  code         String?
+  sks          Int?
+  majorId      Int?
+  isPKL        Boolean     @default(false)
+  isSkripsi    Boolean     @default(false)
+  major        Major?      @relation(fields: [majorId], references: [id])
+  courseType   String?
+  createdAt    DateTime    @default(now())
+  assessmentId String?
+  assessment   Assessment? @relation(fields: [assessmentId], references: [id])
 
   predecessorId    String?            @unique
   predecessor      Course?            @relation("CourseHistory", fields: [predecessorId], references: [id])
   successor        Course?            @relation("CourseHistory")
-  CurriculumDetail CurriculumDetail[]
+  curriculumDetail CurriculumDetail[]
 
   @@map("sb25_courses")
+}
+
+model Assessment {
+  id               String             @id @default(uuid())
+  name             String?
+  assessmentDetail AssessmentDetail[]
+  course           Course[]
+
+  @@map("sb25_assessments")
+}
+
+model GradeComponent {
+  id               String             @id @default(uuid())
+  name             String?
+  assessmentDetail AssessmentDetail[]
+
+  @@map("sb25_grade_components")
+}
+
+model AssessmentDetail {
+  id           String          @id @default(uuid())
+  assessmentId String?
+  assessment   Assessment?     @relation(fields: [assessmentId], references: [id])
+  gradeId      String?
+  grade        GradeComponent? @relation(fields: [gradeId], references: [id])
+  percentage   Int?
+
+  @@map("sb25_assessments_details")
 }
 
 model Lecturer {
@@ -116,7 +146,7 @@ model Lecturer {
   userId           String?            @unique
   user             User?              @relation(fields: [userId], references: [id])
   student          Student[]
-  ReregisterDetail ReregisterDetail[]
+  reregisterDetail ReregisterDetail[]
 
   @@map("sb25_lecturers")
 }
@@ -216,7 +246,7 @@ model ReregisterDetail {
   isStatusForm Boolean @default(false)
 
   @@id([reregisterId, studentId])
-  @@map("sb25_reregisterDetails")
+  @@map("sb25_reregister_details")
 }
 
 model Curriculum {
@@ -227,7 +257,7 @@ model Curriculum {
   startDate        DateTime?
   endDate          DateTime?
   isActive         Boolean?           @default(false)
-  CurriculumDetail CurriculumDetail[]
+  curriculumDetail CurriculumDetail[]
 
   @@map("sb25_curriculums")
 }
@@ -240,7 +270,7 @@ model CurriculumDetail {
   course       Course?    @relation(fields: [courseId], references: [id])
   semester     Int?
 
-  @@map("sb25_curriculumDetails")
+  @@map("sb25_curriculum_details")
 }
 
 enum SemesterType {
