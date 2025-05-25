@@ -66,6 +66,8 @@ const CurriculumSinglePage = async (
     name: dataCurriculum?.name,
     majorId: dataCurriculum?.majorId,
   };
+  console.log(dataCreate);
+
 
   const dataFilter = [
     { id: "1", name: "Semester 1" },
@@ -79,7 +81,7 @@ const CurriculumSinglePage = async (
   ]
 
   const [data, count] = await prisma.$transaction([
-    prisma.curriculumDetails.findMany({
+    prisma.curriculumDetail.findMany({
       where: {
         curriculumId: id,
         ...query,
@@ -99,27 +101,7 @@ const CurriculumSinglePage = async (
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
-    // prisma.curriculumDetails.findMany({
-    //   where: {
-    //     curriculumId: id,
-    //     ...query,
-    //   },
-    //   include: {
-    //     course: {
-    //       select: {
-    //         id: true,
-    //         name: true,
-    //         code: true,
-    //       },
-    //     },
-    //   },
-    //   orderBy: [
-    //     { semester: "asc" },
-    //   ],
-    //   take: ITEM_PER_PAGE,
-    //   skip: ITEM_PER_PAGE * (p - 1),
-    // }),
-    prisma.curriculumDetails.count({
+    prisma.curriculumDetail.count({
       where: {
         curriculumId: id,
         ...query,

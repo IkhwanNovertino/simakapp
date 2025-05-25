@@ -26,6 +26,8 @@ export interface FormModalProps {
   | "reregistrationStudent"
   | "curriculum"
   | "curriculumDetail"
+  | "grade"
+  | "assessment"
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
   data?: any;
   id?: any;
@@ -83,6 +85,12 @@ const CurriculumForm = dynamic(() => import("./forms/CurriculumForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const CurriculumDetailForm = dynamic(() => import("./forms/CurriculumDetailForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const GradeForm = dynamic(() => import("./forms/GradeForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const AssessmentForm = dynamic(() => import("./forms/AssessmentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -220,6 +228,20 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  grade: (setOpen, type, data, relatedData) =>
+    <GradeForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
+  assessment: (setOpen, type, data, relatedData) =>
+    <AssessmentForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -241,6 +263,8 @@ const deleteActionMap = {
   reregistrationStudent: deleteReregisterDetail,
   curriculum: deleteCurriculum,
   curriculumDetail: deleteCurriculumDetail,
+  grade: deleteCurriculumDetail,
+  assessment: deleteCurriculumDetail,
 };
 
 const namaTabelMap = {
@@ -262,6 +286,8 @@ const namaTabelMap = {
   reregistrationStudent: "herregistrasi mahasiswa",
   curriculum: "kurikulum",
   curriculumDetail: "",
+  grade: "komponen nilai",
+  assessment: "penilaian",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {

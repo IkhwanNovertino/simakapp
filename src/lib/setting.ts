@@ -21,6 +21,7 @@ export const resourceData = [
   { pathname: "transkip", name: "transkip", nama: "transkip" },
   { pathname: "events", name: "event", nama: "event" },
   { pathname: "announcements", name: "announcements", nama: "pengumuman" },
+  { pathname: "test", name: "test", nama: "testForCRUD" },
 ];
 export const actionPermission = ["view", "create", "edit", "delete"];
 

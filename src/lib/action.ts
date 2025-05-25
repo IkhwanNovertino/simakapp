@@ -2,7 +2,7 @@
 
 import path from "path";
 import {
-  CourseInputs, CurriculumDetailInputs, CurriculumInputs, lecturerSchema, MajorInputs, OperatorInputs,
+  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs, OperatorInputs,
   PeriodInputs, PermissionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, studentSchema, UserInputs
@@ -1568,3 +1568,42 @@ export const deleteCurriculumDetail = async (state: stateType, data: FormData) =
     return { success: false, error: true }
   }
 };
+
+export const createGrade = async (state: stateType, data: GradeInputs) => {
+  try {
+    await prisma.gradeComponent.create({
+      data: {
+        name: data.name,
+      }
+    })
+    return { success: true, error: false }
+  } catch (err: any) {
+    console.log(err);
+    return { success: false, error: true }
+  }
+}
+export const updateGrade = async (state: stateType, data: GradeInputs) => {
+  try {
+    await prisma.gradeComponent.update({
+      where: {
+        id: data.id
+      },
+      data: {
+        name: data.name,
+      }
+    })
+    return { success: true, error: false }
+  } catch (err: any) {
+    console.log(err);
+    return { success: false, error: true }
+  }
+}
+export const deleteGrade = async (state: stateType, data: GradeInputs) => {
+  try {
+    console.log(data);
+    return { success: true, error: false }
+  } catch (err: any) {
+    console.log(err);
+    return { success: false, error: true }
+  }
+}
