@@ -4,7 +4,7 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
+import { deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
@@ -263,7 +263,7 @@ const deleteActionMap = {
   reregistrationStudent: deleteReregisterDetail,
   curriculum: deleteCurriculum,
   curriculumDetail: deleteCurriculumDetail,
-  grade: deleteCurriculumDetail,
+  grade: deleteGrade,
   assessment: deleteCurriculumDetail,
 };
 

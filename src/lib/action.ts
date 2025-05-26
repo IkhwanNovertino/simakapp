@@ -2,6 +2,7 @@
 
 import path from "path";
 import {
+  AssessmentInputs,
   CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs, OperatorInputs,
   PeriodInputs, PermissionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
@@ -1598,9 +1599,74 @@ export const updateGrade = async (state: stateType, data: GradeInputs) => {
     return { success: false, error: true }
   }
 }
-export const deleteGrade = async (state: stateType, data: GradeInputs) => {
+export const deleteGrade = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    console.log(id);
+    await prisma.gradeComponent.delete({
+      where: {
+        id: id,
+      }
+    })
+    return { success: true, error: false }
+  } catch (err: any) {
+    console.log(err);
+    return { success: false, error: true }
+  }
+}
+
+export const createAssessment = async (state: stateType, data: AssessmentInputs) => {
   try {
     console.log(data);
+    
+    await prisma.assessment.create({
+      data: {
+        name: data.name,
+        assessmentDetail: {
+          create: data.gradeComponents.map((item) => ({
+            percentage: item.percentage,
+            grade: {
+              connect: {
+                id: item.id,
+              },
+            },
+          })),
+        },
+      },
+    });
+    
+    return { success: true, error: false }
+  } catch (err: any) {
+    console.log(err);
+    return { success: false, error: true }
+  }
+}
+export const updateAssessment = async (state: stateType, data: AssessmentInputs) => {
+  try {
+    console.log(data);
+    
+    
+    return { success: true, error: false }
+  } catch (err: any) {
+    console.log(err);
+    return { success: false, error: true }
+  }
+}
+export const deleteAssessment = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.$transaction([
+      prisma.assessment.delete({
+        where: {
+          id: id,
+        }
+      }),
+      prisma.assessmentDetail.deleteMany({
+        where: {
+          assessmentId: id,
+        }
+      }),
+    ]);
     return { success: true, error: false }
   } catch (err: any) {
     console.log(err);

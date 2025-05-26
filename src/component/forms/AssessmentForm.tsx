@@ -2,12 +2,13 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useFieldArray, useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { GradeInputs, gradeSchema } from "@/lib/formValidationSchema";
-import { createGrade, createRoom, updateGrade, updateRoom } from "@/lib/action";
+import { AssessmentInputs, assessmentSchema, GradeInputs, gradeSchema } from "@/lib/formValidationSchema";
+import { createAssessment, createGrade, createRoom, updateAssessment, updateGrade, updateRoom } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import InputSelect from "../InputSelect";
 
 interface AssessmentFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -16,16 +17,30 @@ interface AssessmentFormProps {
   relatedData?: any;
 }
 
-const AssessmentForm = ({ setOpen, type, data }: AssessmentFormProps) => {
+const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProps) => {
+  const { allGradeComponent } = relatedData;
+  console.log(allGradeComponent);
 
   const {
     register,
     handleSubmit,
+    control,
     formState: { errors },
-  } = useForm<GradeInputs>({
-    resolver: zodResolver(gradeSchema)
+  } = useForm<AssessmentInputs>({
+    resolver: zodResolver(assessmentSchema),
+    defaultValues: {
+      name: data?.name || "",
+      gradeComponents: data?.gradeComponents || [{ id: "", percentage: 0 }]
+    }
   })
-  const action = type === "create" ? createGrade : updateGrade;
+  const { fields, remove, append } = useFieldArray({
+    control,
+    name: "gradeComponents",
+  })
+
+  console.log('fields', fields);
+
+  const action = type === "create" ? createAssessment : updateAssessment;
   const [state, formAction] = useActionState(action, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
@@ -57,7 +72,7 @@ const AssessmentForm = ({ setOpen, type, data }: AssessmentFormProps) => {
             />
           </div>
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/2">
+        <div className="flex flex-col gap-2 w-full">
           <InputField
             label="Penilaian"
             name="name"
@@ -66,6 +81,55 @@ const AssessmentForm = ({ setOpen, type, data }: AssessmentFormProps) => {
             error={errors?.name}
           />
         </div>
+      </div>
+      <span className="text-xs text-gray-400 font-medium">
+        Komponen Nilai
+      </span>
+      <div className="flex justify-between flex-wrap gap-4">
+        <div className="flex flex-col gap-2 w-full">
+          {fields.map((field, index) => (
+            <div key={field.id} className="flex flex-wrap items-center justify-start md:justify-between gap-4">
+              <div className="w-full md:w-5/12">
+                <InputSelect
+                  label="Komponen Nilai"
+                  name={`gradeComponents.${index}.id`}
+                  options={allGradeComponent.map((item: any) => ({
+                    value: item.id,
+                    label: item.name,
+                  }))}
+                  control={control}
+                  error={errors?.gradeComponents?.[index]?.id}
+                  required
+                />
+              </div>
+              <div className="w-3/12">
+                <InputField
+                  label="Persentase"
+                  name={`gradeComponents.${index}.percentage`}
+                  register={register}
+                  error={errors?.gradeComponents?.[index]?.percentage}
+                  required
+                />
+              </div>
+              <div className="w-3/12 self-end">
+                <button
+                  type="button"
+                  onClick={() => remove(index)}
+                  className="text-slate-100 text-sm bg-red-500 py-2 w-full rounded-md"
+                >
+                  Hapus
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+        <button
+          type="button"
+          onClick={() => append({ id: "", percentage: 0 })}
+          className="text-slate-100 text-sm bg-blue-500 py-2 px-4 rounded-md"
+        >
+          + Tambah Komponen
+        </button>
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">

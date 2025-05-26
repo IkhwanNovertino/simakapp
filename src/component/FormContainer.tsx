@@ -159,6 +159,14 @@ const FormContainer = async (
         });
         relatedData = { semesterInt: semesterInt, courses: courseCurriculumDetail };
         break;
+      case "assessment":
+        const gradeComponents = await prisma.gradeComponent.findMany({
+          select: { id: true, name: true },
+        });
+        console.log(gradeComponents);
+
+        relatedData = { allGradeComponent: gradeComponents };
+        break;
       default:
         break;
     }

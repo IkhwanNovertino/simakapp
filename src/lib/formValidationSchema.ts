@@ -248,7 +248,13 @@ export type GradeInputs = z.infer<typeof gradeSchema>;
 
 export const assessmentSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, { message: "Nama komponen nilai harus diisi" }),
+  name: z.string().min(1, { message: "Nama penilaian harus diisi" }),
+  gradeComponents: z.array(
+    z.object({
+      id: z.string().min(1),
+      percentage: z.coerce.number().min(1).max(100),
+    })
+  ).min(1, "Pilih minimal satu komponen nilai")
 })
 
 export type AssessmentInputs = z.infer<typeof assessmentSchema>;

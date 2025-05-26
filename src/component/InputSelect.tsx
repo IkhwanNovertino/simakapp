@@ -21,6 +21,8 @@ const InputSelect = (
   {
     label, name, defaultValue, options, control, error, required, isMulti = false
   }: InputSelectProps) => {
+  console.log('inputSelect', options);
+
   return (
     <>
       <label className={required ? "text-xs text-gray-500 after:content-['_(*)'] after:text-red-400" : "text-xs text-gray-500"}>{label}</label>
