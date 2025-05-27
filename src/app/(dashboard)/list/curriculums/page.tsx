@@ -7,7 +7,7 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Course, Curriculum, Major, Prisma } from "@prisma/client";
+import { Curriculum, Major, Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -46,9 +46,6 @@ const CurriculumListPage = async (
       }
     }
   };
-
-  // const data: any[] = [];
-  // const count = 0;
 
   const [data, count, dataFilter] = await prisma.$transaction([
     prisma.curriculum.findMany({

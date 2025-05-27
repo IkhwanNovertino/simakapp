@@ -305,11 +305,7 @@ export const createCourse = async (state: stateType, data: CourseInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    // logger.error(err)
-    // console.error(err);
-    console.log(data);
-    
-    
+    logger.error(err)
     return {success: false, error:true}
   }
 }
@@ -369,9 +365,7 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
     });
     return { success: true, error: false };
   } catch (err: any) {
-    // logger.error(err)
-    console.error(err);
-    console.log(data);
+    logger.error(err)
     
     return {success: false, error:true}
   }

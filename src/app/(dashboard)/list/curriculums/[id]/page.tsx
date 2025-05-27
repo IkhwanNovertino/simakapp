@@ -1,11 +1,10 @@
-import FilterSearch from "@/component/FilterSearch";
 import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableFilter from "@/component/TableFilter";
 import TableSearch from "@/component/TableSearch";
-import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
+import { canRoleCreateData, canRoleDeleteData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Course, CurriculumDetail, Prisma } from "@prisma/client";
@@ -20,7 +19,6 @@ const CurriculumSinglePage = async (
   }
 ) => {
   const canCreateData = await canRoleCreateData("courses");
-  const canUpdateData = await canRoleUpdateData("courses");
   const canDeleteData = await canRoleDeleteData("courses");
   const canViewData = await canRoleViewData("courses");
 
@@ -155,11 +153,11 @@ const CurriculumSinglePage = async (
       >
         <td className={style.join(" ")}>
           <div className="flex flex-col">
-            <h3 className="font-medium text-[13px] ">{`${arrSemester[item?.semester! - 1]} (${item?.semester!})`}</h3>
-            <p className="flex md:hidden">{`${item.course.code} | ${item.course.name}`}</p>
+            <h3 className="font-medium text-[13px] ">{`${arrSemester[item.semester ?? 0 - 1]} (${item?.semester})`}</h3>
+            <p className="flex md:hidden">{`${item.course.code ?? "-"} | ${item.course.name ?? "-"}`}</p>
           </div>
         </td>
-        <td className="hidden md:table-cell">{`${item.course.code} | ${item.course.name}`}</td>
+        <td className="hidden md:table-cell">{`${item.course.code ?? "-"} | ${item.course.name ?? "-"}`}</td>
         <td>
           <div className="flex items-center gap-2">
             <div className="md:hidden flex items-center justify-end gap-2">

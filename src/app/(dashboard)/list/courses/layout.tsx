@@ -2,9 +2,8 @@ import TabNavigationCourse from "@/component/TabNavigationCourse";
 import React from "react";
 
 export default async function CourseLayout({
-  children, tab,
+  tab,
 }: Readonly<{
-  children: React.ReactNode;
   tab: React.ReactNode;
 }>) {
 

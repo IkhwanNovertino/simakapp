@@ -2,10 +2,10 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { CurriculumDetailInputs, curriculumDetailSchema } from "@/lib/formValidationSchema";
-import { createCurriculum, createCurriculumDetail, updateCurriculum } from "@/lib/action";
+import { createCurriculumDetail } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
@@ -22,7 +22,6 @@ const CurriculumDetailForm = ({ setOpen, type, data, relatedData }: CurriculumDe
   const { courses, semesterInt } = relatedData;
 
   const courseFilter = courses.filter((course: any) => course.majorId === data?.majorId);
-
   const {
     register,
     handleSubmit,
@@ -32,7 +31,6 @@ const CurriculumDetailForm = ({ setOpen, type, data, relatedData }: CurriculumDe
     resolver: zodResolver(curriculumDetailSchema)
   })
 
-  // const action = type === "create" ? createCurriculum : updateCurriculum
   const [state, formAction] = useActionState(createCurriculumDetail, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {

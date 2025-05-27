@@ -4,7 +4,7 @@ import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@prisma/client";
@@ -23,7 +23,6 @@ const ReregisterSinglePage = async (
   const canCreateData = await canRoleCreateData("reregistrations");
   const canUpdateData = await canRoleUpdateData("reregistrations");
   const canDeleteData = await canRoleDeleteData("reregistrations");
-  const canViewData = await canRoleViewData("reregistrations");
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
