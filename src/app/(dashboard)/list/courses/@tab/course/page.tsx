@@ -85,7 +85,7 @@ const CourseListPage = async (
     {
       header: "SKS",
       accessor: "sks",
-      className: "hidden lg:table-cell",
+      className: "hidden md:table-cell",
     },
     {
       header: "Program Studi",
@@ -102,11 +102,11 @@ const CourseListPage = async (
   const renderRow = (item: CourseDataType) => (
     <tr
       key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
-      <td className="flex items-center p-4 sm:w-20 md:w-60">{item.name}</td>
+      <td className="flex items-center p-4 w-60 md:max-lg:max-w-72 lg:w-full">{item.name}</td>
       <td className="hidden md:table-cell">{item.code}</td>
-      <td className="hidden lg:table-cell">{item.sks}</td>
+      <td className="hidden md:table-cell">{item.sks}</td>
       <td className="hidden lg:table-cell lg:capitalize">{item.major?.name}</td>
       <td>
         <div className="flex items-center gap-2">

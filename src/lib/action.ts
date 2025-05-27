@@ -1625,8 +1625,34 @@ export const createAssessment = async (state: stateType, data: AssessmentInputs)
 export const updateAssessment = async (state: stateType, data: AssessmentInputs) => {
   try {
     console.log(data);
-    
-    
+    await prisma.$transaction(async (tx: any) => {
+      // delete data assessmentDetail yang lama
+      await tx.assessmentDetail.deleteMany({
+        where: {
+          assessmentId: data.id,
+        }
+      })
+
+      // create data assessment baru diinput
+      await tx.assessment.update({
+        where: {
+          id: data.id,
+        },
+        data: {
+          name: data.name,
+          assessmentDetail: {
+            create: data.gradeComponents.map((item) => ({
+              percentage: item.percentage,
+              grade: {
+                connect: {
+                  id: item.id,
+                },
+              },
+            })),
+          },
+        }
+      });
+    });
     return { success: true, error: false }
   } catch (err: any) {
     console.log(err);

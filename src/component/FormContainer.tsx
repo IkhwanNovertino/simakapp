@@ -166,7 +166,6 @@ const FormContainer = async (
         const gradeComponents = await prisma.gradeComponent.findMany({
           select: { id: true, name: true },
         });
-        console.log(gradeComponents);
 
         relatedData = { allGradeComponent: gradeComponents };
         break;
