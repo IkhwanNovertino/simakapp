@@ -153,7 +153,7 @@ const CurriculumSinglePage = async (
       >
         <td className={style.join(" ")}>
           <div className="flex flex-col">
-            <h3 className="font-medium text-[13px] ">{`${arrSemester[item.semester ?? 0 - 1]} (${item?.semester})`}</h3>
+            <h3 className="font-medium text-[13px] ">{`${arrSemester[item.semester! - 1]} (${item?.semester})`}</h3>
             <p className="flex md:hidden">{`${item.course.code ?? "-"} | ${item.course.name ?? "-"}`}</p>
           </div>
         </td>

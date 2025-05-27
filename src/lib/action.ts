@@ -1663,20 +1663,21 @@ export const deleteAssessment = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     await prisma.$transaction([
-      prisma.assessment.delete({
-        where: {
-          id: id,
-        }
-      }),
       prisma.assessmentDetail.deleteMany({
         where: {
           assessmentId: id,
         }
       }),
+      prisma.assessment.delete({
+        where: {
+          id: id,
+        }
+      }),
     ]);
     return { success: true, error: false }
   } catch (err: any) {
-    console.log(err);
+    console.log(err.message);
+    
     return { success: false, error: true }
   }
 }

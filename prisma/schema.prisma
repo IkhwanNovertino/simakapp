@@ -117,7 +117,8 @@ model GradeComponent {
 model AssessmentDetail {
   id           String          @id @default(uuid())
   assessmentId String?
-  assessment   Assessment?     @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  // mengubah onDelete
+  assessment   Assessment?     @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
   gradeId      String?
   grade        GradeComponent? @relation(fields: [gradeId], references: [id], onDelete: Restrict)
   percentage   Int?
