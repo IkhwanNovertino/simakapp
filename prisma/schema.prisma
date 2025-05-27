@@ -29,9 +29,9 @@ model Permission {
 
 model RolePermission {
   roleId       Int
-  role         Role?       @relation(fields: [roleId], references: [id])
+  role         Role?       @relation(fields: [roleId], references: [id], onDelete: Cascade)
   permissionId Int
-  permission   Permission? @relation(fields: [permissionId], references: [id])
+  permission   Permission? @relation(fields: [permissionId], references: [id], onDelete: Cascade)
 
   @@id([roleId, permissionId])
   @@map("sb25_role_permissions")
@@ -83,14 +83,14 @@ model Course {
   majorId      Int?
   isPKL        Boolean     @default(false)
   isSkripsi    Boolean     @default(false)
-  major        Major?      @relation(fields: [majorId], references: [id])
+  major        Major?      @relation(fields: [majorId], references: [id], onDelete: Restrict)
   courseType   String?
   createdAt    DateTime    @default(now())
   assessmentId String?
-  assessment   Assessment? @relation(fields: [assessmentId], references: [id])
+  assessment   Assessment? @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
 
   predecessorId    String?            @unique
-  predecessor      Course?            @relation("CourseHistory", fields: [predecessorId], references: [id])
+  predecessor      Course?            @relation("CourseHistory", fields: [predecessorId], references: [id], onDelete: Restrict)
   successor        Course?            @relation("CourseHistory")
   curriculumDetail CurriculumDetail[]
 
@@ -117,9 +117,9 @@ model GradeComponent {
 model AssessmentDetail {
   id           String          @id @default(uuid())
   assessmentId String?
-  assessment   Assessment?     @relation(fields: [assessmentId], references: [id])
+  assessment   Assessment?     @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   gradeId      String?
-  grade        GradeComponent? @relation(fields: [gradeId], references: [id])
+  grade        GradeComponent? @relation(fields: [gradeId], references: [id], onDelete: Restrict)
   percentage   Int?
 
   @@map("sb25_assessments_details")
@@ -142,9 +142,9 @@ model Lecturer {
   hp               String?
   photo            String?
   majorId          Int?
-  major            Major?             @relation(fields: [majorId], references: [id])
+  major            Major?             @relation(fields: [majorId], references: [id], onDelete: Restrict)
   userId           String?            @unique
-  user             User?              @relation(fields: [userId], references: [id])
+  user             User?              @relation(fields: [userId], references: [id], onDelete: Restrict)
   student          Student[]
   reregisterDetail ReregisterDetail[]
 
@@ -157,7 +157,7 @@ model Operator {
   department String?
 
   userId String? @unique
-  user   User?   @relation(fields: [userId], references: [id])
+  user   User?   @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   @@map("sb25_operators")
 }
@@ -186,11 +186,11 @@ model Student {
   guardianAddress  String?
   studentStatus    StudentStatus      @default(NONAKTIF)
   majorId          Int?
-  major            Major?             @relation(fields: [majorId], references: [id])
+  major            Major?             @relation(fields: [majorId], references: [id], onDelete: Restrict)
   lecturerId       String?
   lecturer         Lecturer?          @relation(fields: [lecturerId], references: [id])
   userId           String?            @unique
-  user             User?              @relation(fields: [userId], references: [id])
+  user             User?              @relation(fields: [userId], references: [id], onDelete: Restrict)
   reregisterDetail ReregisterDetail[]
 
   @@map("sb25_students")
@@ -220,7 +220,7 @@ model Reregister {
   id                 String             @id @default(uuid())
   name               String?
   periodId           String?
-  period             Period?            @relation(fields: [periodId], references: [id])
+  period             Period?            @relation(fields: [periodId], references: [id], onDelete: Restrict)
   isReregisterActive Boolean?           @default(false)
   reregisterDetail   ReregisterDetail[]
 
@@ -229,9 +229,9 @@ model Reregister {
 
 model ReregisterDetail {
   reregisterId       String
-  reregister         Reregister     @relation(fields: [reregisterId], references: [id])
+  reregister         Reregister     @relation(fields: [reregisterId], references: [id], onDelete: Cascade)
   studentId          String
-  student            Student        @relation(fields: [studentId], references: [id])
+  student            Student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
   nominal            Int?
   paymentReceiptFile String?
   paymentStatus      PaymentStatus  @default(BELUM_LUNAS)
@@ -239,7 +239,7 @@ model ReregisterDetail {
   semesterStatus     SemesterStatus @default(NONAKTIF)
   campusType         CampusType?
   lecturerId         String?
-  lecturer           Lecturer?      @relation(fields: [lecturerId], references: [id])
+  lecturer           Lecturer?      @relation(fields: [lecturerId], references: [id], onDelete: SetNull)
   paymentDescription String?
 
   // untuk memeriksa apakah student sudah mengisi data
@@ -253,7 +253,7 @@ model Curriculum {
   id               String             @id @default(uuid())
   name             String?
   majorId          Int?
-  major            Major?             @relation(fields: [majorId], references: [id])
+  major            Major?             @relation(fields: [majorId], references: [id], onDelete: Restrict)
   startDate        DateTime?
   endDate          DateTime?
   isActive         Boolean?           @default(false)
@@ -265,9 +265,9 @@ model Curriculum {
 model CurriculumDetail {
   id           String     @id @default(uuid())
   curriculumId String
-  curriculum   Curriculum @relation(fields: [curriculumId], references: [id])
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Restrict)
   courseId     String?
-  course       Course?    @relation(fields: [courseId], references: [id])
+  course       Course?    @relation(fields: [courseId], references: [id], onDelete: Restrict)
   semester     Int?
 
   @@map("sb25_curriculum_details")

@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } 
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { RoleInputs, roleSchema } from "@/lib/formValidationSchema";
-import { createRole, updateRole } from "@/lib/action";
+import { createRole } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
@@ -30,8 +30,7 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
 
   const { permissions } = relatedData;
 
-  const action = type === "create" ? createRole : updateRole;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(createRole, { success: false, error: false });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))

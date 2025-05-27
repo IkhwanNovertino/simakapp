@@ -19,7 +19,6 @@ interface AssessmentFormProps {
 
 const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProps) => {
   const { allGradeComponent } = relatedData;
-  console.log(allGradeComponent);
 
   const {
     register,
@@ -38,7 +37,9 @@ const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProp
     name: "gradeComponents",
   })
 
-  console.log('fields', fields);
+  console.log(`message`, errors?.gradeComponents);
+  console.log(`message`, errors?.gradeComponents?.message);
+
 
   const action = type === "create" ? createAssessment : updateAssessment;
   const [state, formAction] = useActionState(action, { success: false, error: false });
@@ -131,6 +132,7 @@ const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProp
           + Tambah Komponen
         </button>
       </div>
+      {errors?.gradeComponents && (<span className="text-xs text-red-400">something went wrong!</span>)}
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Tambah" : "Ubah"}

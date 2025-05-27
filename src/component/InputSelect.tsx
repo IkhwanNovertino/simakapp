@@ -15,11 +15,12 @@ interface InputSelectProps {
   error?: any;
   required?: boolean;
   isMulti?: boolean;
+  placeholder?: string;
 }
 
 const InputSelect = (
   {
-    label, name, defaultValue, options, control, error, required, isMulti = false
+    label, name, defaultValue, options, control, error, required, placeholder, isMulti = false
   }: InputSelectProps) => {
   console.log('inputSelect', options);
 
@@ -36,6 +37,7 @@ const InputSelect = (
             isMulti={isMulti}
             options={options}
             className="text-sm rounded-md"
+            placeholder={placeholder || "Search"}
             classNamePrefix="react-select"
             onChange={(selected) => {
               if (isMulti) {

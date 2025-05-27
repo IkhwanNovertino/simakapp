@@ -54,8 +54,9 @@ export const courseSchema = z.object({
   predecessorId: z.string().optional(),
   isPKL: z.boolean().default(false),
   isSkripsi: z.boolean().default(false),
-  courseType: z.string().min(1, {message: "tipe mata kuliah"}),
-  majorId: z.coerce.number().min(1, { message: "program studi harus diisi" })
+  courseType: z.string().min(1, {message: "kategori mata kuliah harus diisi"}),
+  majorId: z.coerce.number().min(1, { message: "program studi harus diisi" }),
+  assessmentId: z.string().min(1, { message: "bentuk penilaian harus diisi" }),
 })
 
 export type CourseInputs = z.infer<typeof courseSchema>;
@@ -251,10 +252,24 @@ export const assessmentSchema = z.object({
   name: z.string().min(1, { message: "Nama penilaian harus diisi" }),
   gradeComponents: z.array(
     z.object({
-      id: z.string().min(1),
-      percentage: z.coerce.number().min(1).max(100),
+      id: z.string().min(1, { message: "komponen nilai harus diisi" }),
+      percentage: z.coerce.number().min(1, { message: "persentase harus dari 1 sampai 100 %" }).max(100, { message: "persentase harus dari 1 sampai 100 %" }),
+    }))
+    .min(1, "Pilih minimal satu komponen nilai")
+    .refine((component) => {
+      const ids = component.map((item) => item.id);
+      return new Set(ids).size === ids.length;
+    }, {
+      message: "Komponen nilai tidak boleh duplikat",
+      path: ["gradeComponents"],
     })
-  ).min(1, "Pilih minimal satu komponen nilai")
+    .refine((component) => {
+      const total = component.reduce((sum, c) => sum + c.percentage, 0);
+      return total === 100;
+    }, {
+      message: "Total persentase harus 100%",
+      path: ["gradeComponents"],
+    })
 })
 
 export type AssessmentInputs = z.infer<typeof assessmentSchema>;

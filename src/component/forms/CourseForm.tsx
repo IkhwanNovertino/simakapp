@@ -20,7 +20,7 @@ interface CourseFormProps {
 }
 
 const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
-  const { majors, courses } = relatedData;
+  const { majors, courses, assessmentType } = relatedData;
 
   const {
     register,
@@ -30,6 +30,8 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
   } = useForm<CourseInputs>({
     resolver: zodResolver(courseSchema)
   })
+  console.log('message', errors);
+
 
   const action = type === "create" ? createCourse : updateCourse
   const [state, formAction] = useActionState(action, { success: false, error: false });
@@ -63,9 +65,9 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             />
           </div>
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/5">
+        <div className="flex flex-col gap-2 w-full md:w-3/12">
           <InputField
-            label="Kode Mata Kuliah"
+            label="Kode Matkul"
             name="code"
             defaultValue={data?.code}
             register={register}
@@ -73,7 +75,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             required={true}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/5">
+        <div className="flex flex-col gap-2 w-full md:w-3/12">
           <InputField
             label="SKS"
             name="sks"
@@ -84,7 +86,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             inputProps={{ pattern: "[0-9]*", inputMode: "numeric" }}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/2">
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
           <InputField
             label="Nama Mata Kuliah"
             name="name"
@@ -96,63 +98,37 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
         </div>
       </div>
       <div className="flex justify-between flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-1/5">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Kategori Matkul</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full overflow-hidden"
-            {...register("courseType")}
-            size={3}
-            defaultValue={data?.courseType}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih kategori mata kuliah
-            </option>
-            {courseType.map((item: string) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-              >
-                {item}
-              </option>
-            ))}
-
-          </select>
-          {errors.courseType?.message && (
-            <p className="text-xs text-red-400">
-              {errors.courseType.message.toString()}
-            </p>
-          )}
+        <div className="flex flex-col gap-2 w-full md:w-3/12">
+          <InputSelect
+            label="Bentuk Penilaian"
+            name="assessmentId"
+            placeholder="Pilih penilaian"
+            control={control}
+            defaultValue={data?.assessmentId}
+            error={errors?.assessmentId}
+            options={assessmentType.map((item: any) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+            required={true}
+          />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/5">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Program Studi</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("majorId")}
+        <div className="flex flex-col gap-2 w-full md:w-3/12">
+          <InputSelect
+            label="Program Studi"
+            name="majorId"
+            placeholder="Pilih prodi"
+            control={control}
             defaultValue={data?.majorId}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih program studi
-            </option>
-
-            {majors.map((item: any) => (
-              <option
-                value={item.id}
-                key={item.id}
-                className="text-sm py-0.5"
-
-              >
-                {item.name}
-              </option>
-            ))}
-          </select>
-          {errors.majorId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.majorId.message.toString()}
-            </p>
-          )}
+            error={errors?.majorId}
+            options={majors.map((item: any) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+            required={true}
+          />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/2">
+        <div className="flex flex-col gap-2 w-full md:w-5/12">
           <label className="text-xs text-gray-500">Mata Kuliah Terdahulu</label>
           <Controller
             name="predecessorId"
@@ -187,24 +163,53 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
             </p>
           )}
         </div>
-        <div className="flex flex-col items-start gap-2 w-full md:w-1/3">
+        <div className="flex flex-col gap-2 w-full md:w-3/12">
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Kategori Matkul</label>
+          <select
+            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full overflow-hidden"
+            {...register("courseType")}
+            size={3}
+            defaultValue={data?.courseType}
+          >
+            <option value="" className="text-sm py-0.5">
+              -- Pilih kategori
+            </option>
+            {courseType.map((item: string) => (
+              <option
+                value={item}
+                key={item}
+                className="text-sm py-0.5"
+              >
+                {item}
+              </option>
+            ))}
+
+          </select>
+          {errors.courseType?.message && (
+            <p className="text-xs text-red-400">
+              {errors.courseType.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col items-start gap-2 w-full md:w-5/12">
           <label className="text-xs text-gray-500">Mata Kuliah PKL atau Skripsi</label>
-          <div className="flex flex-col md:flex-row gap-4">
-            <div className="flex items-center justify-center gap-2 w-full">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-2 w-full">
               <input type="checkbox" id="isPKL" {...register("isPKL")} className="w-4 h-4 " defaultChecked={data?.isPKL} />
               <label htmlFor="isPKL" className="text-sm text-gray-600">PKL</label>
             </div>
-            <div className="flex items-center justify-center gap-2 w-full">
+            <div className="flex items-center gap-2 w-full">
               <input type="checkbox" id="isSkripsi" {...register("isSkripsi")} className="w-4 h-4 " defaultChecked={data?.isSkripsi} />
               <label htmlFor="isSkripsi" className="text-sm text-gray-600">Skripsi</label>
             </div>
           </div>
-          {errors.majorId?.message && (
+          {errors.isPKL?.message && (
             <p className="text-xs text-red-400">
-              {errors.majorId.message.toString()}
+              {errors.isPKL.message.toString()}
             </p>
           )}
         </div>
+
       </div>
       {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">

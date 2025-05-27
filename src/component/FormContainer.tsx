@@ -21,7 +21,10 @@ const FormContainer = async (
         const courseData = await prisma.course.findMany({
           select: { id: true, name: true },
         });
-        relatedData = { majors: majors, courses: courseData };
+        const assessmentType = await prisma.assessment.findMany({
+          select: { id: true, name: true },
+        });
+        relatedData = { majors: majors, courses: courseData, assessmentType: assessmentType };
         break;
       case "operator":
         const role = await prisma.role.findMany({

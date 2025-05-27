@@ -3,8 +3,8 @@
 import path from "path";
 import {
   AssessmentInputs,
-  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs, OperatorInputs,
-  PeriodInputs, PermissionInputs, reregistrationDetailSchema,
+  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
+  OperatorInputs, PeriodInputs, PermissionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, studentSchema, UserInputs
 } from "./formValidationSchema";
@@ -14,7 +14,6 @@ import bcrypt from "bcryptjs";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
 import logger from "./logger";
-import { connect } from "http2";
 
 type stateType = {
   success: boolean;
@@ -60,19 +59,11 @@ export const updatePermission = async (state: stateType, data: PermissionInputs)
 export const deletePermission = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    await prisma.$transaction([
-      prisma.rolePermission.deleteMany({
-        where: {
-          permissionId: parseInt(id)
-        }
-      }),
-
-      prisma.permission.delete({
-        where: {
-          id: parseInt(id)
-        }
-      }),
-    ])
+    await prisma.permission.delete({
+      where: {
+        id: parseInt(id)
+      }
+    });
   
     return { success: true, error: false };
   } catch (err: any) {
@@ -103,40 +94,15 @@ export const createRole = async (state: stateType, data: RoleInputs) => {
     return {success: false, error:true}
   }
 }
-export const updateRole = async (state: stateType, data: RoleInputs) => {
-  try {
-    await prisma.role.update({
-      where: {
-        id: data.id,
-      },
-      data: {
-        name: data.name,
-        description: data.description,
-      }
-    })
-    return { success: true, error: false };
-  } catch (err: any) {
-    logger.error(err)
-    return {success: false, error:true}
-  }
-}
 export const deleteRole = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     
-    await prisma.$transaction([
-      prisma.rolePermission.deleteMany({
-        where: {
-          roleId: parseInt(id)
-        }
-      }),
-
-      prisma.role.delete({
-        where: {
-          id: parseInt(id)
-        }
-      }),
-    ])
+    await prisma.role.delete({
+      where: {
+        id: parseInt(id)
+      }
+    });
     return { success: true, error: false };
   } catch (err: any) {
     logger.error(err)
@@ -297,6 +263,11 @@ export const createCourse = async (state: stateType, data: CourseInputs) => {
         isPKL: data.isPKL,
         isSkripsi: data.isSkripsi,
         courseType: data?.courseType || null,
+        assessment: {
+          connect: {
+            id: data?.assessmentId,
+          }
+        },
         major: {
           connect: {
             id: data?.majorId
@@ -311,6 +282,11 @@ export const createCourse = async (state: stateType, data: CourseInputs) => {
         isPKL: data.isPKL,
         isSkripsi: data.isSkripsi,
         courseType: data?.courseType || null,
+        assessment: {
+          connect: {
+            id: data?.assessmentId,
+          }
+        },
         predecessor: {
           connect: {
             id: data?.predecessorId,
@@ -348,6 +324,11 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
         isPKL: data.isPKL,
         isSkripsi: data.isSkripsi,
         courseType: data?.courseType || null,
+        assessment: {
+          connect: {
+            id: data?.assessmentId,
+          }
+        },
         major: {
           connect: {
             id: data?.majorId
@@ -362,6 +343,11 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
         isPKL: data.isPKL,
         isSkripsi: data.isSkripsi,
         courseType: data?.courseType || null,
+        assessment: {
+          connect: {
+            id: data?.assessmentId,
+          }
+        },
         predecessor: {
           connect: {
             id: data?.predecessorId,
@@ -373,7 +359,8 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
           },
         }
       }
-    }
+    };
+
     await prisma.course.update({
       where: {
         id: data.id
