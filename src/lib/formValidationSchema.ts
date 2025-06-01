@@ -265,7 +265,7 @@ export const assessmentSchema = z.object({
         seen.get(c.id)!.push(index);
       });
 
-      for (const [id, indices] of seen.entries()) {
+      for (const [, indices] of seen.entries()) {
         if (indices.length > 1) {
           indices.forEach((i) => {
             ctx.addIssue({

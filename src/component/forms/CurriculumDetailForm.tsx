@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { FieldError, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { CurriculumDetailInputs, curriculumDetailSchema } from "@/lib/formValidationSchema";
 import { createCurriculumDetail } from "@/lib/action";
@@ -89,7 +89,7 @@ const CurriculumDetailForm = ({ setOpen, type, data, relatedData }: CurriculumDe
             label="Mata Kuliah"
             name="courseId"
             control={control}
-            error={errors?.courseId}
+            error={errors?.courseId as FieldError}
             defaultValue={data?.courseId || []}
             isMulti={true}
             required={true}

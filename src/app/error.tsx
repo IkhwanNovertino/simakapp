@@ -1,14 +1,12 @@
+// Error boundaries must be Client Components
 'use client'
 import Image from "next/image"
-import Link from "next/link"
-
-// Error boundaries must be Client Components
 
 export default function GlobalError({
-  error,
+  // error,
   reset,
 }: {
-  error: Error & { digest?: string }
+  // error: Error & { digest?: string }
   reset: () => void
 }) {
   return (

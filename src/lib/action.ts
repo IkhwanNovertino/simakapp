@@ -1269,7 +1269,7 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
     const id = data.get("id") as string;
 
     await prisma.$transaction(async (tx: any) => {
-      const data = await tx.operator.delete({
+      await tx.operator.delete({
         where: {
           id: id.split(":")[0]
         },

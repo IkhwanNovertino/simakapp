@@ -2,13 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { PeriodInputs, periodSchema } from "@/lib/formValidationSchema";
 import { createPeriod, updatePeriod } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import Select from "react-select";
 import InputSelect from "../InputSelect";
 import { semester } from "@/lib/setting";
 
