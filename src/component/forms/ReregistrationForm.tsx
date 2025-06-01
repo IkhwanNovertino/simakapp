@@ -31,7 +31,7 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
   const { period } = relatedData;
 
   const action = type === "create" ? createReregistration : updateReregistration;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -40,7 +40,7 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data herregistrasi`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -84,33 +84,6 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
               label: item.name
             }))}
           />
-          {/* <label className="text-xs text-gray-500">Semester</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("periodId")}
-            defaultValue={data?.periodId}
-          >
-            <option
-              value=""
-              className="text-sm py-0.5 capitalize"
-            >
-              -- Pilih periode akademik
-            </option>
-            {period.map(
-              (period: { id: string; name: string }) => (
-                <option
-                  value={period.id} key={period.id}
-                  className="text-sm py-0.5 capitalize"
-                >
-                  {period.name}
-                </option>
-              ))}
-          </select>
-          {errors.periodId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.periodId.message.toString()}
-            </p>
-          )} */}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/2">
           <label className="text-xs text-gray-500">Status Herregistrasi</label>
@@ -135,7 +108,7 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: Reregistration
           />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Tambah" : "Ubah"}
       </button>

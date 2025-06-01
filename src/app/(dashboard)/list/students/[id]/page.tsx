@@ -3,6 +3,7 @@ import BigCalendar from "@/component/BigCalendar";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 const SingleStudentPage = async (
   { params }: { params: Promise<{ id: string }> }
@@ -18,6 +19,9 @@ const SingleStudentPage = async (
       lecturer: true,
     },
   });
+  if (!dataStudent) {
+    notFound()
+  }
   return (
     <div className="flex-1 p-4 flex flex-col gap-4 xl:flex-row">
       {/* LEFT */}

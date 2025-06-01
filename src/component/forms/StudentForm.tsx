@@ -35,7 +35,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
   })
 
   const action = type === "create" ? createStudent : updateStudent;
-  const [state, formAction] = useActionState(action, { success: false, error: false, fieldErrors: {} });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onValid = () => {
     formRef.current?.requestSubmit()
@@ -56,7 +56,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data mahasiswa`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     };
@@ -118,32 +118,19 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Program Studi</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("majorId")}
+          <InputSelect
+            control={control}
+            label="Program Studi"
+            name="majorId"
+            required={true}
+            error={errors?.majorId}
+            placeholder="-- Pilih prodi"
             defaultValue={data?.majorId}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih program studi
-            </option>
-
-            {majors.map((item: any) => (
-              <option
-                value={item.id}
-                key={item.id}
-                className="text-sm py-0.5"
-
-              >
-                {item.name}
-              </option>
-            ))}
-          </select>
-          {errors.majorId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.majorId.message.toString()}
-            </p>
-          )}
+            options={majors.map((item: { id: number, name: string }) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputSelect
@@ -158,60 +145,22 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
               label: item.name
             }))}
           />
-          {/* <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Dosen Wali</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("lecturerId")}
-            defaultValue={data?.lecturerId}
-          >
-            <option value={""} className="text-sm py-0.5">
-              -- Pilih perwalian akademik
-            </option>
-            {lecturer.map((item: any) => (
-              <option
-                value={item.id}
-                key={item.id}
-                className="text-sm py-0.5"
-
-              >
-                {item.name}
-              </option>
-            ))}
-          </select>
-          {errors.lecturerId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.lecturerId.message.toString()}
-            </p>
-          )} */}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Status Registrasi</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("statusRegister")}
+          <InputSelect
+            label="Status Registrasi"
+            name="statusRegister"
             defaultValue={data?.statusRegister}
-          >
-            <option value={""} className="text-sm py-0.5">
-              -- Pilih status registrasi
-            </option>
-            {StatusRegistrasi.map((item: any) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.statusRegister?.message && (
-            <p className="text-xs text-red-400">
-              {errors.statusRegister.message.toString()}
-            </p>
-          )}
+            error={errors?.statusRegister}
+            control={control}
+            placeholder="-- Pilih status.."
+            required={true}
+            options={StatusRegistrasi.map((item: string) => ({
+              value: item,
+              label: item,
+            }))}
+          />
         </div>
-
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Gender</label>
           <select
@@ -270,27 +219,19 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Status Mahasiswa</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("studentStatus")}
+          <InputSelect
+            label="Status Mahasiswa"
+            name="studentStatus"
+            control={control}
             defaultValue={data?.studentStatus}
-          >
-            {status.map((item: any) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.studentStatus?.message && (
-            <p className="text-xs text-red-400">
-              {errors.studentStatus.message.toString()}
-            </p>
-          )}
+            error={errors?.studentStatus}
+            placeholder="-- Pilih status.."
+            required={true}
+            options={status.map((item: string) => ({
+              value: item,
+              label: item,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputSelect
@@ -305,31 +246,6 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
               label: item
             }))}
           />
-          {/* <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Agama</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("religion")}
-            defaultValue={data?.religion}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih agama
-            </option>
-            {religion.map((item: string) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.religion?.message && (
-            <p className="text-xs text-red-400">
-              {errors.religion.message.toString()}
-            </p>
-          )} */}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
@@ -474,7 +390,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => 
           />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button
         className="bg-blue-400 text-white p-2 rounded-md cursor-pointer"
         onClick={handleSubmit(onValid)}

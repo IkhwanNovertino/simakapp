@@ -9,6 +9,7 @@ import { createCurriculum, updateCurriculum } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
+import InputSelect from "../InputSelect";
 
 interface CurriculumFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -29,7 +30,7 @@ const CurriculumForm = ({ setOpen, type, data, relatedData }: CurriculumFormProp
   })
 
   const action = type === "create" ? createCurriculum : updateCurriculum
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -38,7 +39,7 @@ const CurriculumForm = ({ setOpen, type, data, relatedData }: CurriculumFormProp
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data kurikulum`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -71,32 +72,24 @@ const CurriculumForm = ({ setOpen, type, data, relatedData }: CurriculumFormProp
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-2/6">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Program Studi</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("majorId")}
+          <InputSelect
+            control={control}
+            label="Program Studi"
+            name="majorId"
+            required={true}
+            error={errors?.majorId}
+            placeholder="-- Pilih program studi"
             defaultValue={data?.majorId}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih program studi
-            </option>
-
-            {majors.map((item: any) => (
-              <option
-                value={item.id}
-                key={item.id}
-                className="text-sm py-0.5"
-
-              >
-                {item.name}
-              </option>
-            ))}
-          </select>
-          {errors.majorId?.message && (
+            options={majors.map((item: any) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+          />
+          {/* {errors.majorId?.message && (
             <p className="text-xs text-red-400">
               {errors.majorId.message.toString()}
             </p>
-          )}
+          )} */}
         </div>
 
       </div>
@@ -144,7 +137,7 @@ const CurriculumForm = ({ setOpen, type, data, relatedData }: CurriculumFormProp
           />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Tambah" : "Ubah"}
       </button>

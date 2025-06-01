@@ -20,6 +20,7 @@ interface AssessmentFormProps {
 const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProps) => {
   const { allGradeComponent } = relatedData;
 
+
   const {
     register,
     handleSubmit,
@@ -37,12 +38,14 @@ const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProp
     name: "gradeComponents",
   })
 
-  console.log(`message`, errors?.gradeComponents);
-  console.log(`message`, errors?.gradeComponents?.message);
+  console.log(`ErrorStack`, errors);
+  console.log(`ErrorGRADE`, errors?.gradeComponents);
+  console.log(`ErrorGRADEID`, errors?.gradeComponents);
+  // const zodErrorIDDuplicate = errors?.gradeComponents.id?.message
 
 
   const action = type === "create" ? createAssessment : updateAssessment;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -51,7 +54,7 @@ const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProp
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data penilaian`);
+      toast.success(state?.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -132,8 +135,7 @@ const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProp
           + Tambah Komponen
         </button>
       </div>
-      {errors?.gradeComponents && (<span className="text-xs text-red-400">something went wrong!</span>)}
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state?.message}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Tambah" : "Ubah"}
       </button>

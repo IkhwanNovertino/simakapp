@@ -33,7 +33,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
   })
 
   const action = type === "create" ? createLecturer : updateLecturer;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onValid = () => {
     formRef.current?.requestSubmit()
@@ -54,7 +54,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data dosen`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -138,30 +138,19 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Pendidikan Terakhir</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("degree")}
+          <InputSelect
+            control={control}
+            label="Pendidikan Terakhir"
+            name="degree"
+            required={true}
+            error={errors?.degree}
+            placeholder="-- Pilih pend..."
             defaultValue={data?.degree}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih pendidikan terakhir
-            </option>
-            {degree.map((item) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.degree?.message && (
-            <p className="text-xs text-red-400">
-              {errors.degree.message.toString()}
-            </p>
-          )}
+            options={degree.map((item: string) => ({
+              value: item,
+              label: item,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
@@ -174,32 +163,19 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Program Studi</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("majorId")}
+          <InputSelect
+            control={control}
+            label="Program Studi"
+            name="majorId"
+            required={true}
+            error={errors?.majorId}
+            placeholder="-- Pilih prodi"
             defaultValue={data?.majorId}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih program studi
-            </option>
-
-            {majors.map((item: any) => (
-              <option
-                value={item.id}
-                key={item.id}
-                className="text-sm py-0.5"
-
-              >
-                {item.name}
-              </option>
-            ))}
-          </select>
-          {errors.majorId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.majorId.message.toString()}
-            </p>
-          )}
+            options={majors.map((item: { id: number, name: string }) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+          />
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -211,7 +187,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
             defaultValue={data?.gender}
           >
             <option value="" className="text-sm py-0.5">
-              -- Pilih gender
+              -- Pilih gender --
             </option>
             {gender.map((item) => (
               <option
@@ -307,7 +283,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) =
           />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button
         className="bg-blue-400 text-white p-2 rounded-md cursor-pointer"
         onClick={handleSubmit(onValid)}

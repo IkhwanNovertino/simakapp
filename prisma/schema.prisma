@@ -43,7 +43,7 @@ model User {
   password String?
   isStatus Boolean?  @default(false)
   roleId   Int?
-  role     Role?     @relation(fields: [roleId], references: [id])
+  role     Role?     @relation(fields: [roleId], references: [id], onDelete: Restrict)
   lecturer Lecturer?
   operator Operator?
   student  Student?
@@ -55,7 +55,7 @@ model User {
 model Session {
   id        String   @id @default(uuid())
   userId    String   @unique
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   expiresAt DateTime
   createdAt DateTime @default(now())
 
@@ -78,7 +78,7 @@ model Major {
 model Course {
   id           String      @id @default(uuid())
   name         String?
-  code         String?
+  code         String?     @unique
   sks          Int?
   majorId      Int?
   isPKL        Boolean     @default(false)
@@ -99,7 +99,7 @@ model Course {
 
 model Assessment {
   id               String             @id @default(uuid())
-  name             String?
+  name             String?            @unique
   assessmentDetail AssessmentDetail[]
   course           Course[]
 
@@ -108,7 +108,7 @@ model Assessment {
 
 model GradeComponent {
   id               String             @id @default(uuid())
-  name             String?
+  name             String?            @unique
   assessmentDetail AssessmentDetail[]
 
   @@map("sb25_grade_components")
@@ -189,7 +189,7 @@ model Student {
   majorId          Int?
   major            Major?             @relation(fields: [majorId], references: [id], onDelete: Restrict)
   lecturerId       String?
-  lecturer         Lecturer?          @relation(fields: [lecturerId], references: [id])
+  lecturer         Lecturer?          @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
   userId           String?            @unique
   user             User?              @relation(fields: [userId], references: [id], onDelete: Restrict)
   reregisterDetail ReregisterDetail[]
@@ -232,7 +232,7 @@ model ReregisterDetail {
   reregisterId       String
   reregister         Reregister     @relation(fields: [reregisterId], references: [id], onDelete: Cascade)
   studentId          String
-  student            Student        @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  student            Student        @relation(fields: [studentId], references: [id], onDelete: Restrict)
   nominal            Int?
   paymentReceiptFile String?
   paymentStatus      PaymentStatus  @default(BELUM_LUNAS)

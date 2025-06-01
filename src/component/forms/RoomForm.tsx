@@ -26,7 +26,7 @@ const RoomForm = ({ setOpen, type, data }: RoomFormProps) => {
     resolver: zodResolver(roomSchema)
   })
   const action = type === "create" ? createRoom : updateRoom;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -35,7 +35,7 @@ const RoomForm = ({ setOpen, type, data }: RoomFormProps) => {
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data ruang/lokal`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -103,7 +103,7 @@ const RoomForm = ({ setOpen, type, data }: RoomFormProps) => {
           />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Tambah" : "Ubah"}
       </button>

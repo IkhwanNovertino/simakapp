@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { FieldError, FieldErrors, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { RoleInputs, roleSchema } from "@/lib/formValidationSchema";
 import { createRole } from "@/lib/action";
@@ -27,10 +27,12 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
   } = useForm<RoleInputs>({
     resolver: zodResolver(roleSchema)
   })
+  console.log('ERRR ', errors);
+
 
   const { permissions } = relatedData;
 
-  const [state, formAction] = useActionState(createRole, { success: false, error: false });
+  const [state, formAction] = useActionState(createRole, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -39,7 +41,7 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data role`);
+      toast.success(state?.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -65,6 +67,7 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
           <InputField
             label="Nama Role"
             name="name"
+            required={true}
             defaultValue={data?.name}
             register={register}
             error={errors?.name}
@@ -100,11 +103,11 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
         </div>
         <div className="flex flex-col gap-2 w-full md:w-4/6">
           <InputSelect
-            label="Pilih Hak Akses"
+            label="Hak Akses"
             name="rolePermission"
-            defaultValue={data?.RolePermission}
             control={control}
-            error={errors?.rolePermission}
+            error={errors?.rolePermission as FieldError}
+            placeholder="-- pilih hak akses"
             required={true}
             isMulti={true}
             options={permissions.map((item: any) => ({
@@ -114,7 +117,7 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
           />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state?.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Tambah" : "Ubah"}
       </button>

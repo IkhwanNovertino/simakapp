@@ -8,6 +8,7 @@ import { UserInputs, userSchema } from "@/lib/formValidationSchema";
 import { createUserOperator, updateUserOperator } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import InputSelect from "../InputSelect";
 
 interface OperatorUserFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -23,12 +24,13 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
     register,
     handleSubmit,
     formState: { errors },
+    control,
   } = useForm<UserInputs>({
     resolver: zodResolver(userSchema)
   })
 
   const action = type === "createUser" ? createUserOperator : updateUserOperator;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -37,7 +39,7 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "createUser" ? "menambahkan" : "mengubah"} data user operator`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -81,31 +83,18 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Role Pengguna</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("roleId")}
+          <InputSelect
+            label="Role Pengguna"
+            name="roleId"
             defaultValue={data?.user?.roleId}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih role pengguna
-            </option>
-            {role.map((item: any) => (
-              <option
-                key={item.id}
-                value={item.id}
-                className="text-sm py-0.5"
-              >
-                {item.name}
-              </option>
-            ))}
-
-          </select>
-          {errors.roleId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.roleId.message.toString()}
-            </p>
-          )}
+            error={errors?.roleId}
+            control={control}
+            options={role.map((item: { id: number, name: string }) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+            required={true}
+          />
         </div>
         <div className="flex flex-col items-start gap-2 w-full md:w-1/3 md:mt-1">
           <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Status User</label>
@@ -120,7 +109,7 @@ const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserForm
           )}
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">
         {"Buat Akun Pengguna"}
       </button>

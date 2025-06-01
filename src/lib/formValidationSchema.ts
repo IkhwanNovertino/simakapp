@@ -11,7 +11,7 @@ export type PermissionInputs = z.infer<typeof permissionSchema>;
 
 export const roleSchema = z.object({
   id: z.coerce.number().optional(),
-  name: z.string().min(1, { message: "Hak akses harus diisi!" }),
+  name: z.string().min(1, { message: "Nama role harus diisi!" }),
   description: z.string().optional(),
   roleType: z.enum(["OPERATOR", "LECTURER", "STUDENT", "ADVISOR"], {message: "tipe role harus dipilih"}),
   rolePermission: z.array(z.coerce.number()).min(1, { message: "Hak akses harus dipilih!" }), //ids permission
@@ -65,7 +65,7 @@ export const userSchema = z.object({
   id: z.string().optional(),
   username: z.string().email({ message: "email tidak valid" }).min(5, { message: "email harus diisi" }).trim(),
   password: z.string().min(5, { message: "password minimal 5 karakter" }),
-  roleId: z.string().min(1, { message: "role pengguna harus diisi" }),
+  roleId: z.number().min(1, { message: "role pengguna harus diisi" }),
   isStatus: z.boolean().default(false)
 })
 
@@ -79,12 +79,12 @@ export const lecturerSchema = z.object({
   name: z.string().min(1, { message: "nama dosen harus diisi" }),
   frontTitle: z.string().optional(),
   backTitle: z.string().optional(),
-  degree: z.enum(["S1", "S2", "S3"], { message: "Pendidikan terakhir harus diisi" }),
+  degree: z.enum(["S1", "S2", "S3"], { message: "Pilih Pendidikan terakhir" }),
   year: z.coerce.number().min(4, {message: "tahun masuk harus diisi"}),
   address: z.string().optional(),
-  gender: z.enum(["PRIA", "WANITA"], { message: "Gender harus diisi" }),
-  religion: z.enum(["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"], {message: "agama harus diisi"}),
-  majorId: z.coerce.number().min(1, { message: "Program studi harus diisi" }),
+  gender: z.enum(["PRIA", "WANITA"], { message: "Pilih Gender" }),
+  religion: z.enum(["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"], {message: "Pilih agama"}),
+  majorId: z.coerce.number().min(1, { message: "Pilih program studi " }),
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),
   phone: z.string().optional(),
   photo: z.string().optional().or(z.literal("")),
@@ -94,7 +94,7 @@ export type LecturerInputs = z.infer<typeof lecturerSchema>;
 
 export const operatorSchema = z.object({
   id: z.string().optional(),
-  name: z.string().min(1, { message: "nama dosen harus diisi" }),
+  name: z.string().min(1, { message: "nama operator harus diisi" }),
   department: z.string().optional(),
 })
 
@@ -106,16 +106,16 @@ export const studentSchema = z.object({
   nim: z.string().length(12, {message: "NIM harus diisi"}),
   name: z.string().min(1, { message: "nama mahasiswa harus diisi" }),
   year: z.coerce.number().min(4, { message: "tahun terdaftar harus diisi" }),
-  religion: z.enum(["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"], {message: "agama harus diisi"}),
-  gender: z.enum(["PRIA", "WANITA"], { message: "Gender harus diisi" }),
+  religion: z.enum(["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"], {message: "Pilih agama"}),
+  gender: z.enum(["PRIA", "WANITA"], { message: "Pilih gender" }),
   address: z.string().optional(),
   domicile: z.string().optional(),
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),
   phone: z.string().optional(),
-  majorId: z.coerce.number().min(1, { message: "Program studi harus diisi" }),
+  majorId: z.coerce.number().min(1, { message: "Pilih program studi" }),
   lecturerId: z.string().min(1, { message: "Perwalian akademik harus diisi" }),
-  studentStatus: z.enum(["NONAKTIF", "AKTIF", "CUTI", "DO", "MENGUNDURKAN_DIRI", "LULUS"], {message: "status mahasiswa harus diisi"}),
-  statusRegister: z.string().min(1, {message: "status registrasi harus diisi"}),
+  studentStatus: z.enum(["NONAKTIF", "AKTIF", "CUTI", "DO", "MENGUNDURKAN_DIRI", "LULUS"], {message: "Pilih status mahasiswa"}),
+  statusRegister: z.string().min(1, {message: "Pilih status registrasi"}),
   photo: z.string().optional().or(z.literal("")),
   guardianName: z.string().optional(),
   guardianNIK: z.string().optional(),
@@ -124,7 +124,6 @@ export const studentSchema = z.object({
   guardianAddress: z.string().optional(),
   motherName: z.string().optional(),
   motherNIK: z.string().optional(),
-
   placeOfBirth: z.string().optional(),
   birthday: z.string().optional(),
   
@@ -256,19 +255,39 @@ export const assessmentSchema = z.object({
       percentage: z.coerce.number().min(1, { message: "persentase harus dari 1 sampai 100 %" }).max(100, { message: "persentase harus dari 1 sampai 100 %" }),
     }))
     .min(1, "Pilih minimal satu komponen nilai")
-    .refine((component) => {
-      const ids = component.map((item) => item.id);
-      return new Set(ids).size === ids.length;
-    }, {
-      message: "Komponen nilai tidak boleh duplikat",
-      path: ["gradeComponents"],
-    })
-    .refine((component) => {
-      const total = component.reduce((sum, c) => sum + c.percentage, 0);
-      return total === 100;
-    }, {
-      message: "Total persentase harus 100%",
-      path: ["gradeComponents"],
+    .superRefine((components, ctx) => {
+      // Cek duplikat ID
+      const seen = new Map<string, number[]>();
+      components.forEach((c, index) => {
+        if (!seen.has(c.id)) {
+          seen.set(c.id, []);
+        }
+        seen.get(c.id)!.push(index);
+      });
+
+      for (const [id, indices] of seen.entries()) {
+        if (indices.length > 1) {
+          indices.forEach((i) => {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Komponen nilai tidak boleh duplikat",
+              path: [i, "id"],
+            });
+          });
+        }
+      }
+
+      // Cek total persentase
+      const total = components.reduce((sum, c) => sum + c.percentage, 0);
+      if (total !== 100) {
+        components.forEach((_, i) => {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: "Total persentase harus 100%",
+            path: [i, "percentage"],
+          });
+        });
+      }
     })
 })
 

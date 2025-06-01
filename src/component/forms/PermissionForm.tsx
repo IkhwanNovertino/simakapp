@@ -30,7 +30,7 @@ const PermissionForm = ({ setOpen, type, data }: PermissionFormProps) => {
   })
 
   const action = type === "create" ? createPermission : updatePermission;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     console.log(data);
@@ -42,7 +42,7 @@ const PermissionForm = ({ setOpen, type, data }: PermissionFormProps) => {
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data hak akses`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -102,7 +102,7 @@ const PermissionForm = ({ setOpen, type, data }: PermissionFormProps) => {
           />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md cursor-pointer">
         {type === "create" ? "Tambah" : "Ubah"}
       </button>

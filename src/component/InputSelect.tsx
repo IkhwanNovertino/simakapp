@@ -1,4 +1,4 @@
-import { Controller } from "react-hook-form";
+import { Controller, FieldError } from "react-hook-form";
 import Select from "react-select";
 
 interface Option {
@@ -12,7 +12,7 @@ interface InputSelectProps {
   defaultValue?: string | number | string[] | number[];
   options: Option[];
   control: any;
-  error?: any;
+  error?: FieldError;
   required?: boolean;
   isMulti?: boolean;
   placeholder?: string;
@@ -22,7 +22,8 @@ const InputSelect = (
   {
     label, name, defaultValue, options, control, error, required, placeholder, isMulti = false
   }: InputSelectProps) => {
-  console.log('inputSelect', options);
+  console.log('ERRINPUTSELECT', error);
+
 
   return (
     <>
@@ -55,7 +56,7 @@ const InputSelect = (
         )}
       />
       {error?.message && (
-        <p className="text-xs text-red-400">{error.message.toString()}</p>
+        <p className="text-xs text-red-400">{error.message.toString() === "Expected number, received nan" ? `Pilih ${label}` : error.message.toString()}</p>
       )}
     </>
   )

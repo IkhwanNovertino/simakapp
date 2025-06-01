@@ -16,12 +16,12 @@ interface ReregistrationFormProps {
 const ReregisterCreateAll = ({ setOpen, type, data }: ReregistrationFormProps) => {
   console.log(data);
 
-  const [state, formAction] = useActionState(reregisterCreateAll, { success: false, error: false });
+  const [state, formAction] = useActionState(reregisterCreateAll, { success: false, error: false, message: "" });
 
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data mahasiswa`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -36,7 +36,7 @@ const ReregisterCreateAll = ({ setOpen, type, data }: ReregistrationFormProps) =
           Data mahasiswa akan ditambahkan pada {data?.name}
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "createMany" ? "Tambah" : "Ubah"}
       </button>

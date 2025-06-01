@@ -26,7 +26,7 @@ const GradeForm = ({ setOpen, type, data }: GradeFormProps) => {
     resolver: zodResolver(gradeSchema)
   })
   const action = type === "create" ? createGrade : updateGrade;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -35,7 +35,7 @@ const GradeForm = ({ setOpen, type, data }: GradeFormProps) => {
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data Komponen nilai`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -67,7 +67,7 @@ const GradeForm = ({ setOpen, type, data }: GradeFormProps) => {
           />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Tambah" : "Ubah"}
       </button>

@@ -143,7 +143,7 @@ const StudentListPage = async (
               <ModalAction>
                 <div className="flex items-center gap-3">
                   {canViewData && (
-                    <Link href={`/list/stundents/${item.id}`}>
+                    <Link href={`/list/students/${item.id}`}>
                       <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
                         <Image src="/icon/view.svg" alt="" width={20} height={20} />
                       </button>
@@ -151,13 +151,13 @@ const StudentListPage = async (
                   )}
                   {canUpdateData && <FormContainer table="student" type="update" data={item} />}
                   {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-                  {canDeleteData && (<FormContainer table="student" type="delete" id={item.id} />)}
+                  {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.userId}`} />)}
                 </div>
               </ModalAction>
             </div>
             <div className="hidden md:flex items-center gap-2">
               {canViewData && (
-                <Link href={`/list/stundents/${item.id}`}>
+                <Link href={`/list/students/${item.id}`}>
                   <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
                     <Image src="/icon/view.svg" alt="" width={20} height={20} />
                   </button>
@@ -165,7 +165,7 @@ const StudentListPage = async (
               )}
               {canUpdateData && <FormContainer table="student" type="update" data={item} />}
               {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-              {canDeleteData && (<FormContainer table="student" type="delete" id={item.id} />)}
+              {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.userId}`} />)}
             </div>
 
           </div>

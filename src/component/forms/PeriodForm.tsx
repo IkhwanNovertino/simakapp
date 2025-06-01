@@ -9,6 +9,8 @@ import { createPeriod, updatePeriod } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Select from "react-select";
+import InputSelect from "../InputSelect";
+import { semester } from "@/lib/setting";
 
 interface PeriodFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -32,7 +34,7 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
     resolver: zodResolver(periodSchema)
   })
   const action = type === "create" ? createPeriod : updatePeriod;
-  const [state, formAction] = useActionState(action, { success: false, error: false });
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -41,7 +43,7 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil ${type === "create" ? "menambahkan" : "mengubah"} data periode akademik`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -64,95 +66,37 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
           </div>
         )}
         <div className="flex flex-col gap-2 w-full md:w-1/2">
-          <label className="text-xs text-gray-500">Tahun Akademik</label>
-          {/* <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("year")}
-            defaultValue={data?.name.split(" ")[1]}
-          >
-            <option
-              value=""
-              className="text-sm py-0.5 capitalize"
-            >
-              -- Pilih tahun akademik --
-            </option>
-            {years.map((year) => (
-              <option
-                value={year} key={year}
-                className="text-sm py-0.5 capitalize"
-              >
-                {year}
-              </option>
-            ))}
-
-          </select> */}
-          <Controller
-            name="year"
+          <InputSelect
             control={control}
+            name="year"
             defaultValue={data?.name.split(" ")[1]}
-            render={({ field }) => (
-              <Select
-                {...field}
-                options={years.map((year: string) => ({
-                  value: year,
-                  label: year,
-                }))}
-                isClearable
-                placeholder="-- Pilih tahun akademik --"
-                classNamePrefix="react-select"
-                className="text-sm rounded-md"
-                onChange={(selected: any) => field.onChange(selected ? selected.value : "")}
-                value={
-                  years
-                    .map((year: any) => ({
-                      value: year,
-                      label: year,
-                    }))
-                    .find((option: any) => option.value === field.value) || null
-                }
-              />
-            )}
+            placeholder="-- Pilih tahun akademik"
+            error={errors.year}
+            options={years.map((year: string) => ({
+              value: year,
+              label: year,
+            }))}
+            label="Tahun Akademik"
+            required={true}
           />
-          {errors.year?.message && (
-            <p className="text-xs text-red-400">
-              {errors.year.message.toString()}
-            </p>
-          )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/3">
-          <label className="text-xs text-gray-500">Semester</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("semesterType")}
+          <InputSelect
+            control={control}
+            name="semesterType"
             defaultValue={data?.semesterType}
-          >
-            <option
-              value=""
-              className="text-sm py-0.5 capitalize"
-            >
-              -- Pilih semester
-            </option>
-            <option
-              value={"GANJIL"} key={"GANJIL"}
-              className="text-sm py-0.5 capitalize"
-            >
-              Ganjil
-            </option>
-            <option
-              value={"GENAP"} key={"GENAP"}
-              className="text-sm py-0.5 capitalize"
-            >
-              Genap
-            </option>
-          </select>
-          {errors.semesterType?.message && (
-            <p className="text-xs text-red-400">
-              {errors.semesterType.message.toString()}
-            </p>
-          )}
+            placeholder="-- Pilih semester"
+            error={errors.semesterType}
+            options={semester.map((semester: string) => ({
+              value: semester,
+              label: semester,
+            }))}
+            label="Semester"
+            required={true}
+          />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">
         {type === "create" ? "Tambah" : "Ubah"}
       </button>

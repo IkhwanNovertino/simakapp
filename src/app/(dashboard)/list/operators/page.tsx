@@ -108,14 +108,14 @@ const OperatorListPage = async (
               <div className="flex items-center gap-3">
                 {canUpdateData && (<FormContainer table="operator" type="update" data={item} />)}
                 {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-                {canDeleteData && (<FormContainer table="operator" type="delete" id={item.id} />)}
+                {canDeleteData && (<FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />)}
               </div>
             </ModalAction>
           </div>
           <div className="hidden md:flex items-center gap-2">
             {canUpdateData && <FormContainer table="operator" type="update" data={item} />}
             {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-            {canDeleteData && <FormContainer table="operator" type="delete" id={item.id} />}
+            {canDeleteData && <FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />}
           </div>
         </div>
       </td>

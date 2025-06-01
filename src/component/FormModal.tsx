@@ -299,12 +299,12 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
 
   const Form = () => {
 
-    const [state, formAction] = useActionState(deleteActionMap[table], { success: false, error: false });
+    const [state, formAction] = useActionState(deleteActionMap[table], { success: false, error: false, message: "" });
 
     const router = useRouter();
     useEffect(() => {
       if (state?.success) {
-        toast.success(`Data telah berhasil dihapus`);
+        toast.success(state.message.toString());
         router.refresh();
         setOpen(false);
       }
@@ -316,7 +316,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
         <span className="text-center font-medium">
           Data akan hilang. apakah anda yakin ingin menghapus data {namaTabelMap[table]} ini?
         </span>
-        {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+        {state?.error && (<span className="text-xs text-red-400">{state.message.toString() || "something went wrong!"}</span>)}
         <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
           Hapus
         </button>
@@ -339,7 +339,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
 
       {open && (
         <div className="w-screen h-screen fixed z-[9999] left-0 top-0 bg-black/60  flex items-start justify-center overflow-scroll">
-          <div className="bg-white p-4 relative rounded-md mt-8  w-[88%] md:w-[70%] lg:w-[60%] xl:w-[50%] 2xl:w-[40%] h-fit">
+          <div className="bg-white p-4 relative rounded-md mt-8  w-[88%] md:w-[70%] lg:w-[60%] xl:w-[55%] 2xl:w-[50%] h-fit">
             <Form />
             <div
               className="absolute top-4 right-4 cursor-pointer"

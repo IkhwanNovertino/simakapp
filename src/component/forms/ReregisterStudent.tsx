@@ -26,7 +26,7 @@ const ReregisterStudentForm = ({ setOpen, type, data }: ReregisterStudentFormPro
     resolver: zodResolver(reregistrationStudentSchema)
   })
 
-  const [state, formAction] = useActionState(createReregisterStudent, { success: false, error: false });
+  const [state, formAction] = useActionState(createReregisterStudent, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -35,7 +35,7 @@ const ReregisterStudentForm = ({ setOpen, type, data }: ReregisterStudentFormPro
   const router = useRouter();
   useEffect(() => {
     if (state?.success) {
-      toast.success(`Berhasil menyimpan data herregistrasi`);
+      toast.success(state.message.toString());
       router.refresh();
       setOpen(false);
     }
@@ -326,7 +326,7 @@ const ReregisterStudentForm = ({ setOpen, type, data }: ReregisterStudentFormPro
           />
         </div>
       </div>
-      {state?.error && (<span className="text-xs text-red-400">something went wrong!</span>)}
+      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button
         className="bg-blue-400 text-white p-2 rounded-md disabled:bg-blue-500/30 disabled:cursor-not-allowed"
         disabled={data?.isStatusForm}
