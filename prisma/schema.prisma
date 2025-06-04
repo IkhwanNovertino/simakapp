@@ -31,7 +31,7 @@ model RolePermission {
   roleId       Int
   role         Role?       @relation(fields: [roleId], references: [id], onDelete: Cascade)
   permissionId Int
-  permission   Permission? @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  permission   Permission? @relation(fields: [permissionId], references: [id], onDelete: Restrict)
 
   @@id([roleId, permissionId])
   @@map("sb25_role_permissions")
@@ -252,7 +252,7 @@ model ReregisterDetail {
 
 model Curriculum {
   id               String             @id @default(uuid())
-  name             String?
+  name             String?            @unique
   majorId          Int?
   major            Major?             @relation(fields: [majorId], references: [id], onDelete: Restrict)
   startDate        DateTime?
@@ -267,10 +267,11 @@ model CurriculumDetail {
   id           String     @id @default(uuid())
   curriculumId String
   curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Restrict)
-  courseId     String?
-  course       Course?    @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  courseId     String
+  course       Course     @relation(fields: [courseId], references: [id], onDelete: Restrict)
   semester     Int?
 
+  @@unique([curriculumId, courseId])
   @@map("sb25_curriculum_details")
 }
 

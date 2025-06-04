@@ -54,7 +54,13 @@
 - assessmentId
   - String
   - FK
-  -required
+    -required
+
+## Bussiness Rules
+
+- code harus unique
+- nama mata kuliah boleh sama dalam satu prodi asalkan SKS berbeda
+
   <!-- - assesmentType:
   - REGULAR
   - Komponen nilai:
