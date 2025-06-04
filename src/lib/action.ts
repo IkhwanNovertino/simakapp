@@ -1762,6 +1762,23 @@ export const createReregisterStudent = async (state: stateType, data: Reregistra
 
 export const createCurriculum = async (state: stateType, data: CurriculumInputs) => {
   try {
+    // let dataCreate = {
+    //   name: data?.name,
+    //   majorId: data?.majorId,
+    //   startDate: new Date(data?.startDate || Date.now()),
+    //   endDate: new Date(data?.endDate || Date.now()),
+    //   isActive: data?.isActive,
+    // }
+    if (data?.isActive) {
+      await prisma.curriculum.updateMany({
+        where: {
+          majorId: data?.majorId,
+        },
+        data: {
+          isActive: false,
+        }
+      })
+    }
     await prisma.curriculum.create({
       data: {
         name: data?.name,
@@ -1787,6 +1804,18 @@ export const createCurriculum = async (state: stateType, data: CurriculumInputs)
 };
 export const updateCurriculum = async (state: stateType, data: CurriculumInputs) => {
   try {
+
+    if (data?.isActive) {
+      await prisma.curriculum.updateMany({
+        where: {
+          majorId: data?.majorId,
+        },
+        data: {
+          isActive: false,
+        }
+      })
+    }
+
     await prisma.curriculum.update({
       where: {
         id: data?.id

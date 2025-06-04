@@ -85,16 +85,11 @@ const CurriculumForm = ({ setOpen, type, data, relatedData }: CurriculumFormProp
               label: item.name,
             }))}
           />
-          {/* {errors.majorId?.message && (
-            <p className="text-xs text-red-400">
-              {errors.majorId.message.toString()}
-            </p>
-          )} */}
         </div>
 
       </div>
       <div className="flex justify-between flex-wrap gap-4">
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
           <InputField
             label="Tanggal Mulai"
             name="startDate"
@@ -104,7 +99,7 @@ const CurriculumForm = ({ setOpen, type, data, relatedData }: CurriculumFormProp
             error={errors?.startDate}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
           <InputField
             label="Tanggal Selesai"
             name="endDate"
@@ -114,24 +109,27 @@ const CurriculumForm = ({ setOpen, type, data, relatedData }: CurriculumFormProp
             error={errors?.endDate}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/2">
           <label className="text-xs text-gray-500">Status Kurikulum</label>
           <Controller
             name="isActive"
             control={control}
             defaultValue={!!data?.isActive}
             render={({ field }) => (
-              <div className="flex items-center gap-2">
-                <input
-                  id="isActive"
-                  type="checkbox"
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                  className="w-4 h-4 has-checked:text-indigo-900"
-                />
-                <label htmlFor="isActive" className="text-sm text-gray-600">
+              <div className="flex flex-col gap-2">
+                <label htmlFor="isActive" className="peer flex items-center justify-start gap-1.5 text-sm text-gray-600 has-checked:text-indigo-900 has-checked:font-medium">
+                  <input
+                    id="isActive"
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    className="w-4 h-4"
+                  />
                   Mengaktifkan Kurikulum
                 </label>
+                <div className="hidden text-sm font-medium text-amber-400 peer-has-checked:flex">
+                  Kurikulum sebelumnya akan dinonaktifkan !
+                </div>
               </div>
             )}
           />
