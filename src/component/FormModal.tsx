@@ -28,6 +28,7 @@ export interface FormModalProps {
   | "curriculumDetail"
   | "grade"
   | "assessment"
+  | "krs"
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
   data?: any;
   id?: any;
@@ -91,6 +92,9 @@ const GradeForm = dynamic(() => import("./forms/GradeForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const AssessmentForm = dynamic(() => import("./forms/AssessmentForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const KrsForm = dynamic(() => import("./forms/KrsForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -242,6 +246,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  krs: (setOpen, type, data, relatedData) =>
+    <KrsForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -265,6 +276,7 @@ const deleteActionMap = {
   curriculumDetail: deleteCurriculumDetail,
   grade: deleteGrade,
   assessment: deleteAssessment,
+  krs: deleteAssessment,
 };
 
 const namaTabelMap = {
@@ -288,6 +300,7 @@ const namaTabelMap = {
   curriculumDetail: "",
   grade: "komponen nilai",
   assessment: "penilaian",
+  krs: "KRS",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
