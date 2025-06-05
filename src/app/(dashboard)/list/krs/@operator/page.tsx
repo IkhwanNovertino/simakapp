@@ -1,6 +1,5 @@
 import FormContainer from "@/component/FormContainer";
 import TableSearch from "@/component/TableSearch";
-import Image from "next/image";
 
 const KRSListPage = () => {
   return (

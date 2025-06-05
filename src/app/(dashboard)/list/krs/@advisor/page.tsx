@@ -1,6 +1,5 @@
 import FormContainer from "@/component/FormContainer";
 import TableSearch from "@/component/TableSearch";
-import Image from "next/image";
 
 const KRSAdvisorPage = () => {
   return (
@@ -10,7 +9,7 @@ const KRSAdvisorPage = () => {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-              <FormContainer table="krs" type="create" />
+            {/* <FormContainer table="krs" type="create" /> */}
           </div>
         </div>
       </div>
