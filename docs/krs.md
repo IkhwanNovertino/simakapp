@@ -13,11 +13,6 @@
   - String
   - PK
   - uuid
-- periodId
-  - String?
-  - FK
-  - uuid
-  - required
 - reregisterId
   - String?
   - FK
@@ -58,10 +53,5 @@ enum StudyPlanStatus {
 
 ### Alur pembuatkan data KRS di sistem
 
-```
-NOTE : Menghapus periodId karena sudah ada di reregisterId
-```
-
-- Ketika Admin membuat data reregisterDetail, data KRS juga langsung dibuat.
-- Permaslahan : 1. Apakah mahasiswa yang mengajukan cuti juga harus memiliki data KRS di semester saat cuti ? 2. Apakah mahasiswa yang nonaktif, juga harus memiliki data KRS di semester saat nonaktif ?
-
+- Ketika Admin mnegubah data reregisterDetail status AKTIF, data KRS juga langsung dibuat.
+- Permaslahan : 1. Apakah mahasiswa yang mengajukan cuti juga harus memiliki data KRS di semester saat cuti ? --TIDAK-- 2. Apakah mahasiswa yang nonaktif, juga harus memiliki data KRS di semester saat nonaktif ? --TIDAK--
