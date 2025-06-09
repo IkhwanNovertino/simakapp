@@ -51,6 +51,21 @@ enum StudyPlanStatus {
 
 <!-- UNTUK DIHAPUS -->
 
+```
+NOTE: UNTUK DIBAHAS DI KHS
+- personName
+  - String?
+- positionName
+  - String?
+
+- Kalau di KRS, mengetahui dosen wali
+- Kalau di KHS, mengetahui kaprodi
+  - Kaprodi yang ditampilkan, apakah ketika KHS dibuat?
+- Kalau di Transkip, mengetahui Wakil Ketua Bidang Akademik dan Kemahasiswaan.
+  - Wakabid yang ditampilkan, apakah ketika Transkip dibuat?
+  - Di transkip sementara, apakah diperlukan mengetahui jabatan akademik?
+```
+
 ### Alur pembuatkan data KRS di sistem
 
 - Ketika Admin mnegubah data reregisterDetail status AKTIF, data KRS juga langsung dibuat.
