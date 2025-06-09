@@ -93,6 +93,7 @@ model Course {
   predecessor      Course?            @relation("CourseHistory", fields: [predecessorId], references: [id], onDelete: Restrict)
   successor        Course?            @relation("CourseHistory")
   curriculumDetail CurriculumDetail[]
+  KrsDetail        KrsDetail[]
 
   @@map("sb25_courses")
 }
@@ -273,6 +274,46 @@ model CurriculumDetail {
 
   @@unique([curriculumId, courseId])
   @@map("sb25_curriculum_details")
+}
+
+model Krs {
+  id           String          @id @default(uuid())
+  reregisterId String
+  studentId    String
+  ipk          Float
+  maxSks       String
+  lecturerId   String
+  isStatusForm StudyPlanStatus @default(DRAFT)
+  KrsDetail    KrsDetail[]
+
+  @@map("sb25_krs")
+}
+
+model KrsDetail {
+  id       String  @id @default(uuid())
+  krsId    String
+  krs      Krs     @relation(fields: [krsId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course  @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  isAcc    Boolean @default(false)
+
+  @@map("sb25_krs_details")
+}
+
+model Position {
+  id           String  @id @default(uuid())
+  positionName String?
+  personName   String?
+
+  @@map("sb25_position")
+}
+
+enum StudyPlanStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  REJECTED
+  NEED_REVISION
 }
 
 enum SemesterType {
