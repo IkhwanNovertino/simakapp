@@ -1,18 +1,170 @@
 import FormContainer from "@/component/FormContainer";
+import ModalAction from "@/component/ModalAction";
+import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
+import { prisma } from "@/lib/prisma";
+import { ITEM_PER_PAGE } from "@/lib/setting";
+import { Krs, Lecturer, Period, Prisma, Reregister, Student } from "@prisma/client";
+import { redirect } from "next/navigation";
 
-const KRSListPage = () => {
+type KrsDataType = Krs & { student: Student } & { lecturer: Lecturer } & { reregister: Reregister & { period: Period } };
+
+const KRSListPage = async (
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
+) => {
+  const canCreateData = await canRoleCreateData("krs");
+  const canUpdateData = await canRoleUpdateData("krs");
+  const canDeleteData = await canRoleDeleteData("krs");
+  const canViewData = await canRoleViewData("krs");
+
+  if (!canViewData) {
+    redirect("/")
+  }
+
+  const { page, ...queryParams } = await searchParams;
+  const p = page ? parseInt(page) : 1;
+
+  const query: Prisma.KrsWhereInput = {}
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case "search":
+            query.OR = [
+              {
+                student: {
+                  name: { contains: value, mode: "insensitive" }
+                }
+              }
+            ]
+            break;
+
+          default:
+            break;
+        }
+      }
+    }
+  };
+
+  const [data, count] = await prisma.$transaction([
+    prisma.krs.findMany({
+      where: query,
+      include: {
+        reregister: {
+          include: {
+            period: true,
+          }
+        },
+        lecturer: true,
+        student: {
+          include: {
+            major: true,
+          }
+        },
+        krsDetail: true,
+      },
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (p - 1),
+    }),
+    prisma.krs.count({ where: query }),
+  ]);
+
+  const columns = [
+    {
+      header: "Info",
+      accessor: "info",
+      className: "p-4",
+    },
+    {
+      header: "Periode Akademik",
+      accessor: "periode akademik",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "IPK",
+      accessor: "ipk",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "max. SKS",
+      accessor: "max. sks",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Status",
+      accessor: "status",
+      className: "hidden lg:table-cell",
+    },
+    {
+      header: "Actions",
+      accessor: "action",
+      className: "hidden md:table-cell",
+    },
+  ];
+
+  const renderRow = (item: KrsDataType) => {
+    const isStatusForm = ["p-1 rounded-lg text-[10px] font-bold self-start"];
+    if (item.isStatusForm === "DRAFT") isStatusForm.push("text-gray-500 bg-gray-200");
+    if (item.isStatusForm === "SUBMITTED") isStatusForm.push("text-blue-500 bg-blue-100");
+    if (item.isStatusForm === "APPROVED") isStatusForm.push("text-green-500 bg-green-100");
+    if (item.isStatusForm === "REJECTED") isStatusForm.push("text-rose-500 bg-rose-100");
+    if (item.isStatusForm === "NEED_REVISION") isStatusForm.push("text-yellow-500 bg-yellow-200");
+
+    return (
+      <tr
+        key={item.id}
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-primary-light"
+      >
+        <td className="flex items-center gap-4 p-4">
+          <div className="flex flex-col">
+            <h3 className="font-semibold">{item?.student?.name ?? ""}</h3>
+            <p className="hidden md:flex text-xs text-gray-500">Angkatan: {item?.student?.year ?? ""}</p>
+            <p className="flex text-xs text-gray-500">{item?.student?.nim || ""}</p>
+            <p className="flex lg:hidden">
+              <span className={isStatusForm.join(" ")}>
+                {item?.isStatusForm || ""}
+              </span>
+            </p>
+          </div>
+        </td>
+        <td className="hidden md:table-cell">{item?.reregister?.period?.name ?? ""}</td>
+        <td className="hidden md:table-cell">{item.ipk ?? ""}</td>
+        <td className="hidden md:table-cell capitalize">{item.maxSks || ""}</td>
+        <td className="hidden lg:table-cell capitalize">
+          <span className={isStatusForm.join(" ")}>
+            {item?.isStatusForm || ""}
+          </span>
+        </td>
+        <td>
+          <div className="flex items-center gap-2">
+            <div className="md:hidden flex items-center justify-end gap-2">
+              <ModalAction>
+                <div className="flex items-center gap-3">
+                  {canUpdateData && (<FormContainer table="krs" type="update" data={item} />)}
+                  {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
+                </div>
+              </ModalAction>
+            </div>
+
+            <div className="hidden md:flex items-center gap-2">
+              {canUpdateData && (<FormContainer table="krs" type="update" data={item} />)}
+              {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
+            </div>
+          </div>
+        </td >
+      </tr >
+    )
+  }
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">Daftar Kartu Rencana Studi</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            <FormContainer table="krs" type="create" />
-          </div>
         </div>
       </div>
+      <Table columns={columns} renderRow={renderRow} data={data} />
     </div>
   )
 }

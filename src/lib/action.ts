@@ -3,19 +3,20 @@
 import path from "path";
 import {
   AssessmentInputs,
-  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
+  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, KrsInputs, lecturerSchema, MajorInputs,
   OperatorInputs, PeriodInputs, PermissionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, studentSchema, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { CampusType, Gender, PaymentStatus, Religion, SemesterStatus } from "@prisma/client";
+import { CampusType, Gender, PaymentStatus, Religion, SemesterStatus, StudyPlanStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
 import logger from "./logger";
 import { handlePrismaError } from "./errors/prismaError";
 import { AppError } from "./errors/appErrors";
+import { calculatingSKSLimits } from "./utils";
 
 type stateType = {
   success: boolean;
@@ -1539,11 +1540,27 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
       ...dataRaw,
       paymentReceiptFile: fileUrl ?? '',
     });
-    
+
     if (!validation.success) {
       return { success: false, error: true, message: "Data gagal ditambahkan" }
     };
     
+
+    if (validation.data?.semesterStatus === "AKTIF") {
+      // jika ada data khs, maka ipk diambil dari studentId di KHS 
+      const ipkNum = Number(parseFloat("3.25").toFixed(2));
+      const maxSKS = await calculatingSKSLimits(ipkNum);
+      await prisma.krs.create({
+        data: {
+          reregisterId: validation?.data?.reregisterId,
+          studentId: validation?.data?.studentId,
+          ipk: ipkNum,
+          maxSks: maxSKS,
+          lecturerId: validation.data.lecturerId,
+        }
+      })
+    }
+
     await prisma.reregisterDetail.create({
       data: {
         reregisterId: validation.data.reregisterId,
@@ -1561,6 +1578,8 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err: any) {
+    console.log(err);
+    
     try {
       handlePrismaError(err)
     } catch (error: any) {
@@ -1629,6 +1648,21 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
     if (!validation.success) {
       return { success: false, error: true, message: "Data gagal ditambahkan" }
     };
+
+    if (validation.data?.semesterStatus === "AKTIF") {
+      // jika ada data khs, maka ipk diambil dari studentId di KHS 
+      const ipkNum = Number(parseFloat("3.25").toFixed(2));
+      const maxSKS = await calculatingSKSLimits(ipkNum);
+      await prisma.krs.create({
+        data: {
+          reregisterId: validation?.data?.reregisterId,
+          studentId: validation?.data?.studentId,
+          ipk: ipkNum,
+          maxSks: maxSKS,
+          lecturerId: validation.data.lecturerId,
+        }
+      })
+    }
 
     await prisma.$transaction([
       prisma.student.update({
@@ -2061,6 +2095,118 @@ export const updateAssessment = async (state: stateType, data: AssessmentInputs)
   }
 }
 export const deleteAssessment = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.$transaction([
+      prisma.assessmentDetail.deleteMany({
+        where: {
+          assessmentId: id,
+        }
+      }),
+      prisma.assessment.delete({
+        where: {
+          id: id,
+        }
+      }),
+    ]);
+    return { success: true, error: false, message: "Data berhasil dihapus" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const updateKRS = async (state: stateType, data: KrsInputs) => {
+  try {
+    console.log('createKRS', data);
+
+    await prisma.$transaction(async (tx: any) => {
+      for (const itemCourse of data?.krsDetail) {
+        await prisma.krsDetail.create({
+          data: {
+            krsId: data?.id,
+            courseId: itemCourse?.courseId,
+            isAcc: itemCourse?.isAcc,
+          }
+        })
+      }
+
+      await prisma.krs.update({
+        where: {
+          id: data?.id,
+        },
+        data: {
+          isStatusForm: "SUBMITTED" as StudyPlanStatus,
+        }
+      })
+
+    });
+    
+    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const createKRS = async (state: stateType, data: KrsInputs) => {
+  try {
+    console.log(data);
+    // await prisma.$transaction(async (tx: any) => {
+    //   // delete data assessmentDetail yang lama
+    //   await tx.assessmentDetail.deleteMany({
+    //     where: {
+    //       assessmentId: data.id,
+    //     }
+    //   })
+
+    //   // create data assessment baru diinput
+    //   await tx.assessment.update({
+    //     where: {
+    //       id: data.id,
+    //     },
+    //     data: {
+    //       name: data.name,
+    //       assessmentDetail: {
+    //         create: data.gradeComponents.map((item) => ({
+    //           percentage: item.percentage,
+    //           grade: {
+    //             connect: {
+    //               id: item.id,
+    //             },
+    //           },
+    //         })),
+    //       },
+    //     }
+    //   });
+    // });
+    return { success: true, error: false, message: "Data berhasil diubah" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const deleteKRS = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     await prisma.$transaction([

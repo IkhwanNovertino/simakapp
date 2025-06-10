@@ -93,7 +93,7 @@ model Course {
   predecessor      Course?            @relation("CourseHistory", fields: [predecessorId], references: [id], onDelete: Restrict)
   successor        Course?            @relation("CourseHistory")
   curriculumDetail CurriculumDetail[]
-  KrsDetail        KrsDetail[]
+  krsDetail        KrsDetail[]
 
   @@map("sb25_courses")
 }
@@ -149,6 +149,7 @@ model Lecturer {
   user             User?              @relation(fields: [userId], references: [id], onDelete: Restrict)
   student          Student[]
   reregisterDetail ReregisterDetail[]
+  krs              Krs[]
 
   @@map("sb25_lecturers")
 }
@@ -194,6 +195,7 @@ model Student {
   userId           String?            @unique
   user             User?              @relation(fields: [userId], references: [id], onDelete: Restrict)
   reregisterDetail ReregisterDetail[]
+  krs              Krs[]
 
   @@map("sb25_students")
 }
@@ -225,6 +227,7 @@ model Reregister {
   period             Period?            @relation(fields: [periodId], references: [id], onDelete: Restrict)
   isReregisterActive Boolean?           @default(false)
   reregisterDetail   ReregisterDetail[]
+  krs                Krs[]
 
   @@map("sb25_reregisters")
 }
@@ -279,12 +282,15 @@ model CurriculumDetail {
 model Krs {
   id           String          @id @default(uuid())
   reregisterId String
+  reregister   Reregister      @relation(fields: [reregisterId], references: [id], onDelete: Restrict)
   studentId    String
+  student      Student         @relation(fields: [studentId], references: [id], onDelete: Restrict)
   ipk          Float
   maxSks       String
   lecturerId   String
+  lecturer     Lecturer        @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
   isStatusForm StudyPlanStatus @default(DRAFT)
-  KrsDetail    KrsDetail[]
+  krsDetail    KrsDetail[]
 
   @@map("sb25_krs")
 }
@@ -302,7 +308,7 @@ model KrsDetail {
 
 model Position {
   id           String  @id @default(uuid())
-  positionName String?
+  positionName String? @unique
   personName   String?
 
   @@map("sb25_position")

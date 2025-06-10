@@ -170,11 +170,32 @@ const FormContainer = async (
         relatedData = { allGradeComponent: gradeComponents };
         break;
       case "krs":
-        const gradeComponent = await prisma.gradeComponent.findMany({
-          select: { id: true, name: true },
+        const courseKRS = await prisma.curriculum.findFirst({
+          where: {
+            majorId: data?.student?.majorId,
+            isActive: true,
+          },
+          include: {
+            curriculumDetail: {
+              include: {
+                course: true,
+              }
+            },
+          },
+        });
+        const reregisterDetail = await prisma.reregisterDetail.findUnique(  {
+          where: {
+            reregisterId_studentId: {
+              reregisterId: data.reregisterId,
+              studentId: data.studentId,
+            },
+          },
         });
 
-        relatedData = { allGradeComponent: gradeComponent };
+        const coursePassToForm = courseKRS?.curriculumDetail;
+
+
+        relatedData = { course: coursePassToForm, semesterFromReregisterDetail: reregisterDetail?.semester };
         break;
       default:
         break;
