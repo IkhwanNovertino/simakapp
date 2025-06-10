@@ -6,6 +6,7 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Lecturer, Major, Prisma, Student, User } from "@prisma/client";
 import Image from "next/image";
@@ -17,6 +18,7 @@ type StudentDataType = Student & { major: Major } & { user: User } & { lecturer:
 const StudentListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
+  const user = await getSession();
   const canCreateData = await canRoleCreateData("students");
   const canUpdateData = await canRoleUpdateData("students");
   const canDeleteData = await canRoleDeleteData("students");
@@ -51,6 +53,12 @@ const StudentListPage = async (
       }
     }
   };
+
+  if (user?.roleType === "ADVISOR") {
+    query.lecturer = {
+      userId: user.userId,
+    }
+  }
 
   const [data, count, dataFilter] = await prisma.$transaction([
     prisma.student.findMany({
