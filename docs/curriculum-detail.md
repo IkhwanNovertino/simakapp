@@ -25,5 +25,3 @@
   - Integer?
   - 1 s/d 8
   - required
-
-@@unique("curriculumId", "courseId");

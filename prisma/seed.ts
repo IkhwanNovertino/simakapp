@@ -1,4 +1,5 @@
 import { role } from "@/lib/data";
+import { courseType } from "@/lib/setting";
 import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterType } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
@@ -113,27 +114,246 @@ async function main() {
       },
     ]
   })
+  // GradeComponent
+  await prisma.gradeComponent.createMany({
+    data: [
+      { name: "Absensi dan Aktivitas" },
+      { name: "Tugas Kelompok" },
+      { name: "Tugas Mandiri" },
+      { name: "Ujian Tengah Semester" },
+      { name: "Ujian Akhir Semester" },
+      { name: "Praktikum" },
+      { name: "Report/ Laporan" },
+      { name: "Presentasi Laporan" },
+      { name: "Kejelasan Permasalahan Penelitian" },
+      { name: "Tinjauan Pustaka dan Landasan Teori" },
+      { name: "Kelengkapan Data" },
+      { name: "Instrumen Penelitian" },
+      { name: "Metode Pengujian" },
+      { name: "Demonstrasi" },
+    ]
+  })
+
+  await prisma.assessment.create({
+    data: {
+        name: "REGULER",
+        assessmentDetail: {
+          create: [
+            {
+              percentage: 10,
+              grade: {
+                connect: {
+                  name: "Absensi dan Aktivitas"
+                }
+              },
+            },
+            {
+              percentage: 20,
+              grade: {
+                connect: {
+                  name: "Tugas Mandiri"
+                }
+              },
+            },
+            {
+              percentage: 10,
+              grade: {
+                connect: {
+                  name: "Tugas Kelompok"
+                }
+              },
+            },
+            {
+              percentage: 25,
+              grade: {
+                connect: {
+                  name: "Ujian Tengah Semester"
+                }
+              },
+            },
+            {
+              percentage: 35,
+              grade: {
+                connect: {
+                  name: "Ujian Akhir Semester"
+                }
+              },
+            },
+          ]
+        },
+      },
+  })
+  await prisma.assessment.create({
+    data: {
+        name: "PRAKTIKUM",
+        assessmentDetail: {
+          create: [
+            {
+              percentage: 60,
+              grade: {
+                connect: {
+                  name: "Praktikum"
+                }
+              },
+            },
+            {
+              percentage: 20,
+              grade: {
+                connect: {
+                  name: "Report/ Laporan"
+                }
+              },
+            },
+            {
+              percentage: 20,
+              grade: {
+                connect: {
+                  name: "Presentasi Laporan"
+                }
+              },
+            },
+          ]
+        },
+      },
+  })
+  await prisma.assessment.create({
+    data: {
+        name: "SEMINAR PROPOSAL",
+        assessmentDetail: {
+          create: [
+            {
+              percentage: 20,
+              grade: {
+                connect: {
+                  name: "Kejelasan Permasalahan Penelitian"
+                }
+              },
+            },
+            {
+              percentage: 15,
+              grade: {
+                connect: {
+                  name: "Tinjauan Pustaka dan Landasan Teori"
+                }
+              },
+            },
+            {
+              percentage: 15,
+              grade: {
+                connect: {
+                  name: "Kelengkapan Data"
+                }
+              },
+            },
+            {
+              percentage: 15,
+              grade: {
+                connect: {
+                  name: "Instrumen Penelitian"
+                }
+              },
+            },
+            {
+              percentage: 15,
+              grade: {
+                connect: {
+                  name: "Metode Pengujian"
+                }
+              },
+            },
+            {
+              percentage: 20,
+              grade: {
+                connect: {
+                  name: "Presentasi Laporan"
+                }
+              },
+            },
+          ]
+        },
+      },
+  })
+  await prisma.assessment.create({
+    data: {
+        name: "TUGAS AKHIR",
+        assessmentDetail: {
+          create: [
+            {
+              percentage: 30,
+              grade: {
+                connect: {
+                  name: "Report/ Laporan"
+                }
+              },
+            },
+            {
+              percentage: 30,
+              grade: {
+                connect: {
+                  name: "Presentasi Laporan"
+                }
+              },
+            },
+            {
+              percentage: 40,
+              grade: {
+                connect: {
+                  name: "Demonstrasi"
+                }
+              },
+            },
+          ]
+        },
+      },
+  })
+
+  
 
   // course
   const courseData = [
     // SI
-    {code: "SB-ISI-027", name: "Pendidikan Pancasila dan NKRI", sks: 3, prodi: "Sistem Informasi"},
-    {code: "SB-ISI-017", name: "Pemrograman Berbasis Web", sks: 4, prodi: "Sistem Informasi"},
-    {code: "SB-ISI-003", name: "Konsep Basis Data", sks: 3, prodi: "Sistem Informasi"},
-    {code: "SB-ISI-010", name: "Analisa dan Perancangan Sistem Informasi", sks: 3, prodi: "Sistem Informasi"},
-    {code: "SB-ISO-005", name: "User Experience/Interface", sks: 3, prodi: "Sistem Informasi"},
-    {code: "SB-ISO-002", name: "IOT (Internet of Things)", sks: 3, prodi: "Sistem Informasi"},
-    { code: "SB-ISPS2-005", name: "Data Mining (PSI)", sks: 3, prodi: "Sistem Informasi" },
+    { code: "SB-ISI-007", name: "Pengantar Teknologi Informasi", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISI-028", name: "Pendidikan Kewarganegaraan dan Antikorupsi", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISI-030", name: "Bahasa Inggris", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISI-001", name: "Konsep Sistem Informasi", sks: 2, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISI-014", name: "Dasar Pemrograman", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISI-029", name: "Bahasa Indonesia", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISO-007", name: "Human Resource Management", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISO-004", name: "Computational Thinking", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISPB1-002", name: "Pengantar Bisnis (PBMB)", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISPS1-004", name: "Analisis & Desain Proses Bisnis (Pemodelan Bisnis) (PSI)", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISPB2-006", name: "E-Commerce(PBMB)", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISPS2-006", name: "Artificial Intelligence (PSI)", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISO-101", name: "Big Data", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISO-103", name: "Matematika Diskrit", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISO-105", name: "Analitik dan Visualisasi Data", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISO-107", name: "Cloud Computing", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISO-109", name: "Kreatif Digital", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ISI-025", name: "Praktek Kerja Lapangan", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: true, isSkripsi: false, assessment: "PRAKTIKUM"},
+    { code: "SB-ISI-024", name: "Tugas Akhir", sks: 6, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: true, assessment: "TUGAS AKHIR"},
+
     // TI
-    { code: "SB-ITI-007", name: "Keamanan Data dan Informasi", sks: 3, prodi: "Teknik Informatika" },
-    { code: "SB-ITI-025", name: "Cloud Computing", sks: 3, prodi: "Teknik Informatika" },
-    { code: "SB-ITI-010", name: "Pembelajaran Mesin (Machine Learning)", sks: 3, prodi: "Teknik Informatika" },
-    { code: "SB-ITI-011", name: "Kecerdasan Buatan (AI)", sks: 3, prodi: "Teknik Informatika" },
-    { code: "SB-ITO-101", name: "Mobile Computing", sks: 3, prodi: "Teknik Informatika" },
-    { code: "SB-ITO-001", name: "Mikrokontroller", sks: 3, prodi: "Teknik Informatika" },
-    { code: "SB-ITSC-002", name: "Expert System (Konsentrasi SC)", sks: 4, prodi: "Teknik Informatika" },
-    { code: "SB-ITSC-005", name: "Sistem Penunjang Keputusan (Konsentrasi SC)", sks: 3, prodi: "Teknik Informatika" },
-  ]
+    { code: "SB-ITI-016", name: "Pendidikan Kewarganegaraan dan Antikorupsi", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITI-006", name: "Algoritma Pemrograman", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITI-014", name: "Pendidikan Agama", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITI-009", name: "Pengenalan Pemrograman", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITI-023", name: "Statistika dan Probabilitas", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITI-002", name: "Hukum dan Kebijakan Teknologi Informasi", sks: 2, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITI-027", name: "Kompleksitas Algoritma", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITO-004", name: "Kalkulus", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITJN-006", name: "Komunikasi Data (Konsentrasi JN)", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITSC-001", name: "Computer Vision (Konsentrasi SC)", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITSC-002", name: "Expert System (Konsentrasi SC)", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITSC-004", name: "Data Mining (Konsentrasi SC)", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITO-002", name: "Matematika Diskrit", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITO-108", name: "E-Marketing", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITO-107", name: "E-Commerce", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITO-101", name: "Mobile Computing", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITO-105", name: "Kreatif Digital", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
+    { code: "SB-ITI-028", name: "Praktek Kerja Lapangan", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: true, isSkripsi: false, assessment: "PRAKTIKUM"},
+    { code: "SB-ITI-030", name: "Tugas Akhir", sks: 6, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: true, assessment: "TUGAS AKHIR"},
+  ];
+
 
   for (const course of courseData) {
     await prisma.course.create({
@@ -143,11 +363,18 @@ async function main() {
         sks: course.sks,
         major: {
           connect: {
-            id: course.prodi === "Sistem Informasi" ? 1 : 2,
+            id: course.prodi === "SI" ? 1 : 2,
           }
         },
+        courseType: course.courseType,
+        isPKL: course.isPKL,
+        isSkripsi: course.isSkripsi,
+        assessment: {
+          connect: {
+            name: course.assessment,
+          },
+        },
       }
-
     })
   }
 

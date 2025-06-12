@@ -4,7 +4,7 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteAssessment, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
+import { deleteAssessment, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
@@ -29,6 +29,7 @@ export interface FormModalProps {
   | "grade"
   | "assessment"
   | "krs"
+  | "krsDetail"
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
   data?: any;
   id?: any;
@@ -95,6 +96,9 @@ const AssessmentForm = dynamic(() => import("./forms/AssessmentForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const KrsForm = dynamic(() => import("./forms/KrsForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const KrsDetailForm = dynamic(() => import("./forms/KrsDetailForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -253,6 +257,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  krsDetail: (setOpen, type, data, relatedData) =>
+    <KrsDetailForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -276,7 +287,8 @@ const deleteActionMap = {
   curriculumDetail: deleteCurriculumDetail,
   grade: deleteGrade,
   assessment: deleteAssessment,
-  krs: deleteAssessment,
+  krs: deleteAssessment, //Belum diubah
+  krsDetail: deleteKrsDetail,
 };
 
 const namaTabelMap = {
@@ -301,6 +313,7 @@ const namaTabelMap = {
   grade: "komponen nilai",
   assessment: "penilaian",
   krs: "KRS",
+  krsDetail: "mata kuliah di KRS",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {

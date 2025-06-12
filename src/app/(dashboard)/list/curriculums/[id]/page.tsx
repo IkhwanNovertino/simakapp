@@ -51,8 +51,6 @@ const CurriculumSinglePage = async (
     }
   };
 
-  // const data: any[] = [];
-  // const count = 0;
   const dataCurriculum = await prisma.curriculum.findUnique({
     where: { id: id },
     include: {
@@ -64,7 +62,6 @@ const CurriculumSinglePage = async (
     name: dataCurriculum?.name,
     majorId: dataCurriculum?.majorId,
   };
-  console.log(dataCreate);
 
 
   const dataFilter = [
@@ -111,11 +108,16 @@ const CurriculumSinglePage = async (
   const columns = [
     {
       header: "Semester",
-      accessor: "info kurikulum",
+      accessor: "semester",
+    },
+    {
+      header: "Kode Mata Kuliah",
+      accessor: "kode",
+      className: "hidden md:table-cell",
     },
     {
       header: "Mata Kuliah",
-      accessor: "tanggal mulai",
+      accessor: "mata kuliah",
       className: "hidden md:table-cell",
     },
     {
@@ -157,7 +159,8 @@ const CurriculumSinglePage = async (
             <p className="flex md:hidden">{`${item.course.code ?? "-"} | ${item.course.name ?? "-"}`}</p>
           </div>
         </td>
-        <td className="hidden md:table-cell">{`${item.course.code ?? "-"} | ${item.course.name ?? "-"}`}</td>
+        <td className="hidden md:table-cell">{item.course.code ?? "SB-III-000"}</td>
+        <td className="hidden md:table-cell">{item.course.name ?? "--"}</td>
         <td>
           <div className="flex items-center gap-2">
             <div className="md:hidden flex items-center justify-end gap-2">

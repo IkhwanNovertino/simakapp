@@ -4,8 +4,11 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Krs, Lecturer, Period, Prisma, Reregister, Student } from "@prisma/client";
+import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 
 type KrsDataType = Krs & { student: Student } & { lecturer: Lecturer } & { reregister: Reregister & { period: Period } };
@@ -13,7 +16,7 @@ type KrsDataType = Krs & { student: Student } & { lecturer: Lecturer } & { rereg
 const KRSListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
-  const canCreateData = await canRoleCreateData("krs");
+  const user = await getSession();
   const canUpdateData = await canRoleUpdateData("krs");
   const canDeleteData = await canRoleDeleteData("krs");
   const canViewData = await canRoleViewData("krs");
@@ -46,6 +49,24 @@ const KRSListPage = async (
       }
     }
   };
+
+  switch (user?.roleType) {
+    case "ADVISOR":
+      query.student = {
+        lecturer: {
+          userId: user.userId
+        },
+      }
+      break;
+    case "STUDENT":
+      query.student = {
+        userId: user.userId,
+      }
+      break;
+    default:
+      break;
+  }
+
 
   const [data, count] = await prisma.$transaction([
     prisma.krs.findMany({
@@ -141,6 +162,11 @@ const KRSListPage = async (
             <div className="md:hidden flex items-center justify-end gap-2">
               <ModalAction>
                 <div className="flex items-center gap-3">
+                  <Link href={`/list/krs/${item.id}`}>
+                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                    </button>
+                  </Link>
                   {canUpdateData && (<FormContainer table="krs" type="update" data={item} />)}
                   {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
                 </div>
@@ -148,6 +174,11 @@ const KRSListPage = async (
             </div>
 
             <div className="hidden md:flex items-center gap-2">
+              <Link href={`/list/krs/${item.id}`}>
+                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                </button>
+              </Link>
               {canUpdateData && (<FormContainer table="krs" type="update" data={item} />)}
               {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
             </div>

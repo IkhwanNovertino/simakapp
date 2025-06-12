@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import FormModal, { FormModalProps } from "./FormModal";
 import { getSession } from "@/lib/session";
+import { Course, CurriculumDetail, KrsDetail } from "@prisma/client";
 
 const FormContainer = async (
   { table, type, data, id }: FormModalProps
@@ -170,32 +171,82 @@ const FormContainer = async (
         relatedData = { allGradeComponent: gradeComponents };
         break;
       case "krs":
-        const courseKRS = await prisma.curriculum.findFirst({
+        // let semester1 = data?.reregister?.period?.semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
+
+        // const courseFromCurriculum1 = await prisma.curriculumDetail.findMany({
+        //   where: {
+        //     curriculum: {
+        //       majorId: data?.student?.majorId,
+        //       isActive: true,
+        //     },
+        //     semester: {
+        //       in: [...semester1]
+        //     }
+        //   },
+        //   include: {
+        //     course: true,
+        //   },
+        //   orderBy: [
+        //     { semester: "asc" }
+        //   ]
+        // })
+        // const dataKrsDetail1 = data?.krsDetail.map((item: any) => item.courseId);
+        // let courseFilterByKrsDetail1
+        // if (dataKrsDetail1) {
+        //   courseFilterByKrsDetail1 = courseFromCurriculum1.filter((item: CurriculumDetail & { course: Course }) =>
+        //     !dataKrsDetail.includes(item.courseId)
+        //   )
+        // }
+
+        // const coursePassToForm1 = courseFilterByKrsDetail1.map(
+        //   (item: CurriculumDetail & { course: Course }) => ({
+        //     id: item.courseId,
+        //     code: item.course.code,
+        //     name: item.course.name,
+        //     sks: item.course.sks,
+        //     semester: item.semester,
+        //   }));
+
+        // relatedData = { course: coursePassToForm1 };
+        break;
+      case "krsDetail":
+        let semester = data?.reregister?.period?.semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
+
+        const courseFromCurriculum = await prisma.curriculumDetail.findMany({
           where: {
-            majorId: data?.student?.majorId,
-            isActive: true,
+            curriculum: {
+              majorId: data?.student?.majorId,
+              isActive: true,
+            },
+            semester: {
+              in: [...semester]
+            }
           },
           include: {
-            curriculumDetail: {
-              include: {
-                course: true,
-              }
-            },
+            course: true,
           },
-        });
-        const reregisterDetail = await prisma.reregisterDetail.findUnique(  {
-          where: {
-            reregisterId_studentId: {
-              reregisterId: data.reregisterId,
-              studentId: data.studentId,
-            },
-          },
-        });
+          orderBy: [
+            { semester: "asc" }
+          ]
+        })
+        const dataKrsDetail = data?.krsDetail.map((item: any) => item.courseId);
+        let courseFilterByKrsDetail
+        if (dataKrsDetail) {
+          courseFilterByKrsDetail = courseFromCurriculum.filter((item: CurriculumDetail & { course: Course }) =>
+            !dataKrsDetail.includes(item.courseId)
+          )
+        }
 
-        const coursePassToForm = courseKRS?.curriculumDetail;
+        const coursePassToForm = courseFilterByKrsDetail.map(
+          (item: CurriculumDetail & { course: Course }) => ({
+            id: item.courseId,
+            code: item.course.code,
+            name: item.course.name,
+            sks: item.course.sks,
+            semester: item.semester,
+          }));
 
-
-        relatedData = { course: coursePassToForm, semesterFromReregisterDetail: reregisterDetail?.semester };
+        relatedData = { course: coursePassToForm };
         break;
       default:
         break;

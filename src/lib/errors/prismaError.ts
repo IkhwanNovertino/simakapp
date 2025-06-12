@@ -50,6 +50,11 @@ export function handlePrismaError(error: unknown): never {
     }
   }
 
-  // Fallback jika error bukan dari Prisma
-  throw new AppError("Terjadi kesalahan tak terduga.", 500);
+  if (error instanceof AppError) {
+    // Fallback jika error bukan dari Prisma
+    throw new AppError(error.message || "Terjadi kesalahan tidak diketahui.", error.statusCode);
+  }
+
+  throw new AppError("Terjadi kesalahan tidak diketahui.", 500);
+
 }

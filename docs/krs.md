@@ -48,6 +48,7 @@ enum StudyPlanStatus {
 ## Bussiness Rules
 
 - Admin dapat membuatkan KRS untuk mahasiswa secara umum yang mengisi KRS adalah mahasiswa.
+- Tombol tambah untuk mahasiswa RPL (Belum dieksekusi)
 
 <!-- UNTUK DIHAPUS -->
 

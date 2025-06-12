@@ -347,3 +347,18 @@ export const krsSchema = z.object({
 
 export type KrsInputs = z.infer<typeof krsSchema>;
 
+
+export const CourseInKrsSchema = z.object({
+  id: z.string().optional(),
+  course: z.array(
+    z.object({
+      id: z.string().optional(),
+      code: z.string().optional(),
+      name: z.string().optional(),
+      sks: z.coerce.number().optional(),
+      semester: z.coerce.number().optional(),
+    })
+  )
+})
+
+export type CourseInKrsInputs = z.infer<typeof CourseInKrsSchema>;
