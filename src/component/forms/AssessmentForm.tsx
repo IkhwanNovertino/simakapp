@@ -20,7 +20,6 @@ interface AssessmentFormProps {
 const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProps) => {
   const { allGradeComponent } = relatedData;
 
-
   const {
     register,
     handleSubmit,
@@ -37,12 +36,6 @@ const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProp
     control,
     name: "gradeComponents",
   })
-
-  console.log(`ErrorStack`, errors);
-  console.log(`ErrorGRADE`, errors?.gradeComponents);
-  console.log(`ErrorGRADEID`, errors?.gradeComponents);
-  // const zodErrorIDDuplicate = errors?.gradeComponents.id?.message
-
 
   const action = type === "create" ? createAssessment : updateAssessment;
   const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });

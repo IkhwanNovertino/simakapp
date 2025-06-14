@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import FormModal, { FormModalProps } from "./FormModal";
 import { getSession } from "@/lib/session";
-import { Course, CurriculumDetail, KrsDetail } from "@prisma/client";
+import { Course, CurriculumDetail } from "@prisma/client";
 
 const FormContainer = async (
   { table, type, data, id }: FormModalProps
@@ -209,7 +209,7 @@ const FormContainer = async (
         // relatedData = { course: coursePassToForm1 };
         break;
       case "krsDetail":
-        let semester = data?.semester === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
+        const semester = data?.semester === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
 
         const courseFromCurriculum = await prisma.curriculumDetail.findMany({
           where: {
@@ -249,10 +249,6 @@ const FormContainer = async (
             sks: item.course.sks,
             semester: item.semester,
           }));
-
-        console.log(coursePassToForm);
-
-
         relatedData = { course: coursePassToForm };
         break;
       default:

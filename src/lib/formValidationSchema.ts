@@ -293,61 +293,6 @@ export const assessmentSchema = z.object({
 
 export type AssessmentInputs = z.infer<typeof assessmentSchema>;
 
-export const krsSchema = z.object({
-  id: z.string().optional(),
-  name: z.string().min(1, { message: "Nama mahasiswa harus diisi" }),
-  nim: z.string().min(1, { message: "nim harus diisi" }),
-  major: z.string().min(1, { message: "Program Studi harus diisi" }),
-  jenjang: z.string().optional(),
-  ipk: z.coerce.number().min(1, { message: "IPK harus diisi" }),
-  maxSks: z.string().min(1, { message: "maksimal SKS yang diambil harus diisi" }),
-  semester: z.string().min(1, { message: "Semester harus diisi" }),
-  period: z.string().optional(),
-  krsDetail: z.array(
-    z.object({
-      courseId: z.string().min(1, { message: "mata kuliah harus diisi" }),
-      isAcc: z.boolean().default(false),
-    }))
-    .min(1, "Pilih minimal satu mata kuliah")
-    .superRefine((components, ctx) => {
-      // Cek duplikat ID
-      const seen = new Map<string, number[]>();
-      components.forEach((c, index) => {
-        if (!seen.has(c.courseId)) {
-          seen.set(c.courseId, []);
-        }
-        seen.get(c.courseId)!.push(index);
-      });
-
-      for (const [, indices] of seen.entries()) {
-        if (indices.length > 1) {
-          indices.forEach((i) => {
-            ctx.addIssue({
-              code: z.ZodIssueCode.custom,
-              message: "Mata kuliah tidak boleh duplikat",
-              path: [i, "courseId"],
-            });
-          });
-        }
-      }
-
-      // Cek total persentase
-      // const total = components.reduce((sum, c) => sum + c.percentage, 0);
-      // if (total !== 100) {
-      //   components.forEach((_, i) => {
-      //     ctx.addIssue({
-      //       code: z.ZodIssueCode.custom,
-      //       message: "Total persentase harus 100%",
-      //       path: [i, "percentage"],
-      //     });
-      //   });
-      // }
-    })
-})
-
-export type KrsInputs = z.infer<typeof krsSchema>;
-
-
 export const CourseInKrsSchema = z.object({
   id: z.string().optional(),
   maxSks: z.coerce.number().optional(),

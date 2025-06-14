@@ -4,7 +4,7 @@ import path from "path";
 import {
   AssessmentInputs,
   CourseInKrsInputs,
-  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, KrsInputs, lecturerSchema, MajorInputs,
+  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
   OperatorInputs, PeriodInputs, PermissionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, studentSchema, UserInputs
@@ -543,8 +543,6 @@ export const createUserLecturer = async (state: stateType, data: UserInputs) => 
 
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err: any) {
-    console.log(err);
-    
     try {
       handlePrismaError(err)
     } catch (error: any) {
@@ -584,7 +582,6 @@ export const updateUserLecturer = async (state: stateType, data: UserInputs) => 
 
     return { success: true, error: false, message: "Data berhasil diubah" };
   } catch (err: any) {
-    console.log(err);
     
     try {
       handlePrismaError(err)
@@ -655,7 +652,6 @@ export const updateUserStudent = async (state: stateType, data: UserInputs) => {
 
     return { success: true, error: false, message: "Data berhasil diubah" };
   } catch (err: any) {
-    console.log(err);
     
     try {
       handlePrismaError(err)
@@ -687,7 +683,6 @@ export const createUserOperator = async (state: stateType, data: UserInputs) => 
 
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err: any) {
-    console.log(err);
     
     try {
       handlePrismaError(err)
@@ -728,7 +723,6 @@ export const updateUserOperator = async (state: stateType, data: UserInputs) => 
 
     return { success: true, error: false, message: "Data berhasil diubah" };
   } catch (err: any) {
-    console.log(err);
     
     try {
       handlePrismaError(err)
@@ -938,7 +932,6 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err: any) {
-    console.log(err);
     
     try {
       handlePrismaError(err)
@@ -1207,7 +1200,6 @@ export const deleteStudent = async (state: stateType, data: FormData) => {
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err: any) {
-    console.log(err);
     
     try {
       handlePrismaError(err)
@@ -1287,7 +1279,6 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
     });
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err: any) {
-    console.log(err);
     
     try {
       handlePrismaError(err)
@@ -1920,7 +1911,6 @@ export const deleteCurriculum = async (state: stateType, data: FormData) => {
 
 export const createCurriculumDetail = async (state: stateType, data: CurriculumDetailInputs) => {
   try {
-    console.log(data);
     for (const itemCourse of data.courseId) {
       await prisma.curriculumDetail.create({
         data: {
@@ -2013,7 +2003,6 @@ export const updateGrade = async (state: stateType, data: GradeInputs) => {
 export const deleteGrade = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    console.log(id);
     await prisma.gradeComponent.delete({
       where: {
         id: id,
@@ -2021,7 +2010,6 @@ export const deleteGrade = async (state: stateType, data: FormData) => {
     })
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err: any) {
-    console.log(err);
     
     try {
       handlePrismaError(err)
@@ -2037,7 +2025,6 @@ export const deleteGrade = async (state: stateType, data: FormData) => {
 
 export const createAssessment = async (state: stateType, data: AssessmentInputs) => {
   try {
-    console.log(data);
     
     await prisma.assessment.create({
       data: {
@@ -2070,7 +2057,6 @@ export const createAssessment = async (state: stateType, data: AssessmentInputs)
 }
 export const updateAssessment = async (state: stateType, data: AssessmentInputs) => {
   try {
-    console.log(data);
     await prisma.$transaction(async (tx: any) => {
       // delete data assessmentDetail yang lama
       await tx.assessmentDetail.deleteMany({
@@ -2141,49 +2127,8 @@ export const deleteAssessment = async (state: stateType, data: FormData) => {
   }
 }
 
-export const updateKRS = async (state: stateType, data: KrsInputs) => {
-  try {
-    console.log('createKRS', data);
-
-    await prisma.$transaction(async (tx: any) => {
-      for (const itemCourse of data?.krsDetail) {
-        await prisma.krsDetail.create({
-          data: {
-            krsId: data?.id,
-            courseId: itemCourse?.courseId,
-            isAcc: itemCourse?.isAcc,
-          }
-        })
-      }
-
-      await prisma.krs.update({
-        where: {
-          id: data?.id,
-        },
-        data: {
-          isStatusForm: "SUBMITTED" as StudyPlanStatus,
-        }
-      })
-
-    });
-    
-    return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
-    try {
-      handlePrismaError(err)
-    } catch (error: any) {
-      if (error instanceof AppError) {
-        return { success: false, error: true, message: error.message };
-      } else {
-        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
-      }
-    }
-  }
-}
 export const createKrsDetail = async (state: stateType, data: CourseInKrsInputs) => {
   try {
-    console.log(data);
-    const dataCourse = data.course.map((item) => item.id);
     const dataCreateKRS = data.course.map((item) => {
       return {
         krsId: data?.id,

@@ -20,7 +20,6 @@ interface OperatorUserFormProps {
 const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserFormProps) => {
   const { role } = relatedData;
 
-
   const {
     register,
     handleSubmit,

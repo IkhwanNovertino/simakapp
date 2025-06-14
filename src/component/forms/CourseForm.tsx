@@ -30,8 +30,6 @@ const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
   } = useForm<CourseInputs>({
     resolver: zodResolver(courseSchema)
   })
-  console.log('message', errors);
-
 
   const action = type === "create" ? createCourse : updateCourse
   const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });

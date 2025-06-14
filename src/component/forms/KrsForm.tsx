@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { CourseInKrsInputs, CourseInKrsSchema } from "@/lib/formValidationSchema";
 import { createKrsDetail } from "@/lib/action";
@@ -17,27 +17,15 @@ interface KrsFormProps {
   relatedData?: any;
 }
 
-// type courseDataTypeInKrs = {
-//   id: string,
-//   code: string,
-//   name: string,
-//   sks: number | string,
-//   semester: number | string,
-// }[];
-
-const KrsForm = ({ setOpen, type, data, relatedData }: KrsFormProps) => {
+const KrsForm = ({ setOpen, type, data }: KrsFormProps) => {
 
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors },
   } = useForm<CourseInKrsInputs>({
     resolver: zodResolver(CourseInKrsSchema),
     defaultValues: {
-      // course: data?.krsDetail.map((item: any) => (
-      //   { id: item.courseId, code: item.course.code, name: item.course.name, sks: item.course.sks }
-      // )) || [],
       course: [],
     },
   })
@@ -77,7 +65,7 @@ const KrsForm = ({ setOpen, type, data, relatedData }: KrsFormProps) => {
             </div>
           )}
         </div>
-        <button className="bg-blue-400 text-white p-2 rounded-md">
+        <button className="bg-blue-400 text-white p-2 rounded-md" disabled>
           {"Tambah"}
         </button>
       </form >

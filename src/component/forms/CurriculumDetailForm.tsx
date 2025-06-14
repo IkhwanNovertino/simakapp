@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 
-
 interface CurriculumDetailFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
   type: "create" | "update" | "createUser" | "updateUser" | "createMany";

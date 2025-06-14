@@ -29,8 +29,6 @@ const PermissionForm = ({ setOpen, type, data }: PermissionFormProps) => {
   const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
-    console.log('handleSubmitMajor');
-
     startTransition(() => formAction(data))
   })
 

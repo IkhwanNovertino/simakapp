@@ -14,7 +14,6 @@ interface ReregistrationFormProps {
 }
 
 const ReregisterCreateAll = ({ setOpen, type, data }: ReregistrationFormProps) => {
-  console.log(data);
 
   const [state, formAction] = useActionState(reregisterCreateAll, { success: false, error: false, message: "" });
 

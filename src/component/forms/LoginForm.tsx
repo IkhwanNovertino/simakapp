@@ -36,7 +36,7 @@ const LoginForm = () => {
           router.push("/" + res);
         })
         .catch((err) => {
-          console.error(err);
+          console.error(err)
         });
     }
   }, [state, router]);

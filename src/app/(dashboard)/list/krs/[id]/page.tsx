@@ -3,7 +3,6 @@ import FormContainer from "@/component/FormContainer";
 import FormCourseKrs from "@/component/FormCourseKrs";
 import ModalAction from "@/component/ModalAction";
 import Table from "@/component/Table";
-import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { Course, KrsDetail, } from "@prisma/client";
@@ -91,9 +90,6 @@ const KRSDetailPage = async (
   ];
 
   const renderRow = (item: KrsDetailDataType) => {
-    const isStatusForm = ["p-1 rounded-lg text-[10px] font-bold self-start"];
-    item.isAcc ? isStatusForm.push("text-green-500 bg-green-100") : isStatusForm.push("text-gray-500 bg-gray-200");
-
     return (
       <tr
         key={item.id}
@@ -103,7 +99,7 @@ const KRSDetailPage = async (
         <td className="hidden md:table-cell">{item?.course?.name}</td>
         <td className="hidden md:table-cell">{item?.course?.sks}</td>
         <td className="hidden md:table-cell">
-          <span className={isStatusForm.join(" ")}>
+          <span className={`p-1 rounded-lg text-[10px] font-bold self-start ${item.isAcc ? "text-green-500 bg-green-100" : "text-gray-500 bg-gray-200"}`}>
             {item?.isAcc ? "ACC" : "Pending"}
           </span>
         </td>

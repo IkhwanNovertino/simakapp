@@ -22,8 +22,6 @@ const InputSelect = (
   {
     label, name, defaultValue, options, control, error, required, placeholder, isMulti = false
   }: InputSelectProps) => {
-  console.log('ERRINPUTSELECT', error);
-
 
   return (
     <>

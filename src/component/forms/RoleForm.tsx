@@ -18,7 +18,7 @@ interface RoleFormProps {
 }
 
 const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
-
+  const { permissions } = relatedData;
   const {
     register,
     handleSubmit,
@@ -27,10 +27,6 @@ const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
   } = useForm<RoleInputs>({
     resolver: zodResolver(roleSchema)
   })
-  console.log('ERRR ', errors);
-
-
-  const { permissions } = relatedData;
 
   const [state, formAction] = useActionState(createRole, { success: false, error: false, message: "" });
 
