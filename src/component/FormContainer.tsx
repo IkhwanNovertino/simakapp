@@ -222,7 +222,11 @@ const FormContainer = async (
             }
           },
           include: {
-            course: true,
+            course: {
+              include: {
+                predecessor: true,
+              }
+            },
           },
           orderBy: [
             { semester: "asc" }
@@ -235,14 +239,19 @@ const FormContainer = async (
             !dataKrsDetail.includes(item.courseId)
           )
         }
+
         const coursePassToForm = courseFilterByKrsDetail.map(
-          (item: CurriculumDetail & { course: Course }) => ({
+          (item: CurriculumDetail & { course: Course & { predecessor: Course } }) => ({
             id: item.courseId,
             code: item.course.code,
             name: item.course.name,
+            predecessor: item.course.predecessor,
             sks: item.course.sks,
             semester: item.semester,
           }));
+
+        console.log(coursePassToForm);
+
 
         relatedData = { course: coursePassToForm };
         break;
