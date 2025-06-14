@@ -2204,9 +2204,65 @@ export const createKrsDetail = async (state: stateType, data: CourseInKrsInputs)
         },
       })
     ])
-    return { success: true, error: false, message: "Data berhasil diubah" };
+    return { success: true, error: false, message: "Mata Kuliah berhasil ditambahkan" };
   } catch (err: any) {
     
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateKrsDetail = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    const isAcc = data.get("isAcc") as string === "false" ? false : true;
+    
+    prisma.$transaction(async (tx: any) => {
+      const data = await tx.krsDetail.update({
+        where: {
+          id: id,
+        },
+        data: {
+          isAcc: !isAcc
+        }
+      })
+
+      const dataCheck = await tx.krsDetail.findMany({
+        where: {
+          krsId: data.krsId,
+          isAcc: false,
+        },
+      });
+
+      if (dataCheck.length > 0) {
+        await tx.krs.update({
+          where: {
+            id: data.krsId,
+          },
+          data: {
+            isStatusForm: "NEED_REVISION" as StudyPlanStatus,
+          },
+        });
+      } else {
+        await tx.krs.update({
+          where: {
+            id: data.krsId,
+          },
+          data: {
+            isStatusForm: "APPROVED" as StudyPlanStatus,
+          },
+        })
+      }
+    })
+    
+    return { success: true, error: false, message: "Mata kuliah telah disetujui" };
+  } catch (err: any) {
     try {
       handlePrismaError(err)
     } catch (error: any) {

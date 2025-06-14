@@ -167,7 +167,6 @@ const FormContainer = async (
         const gradeComponents = await prisma.gradeComponent.findMany({
           select: { id: true, name: true },
         });
-
         relatedData = { allGradeComponent: gradeComponents };
         break;
       case "krs":
@@ -210,7 +209,7 @@ const FormContainer = async (
         // relatedData = { course: coursePassToForm1 };
         break;
       case "krsDetail":
-        let semester = data?.reregister?.period?.semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
+        let semester = data?.semester === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
 
         const courseFromCurriculum = await prisma.curriculumDetail.findMany({
           where: {
@@ -236,7 +235,6 @@ const FormContainer = async (
             !dataKrsDetail.includes(item.courseId)
           )
         }
-
         const coursePassToForm = courseFilterByKrsDetail.map(
           (item: CurriculumDetail & { course: Course }) => ({
             id: item.courseId,

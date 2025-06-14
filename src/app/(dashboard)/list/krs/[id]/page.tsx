@@ -1,31 +1,21 @@
 
 import FormContainer from "@/component/FormContainer";
+import FormCourseKrs from "@/component/FormCourseKrs";
 import ModalAction from "@/component/ModalAction";
-import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 import { Course, KrsDetail, } from "@prisma/client";
 import Image from "next/image";
 
 type KrsDetailDataType = KrsDetail & { course: Course };
 
 const KRSDetailPage = async (
-  {
-    searchParams, params
-  }: {
-    searchParams: Promise<{ [key: string]: string | undefined }>,
-    params: Promise<{ id: string }>
-  }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
-
-  const canCreateData = await canRoleCreateData("krs");
-  const canUpdateData = await canRoleUpdateData("krs");
-  const canDeleteData = await canRoleDeleteData("krs");
-
-  const { page, ...queryParams } = await searchParams;
-  const p = page ? parseInt(page) : 1;
   const { id } = await params;
+  const user = await getSession();
 
   const dataKRS = await prisma.krs.findUnique({
     where: {
@@ -59,6 +49,19 @@ const KRSDetailPage = async (
     },
   });
 
+  const totalSKS = dataKRS?.krsDetail
+    .map((item: any) => item.course.sks)
+    .reduce((acc: any, init: any) => acc + init, 0);
+
+  const dataPassToForm = {
+    id: dataKRS.id,
+    student: dataKRS?.student,
+    krsDetail: dataKRS?.krsDetail || [],
+    semester: dataKRS?.reregister?.period?.semesterType,
+    sisaSKS: parseInt(dataKRS?.maxSks.slice(-2)) - totalSKS,
+    maxSKS: parseInt(dataKRS?.maxSks.slice(-2)),
+  }
+
   const columns = [
     {
       header: "Kode",
@@ -83,7 +86,7 @@ const KRSDetailPage = async (
     {
       header: "Actions",
       accessor: "action",
-      className: "hidden md:table-cell",
+      className: "hidden md:table-cell p-4",
     },
   ];
 
@@ -109,13 +112,14 @@ const KRSDetailPage = async (
             <div className="md:hidden flex items-center justify-end gap-2">
               <ModalAction>
                 <div className="flex items-center gap-3">
-                  <FormContainer table="krsDetail" type="update" data={dataKRS} />
+                  {user?.roleType !== "STUDENT" && <FormCourseKrs id={item.id} isAcc={item.isAcc.toString()} />}
+
                   <FormContainer table="krsDetail" type="delete" id={item.id} />
                 </div>
               </ModalAction>
             </div>
             <div className="hidden md:flex items-center gap-2">
-              <FormContainer table="krsDetail" type="update" data={dataKRS} />
+              {user?.roleType !== "STUDENT" && <FormCourseKrs id={item.id} isAcc={item.isAcc.toString()} />}
               <FormContainer table="krsDetail" type="delete" id={item.id} />
             </div>
           </div>
@@ -178,10 +182,14 @@ const KRSDetailPage = async (
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-semibold">Kartu Rencana Studi</h1>
           <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-            <FormContainer type="create" table="krsDetail" data={dataKRS} />
+            <FormContainer type="create" table="krsDetail" data={dataPassToForm} />
           </div>
         </div>
-        <Table columns={columns} renderRow={renderRow} data={dataKRS.krsDetail} />
+        <Table columns={columns} renderRow={renderRow} data={dataKRS.krsDetail || []} />
+        <div className="flex items-center p-4 justify-center gap-8">
+          <h1 className="text-sm font-bold">TOTAL SKS</h1>
+          <h3 className="text-sm font-medium">{totalSKS}</h3>
+        </div>
       </div>
     </div>
   )

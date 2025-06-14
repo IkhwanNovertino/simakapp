@@ -350,6 +350,7 @@ export type KrsInputs = z.infer<typeof krsSchema>;
 
 export const CourseInKrsSchema = z.object({
   id: z.string().optional(),
+  maxSks: z.coerce.number().optional(),
   course: z.array(
     z.object({
       id: z.string().optional(),
@@ -359,6 +360,17 @@ export const CourseInKrsSchema = z.object({
       semester: z.coerce.number().optional(),
     })
   )
+})
+.superRefine((data, ctx) => {
+  const maxSks = data.maxSks ?? Infinity
+  const totalSks = data.course.reduce((sum, c) => sum + (c.sks ?? 0), 0)
+  if (totalSks > maxSks) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: `Total SKS melebihi batas maksimum SKS yang dapat diambil!`,
+      path: ['course'], // bisa juga gunakan [] jika ingin error global
+    })
+  }
 })
 
 export type CourseInKrsInputs = z.infer<typeof CourseInKrsSchema>;
