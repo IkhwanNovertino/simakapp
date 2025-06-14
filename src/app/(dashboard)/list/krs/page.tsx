@@ -17,7 +17,6 @@ const KRSListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
   const user = await getSession();
-  const canUpdateData = await canRoleUpdateData("krs");
   const canDeleteData = await canRoleDeleteData("krs");
   const canViewData = await canRoleViewData("krs");
 
@@ -85,6 +84,28 @@ const KRSListPage = async (
         },
         krsDetail: true,
       },
+      orderBy: [
+
+        {
+          reregister: {
+            period: {
+              year: "desc",
+            }
+          },
+        },
+        {
+          reregister: {
+            period: {
+              semesterType: "asc",
+            }
+          },
+        },
+        {
+          student: {
+            nim: "desc"
+          }
+        }
+      ],
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
@@ -167,7 +188,6 @@ const KRSListPage = async (
                       <Image src="/icon/view.svg" alt="" width={20} height={20} />
                     </button>
                   </Link>
-                  {canUpdateData && (<FormContainer table="krs" type="update" data={item} />)}
                   {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
                 </div>
               </ModalAction>
@@ -179,7 +199,6 @@ const KRSListPage = async (
                   <Image src="/icon/view.svg" alt="" width={20} height={20} />
                 </button>
               </Link>
-              {canUpdateData && (<FormContainer table="krs" type="update" data={item} />)}
               {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
             </div>
           </div>
