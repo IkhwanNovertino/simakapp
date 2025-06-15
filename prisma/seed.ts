@@ -307,55 +307,541 @@ async function main() {
       },
   })
 
-  
+  // Curriculum
+  const kurikulumSI = await prisma.curriculum.create({
+    data: {
+      name: "KURIKULUM SI",
+      majorId: 1,
+      startDate: new Date(),
+      endDate: new Date(),
+      isActive: true,
+    }
+  });
+  const kurikulumTI = await prisma.curriculum.create({
+    data: {
+      name: "KURIKULUM TI",
+      majorId: 2,
+      startDate: new Date(),
+      endDate: new Date(),
+      isActive: true,
+    }
+  });
+
+  const courseOld = [
+    // TI
+    { code: "SKB-T016", name: "Pengolahan Citra", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
+    { code: "SKB-T027", name: "Grafika Komputer", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
+    { code: "IKB-T004", name: "Dasar-Dasar Pemrograman", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
+    { code: "SKB-T024", name: "Pemrosesan Data Terdistribusi (PDT)", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
+    { code: "SKK-T010", name: "Logika Informatika", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
+    // SI
+    { code: "SKB-S020", name: "Manajemen Kualitas Software (Pilihan PSI)", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "PILIHAN", sks: 3, assessment: "REGULER", predecessor: null },
+    { code: "IBB-S001", name: "Kepemimpinan", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "WAJIB", sks: 2, assessment: "REGULER", predecessor: null },
+    { code: "IKB-S012", name: "Infrastrcture TI : Sistem Operasi", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "WAJIB", sks: 3, assessment: "REGULER", predecessor: null },
+    { code: "IKB-S034", name: "Logika (Berfikir Kritis, Analitis)", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "WAJIB", sks: 3, assessment: "REGULER", predecessor: null },
+    { code: "SKB-S029", name: "Komputasi Awan (Pilihan PBB)", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "WAJIB", sks: 3, assessment: "REGULER", predecessor: null },
+  ];
+  const courseSI = [
+    {
+      code: "SB-ISI-007", name: "Pengantar Teknologi Informasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-028", name:"Pendidikan Kewarganegaraan dan Antikorupsi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-030", name:"Bahasa Inggris", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-001", name:"Konsep Sistem Informasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:2, smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-014", name:"Dasar Pemrograman", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-029", name:"Bahasa Indonesia", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-007", name:"Human Resource Management", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-003", name:"Konsep Basis Data", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-021", name:"Etika Profesi dan Profesionalisme", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:2, smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-026", name:"Pendidikan Agama", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-002", name:"Sistem Informasi Manajemen", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-005", name:"Sistem Operasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:2, 
+      assessment: "REGULER", predecessor: "IKB-S012"
+    },
+    { code: "SB-ISI-023", name:"Statistika dan Probabilitas", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-027", name:"Pendidikan Pancasila dan NKRI", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-004", name:"Sistem Basis Data", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-015", name:"Transformasi Digital", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-020", name:"Kepemimpinan dan Manajemen Organisasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: "IBB-S001"
+    },
+    { code: "SB-ISO-004", name:"Computational Thinking", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: "IKB-S034"
+    },
+    { code: "SB-ISPB1-002", name:"Pengantar Bisnis (PBMB)", 
+      isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISPS1-004", name:"Analisis & Desain Proses Bisnis (Pemodelan Bisnis) (PSI)", 
+      isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-006", name:"Jaringan komputer", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-016", name:"Pemrograman Berbasis Objek", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-003", name:"Komunikasi dan Negosiasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISPB2-001", name:"Komunikasi Bisnis (PBMB)", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISPS2-003", name:"Sistem Penunjang Keputusan (PSI)", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-010", name:"Analisa dan Perancangan Sistem Informasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-018", name:"Keamanan Jaringan", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-002", name:"IOT (Internet of Things)", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-008", name:"Enterprise Architecture", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISPS2-005", name:"Data Mining (PSI)", 
+      isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-017", name:"Pemrograman Berbasis Web", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:4, smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-022", name:"Metodologi Penelitian dan Penulisan Ilmiah", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:2, smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-005", name:"User Experience/Interface", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISPS1-002", name:"Teknologi & Administrator Basis Data (PSI)", 
+      isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-008", name:"Manajemen Proyek Sistem Informasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-011", name:"Software Testing dan Quality Assurance", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:2, smt:5, 
+      assessment: "REGULER", predecessor: "SKB-S020"
+    },
+    { code: "SB-ISI-013", name:"Audit Sistem Informasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-006", name:"Pemrograman Aplikasi Bergerak", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISPB1-003", name:"Startup Digital (PBMB)", 
+      isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISPS1-001", name:"Implementasi Perangkat Lunak (Deployment, Testing, Adoption) (PSI)", 
+      isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-009", name:"Proyek Perangkat lunak", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-012", name:"Tata Kelola Teknologi Informasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-019", name:"Keamanan Sistem Informasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:2, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-009", name:"Interaksi Manusia dan Komputer", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:2, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISPB2-006", name:"E-Commerce(PBMB)", 
+      isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISPS2-006", name:"Artificial Intelligence (PSI)", 
+      isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-101", name:"Big Data", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-103", name:"Matematika Diskrit", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-105", name:"Analitik dan Visualisasi Data", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-107", name:"Cloud Computing", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
+      assessment: "REGULER", predecessor: "SKB-S029"
+    },
+    { code: "SB-ISO-109", name:"Kreatif Digital", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-001", name:"Technopreneurship", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-102", name:"Business Intelegence", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-104", name:"Sistem Rekomendasi", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:2, smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-106", name:"Machine Learning", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISO-108", name:"E-Marketing", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ISI-025", name:"Praktek Kerja Lapangan", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:7, 
+      assessment: "PRAKTIKUM", predecessor: ""
+    },
+    { code: "SB-ISI-024", name:"Tugas Akhir", 
+      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:6, smt:8, 
+      assessment: "TUGAS AKHIR", predecessor: ""
+    },
+  ];
+  const courseTI = [
+    // Matkul Baru 
+    { code: "SB-ITI-016", name: "Pendidikan Kewarganegaraan dan Antikorupsi", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB", 
+      sks: 3, smt: 1
+      , assessment: "REGULER", predecessor: "" 
+    },
+    { code: "SB-ITI-006", name: "Algoritma Pemrograman", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-014", name: "Pendidikan Agama", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-009", name: "Pengenalan Pemrograman", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:1, 
+      assessment: "REGULER", predecessor: "IKB-T004"
+    },
+    { code: "SB-ITI-023", name: "Statistika dan Probabilitas", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-002", name: "Hukum dan Kebijakan Teknologi Informasi", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:2,	smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-004", name: "Kalkulus", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:1, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-024", name: "Logika Matematika", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:2, 
+      assessment: "REGULER", predecessor: "SKK-T010"
+    },
+    { code: "SB-ITI-001", name: "Etika dan Profesi", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:2,	smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-017", name: "Bahasa Indonesia", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-015", name: "Pendidikan Pancasila dan NKRI", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-003", name: "Aljabar Linier", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-005", name: "Struktur Data", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-022", name: "Basis Data", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:2, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-029", name: "Big Data", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-012", name: "Jaringan Komputer", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITJN-006",name: "Komunikasi Data (Konsentrasi JN)", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITSC-001",name: "Computer Vision (Konsentrasi SC)", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-027", name: "Kompleksitas Algoritma", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-002", name: "Matematika Diskrit", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-018", name: "Organisasi dan Arsitektur Komputer", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-021", name: "Sistem Operasi", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-020", name: "Human-Computer Interaction", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:3, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-007", name: "Keamanan Data dan Informasi", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-025", name: "Cloud Computing", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITSC-002",name: "Expert System (Konsentrasi SC)", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-013", name: "Pemrograman Berorientasi Objek", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-001", name: "Mikrokontroller", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-010", name: "Pembelajaran Mesin (Machine Learning)", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-011", name: "Kecerdasan Buatan (AI)", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITSC-005",name: "Sistem Penunjang Keputusan (Konsentrasi SC)", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:4, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-032", name: "Pengolahan Citra Digital", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:4, 
+      assessment: "REGULER", predecessor: "SKB-T016"
+    },
+    { code: "SB-ITI-019", name: "Komputasi Paralel dan Terdistribusi", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:5, 
+      assessment: "REGULER", predecessor: "SKB-T024"
+    },
+    { code: "SB-ITO-005", name: "Technopreneurship", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-031", name: "Internet of Things", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-033", name: "Tata Tulis Ilmiah (Metodologi Penelitian)", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:2,	smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-003", name: "Manajemen Proyek Teknologi Informasi", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-026", name: "Pemrograman Berbasis Platform", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:4,	smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITSC-004",name: "Data Mining (Konsentrasi SC)", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-008", name: "Analisis dan Desain Perangkat Lunak", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:5, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-106", name: "StartUp Digital", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-110", name: "Studi Kelayakan Bisnis", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-109", name: "Komunikasi Bisnis", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-108", name: "E-Marketing", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-107", name: "E-Commerce", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-101", name: "Mobile Computing", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-105", name: "Kreatif Digital", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITI-004", name: "Proyek Prangkat Lunak", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-102", name: "Pengantar Teknologi Informasi", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: ""
+    },
+    { code: "SB-ITO-103", name: "Grafika dan Animasi Komputer", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:6, 
+      assessment: "REGULER", predecessor: "SKB-T027"
+    },
+    { code: "SB-ITI-028", name: "Praktek Kerja Lapangan", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:3,	smt:7, 
+      assessment: "PRAKTIKUM", predecessor: ""
+    },
+    { code: "SB-ITI-030", name: "Tugas Akhir", 
+      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      sks:6,	smt:8, 
+      assessment: "TUGAS AKHIR", predecessor: ""
+    },
+  ]
 
   // course
-  const courseData = [
-    // SI
-    { code: "SB-ISI-007", name: "Pengantar Teknologi Informasi", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISI-028", name: "Pendidikan Kewarganegaraan dan Antikorupsi", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISI-030", name: "Bahasa Inggris", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISI-001", name: "Konsep Sistem Informasi", sks: 2, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISI-014", name: "Dasar Pemrograman", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISI-029", name: "Bahasa Indonesia", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISO-007", name: "Human Resource Management", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISO-004", name: "Computational Thinking", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISPB1-002", name: "Pengantar Bisnis (PBMB)", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISPS1-004", name: "Analisis & Desain Proses Bisnis (Pemodelan Bisnis) (PSI)", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISPB2-006", name: "E-Commerce(PBMB)", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISPS2-006", name: "Artificial Intelligence (PSI)", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISO-101", name: "Big Data", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISO-103", name: "Matematika Diskrit", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISO-105", name: "Analitik dan Visualisasi Data", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISO-107", name: "Cloud Computing", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISO-109", name: "Kreatif Digital", sks: 3, prodi: "SI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ISI-025", name: "Praktek Kerja Lapangan", sks: 3, prodi: "SI", courseType: "WAJIB",  isPKL: true, isSkripsi: false, assessment: "PRAKTIKUM"},
-    { code: "SB-ISI-024", name: "Tugas Akhir", sks: 6, prodi: "SI", courseType: "WAJIB",  isPKL: false, isSkripsi: true, assessment: "TUGAS AKHIR"},
-
-    // TI
-    { code: "SB-ITI-016", name: "Pendidikan Kewarganegaraan dan Antikorupsi", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITI-006", name: "Algoritma Pemrograman", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITI-014", name: "Pendidikan Agama", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITI-009", name: "Pengenalan Pemrograman", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITI-023", name: "Statistika dan Probabilitas", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITI-002", name: "Hukum dan Kebijakan Teknologi Informasi", sks: 2, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITI-027", name: "Kompleksitas Algoritma", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITO-004", name: "Kalkulus", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITJN-006", name: "Komunikasi Data (Konsentrasi JN)", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITSC-001", name: "Computer Vision (Konsentrasi SC)", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITSC-002", name: "Expert System (Konsentrasi SC)", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITSC-004", name: "Data Mining (Konsentrasi SC)", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITO-002", name: "Matematika Diskrit", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITO-108", name: "E-Marketing", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITO-107", name: "E-Commerce", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITO-101", name: "Mobile Computing", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITO-105", name: "Kreatif Digital", sks: 3, prodi: "TI", courseType: "PILIHAN", isPKL: false, isSkripsi: false, assessment: "REGULER"},
-    { code: "SB-ITI-028", name: "Praktek Kerja Lapangan", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: true, isSkripsi: false, assessment: "PRAKTIKUM"},
-    { code: "SB-ITI-030", name: "Tugas Akhir", sks: 6, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: true, assessment: "TUGAS AKHIR"},
-  ];
-
-
-  for (const course of courseData) {
+  for (const course of courseOld) {
     await prisma.course.create({
       data: {
         name: course.name,
@@ -377,6 +863,89 @@ async function main() {
       }
     })
   }
+  for (const si of courseSI) {
+    await prisma.course.create({
+      data: {
+        code: si.code,
+        name: si.name,
+        sks: si.sks,
+        major: {
+          connect: {
+            id: 1
+          }
+        },
+        courseType: si.courseType,
+        isPKL: si.isPKL,
+        isSkripsi: si.isSkripsi,
+        assessment: {
+          connect: {
+            name: si.assessment,
+          }
+        },
+      }
+    });
+
+    await prisma.curriculumDetail.create({
+      data: {
+        curriculum: {
+          connect: {
+            id: kurikulumSI.id,
+          }
+        },
+        course: {
+          connect: {
+            code: si.code
+          }
+        },
+        semester: si.smt,
+      }
+    })
+  };
+  for (const ti of courseTI) {
+    await prisma.course.create({
+      data: {
+        code: ti.code,
+        name: ti.name,
+        sks: ti.sks,
+        major: {
+          connect: {
+            id: 1
+          }
+        },
+        courseType: ti.courseType,
+        isPKL: ti.isPKL,
+        isSkripsi: ti.isSkripsi,
+        assessment: {
+          connect: {
+            name: ti.assessment,
+          }
+        },
+      }
+    });
+    await prisma.curriculumDetail.create({
+      data: {
+        curriculum: {
+          connect: {
+            id: kurikulumTI.id,
+          }
+        },
+        course: {
+          connect: {
+            code: ti.code
+          }
+        },
+        semester: ti.smt,
+      }
+    })
+  };
+  
+
+  // create curriculum detail
+  await prisma.curriculumDetail.createMany({
+    data: [
+
+    ]
+  })
 
   // Lokal/Ruang
   const roomData = [
