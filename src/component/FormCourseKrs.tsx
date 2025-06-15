@@ -3,7 +3,7 @@
 import { updateKrsDetail } from "@/lib/action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useActionState, useEffect } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
 type FormCourseKrs = {
@@ -14,13 +14,20 @@ type FormCourseKrs = {
 const FormCourseKrs = ({ id, isAcc }: FormCourseKrs) => {
   const [state, formAction, pending] = useActionState(updateKrsDetail, { success: false, error: false, message: "" })
 
+  const prevPendingRef = useRef(false);
   const router = useRouter();
   useEffect(() => {
-    if (state?.success) {
+    if (!prevPendingRef.current && pending) {
+      prevPendingRef.current = true;
+    }
+
+    if (state?.success && prevPendingRef.current) {
       toast.success(state.message.toString());
       router.refresh();
+      prevPendingRef.current = false;
     }
-  }, [state, router, id])
+  }, [state, pending, router]);
+
   return (
     <form action={formAction}>
       <input type="text | number" name="id" value={id} readOnly hidden />

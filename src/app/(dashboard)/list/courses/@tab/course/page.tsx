@@ -75,12 +75,12 @@ const CourseListPage = async (
     {
       header: "Mata Kuliah",
       accessor: "mata kuliah",
-      className: "px-4",
+      className: "px-2 md:px-4",
     },
     {
       header: "Kode",
       accessor: "kode",
-      className: "hidden md:table-cell",
+      className: "hidden lg:table-cell",
     },
     {
       header: "SKS",
@@ -90,7 +90,7 @@ const CourseListPage = async (
     {
       header: "Program Studi",
       accessor: "program studi",
-      className: "hidden lg:table-cell",
+      className: "hidden md:table-cell",
     },
     {
       header: "Actions",
@@ -104,24 +104,28 @@ const CourseListPage = async (
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
-      <td className="flex items-center p-4 w-60 md:max-lg:max-w-72 lg:w-full">{item.name}</td>
-      <td className="hidden md:table-cell">{item.code}</td>
+      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+        <div className="flex flex-col col-span-5 items-start">
+          <span className="flex lg:hidden">{item.code}</span>
+          <span>{item.name}</span>
+          <span className="flex md:hidden">{item.sks} sks</span>
+        </div>
+        <div className="flex items-center justify-end gap-2 md:hidden ">
+          <ModalAction>
+            <div className="flex items-center gap-3">
+              {canUpdateData && <FormContainer table="course" type="update" data={item} />}
+              {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
+            </div>
+          </ModalAction>
+        </div>
+      </td>
+      <td className="hidden lg:table-cell">{item.code}</td>
       <td className="hidden md:table-cell">{item.sks}</td>
-      <td className="hidden lg:table-cell lg:capitalize">{item.major?.name}</td>
+      <td className="hidden md:table-cell capitalize">{item.major?.name}</td>
       <td>
-        <div className="flex items-center gap-2">
-          <div className="md:hidden flex items-center justify-end gap-2">
-            <ModalAction>
-              <div className="flex items-center gap-3">
-                {canUpdateData && <FormContainer table="course" type="update" data={item} />}
-                {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
-              </div>
-            </ModalAction>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            {canUpdateData && <FormContainer table="course" type="update" data={item} />}
-            {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
-          </div>
+        <div className="hidden md:flex items-center gap-2">
+          {canUpdateData && <FormContainer table="course" type="update" data={item} />}
+          {canDeleteData && <FormContainer table="course" type="delete" id={item.id} />}
         </div>
       </td>
     </tr>

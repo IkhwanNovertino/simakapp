@@ -78,7 +78,7 @@ const LecturerListPage = async (
     {
       header: "Info",
       accessor: "info",
-      className: "p-4",
+      className: "px-2 md:px-4",
     },
     {
       header: "NPK",
@@ -104,20 +104,38 @@ const LecturerListPage = async (
   const renderRow = (item: LecturerDataType) => (
     <tr
       key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
-      <td className="flex items-center gap-4 p-4">
-        <Image
-          src={item.photo ? `/api/avatar?file=${item.photo}` : '/avatar.png'}
-          alt="foto profil"
-          width={40}
-          height={40}
-          className="hidden xl:block w-16 h-16 rounded-full object-cover"
-        />
-        <div className="flex flex-col">
-          <h3 className="text-sm font-semibold">{`${item.frontTitle || ""} ${item.name}, ${item.backTitle || ""}`}</h3>
-          <p className="text-xs text-gray-500 italic">NUPTK : {item.nuptk || "-"}</p>
-          <p className="text-xs text-gray-500 ">{item?.user?.email || ""}</p>
+      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+        <div className="flex flex-col col-span-5 items-start md:flex-row md:items-center gap-4 ">
+          <Image
+            src={item.photo ? `/api/avatar?file=${item.photo}` : '/avatar.png'}
+            alt="foto profil"
+            width={40}
+            height={40}
+            className="hidden lg:block w-16 h-16 rounded-full object-cover"
+          />
+          <div className="flex flex-col">
+            <h3 className="text-sm font-semibold">{`${item.frontTitle || ""} ${item.name}, ${item.backTitle || ""}`}</h3>
+            <p className="text-xs text-gray-500 italic">NUPTK : {item.nuptk || "-"}</p>
+            <p className="text-xs text-gray-500 ">{item?.user?.email || ""}</p>
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-2 md:hidden ">
+          <ModalAction>
+            <div className="flex items-center gap-3">
+              {canViewData && (
+                <Link href={`/list/lecturers/${item.id}`}>
+                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                  </button>
+                </Link>
+              )}
+              {canUpdateData && (<FormContainer table="lecturer" type="update" data={item} />)}
+              {canCreateUser && (<FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+              {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />)}
+            </div>
+          </ModalAction>
         </div>
       </td>
       <td className="hidden md:table-cell">{item.npk || ""}</td>
@@ -126,7 +144,7 @@ const LecturerListPage = async (
       <td>
         <div className="flex items-center gap-2">
           {/* MOBILE-only */}
-          <div className="md:hidden flex items-center justify-end gap-2 z-10">
+          {/* <div className="md:hidden flex items-center justify-end gap-2 z-10">
             <ModalAction>
               <div className="flex items-center gap-3">
                 {canViewData && (
@@ -141,7 +159,7 @@ const LecturerListPage = async (
                 {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />)}
               </div>
             </ModalAction>
-          </div>
+          </div> */}
           {/* MD-up */}
           <div className="hidden md:flex items-center gap-2">
             {canViewData && (

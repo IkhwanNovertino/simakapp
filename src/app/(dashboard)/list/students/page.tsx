@@ -89,7 +89,7 @@ const StudentListPage = async (
     {
       header: "Info",
       accessor: "info",
-      className: "px-4",
+      className: "px-2 md:px-4",
     },
     {
       header: "NIM",
@@ -124,22 +124,40 @@ const StudentListPage = async (
     return (
       <tr
         key={item.id}
-        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
-        <td className="flex items-center gap-4 p-4">
-          <Image
-            src={item.photo ? `/api/avatar?file=${item.photo}` : '/avatar.png'}
-            alt=""
-            width={40}
-            height={40}
-            className="hidden lg:block w-16 h-16 rounded-full object-cover"
-          />
-          <div className="flex flex-col">
-            <h3 className="font-semibold">{item.name}</h3>
-            <p className="hidden md:flex text-xs text-gray-500">Angkatan: {item.year}</p>
-            <p className="flex md:hidden text-xs text-gray-500">{item?.nim || "-"}</p>
-            <p className="text-xs text-gray-500">{item.user?.email || ""}</p>
-            <p className={semesterStyle.join(" ")}>{item.studentStatus}</p>
+        <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+          <div className="flex flex-col col-span-5 items-start md:flex-row md:items-center gap-4 ">
+            <Image
+              src={item.photo ? `/api/avatar?file=${item.photo}` : '/avatar.png'}
+              alt=""
+              width={40}
+              height={40}
+              className="hidden lg:block w-16 h-16 rounded-full object-cover"
+            />
+            <div className="flex flex-col">
+              <h3 className="font-semibold">{item.name}</h3>
+              <p className="hidden md:flex text-xs text-gray-500">Angkatan: {item.year}</p>
+              <p className="flex md:hidden text-xs text-gray-500">{item?.nim || "-"}</p>
+              <p className="text-xs text-gray-500">{item.user?.email || ""}</p>
+              <p className={semesterStyle.join(" ")}>{item.studentStatus}</p>
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-2 md:hidden ">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                {canViewData && (
+                  <Link href={`/list/students/${item.id}`}>
+                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                    </button>
+                  </Link>
+                )}
+                {canUpdateData && <FormContainer table="student" type="update" data={item} />}
+                {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+                {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.userId}`} />)}
+              </div>
+            </ModalAction>
           </div>
         </td>
         <td className="hidden md:table-cell">{item?.nim || "-"}</td>
@@ -147,7 +165,7 @@ const StudentListPage = async (
         <td className="hidden lg:table-cell">{item.lecturer?.name || "-"}</td>
         <td>
           <div className="flex items-center gap-2">
-            <div className="md:hidden relative flex items-center justify-end gap-2">
+            {/* <div className="md:hidden relative flex items-center justify-end gap-2">
               <ModalAction>
                 <div className="flex items-center gap-3">
                   {canViewData && (
@@ -162,7 +180,7 @@ const StudentListPage = async (
                   {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.userId}`} />)}
                 </div>
               </ModalAction>
-            </div>
+            </div> */}
             <div className="hidden md:flex items-center gap-2">
               {canViewData && (
                 <Link href={`/list/students/${item.id}`}>

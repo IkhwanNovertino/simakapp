@@ -109,6 +109,7 @@ const CurriculumSinglePage = async (
     {
       header: "Semester",
       accessor: "semester",
+      className: "px-2 md:px-4"
     },
     {
       header: "Kode Mata Kuliah",
@@ -129,7 +130,7 @@ const CurriculumSinglePage = async (
 
   const renderRow = (item: CurriculumDetailDataType) => {
     const arrSemester = ["SATU", "DUA", "TIGA", "EMPAT", "LIMA", "ENAM", "TUJUH", "DELAPAN"];
-    const style = [`flex items-center p-4 w-full md:w-32`];
+    const style = [`grid grid-cols-6 md:flex py-4 px-2 md:px-4 md:w-28`];
     if (item?.semester === 1) {
       style.push("bg-primary-light");
     } else if (item?.semester === 2) {
@@ -151,25 +152,28 @@ const CurriculumSinglePage = async (
     return (
       <tr
         key={item.id}
-        className={`mb-1 even:bg-slate-50 text-sm border-b border-gray-200`}
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className={style.join(" ")}>
-          <div className="flex flex-col">
-            <h3 className="font-medium text-[13px] ">{`${arrSemester[item.semester! - 1]} (${item?.semester})`}</h3>
-            <p className="flex md:hidden">{`${item.course.code ?? "-"} | ${item.course.name ?? "-"}`}</p>
+          <div className="flex flex-col col-span-5 items-start">
+            <h3 className="font-semibold text-sm">{`${arrSemester[item.semester! - 1]} (${item?.semester})`}</h3>
+            <p className="flex text-xs md:hidden">{`${item.course.code ?? "-"} | ${item.course.name ?? "-"}`}</p>
+          </div>
+          <div className="flex items-center justify-end gap-2 md:hidden ">
+            {canDeleteData && <FormContainer table="curriculumDetail" type="delete" id={item.id} />}
           </div>
         </td>
         <td className="hidden md:table-cell">{item.course.code ?? "SB-III-000"}</td>
         <td className="hidden md:table-cell">{item.course.name ?? "--"}</td>
         <td>
           <div className="flex items-center gap-2">
-            <div className="md:hidden flex items-center justify-end gap-2">
+            {/* <div className="md:hidden flex items-center justify-end gap-2">
               <ModalAction>
                 <div className="flex items-center gap-3">
                   {canDeleteData && <FormContainer table="curriculumDetail" type="delete" id={item.id} />}
                 </div>
               </ModalAction>
-            </div>
+            </div> */}
             <div className="hidden md:flex items-center gap-2">
               {canDeleteData && <FormContainer table="curriculumDetail" type="delete" id={item.id} />}
             </div>

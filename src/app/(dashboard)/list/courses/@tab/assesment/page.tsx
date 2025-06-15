@@ -69,7 +69,7 @@ const AssesmentListPage = async (
     return (
       <tr
         key={item.id}
-        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className="flex items-center p-4">{item.name}</td>
         <td>

@@ -98,7 +98,7 @@ const ReregisterStudentPage = async (
     {
       header: "Info",
       accessor: "info",
-      className: "px-4"
+      className: "px-2 md:px-4"
     },
     {
       header: "Periode Akademik",
@@ -125,10 +125,17 @@ const ReregisterStudentPage = async (
   const renderRow = (item: ReregisterDetailDataType) => (
     <tr
       key={item.reregisterId}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
-      <td className="flex items-center gap-4 p-4">
-        {item.reregister.name}
+      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+        <div className="flex flex-col col-span-5 items-start">
+          <span className="font-semibold">{item.reregister.name}</span>
+          <span className="flex md:hidden text-xs">{item.reregister?.period?.name || ""}</span>
+          <span className="flex md:hidden text-xs">Semester {item.semester || "xx"}</span>
+        </div>
+        <div className="flex items-center justify-end gap-2 md:hidden ">
+          <FormContainer table="reregistrationStudent" type="update" data={item} />
+        </div>
       </td>
       <td className="hidden md:table-cell">{item.reregister?.period?.name || "-"}</td>
       <td className="hidden md:table-cell">{item.semester || "-"}</td>
@@ -140,11 +147,11 @@ const ReregisterStudentPage = async (
       <td>
         <div className="flex items-center gap-2">
           <div className="md:hidden relative flex items-center justify-end gap-2">
-            <ModalAction>
+            {/* <ModalAction>
               <div className="flex items-center gap-3">
                 <FormContainer table="reregistrationStudent" type="update" data={item} />
               </div>
-            </ModalAction>
+            </ModalAction> */}
           </div>
           <div className="hidden md:flex items-center gap-2">
             <FormContainer table="reregistrationStudent" type="update" data={item} />

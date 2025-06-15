@@ -95,7 +95,10 @@ const KRSDetailPage = async (
         key={item.id}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
-        <td className="flex items-center p-4">{item?.course?.code}</td>
+        <td className="flex flex-col items-start p-4">
+          <div>{item?.course?.code}</div>
+          <div className="block md:hidden">{item?.course?.name}</div>
+        </td>
         <td className="hidden md:table-cell">{item?.course?.name}</td>
         <td className="hidden md:table-cell">{item?.course?.sks}</td>
         <td className="hidden md:table-cell">

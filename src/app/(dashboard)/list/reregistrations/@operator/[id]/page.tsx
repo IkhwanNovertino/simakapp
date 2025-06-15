@@ -96,12 +96,12 @@ const ReregisterSinglePage = async (
     {
       header: "Info",
       accessor: "info",
-      className: "px-4"
+      className: "px-2 md:px-4"
     },
     {
       header: "Angkatan",
       accessor: "angkatan",
-      className: "hidden md:table-cell",
+      className: "hidden lg:table-cell",
     },
     {
       header: "Prodi",
@@ -145,16 +145,41 @@ const ReregisterSinglePage = async (
     return (
       <tr
         key={item.studentId}
-        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
-        <td className="flex items-center gap-4 p-4">
-          <div className="flex flex-col">
+        <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+          <div className="flex flex-col col-span-5 items-start">
             <h3 className="text-sm font-semibold">{item.student.name}</h3>
             <p className="text-xs text-gray-600">{item.student.nim}</p>
             <p className="text-xs text-gray-400">{`Semester ${item.semester || 0}`}</p>
+            <div className="flex md:hidden gap-1 mt-1">
+              <p className=" text-[9px] font-bold">
+                <span className={paymentStyle.join(" ")}>
+                  {item.paymentStatus}
+                </span>
+              </p>
+              <p className="text-[9px] font-bold">
+                <span className={semesterStyle.join(" ")}>
+                  {item.semesterStatus}
+                </span>
+              </p>
+              <p className="text-[9px] font-bold">
+                <span className={item.isStatusForm ? "p-1 rounded-lg bg-emerald-100 text-emerald-500" : "p-1 rounded-lg bg-red-100 text-red-700"}>
+                  {item.isStatusForm ? "Telah Diisi" : "Belum Diisi"}
+                </span>
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-2 md:hidden ">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}
+                {canDeleteData && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
+              </div>
+            </ModalAction>
           </div>
         </td>
-        <td className="hidden md:table-cell text-sm font-medium">{item.student.year || 2000}</td>
+        <td className="hidden lg:table-cell text-sm font-medium">{item.student.year || 2000}</td>
         <td className="hidden md:table-cell text-sm font-medium">{item.student.major.name}</td>
         <td className={`hidden md:table-cell text-[10px] font-bold`}>
           <span className={paymentStyle.join(" ")}>
@@ -174,12 +199,12 @@ const ReregisterSinglePage = async (
         <td>
           <div className="flex items-center gap-2">
             <div className="md:hidden relative flex items-center justify-end gap-2">
-              <ModalAction>
+              {/* <ModalAction>
                 <div className="flex items-center gap-3">
                   {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}
                   {canDeleteData && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
                 </div>
-              </ModalAction>
+              </ModalAction> */}
             </div>
             <div className="hidden md:flex items-center gap-2">
               {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}

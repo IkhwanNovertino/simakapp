@@ -2206,7 +2206,7 @@ export const updateKrsDetail = async (state: stateType, data: FormData) => {
       }
     })
     
-    return { success: true, error: false, message: "Mata kuliah telah disetujui" };
+    return { success: true, error: false, message: "Status mata kuliah telah diubah" };
   } catch (err: any) {
     try {
       handlePrismaError(err)

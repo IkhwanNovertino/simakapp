@@ -44,7 +44,7 @@ const ReregisterStudentForm = ({ setOpen, type, data }: ReregisterStudentFormPro
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
       <h1 className="text-xl font-semibold">{`Data Herregistrasi ${data?.reregister?.period?.name}`}</h1>
-      <div className="w-full py-4 bg-amber-300 rounded-md flex flex-col items-center">
+      <div className="w-full py-4 px-2 bg-amber-300 rounded-md flex flex-col items-center">
         <span className="font-semibold">
           Harap Memperhatikan data yang diisi. Data hanya dapat diisi satu kali.
         </span>

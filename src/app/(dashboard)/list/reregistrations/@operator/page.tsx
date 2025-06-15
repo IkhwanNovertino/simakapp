@@ -76,7 +76,7 @@ const ReregisterOperatorPage = async (
     {
       header: "Info",
       accessor: "info",
-      className: "px-4"
+      className: "px-2 md:px-4"
     },
     {
       header: "Periode Akademik",
@@ -103,10 +103,33 @@ const ReregisterOperatorPage = async (
   const renderRow = (item: ReregisterDataType) => (
     <tr
       key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
-      <td className="flex items-center gap-4 p-4">
-        {item.name}
+      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+        <div className="flex flex-col col-span-5 items-start">
+          <span>{item?.name || ""}</span>
+          <span className="flex md:hidden">{item.period?.year || ""}</span>
+          <div className="flex md:hidden text-[9px] font-bold">
+            <span className={item.isReregisterActive ? "text-lime-500 bg-lime-100 p-1 rounded-lg" : "text-red-700 bg-red-100 p-1 rounded-lg"}>
+              {item.isReregisterActive ? "AKTIF" : "NONAKTIF"}
+            </span>
+          </div>
+        </div>
+        <div className="flex items-center justify-end gap-2 md:hidden ">
+          <ModalAction>
+            <div className="flex items-center gap-3">
+              {canViewData && (
+                <Link href={`/list/reregistrations/${item.id}`}>
+                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                  </button>
+                </Link>
+              )}
+              {canUpdateData && (<FormContainer table="reregistration" type="update" data={item} />)}
+              {canDeleteData && (<FormContainer table="reregistration" type="delete" id={item.id} />)}
+            </div>
+          </ModalAction>
+        </div>
       </td>
       <td className="hidden md:table-cell">{item.period?.name || "-"}</td>
       <td className="hidden md:table-cell">{item.period?.year || "-"}</td>
@@ -117,7 +140,7 @@ const ReregisterOperatorPage = async (
       </td>
       <td>
         <div className="flex items-center gap-2">
-          <div className="md:hidden relative flex items-center justify-end gap-2">
+          {/* <div className="md:hidden relative flex items-center justify-end gap-2">
             <ModalAction>
               <div className="flex items-center gap-3">
                 {canViewData && (
@@ -131,7 +154,7 @@ const ReregisterOperatorPage = async (
                 {canDeleteData && (<FormContainer table="reregistration" type="delete" id={item.id} />)}
               </div>
             </ModalAction>
-          </div>
+          </div> */}
           <div className="hidden md:flex items-center gap-2">
             {canViewData && (
               <Link href={`/list/reregistrations/${item.id}`}>

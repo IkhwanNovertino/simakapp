@@ -75,7 +75,7 @@ const CurriculumListPage = async (
     {
       header: "Info Kurikulum",
       accessor: "info kurikulum",
-      className: "px-4",
+      className: "px-2 md:px-4",
     },
     {
       header: "Program Studi",
@@ -102,14 +102,27 @@ const CurriculumListPage = async (
   const renderRow = (item: CurriculumDataType) => (
     <tr
       key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
-      <td className="flex items-center p-4 sm:w-20 md:w-60">
-        <div className="flex flex-col">
+      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+        <div className="flex flex-col col-span-5 items-start">
           <h3 className="font-medium">{item.name}</h3>
-          <p className={`rounded-lg text-[10px] font-bold self-start p-1 ${item.isActive ? "text-green-500 bg-green-100" : "text-rose-500 bg-rose-100"}`}>
+          <p className={`rounded-lg text-[9px] font-bold self-start p-1 ${item.isActive ? "text-green-500 bg-green-100" : "text-rose-500 bg-rose-100"}`}>
             {item.isActive ? "AKTIF" : "NONAKTIF"}
           </p>
+        </div>
+        <div className="flex items-center justify-end gap-2 md:hidden ">
+          <ModalAction>
+            <div className="flex items-center gap-3">
+              <Link href={`/list/curriculums/${item.id}`}>
+                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                </button>
+              </Link>
+              {canUpdateData && <FormContainer table="curriculum" type="update" data={item} />}
+              {canDeleteData && <FormContainer table="curriculum" type="delete" id={item.id} />}
+            </div>
+          </ModalAction>
         </div>
       </td>
       <td className="hidden md:table-cell capitalize">{item.major?.name}</td>
@@ -118,7 +131,7 @@ const CurriculumListPage = async (
       <td>
         <div className="flex items-center gap-2">
           <div className="md:hidden flex items-center justify-end gap-2">
-            <ModalAction>
+            {/* <ModalAction>
               <div className="flex items-center gap-3">
                 <Link href={`/list/curriculums/${item.id}`}>
                   <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
@@ -128,7 +141,7 @@ const CurriculumListPage = async (
                 {canUpdateData && <FormContainer table="curriculum" type="update" data={item} />}
                 {canDeleteData && <FormContainer table="curriculum" type="delete" id={item.id} />}
               </div>
-            </ModalAction>
+            </ModalAction> */}
           </div>
           <div className="hidden md:flex items-center gap-2">
             <Link href={`/list/curriculums/${item.id}`}>
