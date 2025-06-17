@@ -5,7 +5,9 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Prisma } from "@prisma/client";
+import { Assessment, AssessmentDetail, Prisma } from "@prisma/client";
+
+type AssessmentDataTypes = Assessment & { assessmentDetail: AssessmentDetail[] };
 
 const AssesmentListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -57,7 +59,7 @@ const AssesmentListPage = async (
     },
   ];
 
-  const renderRow = (item: any) => {
+  const renderRow = (item: AssessmentDataTypes) => {
     const dataEdit = {
       id: item.id,
       name: item.name,

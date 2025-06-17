@@ -170,43 +170,6 @@ const FormContainer = async (
         relatedData = { allGradeComponent: gradeComponents };
         break;
       case "krs":
-        // let semester1 = data?.reregister?.period?.semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
-
-        // const courseFromCurriculum1 = await prisma.curriculumDetail.findMany({
-        //   where: {
-        //     curriculum: {
-        //       majorId: data?.student?.majorId,
-        //       isActive: true,
-        //     },
-        //     semester: {
-        //       in: [...semester1]
-        //     }
-        //   },
-        //   include: {
-        //     course: true,
-        //   },
-        //   orderBy: [
-        //     { semester: "asc" }
-        //   ]
-        // })
-        // const dataKrsDetail1 = data?.krsDetail.map((item: any) => item.courseId);
-        // let courseFilterByKrsDetail1
-        // if (dataKrsDetail1) {
-        //   courseFilterByKrsDetail1 = courseFromCurriculum1.filter((item: CurriculumDetail & { course: Course }) =>
-        //     !dataKrsDetail.includes(item.courseId)
-        //   )
-        // }
-
-        // const coursePassToForm1 = courseFilterByKrsDetail1.map(
-        //   (item: CurriculumDetail & { course: Course }) => ({
-        //     id: item.courseId,
-        //     code: item.course.code,
-        //     name: item.course.name,
-        //     sks: item.course.sks,
-        //     semester: item.semester,
-        //   }));
-
-        // relatedData = { course: coursePassToForm1 };
         break;
       case "krsDetail":
         const semester = data?.semester === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
