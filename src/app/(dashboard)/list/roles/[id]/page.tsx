@@ -56,7 +56,7 @@ const SingleRolePage = async (
     <tr
       key={item.id}
     >
-      <td className="p-4">{item.name}</td>
+      <td className="py-4 px-2 md:px-4 font-semibold">{item.name}</td>
       <td className="hidden md:table-cell">{item.description}</td>
       <td>
         <div className="flex items-center gap-2">
@@ -70,7 +70,7 @@ const SingleRolePage = async (
     {
       header: "Hak Akses",
       accessor: "hak akses",
-      className: "pl-4",
+      className: "px-2 md:px-4",
     },
     {
       header: "Deskripsi",

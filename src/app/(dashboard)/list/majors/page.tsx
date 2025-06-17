@@ -59,22 +59,23 @@ const MajorListPage = async (
       className="border-b border-gray-200 even:bg-slate-100 text-sm hover:bg-ternary-light"
     >
       <td className="hidden md:table-cell md:px-4">{item.stringCode}</td>
-      <td className="flex items-center gap-4 p-4 md:px-0">{item.name}</td>
+      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-0">
+        <div className="flex flex-col col-span-5 items-start">
+          <h3 className="font-semibold">{item.name}</h3>
+        </div>
+        <div className="flex items-center justify-end gap-2 md:hidden ">
+          <ModalAction>
+            <div className="flex items-center gap-3">
+              {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
+              {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
+            </div>
+          </ModalAction>
+        </div>
+      </td>
       <td>
-        <div className="flex items-center gap-2">
-          <div className="md:hidden relative flex items-center justify-end gap-2">
-            <ModalAction>
-              <div className="flex items-center gap-3">
-                {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
-                {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
-              </div>
-            </ModalAction>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
-            {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
-          </div>
-
+        <div className="hidden md:flex items-center gap-2">
+          {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
+          {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
         </div>
       </td>
     </tr>
@@ -89,7 +90,7 @@ const MajorListPage = async (
     {
       header: "Program Studi",
       accessor: "program studi",
-      className: "px-4 md:px-0"
+      className: "px-2 md:px-0"
     },
     {
       header: "Actions",

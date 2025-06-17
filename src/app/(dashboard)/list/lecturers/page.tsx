@@ -142,37 +142,17 @@ const LecturerListPage = async (
       <td className="hidden md:table-cell">{item.nidn}</td>
       <td className="hidden md:table-cell capitalize">{item.major?.name || ""}</td>
       <td>
-        <div className="flex items-center gap-2">
-          {/* MOBILE-only */}
-          {/* <div className="md:hidden flex items-center justify-end gap-2 z-10">
-            <ModalAction>
-              <div className="flex items-center gap-3">
-                {canViewData && (
-                  <Link href={`/list/lecturers/${item.id}`}>
-                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                    </button>
-                  </Link>
-                )}
-                {canUpdateData && (<FormContainer table="lecturer" type="update" data={item} />)}
-                {canCreateUser && (<FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-                {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />)}
-              </div>
-            </ModalAction>
-          </div> */}
-          {/* MD-up */}
-          <div className="hidden md:flex items-center gap-2">
-            {canViewData && (
-              <Link href={`/list/lecturers/${item.id}`}>
-                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                </button>
-              </Link>
-            )}
-            {canUpdateData && (<FormContainer table="lecturer" type="update" data={item} />)}
-            {canCreateUser && (<FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-            {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />)}
-          </div>
+        <div className="hidden md:flex items-center gap-2">
+          {canViewData && (
+            <Link href={`/list/lecturers/${item.id}`}>
+              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                <Image src="/icon/view.svg" alt="" width={20} height={20} />
+              </button>
+            </Link>
+          )}
+          {canUpdateData && (<FormContainer table="lecturer" type="update" data={item} />)}
+          {canCreateUser && (<FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+          {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />)}
         </div>
       </td >
     </tr >

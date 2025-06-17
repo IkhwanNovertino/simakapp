@@ -6,10 +6,10 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Operator, Prisma, Role } from "@prisma/client";
+import { Operator, Prisma, Role, User } from "@prisma/client";
 import { redirect } from "next/navigation";
 
-type OperatorDataType = Operator & { user: { role: Role } };
+type OperatorDataType = Operator & { user: User & { role: Role } };
 
 const OperatorListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -72,7 +72,7 @@ const OperatorListPage = async (
     {
       header: "Nama Operator",
       accessor: "nama operator",
-      className: "px-4"
+      className: "px-2 md:px-4"
     },
     {
       header: "Bagian",
@@ -94,29 +94,30 @@ const OperatorListPage = async (
   const renderRow = (item: OperatorDataType) => (
     <tr
       key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
-      <td className="flex items-center gap-4 p-4">
-        {item.name}
+      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+        <div className="flex flex-col col-span-5 items-start">
+          <h3 className="font-semibold">{item.name}</h3>
+          <p className="text-xs text-gray-500">{item.user?.email || ""}</p>
+        </div>
+        <div className="flex items-center justify-end gap-2 md:hidden ">
+          <ModalAction>
+            <div className="flex items-center gap-3">
+              {canUpdateData && (<FormContainer table="operator" type="update" data={item} />)}
+              {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+              {canDeleteData && (<FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />)}
+            </div>
+          </ModalAction>
+        </div>
       </td>
       <td className="hidden md:table-cell">{item.department || "-"}</td>
       <td className="hidden md:table-cell">{item?.user?.role?.name || ""}</td>
       <td>
-        <div className="flex items-center gap-2">
-          <div className="md:hidden relative flex items-center justify-end gap-2">
-            <ModalAction>
-              <div className="flex items-center gap-3">
-                {canUpdateData && (<FormContainer table="operator" type="update" data={item} />)}
-                {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-                {canDeleteData && (<FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />)}
-              </div>
-            </ModalAction>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            {canUpdateData && <FormContainer table="operator" type="update" data={item} />}
-            {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-            {canDeleteData && <FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />}
-          </div>
+        <div className="hidden md:flex items-center gap-2">
+          {canUpdateData && <FormContainer table="operator" type="update" data={item} />}
+          {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
+          {canDeleteData && <FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />}
         </div>
       </td>
     </tr>

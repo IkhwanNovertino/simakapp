@@ -106,9 +106,9 @@ const CourseListPage = async (
     >
       <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
         <div className="flex flex-col col-span-5 items-start">
-          <span className="flex lg:hidden">{item.code}</span>
-          <span>{item.name}</span>
-          <span className="flex md:hidden">{item.sks} sks</span>
+          <p className="flex lg:hidden">{item.code}</p>
+          <h3 className="font-semibold">{item.name}</h3>
+          <p className="flex md:hidden">{item.sks} sks</p>
         </div>
         <div className="flex items-center justify-end gap-2 md:hidden ">
           <ModalAction>

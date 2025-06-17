@@ -49,7 +49,7 @@ const PeriodListPage = async (
     {
       header: "Periode Akademik",
       accessor: "periode akademik",
-      className: "px-4"
+      className: "px-2 md:px-4"
     },
     {
       header: "Semester",
@@ -71,27 +71,27 @@ const PeriodListPage = async (
   const renderRow = (item: PeriodDataType) => (
     <tr
       key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
-      <td className="flex items-center gap-4 p-4">
-        {item.name}
+      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+        <div className="flex flex-col col-span-5 items-start">
+          <h3 className="font-semibold">{item.name}</h3>
+        </div>
+        <div className="flex items-center justify-end gap-2 md:hidden ">
+          <ModalAction>
+            <div className="flex items-center gap-3">
+              <FormContainer table="period" type="update" data={item} />
+              <FormContainer table="period" type="delete" id={item.id} />
+            </div>
+          </ModalAction>
+        </div>
       </td>
       <td className="hidden md:table-cell">{item.semesterType || "-"}</td>
       <td className="hidden md:table-cell">{item.year || "-"}</td>
       <td>
-        <div className="flex items-center gap-2">
-          <div className="md:hidden relative flex items-center justify-end gap-2">
-            <ModalAction>
-              <div className="flex items-center gap-3">
-                <FormContainer table="period" type="update" data={item} />
-                <FormContainer table="period" type="delete" id={item.id} />
-              </div>
-            </ModalAction>
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            <FormContainer table="period" type="update" data={item} />
-            <FormContainer table="period" type="delete" id={item.id} />
-          </div>
+        <div className="hidden md:flex items-center gap-2">
+          <FormContainer table="period" type="update" data={item} />
+          <FormContainer table="period" type="delete" id={item.id} />
         </div>
       </td>
     </tr>

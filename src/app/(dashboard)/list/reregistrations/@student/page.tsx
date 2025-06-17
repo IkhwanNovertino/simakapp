@@ -129,9 +129,9 @@ const ReregisterStudentPage = async (
     >
       <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
         <div className="flex flex-col col-span-5 items-start">
-          <span className="font-semibold">{item.reregister.name}</span>
-          <span className="flex md:hidden text-xs">{item.reregister?.period?.name || ""}</span>
-          <span className="flex md:hidden text-xs">Semester {item.semester || "xx"}</span>
+          <h3 className="font-semibold">{item.reregister.name}</h3>
+          <p className="flex md:hidden text-xs">{item.reregister?.period?.name || ""}</p>
+          <p className="flex md:hidden text-xs">Semester {item.semester || "xx"}</p>
         </div>
         <div className="flex items-center justify-end gap-2 md:hidden ">
           <FormContainer table="reregistrationStudent" type="update" data={item} />

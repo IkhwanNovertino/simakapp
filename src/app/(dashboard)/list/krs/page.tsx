@@ -117,7 +117,7 @@ const KRSListPage = async (
     {
       header: "Info",
       accessor: "info",
-      className: "p-4",
+      className: "px-2 md:px-4",
     },
     {
       header: "Periode Akademik",
@@ -157,10 +157,10 @@ const KRSListPage = async (
     return (
       <tr
         key={item.id}
-        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-primary-light"
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
-        <td className="flex items-center gap-4 p-4">
-          <div className="flex flex-col">
+        <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+          <div className="flex flex-col col-span-5 items-start">
             <h3 className="font-semibold">{item?.student?.name ?? ""}</h3>
             <p className="hidden md:flex text-xs text-gray-500">Angkatan: {item?.student?.year ?? ""}</p>
             <p className="flex text-xs text-gray-500">{item?.student?.nim || ""}</p>
@@ -169,6 +169,18 @@ const KRSListPage = async (
                 {item?.isStatusForm || ""}
               </span>
             </p>
+          </div>
+          <div className="flex items-center justify-end gap-2 md:hidden ">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                <Link href={`/list/krs/${item.id}`}>
+                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                  </button>
+                </Link>
+                {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
+              </div>
+            </ModalAction>
           </div>
         </td>
         <td className="hidden md:table-cell">{item?.reregister?.period?.name ?? ""}</td>
@@ -180,28 +192,13 @@ const KRSListPage = async (
           </span>
         </td>
         <td>
-          <div className="flex items-center gap-2">
-            <div className="md:hidden flex items-center justify-end gap-2">
-              <ModalAction>
-                <div className="flex items-center gap-3">
-                  <Link href={`/list/krs/${item.id}`}>
-                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                    </button>
-                  </Link>
-                  {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
-                </div>
-              </ModalAction>
-            </div>
-
-            <div className="hidden md:flex items-center gap-2">
-              <Link href={`/list/krs/${item.id}`}>
-                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                </button>
-              </Link>
-              {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
-            </div>
+          <div className="hidden md:flex items-center gap-2">
+            <Link href={`/list/krs/${item.id}`}>
+              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                <Image src="/icon/view.svg" alt="" width={20} height={20} />
+              </button>
+            </Link>
+            {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
           </div>
         </td >
       </tr >

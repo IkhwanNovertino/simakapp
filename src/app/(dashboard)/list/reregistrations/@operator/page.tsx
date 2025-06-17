@@ -107,8 +107,8 @@ const ReregisterOperatorPage = async (
     >
       <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
         <div className="flex flex-col col-span-5 items-start">
-          <span>{item?.name || ""}</span>
-          <span className="flex md:hidden">{item.period?.year || ""}</span>
+          <h3 className="font-semibold">{item?.name || ""}</h3>
+          <p className="flex md:hidden">{item.period?.year || ""}</p>
           <div className="flex md:hidden text-[9px] font-bold">
             <span className={item.isReregisterActive ? "text-lime-500 bg-lime-100 p-1 rounded-lg" : "text-red-700 bg-red-100 p-1 rounded-lg"}>
               {item.isReregisterActive ? "AKTIF" : "NONAKTIF"}

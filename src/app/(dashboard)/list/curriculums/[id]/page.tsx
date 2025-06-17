@@ -166,17 +166,8 @@ const CurriculumSinglePage = async (
         <td className="hidden md:table-cell">{item.course.code ?? "SB-III-000"}</td>
         <td className="hidden md:table-cell">{item.course.name ?? "--"}</td>
         <td>
-          <div className="flex items-center gap-2">
-            {/* <div className="md:hidden flex items-center justify-end gap-2">
-              <ModalAction>
-                <div className="flex items-center gap-3">
-                  {canDeleteData && <FormContainer table="curriculumDetail" type="delete" id={item.id} />}
-                </div>
-              </ModalAction>
-            </div> */}
-            <div className="hidden md:flex items-center gap-2">
-              {canDeleteData && <FormContainer table="curriculumDetail" type="delete" id={item.id} />}
-            </div>
+          <div className="hidden md:flex items-center gap-2">
+            {canDeleteData && <FormContainer table="curriculumDetail" type="delete" id={item.id} />}
           </div>
         </td>
       </tr>

@@ -106,7 +106,7 @@ const CurriculumListPage = async (
     >
       <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
         <div className="flex flex-col col-span-5 items-start">
-          <h3 className="font-medium">{item.name}</h3>
+          <h3 className="font-semibold">{item.name}</h3>
           <p className={`rounded-lg text-[9px] font-bold self-start p-1 ${item.isActive ? "text-green-500 bg-green-100" : "text-rose-500 bg-rose-100"}`}>
             {item.isActive ? "AKTIF" : "NONAKTIF"}
           </p>
@@ -129,29 +129,14 @@ const CurriculumListPage = async (
       <td className="hidden md:table-cell">{new Intl.DateTimeFormat("id-ID").format(item.startDate || Date.now())}</td>
       <td className="hidden md:table-cell">{new Intl.DateTimeFormat("id-ID").format(item.endDate || Date.now())}</td>
       <td>
-        <div className="flex items-center gap-2">
-          <div className="md:hidden flex items-center justify-end gap-2">
-            {/* <ModalAction>
-              <div className="flex items-center gap-3">
-                <Link href={`/list/curriculums/${item.id}`}>
-                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                  </button>
-                </Link>
-                {canUpdateData && <FormContainer table="curriculum" type="update" data={item} />}
-                {canDeleteData && <FormContainer table="curriculum" type="delete" id={item.id} />}
-              </div>
-            </ModalAction> */}
-          </div>
-          <div className="hidden md:flex items-center gap-2">
-            <Link href={`/list/curriculums/${item.id}`}>
-              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                <Image src="/icon/view.svg" alt="" width={20} height={20} />
-              </button>
-            </Link>
-            {canUpdateData && <FormContainer table="curriculum" type="update" data={item} />}
-            {canDeleteData && <FormContainer table="curriculum" type="delete" id={item.id} />}
-          </div>
+        <div className="hidden md:flex items-center gap-2">
+          <Link href={`/list/curriculums/${item.id}`}>
+            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+              <Image src="/icon/view.svg" alt="" width={20} height={20} />
+            </button>
+          </Link>
+          {canUpdateData && <FormContainer table="curriculum" type="update" data={item} />}
+          {canDeleteData && <FormContainer table="curriculum" type="delete" id={item.id} />}
         </div>
       </td>
     </tr>

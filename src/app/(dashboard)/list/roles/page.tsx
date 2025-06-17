@@ -73,10 +73,28 @@ const RoleListPage = async (
   const renderRow = (item: RoleDataType) => (
     <tr
       key={item.id}
-      className="border-b border-gray-200 even:bg-slate-100 text-sm hover:bg-ternary-light"
+      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
-      <td className="p-4">{item.name}</td>
-      <td className="hidden md:table-cell">{item.description}</td>
+      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+        <div className="flex flex-col col-span-5 items-start">
+          <h3 className="font-semibold">{item.name}</h3>
+        </div>
+        <div className="flex items-center justify-end gap-2 md:hidden ">
+          <ModalAction>
+            <div className="flex items-center gap-3">
+              {canViewData && (
+                <Link href={`/list/roles/${item.id}`}>
+                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                  </button>
+                </Link>
+              )}
+              {canDeleteData && (<FormContainer table="role" type="delete" id={item.id} />)}
+            </div>
+          </ModalAction>
+        </div>
+      </td>
+      <td className="hidden md:table-cell ">{item.description}</td>
       <td className="hidden lg:table-cell md:flex-wrap md:w-56 lg:w-80 xl:w-xl">
         {item.rolePermission.map(el => (
           <div key={el.permission.id} className="text-xs m-1 p-1.5 inline-block max-w-fit rounded even:bg-primary odd:bg-secondary">{el.permission.name}</div>
@@ -84,42 +102,25 @@ const RoleListPage = async (
         {item.rolePermission.length === 10 && <span className="text-lg mx-3 inline-block">...</span>}
       </td >
       <td>
-        <div className="flex items-center gap-2">
-          <div className="md:hidden flex items-center justify-end gap-2">
-            <ModalAction>
-              <div className="flex items-center gap-3">
-                {canViewData && (
-                  <Link href={`/list/roles/${item.id}`}>
-                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                    </button>
-                  </Link>
-                )}
-                {canDeleteData && (<FormContainer table="role" type="delete" id={item.id} />)}
-              </div>
-            </ModalAction>
-          </div>
-
-          <div className="hidden md:flex items-center gap-2">
-            {canViewData && (
-              <Link href={`/list/roles/${item.id}`}>
-                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                </button>
-              </Link>
-            )}
-            {canDeleteData && (<FormContainer table="role" type="delete" id={item.id} />)}
-          </div>
+        <div className="hidden md:flex items-center gap-2">
+          {canViewData && (
+            <Link href={`/list/roles/${item.id}`}>
+              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                <Image src="/icon/view.svg" alt="" width={20} height={20} />
+              </button>
+            </Link>
+          )}
+          {canDeleteData && (<FormContainer table="role" type="delete" id={item.id} />)}
         </div>
       </td>
-    </tr >
+    </tr>
   );
 
   const columns = [
     {
       header: "Role",
       accessor: "role",
-      className: "pl-4",
+      className: "px-2 md:px-4",
     },
     {
       header: "Deskripsi",

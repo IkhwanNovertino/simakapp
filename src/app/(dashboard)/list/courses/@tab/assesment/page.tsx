@@ -48,7 +48,7 @@ const AssesmentListPage = async (
     {
       header: "Komponen Nilai",
       accessor: "komponen nilai",
-      className: "px-4",
+      className: "px-2 md:px-4",
     },
     {
       header: "Actions",
@@ -71,21 +71,23 @@ const AssesmentListPage = async (
         key={item.id}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
-        <td className="flex items-center p-4">{item.name}</td>
+        <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+          <div className="flex flex-col col-span-5 items-start">
+            <h3 className="font-semibold">{item.name}</h3>
+          </div>
+          <div className="flex items-center justify-end gap-2 md:hidden ">
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                <FormContainer table="assessment" type="update" data={dataEdit} />
+                <FormContainer table="assessment" type="delete" id={item.id} />
+              </div>
+            </ModalAction>
+          </div>
+        </td>
         <td>
-          <div className="flex items-center gap-2">
-            <div className="md:hidden flex items-center justify-end gap-2">
-              <ModalAction>
-                <div className="flex items-center gap-3">
-                  <FormContainer table="assessment" type="update" data={dataEdit} />
-                  <FormContainer table="assessment" type="delete" id={item.id} />
-                </div>
-              </ModalAction>
-            </div>
-            <div className="hidden md:flex items-center gap-2">
-              <FormContainer table="assessment" type="update" data={dataEdit} />
-              <FormContainer table="assessment" type="delete" id={item.id} />
-            </div>
+          <div className="hidden md:flex items-center gap-2">
+            <FormContainer table="assessment" type="update" data={dataEdit} />
+            <FormContainer table="assessment" type="delete" id={item.id} />
           </div>
         </td>
       </tr>
