@@ -94,6 +94,7 @@ model Course {
   successor        Course?            @relation("CourseHistory")
   curriculumDetail CurriculumDetail[]
   krsDetail        KrsDetail[]
+  academicClass    AcademicClass[]
 
   @@map("sb25_courses")
 }
@@ -150,6 +151,7 @@ model Lecturer {
   student          Student[]
   reregisterDetail ReregisterDetail[]
   krs              Krs[]
+  academicClass    AcademicClass[]
 
   @@map("sb25_lecturers")
 }
@@ -201,21 +203,24 @@ model Student {
 }
 
 model Room {
-  id       Int       @id @default(autoincrement())
-  name     String?
-  location Location?
-  capacity Int?
+  id            Int             @id @default(autoincrement())
+  name          String?
+  location      Location?
+  capacity      Int?
+  academicClass AcademicClass[]
 
   @@map("sb25_rooms")
 }
 
 model Period {
-  id           String        @id @default(uuid())
-  year         Int?
-  semesterType SemesterType?
-  name         String?       @unique
-  isActive     Boolean?      @default(false)
-  reregister   Reregister[]
+  id            String          @id @default(uuid())
+  year          Int?
+  semesterType  SemesterType?
+  name          String?         @unique
+  isActive      Boolean?        @default(false)
+  reregister    Reregister[]
+  academicClass AcademicClass[]
+  Schedule      Schedule[]
 
   @@map("sb25_periods")
 }
@@ -311,6 +316,58 @@ model Position {
   personName   String?
 
   @@map("sb25_position")
+}
+
+model AcademicClass {
+  id         String     @id @default(uuid())
+  name       String?
+  periodId   String?
+  period     Period?    @relation(fields: [periodId], references: [id], onDelete: Restrict)
+  lecturerId String?
+  lecturer   Lecturer?  @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
+  courseId   String?
+  course     Course?    @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  roomId     Int?
+  room       Room?      @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  semester   Int?
+  schedule   Schedule[]
+
+  @@unique([name, lecturerId, courseId, roomId])
+  @@map("sb25_academic_classes")
+}
+
+model Time {
+  id         String     @id @default(uuid())
+  timeStart  DateTime?  @db.Time()
+  timeFinish DateTime?  @db.Time()
+  schedule   Schedule[]
+
+  @@unique([timeStart, timeFinish])
+  @@map("sb25_times")
+}
+
+model Schedule {
+  id              String         @id @default(uuid())
+  academicClassId String?
+  academicClass   AcademicClass? @relation(fields: [academicClassId], references: [id], onDelete: Restrict)
+  dayName         Day            @default(MINGGU)
+  timeId          String?
+  time            Time?          @relation(fields: [timeId], references: [id], onDelete: Restrict)
+  periodId        String?
+  period          Period?        @relation(fields: [periodId], references: [id], onDelete: Restrict)
+
+  @@unique([academicClassId, timeId])
+  @@map("sb25_schedules")
+}
+
+enum Day {
+  SENIN
+  SELASA
+  RABU
+  KAMIS
+  JUMAT
+  SABTU
+  MINGGU
 }
 
 enum StudyPlanStatus {
