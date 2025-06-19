@@ -319,3 +319,11 @@ export const CourseInKrsSchema = z.object({
 })
 
 export type CourseInKrsInputs = z.infer<typeof CourseInKrsSchema>;
+
+export const positionSchema = z.object({
+  id: z.string().optional(),
+  positionName: z.string().min(1, { message: "Nama jabatan harus diisi" }),
+  personName: z.string().min(1, { message: "Nama lengkap harus diisi" }),
+})
+
+export type PositionInputs = z.infer<typeof positionSchema>;

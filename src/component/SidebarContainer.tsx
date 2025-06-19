@@ -21,6 +21,11 @@ const menuItems = [
     title: "AKADEMIK",
     items: [
       {
+        icon: "/icon/operator.svg",
+        label: "Jabatan",
+        href: "/list/positions",
+      },
+      {
         icon: "/icon/period.svg",
         label: "Periode Akademik",
         href: "/list/periods",

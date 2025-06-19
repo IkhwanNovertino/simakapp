@@ -5,7 +5,7 @@ import {
   AssessmentInputs,
   CourseInKrsInputs,
   CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
-  OperatorInputs, PeriodInputs, PermissionInputs, reregistrationDetailSchema,
+  OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, studentSchema, UserInputs
 } from "./formValidationSchema";
@@ -2223,6 +2223,76 @@ export const deleteKrsDetail = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     await prisma.krsDetail.delete({
+      where: {
+        id: id,
+      }
+    })
+    
+    return { success: true, error: false, message: "Data berhasil dihapus" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const createPosition = async (state: stateType, data: PositionInputs) => {
+  try {
+    await prisma.position.create({
+      data: {
+        positionName: data.positionName,
+        personName: data.personName,
+      },
+    })
+    
+    return { success: true, error: false, message: "Jabatan berhasil ditambahkan" };
+  } catch (err: any) {
+    
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updatePosition = async (state: stateType, data: PositionInputs) => {
+  try {
+    await prisma.position.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        positionName: data.positionName,
+        personName: data.personName,
+      },
+    })
+    return { success: true, error: false, message: "Jabatan telah diubah" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const deletePosition = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.position.delete({
       where: {
         id: id,
       }

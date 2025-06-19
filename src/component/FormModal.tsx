@@ -4,13 +4,14 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteAssessment, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
+import { deleteAssessment, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
   table: "permission"
   | "role"
   | "operator"
+  | "position"
   | "lecturer"
   | "lecturerUser"
   | "operatorUser"
@@ -99,6 +100,9 @@ const KrsForm = dynamic(() => import("./forms/KrsForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const KrsDetailForm = dynamic(() => import("./forms/KrsDetailForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const PositionForm = dynamic(() => import("./forms/PositionForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -264,6 +268,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  position: (setOpen, type, data, relatedData) =>
+    <PositionForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -289,6 +300,7 @@ const deleteActionMap = {
   assessment: deleteAssessment,
   krs: deleteAssessment, //Belum diubah
   krsDetail: deleteKrsDetail,
+  position: deletePosition,
 };
 
 const namaTabelMap = {
@@ -314,6 +326,7 @@ const namaTabelMap = {
   assessment: "penilaian",
   krs: "KRS",
   krsDetail: "mata kuliah di KRS",
+  position: "jabatan",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
