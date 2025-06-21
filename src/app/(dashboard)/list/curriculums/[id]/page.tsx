@@ -87,6 +87,7 @@ const CurriculumSinglePage = async (
             id: true,
             name: true,
             code: true,
+            sks: true,
           },
         },
       },
@@ -119,6 +120,11 @@ const CurriculumSinglePage = async (
     {
       header: "Mata Kuliah",
       accessor: "mata kuliah",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "SKS",
+      accessor: "sks",
       className: "hidden md:table-cell",
     },
     {
@@ -165,6 +171,7 @@ const CurriculumSinglePage = async (
         </td>
         <td className="hidden md:table-cell">{item.course.code ?? "SB-III-000"}</td>
         <td className="hidden md:table-cell">{item.course.name ?? "--"}</td>
+        <td className="hidden md:table-cell">{item.course.sks ?? "--"}</td>
         <td>
           <div className="hidden md:flex items-center gap-2">
             {canDeleteData && <FormContainer table="curriculumDetail" type="delete" id={item.id} />}
