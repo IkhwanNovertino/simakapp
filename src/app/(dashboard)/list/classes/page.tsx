@@ -1,3 +1,4 @@
+import FormContainer from "@/component/FormContainer";
 import TableSearch from "@/component/TableSearch";
 import Image from "next/image";
 
@@ -10,9 +11,7 @@ const ClassListPage = () => {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
-              <Image src="/create.png" alt="" width={14} height={14} />
-            </button>
+            <FormContainer type="create" table="class" />
           </div>
         </div>
       </div>

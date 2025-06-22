@@ -332,7 +332,7 @@ model AcademicClass {
   semester   Int?
   schedule   Schedule[]
 
-  @@unique([name, lecturerId, courseId, roomId])
+  @@unique([periodId, name, lecturerId, courseId, roomId])
   @@map("sb25_academic_classes")
 }
 
