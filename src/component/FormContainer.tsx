@@ -214,6 +214,68 @@ const FormContainer = async (
           }));
         relatedData = { course: coursePassToForm };
         break;
+      case "class":
+        const period = await prisma.period.findMany({
+          select: { id: true, name: true },
+        });
+        const lecturerClass = await prisma.lecturer.findMany({
+          select: { id: true, name: true, frontTitle: true, backTitle: true },
+        });
+        const rooms = await prisma.room.findMany({
+          select: { id: true, name: true },
+        });
+
+        const [dataCourseByCurriculum, dataCountcourse] = await prisma.$transaction([
+          prisma.curriculumDetail.findMany({
+            where: {
+              curriculum: {
+                isActive: true,
+              },
+            },
+            include: {
+              course: {
+                include: {
+                  major: true,
+                },
+              },
+              curriculum: true,
+            },
+            orderBy: [
+              { curriculum: { major: { name: "asc" } } },
+              { semester: "asc" },
+            ],
+          }),
+          prisma.krsDetail.groupBy({
+            by: ["courseId"],
+            where: {
+              krs: {
+                reregister: {
+                  period: {
+                    name: "GANJIL 2020/2021"
+                  },
+                },
+              },
+            },
+            _count: {
+              courseId: true,
+            },
+          }),
+        ]);
+
+        const dataFilteredCourse = dataCourseByCurriculum.map((item: any) => (
+          {
+            id: item.course.id,
+            code: item.course.code,
+            major: item.course.major.name,
+            name: item.course.name,
+            sks: item.course.sks,
+            semester: item.semester,
+            participants: dataCountcourse.find((countItem: any) => countItem.courseId === item.course.id)?._count?.courseId || 0
+          }
+        ))
+
+        relatedData = { period, lecturers: lecturerClass, rooms, courses: dataFilteredCourse };
+        break;
       default:
         break;
     }

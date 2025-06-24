@@ -1,16 +1,15 @@
 import TabNavigation from "@/component/TabNavigationCourse";
 import React from "react";
 
-export default async function CourseLayout({
+export default async function ScheduleLayout({
   tab,
 }: Readonly<{
   tab: React.ReactNode;
 }>) {
 
   const tabs = [
-    { href: "/list/courses/course", label: "Matkul" },
-    { href: "/list/courses/assesment", label: "Penilaian" },
-    { href: "/list/courses/grade-component", label: "Komponen Nilai" },
+    { href: "/list/schedules/schedule", label: "Jadwal" },
+    { href: "/list/schedules/times", label: "Jam Pelajaran" },
   ];
 
   return (

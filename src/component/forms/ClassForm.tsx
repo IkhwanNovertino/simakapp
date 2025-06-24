@@ -2,12 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { GradeInputs, gradeSchema } from "@/lib/formValidationSchema";
+import { ClassInputs, classSchema } from "@/lib/formValidationSchema";
 import { createGrade, updateGrade } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import InputSelect from "../InputSelect";
+import Select from "react-select";
 
 interface ClassFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
@@ -17,13 +19,15 @@ interface ClassFormProps {
 }
 
 const ClassForm = ({ setOpen, type, data, relatedData }: ClassFormProps) => {
-  // const {rooms, courses, lecturers, period} = relatedData;
+  const { rooms, lecturers, period, courses } = relatedData;
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<GradeInputs>({
-    resolver: zodResolver(gradeSchema)
+    control,
+    setValue
+  } = useForm<ClassInputs>({
+    resolver: zodResolver(classSchema)
   })
   const action = type === "create" ? createGrade : updateGrade;
   const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
@@ -57,12 +61,18 @@ const ClassForm = ({ setOpen, type, data, relatedData }: ClassFormProps) => {
           </div>
         )}
         <div className="flex flex-col gap-2 w-full md:w-1/2">
-          <InputField
+          <InputSelect
+            control={control}
             label="Periode Akademik"
-            name="name"
-            defaultValue={data?.name}
-            register={register}
-            error={errors?.name}
+            name="periodId"
+            placeholder="Pilih Periode Akademik"
+            defaultValue={data?.periodId}
+            options={period.map((item: any) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+            error={errors?.periodId}
+            required={true}
           />
         </div>
       </div>
@@ -71,60 +81,132 @@ const ClassForm = ({ setOpen, type, data, relatedData }: ClassFormProps) => {
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full">
+          <label className="text-xs text-gray-500">Mahasiswa</label>
+          <Controller
+            name="courseId"
+            control={control}
+            defaultValue={data?.courseId || ""}
+            render={({ field }) => (
+              <Select
+                {...field}
+                options={courses.map((course: any) => ({
+                  value: course.id,
+                  label: `${course.code} | ${course.name}`,
+                }))}
+                isClearable
+                placeholder="Pilih Mata Kuliah"
+                classNamePrefix="react-select"
+                className="text-sm rounded-md"
+                onChange={(selected: any) => {
+                  const selectedCourse = courses.find((c: any) => c.id === selected?.value);
+                  field.onChange(selected ? selected.value : "");
+                  if (selectedCourse) {
+                    const name = `${selectedCourse.semester}${selectedCourse.major === 'Sistem Informasi' ? 1 : 6}`
+                    setValue("name", name);
+                    setValue("semester", selectedCourse.semester);
+                    setValue("major", selectedCourse.major || "");
+                    setValue("participants", selectedCourse.participants || 0);
+                  } else {
+                    setValue("name", "");
+                    setValue("semester", 0);
+                    setValue("major", "");
+                    setValue("participants", 0);
+                  }
+                }}
+                value={
+                  courses
+                    .map((course: any) => ({
+                      value: course.id,
+                      label: `${course.code} | ${course.name}`,
+                    }))
+                    .find((option: any) => option.value === field.value) || null
+                }
+              />
+            )}
+          />
+          {errors.courseId?.message && (
+            <p className="text-xs text-red-400">
+              {errors.courseId?.message.toString()}
+            </p>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
           <InputField
-            label="Mata Kuliah"
+            label="Nama Kelas"
             name="name"
+            inputProps={{ readOnly: true }}
             defaultValue={data?.name}
             register={register}
             error={errors?.name}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
           <InputField
-            label="Kode Mata Kuliah"
-            name="name"
-            defaultValue={data?.name}
+            label="Peserta Matkul"
+            name="participants"
+            inputProps={{ readOnly: true }}
+            defaultValue={data?.participants}
             register={register}
-            error={errors?.name}
+            error={errors?.participants}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
           <InputField
             label="Program Studi"
-            name="name"
-            defaultValue={data?.name}
+            name="major"
+            inputProps={{ readOnly: true }}
+            defaultValue={data?.major}
             register={register}
-            error={errors?.name}
+            error={errors?.major}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className="flex flex-col gap-2 w-full md:w-1/5">
           <InputField
             label="Mata Kuliah Semester"
-            name="name"
-            defaultValue={data?.name}
+            name="semester"
+            inputProps={{ readOnly: true }}
+            defaultValue={data?.semester}
             register={register}
-            error={errors?.name}
+            error={errors?.semester}
           />
         </div>
       </div>
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full md:w-1/2">
-          <InputField
-            label="Dosen"
-            name="name"
-            defaultValue={data?.name}
-            register={register}
-            error={errors?.name}
+          <InputSelect
+            control={control}
+            label="Dosen Pengampu"
+            name="lecturerId"
+            placeholder="Pilih Dosen Pengampu"
+            defaultValue={data?.lecturerId}
+            error={errors?.lecturerId}
+            options={lecturers.map((item: any) => ({
+              value: item.id,
+              label: `${item.frontTitle ? item.frontTitle + " " : ""}${item.name} ${item.backTitle ? item.backTitle : ""}`,
+            }))}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/3">
-          <InputField
+          <InputSelect
+            control={control}
+            label="Ruang Kelas"
+            name="roomId"
+            placeholder="Pilih Ruang Kelas"
+            defaultValue={data?.roomId}
+            error={errors?.roomId}
+            options={rooms.map((item: any) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+          />
+
+          {/* <InputField
             label="Ruang Kelas"
             name="name"
             defaultValue={data?.name}
             register={register}
             error={errors?.name}
-          />
+          /> */}
         </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}

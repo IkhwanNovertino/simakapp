@@ -327,3 +327,17 @@ export const positionSchema = z.object({
 })
 
 export type PositionInputs = z.infer<typeof positionSchema>;
+
+export const classSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, { message: "Nama kelas harus diisi" }),
+  courseId: z.string().min(1, { message: "Pilih mata kuliah" }),
+  participants: z.coerce.number().optional(),
+  roomId: z.string().min(1, { message: "Pilih ruang/lokal" }),
+  lecturerId: z.string().min(1, { message: "Pilih dosen pengampu" }),
+  periodId: z.string().min(1, { message: "Pilih periode akademik" }),
+  major: z.string().optional(),
+  semester: z.coerce.number().min(1, { message: "Semester harus diisi" }),
+});
+
+export type ClassInputs = z.infer<typeof classSchema>;

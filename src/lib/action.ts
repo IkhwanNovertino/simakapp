@@ -3,6 +3,7 @@
 import path from "path";
 import {
   AssessmentInputs,
+  ClassInputs,
   CourseInKrsInputs,
   CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
   OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, reregistrationDetailSchema,
@@ -2297,6 +2298,55 @@ export const deletePosition = async (state: stateType, data: FormData) => {
         id: id,
       }
     })
+    
+    return { success: true, error: false, message: "Data berhasil dihapus" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const createClass = async (state: stateType, data: ClassInputs) => {
+  try {
+
+    return { success: true, error: false, message: "Kelas berhasil ditambahkan" };
+  } catch (err: any) {
+    
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateClass = async (state: stateType, data: ClassInputs) => {
+  try {
+    return { success: true, error: false, message: "Jabatan telah diubah" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const deleteClass = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err: any) {
