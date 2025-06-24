@@ -19,6 +19,7 @@ import logger from "./logger";
 import { handlePrismaError } from "./errors/prismaError";
 import { AppError } from "./errors/appErrors";
 import { calculatingSKSLimits } from "./utils";
+import { semester } from "./setting";
 
 type stateType = {
   success: boolean;
@@ -2334,9 +2335,20 @@ export const deletePosition = async (state: stateType, data: FormData) => {
 }
 export const createClass = async (state: stateType, data: ClassInputs) => {
   try {
-
+    await prisma.academicClass.create({
+      data: {
+        name: data.name,
+        courseId: data.courseId,
+        semester: data.semester,
+        lecturerId: data.lecturerId,
+        roomId: data.roomId,
+        periodId: data.periodId,
+      }
+    });
+    
     return { success: true, error: false, message: "Kelas berhasil ditambahkan" };
   } catch (err: any) {
+    console.log(err);
     
     try {
       handlePrismaError(err)
@@ -2351,6 +2363,19 @@ export const createClass = async (state: stateType, data: ClassInputs) => {
 }
 export const updateClass = async (state: stateType, data: ClassInputs) => {
   try {
+    await prisma.academicClass.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        name: data.name,
+        courseId: data.courseId,
+        semester: data.semester,
+        lecturerId: data.lecturerId,
+        roomId: data.roomId,
+        periodId: data.periodId,
+      }
+    });
     return { success: true, error: false, message: "Jabatan telah diubah" };
   } catch (err: any) {
     try {
@@ -2367,7 +2392,12 @@ export const updateClass = async (state: stateType, data: ClassInputs) => {
 export const deleteClass = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    
+    await prisma.academicClass.delete({
+      where: {
+        id: id,
+      }
+    });
+
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err: any) {
     try {

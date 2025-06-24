@@ -4,7 +4,7 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteAssessment, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
+import { deleteAssessment, deleteClass, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
@@ -312,7 +312,7 @@ const deleteActionMap = {
   krs: deleteAssessment, //Belum diubah
   krsDetail: deleteKrsDetail,
   position: deletePosition,
-  class: deletePosition, //Belum diubah
+  class: deleteClass, //Belum diubah
 };
 
 const namaTabelMap = {

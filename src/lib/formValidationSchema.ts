@@ -334,11 +334,11 @@ export const classSchema = z.object({
   name: z.string().min(1, { message: "Nama kelas harus diisi" }),
   courseId: z.string().min(1, { message: "Pilih mata kuliah" }),
   participants: z.coerce.number().optional(),
-  roomId: z.string().min(1, { message: "Pilih ruang/lokal" }),
+  roomId: z.coerce.number().min(1, { message: "Pilih ruang/lokal" }),
   lecturerId: z.string().min(1, { message: "Pilih dosen pengampu" }),
   periodId: z.string().min(1, { message: "Pilih periode akademik" }),
   major: z.string().optional(),
-  semester: z.coerce.number().min(1, { message: "Semester harus diisi" }),
+  semester: z.coerce.number().min(1, { message: "Pilih mata kuliah untuk mengisi semester" }),
 });
 
 export type ClassInputs = z.infer<typeof classSchema>;

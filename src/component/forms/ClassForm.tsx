@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } 
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { ClassInputs, classSchema } from "@/lib/formValidationSchema";
-import { createGrade, updateGrade } from "@/lib/action";
+import { createClass, updateClass } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
@@ -29,7 +29,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: ClassFormProps) => {
   } = useForm<ClassInputs>({
     resolver: zodResolver(classSchema)
   })
-  const action = type === "create" ? createGrade : updateGrade;
+  const action = type === "create" ? createClass : updateClass;
   const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
@@ -81,7 +81,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: ClassFormProps) => {
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full">
-          <label className="text-xs text-gray-500">Mahasiswa</label>
+          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Mata Kuliah</label>
           <Controller
             name="courseId"
             control={control}
@@ -134,18 +134,21 @@ const ClassForm = ({ setOpen, type, data, relatedData }: ClassFormProps) => {
           <InputField
             label="Nama Kelas"
             name="name"
-            inputProps={{ readOnly: true }}
             defaultValue={data?.name}
             register={register}
             error={errors?.name}
+            required={true}
           />
+          <div className="text-xs font-medium text-amber-400">
+            Edit setelah mengisi mata kuliah!
+          </div>
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/5">
           <InputField
             label="Peserta Matkul"
             name="participants"
             inputProps={{ readOnly: true }}
-            defaultValue={data?.participants}
+            defaultValue={courses.find((course: any) => course.id === data?.courseId)?.participants || 0}
             register={register}
             error={errors?.participants}
           />
@@ -155,14 +158,14 @@ const ClassForm = ({ setOpen, type, data, relatedData }: ClassFormProps) => {
             label="Program Studi"
             name="major"
             inputProps={{ readOnly: true }}
-            defaultValue={data?.major}
+            defaultValue={data?.course?.major?.name || ""}
             register={register}
             error={errors?.major}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/5">
           <InputField
-            label="Mata Kuliah Semester"
+            label="Semester"
             name="semester"
             inputProps={{ readOnly: true }}
             defaultValue={data?.semester}
@@ -180,6 +183,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: ClassFormProps) => {
             placeholder="Pilih Dosen Pengampu"
             defaultValue={data?.lecturerId}
             error={errors?.lecturerId}
+            required={true}
             options={lecturers.map((item: any) => ({
               value: item.id,
               label: `${item.frontTitle ? item.frontTitle + " " : ""}${item.name} ${item.backTitle ? item.backTitle : ""}`,
@@ -194,19 +198,12 @@ const ClassForm = ({ setOpen, type, data, relatedData }: ClassFormProps) => {
             placeholder="Pilih Ruang Kelas"
             defaultValue={data?.roomId}
             error={errors?.roomId}
+            required={true}
             options={rooms.map((item: any) => ({
               value: item.id,
               label: item.name,
             }))}
           />
-
-          {/* <InputField
-            label="Ruang Kelas"
-            name="name"
-            defaultValue={data?.name}
-            register={register}
-            error={errors?.name}
-          /> */}
         </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}

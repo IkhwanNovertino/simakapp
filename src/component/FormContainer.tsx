@@ -215,6 +215,8 @@ const FormContainer = async (
         relatedData = { course: coursePassToForm };
         break;
       case "class":
+        const periodClass = data?.periodId
+        const semesterClass = data?.periodName.split(" ")[0] === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
         const period = await prisma.period.findMany({
           select: { id: true, name: true },
         });
@@ -230,6 +232,9 @@ const FormContainer = async (
             where: {
               curriculum: {
                 isActive: true,
+              },
+              semester: {
+                in: semesterClass,
               },
             },
             include: {
@@ -250,9 +255,7 @@ const FormContainer = async (
             where: {
               krs: {
                 reregister: {
-                  period: {
-                    name: "GANJIL 2020/2021"
-                  },
+                  periodId: periodClass,
                 },
               },
             },
