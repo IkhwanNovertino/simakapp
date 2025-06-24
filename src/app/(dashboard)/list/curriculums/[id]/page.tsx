@@ -65,6 +65,7 @@ const CurriculumSinglePage = async (
 
 
   const dataFilter = [
+    { id: "all", name: "Semua" },
     { id: "1", name: "Semester 1" },
     { id: "2", name: "Semester 2" },
     { id: "3", name: "Semester 3" },
