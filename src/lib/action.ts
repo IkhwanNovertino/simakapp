@@ -1295,13 +1295,23 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
 
 export const createPeriod = async (state: stateType, data: PeriodInputs) => {
   try {
-    logger.info(data.year.split("/"))
+    if (data?.isActive) {
+      await prisma.period.updateMany({
+        where: {
+          isActive: true,
+        },
+        data: {
+          isActive: false,
+        }
+      })
+    }
     const yearData = data.semesterType === "GANJIL" ? data.year.split("/")[0] : data.year.split("/")[1]
     await prisma.period.create({
       data: {
         semesterType: data.semesterType,
         year: parseInt(yearData),
         name: `${data.semesterType} ${data.year}`,
+        isActive: data.isActive,
         reregister: {
           create: {
             name: `herregistrasi ${data.semesterType} ${data.year}`,
@@ -1324,7 +1334,16 @@ export const createPeriod = async (state: stateType, data: PeriodInputs) => {
 }
 export const updatePeriod = async (state: stateType, data: PeriodInputs) => {
   try {
-    logger.info(data)
+    if (data?.isActive) {
+      await prisma.period.updateMany({
+        where: {
+          isActive: true,
+        },
+        data: {
+          isActive: false,
+        }
+      })
+    }
     const yearData = data.semesterType === "GANJIL" ? data.year.split("/")[0] : data.year.split("/")[1]
     await prisma.period.update({
       where: {
@@ -1334,6 +1353,7 @@ export const updatePeriod = async (state: stateType, data: PeriodInputs) => {
         semesterType: data.semesterType,
         year: parseInt(yearData),
         name: `${data.semesterType} ${data.year}`,
+        isActive: data.isActive,
       }
     })
     return { success: true, error: false, message: "Data berhasil diubah" };

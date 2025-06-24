@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { PeriodInputs, periodSchema } from "@/lib/formValidationSchema";
 import { createPeriod, updatePeriod } from "@/lib/action";
@@ -69,7 +69,7 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
             control={control}
             name="year"
             defaultValue={data?.name.split(" ")[1]}
-            placeholder="-- Pilih tahun akademik"
+            placeholder="Pilih Tahun Akademik"
             error={errors.year}
             options={years.map((year: string) => ({
               value: year,
@@ -84,7 +84,7 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
             control={control}
             name="semesterType"
             defaultValue={data?.semesterType}
-            placeholder="-- Pilih semester"
+            placeholder="Pilih Semester"
             error={errors.semesterType}
             options={semester.map((semester: string) => ({
               value: semester,
@@ -92,6 +92,31 @@ const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
             }))}
             label="Semester"
             required={true}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full">
+          <label className="text-xs text-gray-500">Status Periode Akademik</label>
+          <Controller
+            name="isActive"
+            control={control}
+            defaultValue={!!data?.isActive}
+            render={({ field }) => (
+              <div className="flex flex-col gap-2">
+                <label htmlFor="isActive" className="peer flex items-center justify-start gap-1.5 text-sm text-gray-600 has-checked:text-indigo-900 has-checked:font-medium">
+                  <input
+                    id="isActive"
+                    type="checkbox"
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                    className="w-4 h-4"
+                  />
+                  Mengaktifkan Periode Akademik
+                </label>
+                <div className="hidden text-sm font-medium text-amber-400 peer-has-checked:flex">
+                  Periode Akademik sebelumnya akan dinonaktifkan !
+                </div>
+              </div>
+            )}
           />
         </div>
       </div>
