@@ -342,3 +342,14 @@ export const classSchema = z.object({
 });
 
 export type ClassInputs = z.infer<typeof classSchema>;
+
+export const timeSchema = z.object({
+  id: z.string().optional(),
+  timeStart: z.string().time({ message: "Waktu mulai harus dalam format HH:mm" }),
+  timeFinish: z.string().time({ message: "Waktu selesai harus dalam format HH:mm" }),
+}).refine((data) => data.timeStart < data.timeFinish, {
+  message: "Waktu selesai harus lebih dari waktu mulai",
+  path: ["timeFinish"]
+})
+
+export type TimeInputs = z.infer<typeof timeSchema>;

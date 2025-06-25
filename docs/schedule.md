@@ -30,9 +30,10 @@
 
 ## Bussiness Rules
 
-- Jika Hari, ruangan, waktu sama, maka bentrok.
-- Dosen tidak dapat mengajar di hari dan waktu yang sama.
--
+<!-- - Jika Hari, ruangan, waktu sama, maka bentrok. -->
 
-- Dosen hanya bisa mengajar 1 MK di satu waktu.
+- Jika Hari, ruangan, waktu sama, prodi sama maka bentrok.
+- Dosen tidak dapat mengajar di hari dan waktu yang sama, prodi sama.
+
+- Dosen bisa mengajar 2 MK di satu waktu asal ruang sama.
 - Dosen hanya bisa mengajar 1 kelas di satu waktu.

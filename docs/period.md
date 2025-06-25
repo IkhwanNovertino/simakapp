@@ -31,3 +31,8 @@
   - Boolean?
   - default false
   - required
+
+## Bussiness Rules
+
+- isActive harus ada satu yang aktif. digunakan pada saat melakukan rekap data matakuliah yang diambil di "rekap KRS", membuat kelas agar mata kuliah dapat terfilter berdaserkan semesterType,
+- 

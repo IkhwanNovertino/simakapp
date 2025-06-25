@@ -82,8 +82,7 @@ const ScheduleListPage = () => {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
-            </button> */}
+            <FormContainer table="schedule" type="create" />
           </div>
         </div>
       </div>

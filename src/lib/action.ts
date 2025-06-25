@@ -8,7 +8,7 @@ import {
   CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
   OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
-  RoomInputs, studentSchema, UserInputs
+  RoomInputs, studentSchema, TimeInputs, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { CampusType, Gender, PaymentStatus, Religion, SemesterStatus, StudyPlanStatus } from "@prisma/client";
@@ -2333,6 +2333,7 @@ export const deletePosition = async (state: stateType, data: FormData) => {
     }
   }
 }
+
 export const createClass = async (state: stateType, data: ClassInputs) => {
   try {
     await prisma.academicClass.create({
@@ -2376,7 +2377,7 @@ export const updateClass = async (state: stateType, data: ClassInputs) => {
         periodId: data.periodId,
       }
     });
-    return { success: true, error: false, message: "Jabatan telah diubah" };
+    return { success: true, error: false, message: "Kelas telah diubah" };
   } catch (err: any) {
     try {
       handlePrismaError(err)
@@ -2397,6 +2398,75 @@ export const deleteClass = async (state: stateType, data: FormData) => {
         id: id,
       }
     });
+
+    return { success: true, error: false, message: "Data berhasil dihapus" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const createTime = async (state: stateType, data: TimeInputs) => {
+  try {
+
+    await prisma.time.create({
+      data: {
+        timeStart: new Date(`2003-01-31T${data.timeStart}`),
+        timeFinish: new Date(`2003-01-31T${data.timeFinish}`),
+      }
+    })
+    
+    return { success: true, error: false, message: "Waktu pelajaran berhasil ditambahkan" };
+  } catch (err: any) {
+    
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateTime = async (state: stateType, data: TimeInputs) => {
+  try {
+    console.log("updateTime called", data);
+    await prisma.time.update({
+      where: {
+        id: data?.id
+      },
+      data: {
+        timeStart: new Date(`2003-01-31T${data.timeStart}`),
+        timeFinish: new Date(`2003-01-31T${data.timeFinish}`),
+      }
+    })
+
+    return { success: true, error: false, message: "Waktu pelajaran telah diubah" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const deleteTime = async (state: stateType, data: FormData) => {
+  try {
+    console.log("deleteTime called");
+    const id = data.get("id") as string;
 
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err: any) {

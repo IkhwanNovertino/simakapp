@@ -2,20 +2,54 @@ import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { prisma } from "@/lib/prisma";
+import { ITEM_PER_PAGE } from "@/lib/setting";
+import { Prisma } from "@prisma/client";
 
-interface Schedule {
+interface TimeDataType {
   id: string;
-  timeStart: string;
-  timeFinish: string;
+  timeStart: Date;
+  timeFinish: Date;
 }
 
-const TimeListPage = () => {
+const TimeListPage = async (
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
+) => {
 
-  const data: Schedule[] = [
-    { id: "1", timeStart: "08:00", timeFinish: "10:00" },
-    { id: "2", timeStart: "10:00", timeFinish: "12:00" },
-    // Add more sample data as needed
-  ];
+  const { page, ...queryParams } = await searchParams;
+  const p = page ? parseInt(page) : 1;
+
+  const query: Prisma.TimeWhereInput = {}
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          // case "search":
+          //   query.OR = [
+          //     { timeStart: { contains: value, mode: "insensitive" } },
+          //     { timeFinish: { contains: value, mode: "insensitive" } },
+          //   ]
+          //   break;
+          default:
+            break;
+        }
+      }
+    }
+  };
+
+  const [data, count] = await prisma.$transaction([
+    prisma.time.findMany({
+      where: query,
+      orderBy: [
+        { timeStart: "asc" },
+      ],
+      take: ITEM_PER_PAGE, // Adjust as needed
+      skip: ITEM_PER_PAGE * (p - 1), // Adjust as needed
+    }),
+    prisma.time.count({
+      where: query,
+    }),
+  ])
 
   const columns = [
     {
@@ -30,28 +64,30 @@ const TimeListPage = () => {
     },
   ];
 
-  const renderRow = (item: Schedule) => (
+  const renderRow = (item: TimeDataType) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
       <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
         <div className="flex flex-col col-span-5 items-start">
-          <h3 className="font-semibold">{item.timeStart} - {item.timeFinish}</h3>
+          <h3 className="font-semibold">
+            {new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeStart || Date.now())} - {new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeFinish || Date.now())}
+          </h3>
         </div>
         <div className="flex items-center justify-end gap-2 md:hidden ">
           <ModalAction>
             <div className="flex items-center gap-3">
-              <FormContainer table="period" type="update" data={item} />
-              <FormContainer table="period" type="delete" id={item.id} />
+              <FormContainer table="time" type="update" data={item} />
+              <FormContainer table="time" type="delete" id={item.id} />
             </div>
           </ModalAction>
         </div>
       </td>
       <td>
         <div className="hidden md:flex items-center gap-2">
-          <FormContainer table="period" type="update" data={item} />
-          <FormContainer table="period" type="delete" id={item.id} />
+          <FormContainer table="time" type="update" data={item} />
+          <FormContainer table="time" type="delete" id={item.id} />
         </div>
       </td>
     </tr>
@@ -64,8 +100,7 @@ const TimeListPage = () => {
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
-            </button> */}
+            <FormContainer table="time" type="create" />
           </div>
         </div>
       </div>

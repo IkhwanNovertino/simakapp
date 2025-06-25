@@ -32,6 +32,8 @@ export interface FormModalProps {
   | "krs"
   | "krsDetail"
   | "class"
+  | "time"
+  | "schedule";
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
   data?: any;
   id?: any;
@@ -107,6 +109,9 @@ const PositionForm = dynamic(() => import("./forms/PositionForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const ClassForm = dynamic(() => import("./forms/ClassForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const TimeForm = dynamic(() => import("./forms/TimeForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -286,6 +291,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  time: (setOpen, type, data, relatedData) =>
+    <TimeForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -312,7 +324,9 @@ const deleteActionMap = {
   krs: deleteAssessment, //Belum diubah
   krsDetail: deleteKrsDetail,
   position: deletePosition,
-  class: deleteClass, //Belum diubah
+  class: deleteClass,
+  time: deleteClass, //Belum diubah
+  schedule: deleteClass, //Belum diubah
 };
 
 const namaTabelMap = {
@@ -340,6 +354,8 @@ const namaTabelMap = {
   krsDetail: "mata kuliah di KRS",
   position: "jabatan",
   class: "kelas",
+  time: "waktu pelajaran",
+  schedule: "jadwal",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
