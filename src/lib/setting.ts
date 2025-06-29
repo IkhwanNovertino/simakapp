@@ -32,4 +32,5 @@ export const religion = ["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KO
 export const status = ["NONAKTIF", "AKTIF", "CUTI", "DO", "MENGUNDURKAN_DIRI", "LULUS"];
 export const courseType = ["WAJIB", "PILIHAN"];
 export const semester = ["GANJIL", "GENAP"];
+export const dayName = ["SENIN", "SELASA", "RABU", "KAMIS", "JUM'AT", "SABTU", "MINGGU"];
 

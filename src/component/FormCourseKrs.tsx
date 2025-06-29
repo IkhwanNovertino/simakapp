@@ -7,8 +7,8 @@ import { useActionState, useEffect, useRef } from "react";
 import { toast } from "react-toastify";
 
 type FormCourseKrs = {
-  id?: string,
-  isAcc?: string,
+  id: string,
+  isAcc: boolean,
 };
 
 const FormCourseKrs = ({ id, isAcc }: FormCourseKrs) => {
@@ -31,10 +31,10 @@ const FormCourseKrs = ({ id, isAcc }: FormCourseKrs) => {
   return (
     <form action={formAction}>
       <input type="text | number" name="id" value={id} readOnly hidden />
-      <input type="text" name="isAcc" value={isAcc} readOnly hidden />
+      <input type="text" name="isAcc" value={isAcc.toString()} readOnly hidden />
       <button
-        disabled={pending}
-        className={`w-7 h-7 flex items-center justify-center rounded-full bg-ternary ${pending && 'disabled:bg-ternary/30 disabled:cursor-none'}`}
+        disabled={pending || isAcc}
+        className={`w-7 h-7 flex items-center justify-center rounded-full bg-ternary disabled:bg-ternary/30 disabled:cursor-not-allowed`}
       >
         <Image src="/icon/check.svg" alt="" width={22} height={22} />
       </button>

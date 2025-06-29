@@ -1,5 +1,4 @@
 import FormContainer from "@/component/FormContainer";
-import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableFilter from "@/component/TableFilter";

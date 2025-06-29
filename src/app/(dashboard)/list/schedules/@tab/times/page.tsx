@@ -1,7 +1,7 @@
 import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
+import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
-import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Prisma } from "@prisma/client";
@@ -24,12 +24,6 @@ const TimeListPage = async (
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
         switch (key) {
-          // case "search":
-          //   query.OR = [
-          //     { timeStart: { contains: value, mode: "insensitive" } },
-          //     { timeFinish: { contains: value, mode: "insensitive" } },
-          //   ]
-          //   break;
           default:
             break;
         }
@@ -43,8 +37,8 @@ const TimeListPage = async (
       orderBy: [
         { timeStart: "asc" },
       ],
-      take: ITEM_PER_PAGE, // Adjust as needed
-      skip: ITEM_PER_PAGE * (p - 1), // Adjust as needed
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (p - 1),
     }),
     prisma.time.count({
       where: query,
@@ -98,7 +92,6 @@ const TimeListPage = async (
       <div className="flex items-center justify-between">
         <h1 className="hidden md:block text-lg font-semibold">Data Waktu Pelajaran</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <TableSearch />
           <div className="flex items-center gap-4 self-end">
             <FormContainer table="time" type="create" />
           </div>
@@ -106,7 +99,7 @@ const TimeListPage = async (
       </div>
       <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
-      {/* <Pagination page={p} count={count} /> */}
+      <Pagination page={p} count={count} />
     </div>
   )
 }

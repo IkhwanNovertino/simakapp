@@ -108,7 +108,7 @@ const KRSDetailPage = async (
           <div className="flex items-center justify-end gap-2 md:hidden ">
             <ModalAction>
               <div className="flex items-center gap-3">
-                {user?.roleType !== "STUDENT" && <FormCourseKrs id={item.id} isAcc={item.isAcc.toString()} />}
+                {user?.roleType !== "STUDENT" && <FormCourseKrs id={item.id} isAcc={item.isAcc} />}
                 <FormContainer table="krsDetail" type="delete" id={item.id} />
               </div>
             </ModalAction>
@@ -122,7 +122,7 @@ const KRSDetailPage = async (
         </td>
         <td>
           <div className="hidden md:flex items-center gap-2">
-            {user?.roleType !== "STUDENT" && <FormCourseKrs id={item.id} isAcc={item.isAcc.toString()} />}
+            {user?.roleType !== "STUDENT" && <FormCourseKrs id={item.id} isAcc={item.isAcc} />}
             <FormContainer table="krsDetail" type="delete" id={item.id} />
           </div>
         </td>

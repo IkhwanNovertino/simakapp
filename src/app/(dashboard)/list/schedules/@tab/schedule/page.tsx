@@ -1,23 +1,62 @@
 import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
+import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { prisma } from "@/lib/prisma";
+import { ITEM_PER_PAGE } from "@/lib/setting";
+import { Period, Prisma, Schedule } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
-interface Schedule {
-  id: string;
-  name: string;
-  period?: string;
-}
+type ScheduleDataType = Schedule & { period: Period };
 
-const ScheduleListPage = () => {
+const ScheduleListPage = async (
+  { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
+) => {
 
-  const data: Schedule[] = [
-    { id: "1", name: "Jadwal Kuliah Genap 2023/2024", period: "GENAP 2023/2024" },
-    { id: "2", name: "Jadwal Kuliah Ganjil 2024/2025", period: "GANJIL 2024/2025" },
-    // Add more sample data as needed
-  ];
+  const { page, ...queryParams } = await searchParams;
+  const p = page ? parseInt(page) : 1;
+
+  const query: Prisma.ScheduleWhereInput = {}
+  if (queryParams) {
+    for (const [key, value] of Object.entries(queryParams)) {
+      if (value !== undefined) {
+        switch (key) {
+          case "search":
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+              { period: { name: { contains: value, mode: "insensitive" } } }
+            ]
+            break;
+          default:
+            break;
+        }
+      }
+    }
+  };
+
+  const [data, count] = await prisma.$transaction([
+    prisma.schedule.findMany({
+      where: query,
+      include: {
+        period: true,
+      },
+      orderBy: [
+        {
+          period: { year: "desc" }
+        },
+        {
+          period: { semesterType: "asc" }
+        }
+      ],
+      take: ITEM_PER_PAGE,
+      skip: ITEM_PER_PAGE * (p - 1),
+    }),
+    prisma.schedule.count({
+      where: query,
+    }),
+  ])
 
   const columns = [
     {
@@ -37,7 +76,7 @@ const ScheduleListPage = () => {
     },
   ];
 
-  const renderRow = (item: Schedule) => (
+  const renderRow = (item: ScheduleDataType) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
@@ -45,6 +84,9 @@ const ScheduleListPage = () => {
       <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
         <div className="flex flex-col col-span-5 items-start">
           <h3 className="font-semibold">{item.name}</h3>
+          <p className={`rounded-lg text-[9px] font-bold self-start p-1 ${item.isActive ? "text-green-500 bg-green-100" : "text-rose-500 bg-rose-100"}`}>
+            {item.isActive ? "AKTIF" : "NONAKTIF"}
+          </p>
         </div>
         <div className="flex items-center justify-end gap-2 md:hidden ">
           <ModalAction>
@@ -54,13 +96,13 @@ const ScheduleListPage = () => {
                   <Image src="/icon/view.svg" alt="" width={20} height={20} />
                 </button>
               </Link>
-              <FormContainer table="period" type="update" data={item} />
-              <FormContainer table="period" type="delete" id={item.id} />
+              <FormContainer table="schedule" type="update" data={item} />
+              <FormContainer table="schedule" type="delete" id={item.id} />
             </div>
           </ModalAction>
         </div>
       </td>
-      <td className="hidden md:table-cell">{item.period || "0000/0000"}</td>
+      <td className="hidden md:table-cell">{item.period?.name || "0000/0000"}</td>
       <td>
         <div className="hidden md:flex items-center gap-2">
           <Link href={`/list/schedules/schedule/${item.id}`}>
@@ -68,8 +110,8 @@ const ScheduleListPage = () => {
               <Image src="/icon/view.svg" alt="" width={20} height={20} />
             </button>
           </Link>
-          <FormContainer table="period" type="update" data={item} />
-          <FormContainer table="period" type="delete" id={item.id} />
+          <FormContainer table="schedule" type="update" data={item} />
+          <FormContainer table="schedule" type="delete" id={item.id} />
         </div>
       </td>
     </tr>
@@ -88,7 +130,7 @@ const ScheduleListPage = () => {
       </div>
       <Table columns={columns} renderRow={renderRow} data={data} />
       {/* PAGINATION */}
-      {/* <Pagination page={p} count={count} /> */}
+      <Pagination page={p} count={count} />
     </div>
   )
 }

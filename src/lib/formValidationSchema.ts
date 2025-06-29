@@ -353,3 +353,29 @@ export const timeSchema = z.object({
 })
 
 export type TimeInputs = z.infer<typeof timeSchema>;
+
+export const scheduleSchema = z.object({
+  id: z.string().optional(),
+  name: z.string().min(1, { message: "nama jadwal harus diisi" }),
+  periodId: z.string().min(1, { message: "periode akademik harus diisi" }),
+  isActive: z.boolean().default(false),
+})
+
+export type ScheduleInputs = z.infer<typeof scheduleSchema>;
+
+export const scheduleDetailSchema = z.object({
+  id: z.string().optional(),
+  scheduleId: z.string().min(1, { message: "Schedule ID tidak ditemukan!" }),
+  academicClass: z.string().min(1, { message: "kelas harus diisi" }),
+  time: z.string().min(1, { message: "waktu pelajaran harus diisi" }),
+  dayName: z.string().min(1, { message: "Hari harus diisi" })
+})
+
+export type ScheduleDetailInputs = z.infer<typeof scheduleDetailSchema>;
+
+export const academicClassDetailSchema = z.object({
+  classId: z.string().optional(),
+  students: z.array(z.string().min(1, {message: "Pilih mahasiswa"})),
+})
+
+export type AcademicClassDetailInputs = z.infer<typeof academicClassDetailSchema>;

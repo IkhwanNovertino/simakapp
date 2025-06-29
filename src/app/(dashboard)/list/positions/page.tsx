@@ -6,7 +6,7 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Position, Prisma, Room } from "@prisma/client";
+import { Position, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 type PositionDataType = Position;

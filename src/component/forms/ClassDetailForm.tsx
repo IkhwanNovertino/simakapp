@@ -4,30 +4,30 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { TimeInputs, timeSchema } from "@/lib/formValidationSchema";
-import { createTime, updateTime } from "@/lib/action";
+import { AcademicClassDetailInputs, academicClassDetailSchema } from "@/lib/formValidationSchema";
+import { createClassDetail } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import moment from "moment";
+import InputSelect from "../InputSelect";
 
-interface TimeFormProps {
+interface ClassDetailFormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
   type: "create" | "update" | "createUser" | "updateUser" | "createMany";
   data?: any;
   relatedData?: any;
 }
 
-const TimeForm = ({ setOpen, type, data }: TimeFormProps) => {
-
+const ClassDetailForm = ({ setOpen, type, data, relatedData }: ClassDetailFormProps) => {
+  const { students } = relatedData;
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<TimeInputs>({
-    resolver: zodResolver(timeSchema)
+    control,
+  } = useForm<AcademicClassDetailInputs>({
+    resolver: zodResolver(academicClassDetailSchema)
   })
-  const action = type === "create" ? createTime : updateTime;
-  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
+  const [state, formAction] = useActionState(createClassDetail, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -44,38 +44,34 @@ const TimeForm = ({ setOpen, type, data }: TimeFormProps) => {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data waktu pelajaran baru" : "Ubah data waktu pelajaran"}</h1>
+      <h1 className="text-xl font-semibold w-[95%]">Tambah data mahasiswa di kelas {data.name}</h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
           <div className="hidden">
             <InputField
-              label="id"
-              name="id"
+              label="classId"
+              name="classId"
               defaultValue={data?.id}
               register={register}
-              error={errors?.id}
+              error={errors?.classId}
             />
           </div>
         )}
-        <div className="flex flex-col gap-2 w-full md:w-1/3">
-          <InputField
-            label="Waktu Mulai"
-            name="timeStart"
-            type="time"
-            defaultValue={moment(data?.timeStart).format("HH:mm")}
-            register={register}
-            error={errors?.timeStart}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/3">
-          <InputField
-            label="Waktu Selesai"
-            name="timeFinish"
-            type="time"
-            defaultValue={moment(data?.timeFinish).format("HH:mm")}
-            register={register}
-            error={errors?.timeFinish}
+        <div className="flex flex-col gap-2 w-full">
+          <InputSelect
+            control={control}
+            name="students"
+            defaultValue={data?.students}
+            placeholder="Pilih Mahasiswa"
+            error={Array.isArray(errors.students) ? errors.students[0] : errors.students}
+            options={students.map((student: any) => ({
+              value: student.id,
+              label: `${student.nim} ${student.name}`,
+            }))}
+            isMulti={true}
+            label="Mahasiswa"
+            required={true}
           />
         </div>
       </div>
@@ -87,4 +83,4 @@ const TimeForm = ({ setOpen, type, data }: TimeFormProps) => {
   )
 }
 
-export default TimeForm;
+export default ClassDetailForm;

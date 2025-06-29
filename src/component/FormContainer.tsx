@@ -215,8 +215,9 @@ const FormContainer = async (
         relatedData = { course: coursePassToForm };
         break;
       case "class":
-        const periodClass = data?.periodId
-        const semesterClass = data?.periodName.split(" ")[0] === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
+        const periodClass = data?.periodId || '098';
+        const semesterType = data?.periodName?.split(" ")[0] || "GANJIL"
+        const semesterClass = semesterType ? [1, 3, 5, 7] : [2, 4, 6, 8];
         const period = await prisma.period.findMany({
           select: { id: true, name: true },
         });
@@ -278,6 +279,101 @@ const FormContainer = async (
         ))
 
         relatedData = { period, lecturers: lecturerClass, rooms, courses: dataFilteredCourse };
+        break;
+      case "classDetail":
+        const dataClass = data;
+        const studentCourse = await prisma.krsDetail.findMany({
+          where: {
+            krs: {
+              reregister: {
+                periodId: dataClass?.periodId,
+              }
+            },
+            courseId: dataClass?.courseId,
+            isAcc: true,
+          },
+          include: {
+            krs: {
+              include: {
+                reregister: true,
+                student: true,
+              },
+            },
+          },
+          orderBy: [
+            {
+              krs: {
+                student: {
+                  nim: 'asc'
+                }
+              }
+            }
+          ]
+        });
+        const studentList = studentCourse.map((item: any) => item.krs.student);
+        const studenthaveClass = await prisma.academicClassDetail.findMany({
+          where: {
+            academicClass: {
+              periodId: dataClass?.periodId,
+              courseId: dataClass?.courseId,
+            }
+          },
+        });
+        const studenthaveClassId = new Set(studenthaveClass.map((item: any) => item.studentId))
+        const studentPassToForm = studentList.filter((item: any) => !studenthaveClassId.has(item.id))
+        console.log('DATA MAHASISWA', studentList);
+        console.log('DATA MAHASISWA YANG SUDAH PUNYA KELAS', studenthaveClass);
+
+        relatedData = { students: studentPassToForm };
+        break;
+      case "schedule":
+        const periodSchedule = await prisma.period.findMany({
+          select: { id: true, name: true },
+          orderBy: [
+            {
+              year: "desc"
+            },
+            {
+              semesterType: "asc"
+            }
+          ]
+        });
+        relatedData = { period: periodSchedule };
+        break;
+      case "scheduleDetail":
+        const periodScheduleDetail = await prisma.period.findMany({
+          select: { id: true, name: true },
+          orderBy: [
+            {
+              year: "desc"
+            },
+            {
+              semesterType: "asc"
+            }
+          ]
+        });
+        const time = await prisma.time.findMany({
+          orderBy: [
+            { timeStart: "asc" },
+          ]
+        });
+        const classSchedule = await prisma.academicClass.findMany({
+          where: {
+            periodId: data.periodId,
+          },
+          include: {
+            lecturer: true,
+            room: true,
+            course: {
+              include: {
+                major: true
+              }
+            }
+          }
+        })
+        // console.log(classSchedule);
+
+        relatedData = { period: periodScheduleDetail, time: time, academicClass: classSchedule };
         break;
       default:
         break;

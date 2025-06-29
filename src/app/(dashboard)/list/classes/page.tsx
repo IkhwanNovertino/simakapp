@@ -1,10 +1,14 @@
+import FilterSearch from "@/component/FilterSearch";
 import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
+import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
+import { lecturerName } from "@/lib/utils";
 import { AcademicClass, Course, Lecturer, Major, Period, Prisma, Room } from "@prisma/client";
+import Image from "next/image";
 import Link from "next/link";
 
 type AcademicClassDataType = AcademicClass & { course: Course & { major: Major } } & { lecturer: Lecturer } & { room: Room } & { period: Period };
@@ -32,11 +36,18 @@ const ClassListPage = async (
       if (value !== undefined) {
         switch (key) {
           case "search":
-            query.name = { contains: value, mode: "insensitive" };
+            query.OR = [
+              { name: { contains: value, mode: "insensitive" } },
+              { period: { name: { contains: value, mode: "insensitive" } } },
+              { course: { name: { contains: value, mode: "insensitive" } } },
+              { course: { code: { contains: value, mode: "insensitive" } } },
+            ]
             break;
-          // case "filter":
-          //   query.majorId = parseInt(value)
-          //   break;
+          case "filter":
+            query.OR = [
+              { course: { majorId: parseInt(value) } }
+            ]
+            break;
           default:
             break;
         }
@@ -44,9 +55,15 @@ const ClassListPage = async (
     }
   };
 
+  console.log('DATAQUERY', query);
+
+
   const [data, count, dataFilter] = await prisma.$transaction([
     prisma.academicClass.findMany({
-      where: query,
+      where: {
+        ...query,
+        // course: { majorId: 1 },
+      },
       include: {
         course: {
           include: {
@@ -57,9 +74,11 @@ const ClassListPage = async (
         lecturer: true,
         room: true,
       },
-      // orderBy: [
-      //   { : "desc" },
-      // ],
+      orderBy: [
+        { period: { year: "desc" } },
+        { period: { semesterType: "asc" } },
+        { name: 'asc' },
+      ],
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
@@ -69,15 +88,8 @@ const ClassListPage = async (
     })
   ]);
 
-  // contoh data yang dikirim ke form
-  // const contohData = {
-  //   periodId: period.id,
-  //   periodName: period.name,
-  //   courseId: "",
-  //   lecturerId: "",
-  //   roomId: "",
-  //   name: "",
-  // }
+  dataFilter.unshift({ id: "all", name: "Semua" })
+
 
   const columns = [
     {
@@ -119,13 +131,6 @@ const ClassListPage = async (
       periodName: item.period.name,
       semester: item.semester,
     }
-    //   periodId: period.id,
-    //   periodName: period.name,
-    //   courseId: "",
-    //   lecturerId: "",
-    //   roomId: "",
-    //   name: "",
-    // }
     return (
       <tr
         key={item.id}
@@ -134,27 +139,45 @@ const ClassListPage = async (
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
           <div className="flex flex-col col-span-5 items-start gap-2">
             <h3 className="font-semibold">Kelas : {item.name}</h3>
-            <div className="flex flex-col w-full md:w-36">
-              <p className="text-xs text-gray-500">{item.course.code}</p>
-              <p className="text-xs text-gray-500 truncate">{item.course.name}</p>
+            <div className="flex flex-col w-full md:w-44">
+              <p className="text-sm text-gray-500">{item.course.code}</p>
+              <p className="text-sm text-gray-500 truncate">{item.course.name}</p>
             </div>
           </div>
           <div className="flex items-center justify-end gap-2 md:hidden ">
             <ModalAction>
               <div className="flex items-center gap-3">
+                <Link href={`/list/classes/${item.id}`}>
+                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                  </button>
+                </Link>
                 <FormContainer table="class" type="update" data={itemUpdate} />
                 <FormContainer table="class" type="delete" id={item.id} />
               </div>
             </ModalAction>
           </div>
         </td>
-        <td className="hidden md:table-cell md:w-36">
-          <span className="truncate">{`${item.lecturer.frontTitle ? item.lecturer.frontTitle + " " : ""}${item.lecturer.name} ${item.lecturer.backTitle ? "," + item.lecturer.backTitle : ""}`}</span>
+        <td className="hidden md:table-cell md:w-36 pr-2">
+          <p className="truncate">
+            {lecturerName(
+              {
+                frontTitle: item?.lecturer?.frontTitle,
+                name: item?.lecturer?.name,
+                backTitle: item.lecturer.backTitle
+              }
+            )}
+          </p>
         </td>
         <td className="hidden md:table-cell">{item.room?.name}</td>
         <td className="hidden md:table-cell">{item.period?.name}</td>
         <td>
           <div className="hidden md:flex items-center gap-2">
+            <Link href={`/list/classes/${item.id}`}>
+              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                <Image src="/icon/view.svg" alt="" width={20} height={20} />
+              </button>
+            </Link>
             <FormContainer table="class" type="update" data={itemUpdate} />
             <FormContainer table="class" type="delete" id={item.id} />
           </div>
@@ -171,11 +194,13 @@ const ClassListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer type="create" table="class" data={{ periodId: period.id, periodName: period.name }} />
+            <FormContainer type="create" table="class" data={{ periodId: period?.id, periodName: period?.name }} />
           </div>
         </div>
       </div>
+      <FilterSearch data={dataFilter} />
       <Table columns={columns} data={data} renderRow={renderRow} />
+      <Pagination count={count} page={p} />
     </div>
   )
 }

@@ -140,21 +140,6 @@ const ReregisterOperatorPage = async (
       </td>
       <td>
         <div className="flex items-center gap-2">
-          {/* <div className="md:hidden relative flex items-center justify-end gap-2">
-            <ModalAction>
-              <div className="flex items-center gap-3">
-                {canViewData && (
-                  <Link href={`/list/reregistrations/${item.id}`}>
-                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                    </button>
-                  </Link>
-                )}
-                {canUpdateData && (<FormContainer table="reregistration" type="update" data={item} />)}
-                {canDeleteData && (<FormContainer table="reregistration" type="delete" id={item.id} />)}
-              </div>
-            </ModalAction>
-          </div> */}
           <div className="hidden md:flex items-center gap-2">
             {canViewData && (
               <Link href={`/list/reregistrations/${item.id}`}>

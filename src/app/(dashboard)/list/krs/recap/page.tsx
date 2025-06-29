@@ -1,35 +1,26 @@
-import FormContainer from "@/component/FormContainer";
-import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
-import { getSession } from "@/lib/session";
-import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Course, CurriculumDetail, Prisma } from "@prisma/client";
 
-type RecapKRS = CurriculumDetail & { course: Course };
+type RecapKRS = CurriculumDetail & { course: Course } & { studentCount: number };
 
 const RecapKRSPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
-  const user = await getSession();
-
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
 
-  const query: Prisma.KrsWhereInput = {}
+  const query: Prisma.CurriculumDetailWhereInput = {}
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
         switch (key) {
           case "search":
             query.OR = [
-              {
-                student: {
-                  name: { contains: value, mode: "insensitive" }
-                }
-              }
+              { course: { name: { contains: value, mode: "insensitive" } } },
+              { course: { code: { contains: value, mode: "insensitive" } } },
             ]
             break;
 
@@ -40,9 +31,10 @@ const RecapKRSPage = async (
     }
   };
 
-  const [data, dataCountcourse, count] = await prisma.$transaction([
-    prisma.curriculumDetail.findMany({
+  const [data, dataCountcourse, count] = await prisma.$transaction(async (tx: any) => {
+    const data = await tx.curriculumDetail.findMany({
       where: {
+        ...query,
         curriculum: {
           isActive: true,
         },
@@ -57,32 +49,49 @@ const RecapKRSPage = async (
       ],
       take: 15,
       skip: 15 * (p - 1),
-    }),
-    prisma.krsDetail.groupBy({
-      by: ["courseId"],
+    });
+    const count = await tx.curriculumDetail.count({
       where: {
-        krs: {
-          reregister: {
-            period: {
-              name: "GANJIL 2020/2021"
-            },
-          },
-        },
-      },
-      _count: {
-        courseId: true,
-      },
-    }),
-    prisma.curriculumDetail.count({
-      where: {
+        ...query,
         curriculum: {
           isActive: true,
         },
       },
-    }),
-  ]);
+    });
+
+    const dataKrsDetail = await tx.krsDetail.count();
+    let dataCountcourse = [];
+    if (dataKrsDetail >= 1) {
+      dataCountcourse = await tx.krsDetail.groupBy({
+        by: ["courseId"],
+        where: {
+          krs: {
+            reregister: {
+              period: {
+                isActive: true,
+              },
+            },
+          },
+        },
+        _count: {
+          courseId: true,
+        },
+      });
+    };
+
+    const dataPass = data.map((item: any) => {
+      return {
+        ...item,
+        studentCount: dataCountcourse.find((items: any) => item.courseId === items.courseId)?._count?.courseId || 0,
+      };
+    });
+
+    return [dataPass, dataCountcourse, count]
+
+  });
 
   console.log('DAATA', dataCountcourse);
+  console.log('DAATA', data);
 
 
   const columns = [
@@ -102,15 +111,15 @@ const RecapKRSPage = async (
       className: "hidden md:table-cell",
     },
     {
-      header: "Jumlah Mahasiswa",
-      accessor: "jumlah mahasiswa",
+      header: "Peserta",
+      accessor: "peserta",
       className: "hidden md:table-cell",
     },
   ];
 
   const renderRow = (item: RecapKRS) => {
 
-    const countCourse = dataCountcourse.find((items: any) => item.courseId === items.courseId);
+    // const countCourse = dataCountcourse.find((items: any) => item.courseId === items.courseId);
 
     return (
       <tr
@@ -118,17 +127,18 @@ const RecapKRSPage = async (
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
-          <div className="flex flex-col col-span-5 items-start">
-            <p className="hidden md:flex text-xs text-gray-500">{item?.course?.code ?? ""}</p>
+          <div className="flex flex-col col-span-6 items-start">
+            <p className="flex text-xs text-gray-500">{item?.course?.code ?? ""}</p>
             <h3 className="font-semibold">{item?.course?.name ?? ""}</h3>
-          </div>
-          <div className="flex items-center justify-end gap-2 md:hidden ">
+            <p className="flex md:hidden text-xs text-gray-500">{'MK semester: ' + item.semester} | {'SKS: ' + item?.course?.sks}  </p>
+            <p className="flex md:hidden text-xs text-gray-500">{'Peserta: ' + item.studentCount + " Mahasiswa"}</p>
           </div>
         </td>
         <td className="hidden md:table-cell">{item?.course?.sks ?? ""}</td>
         <td className="hidden md:table-cell">{item.semester ?? ""}</td>
-        <td className="hidden md:table-cell text-center">
-          {countCourse ? countCourse._count.courseId : 0}
+        <td className="hidden md:table-cell">
+          {item?.studentCount} Mahasiswa
+          {/* {countCourse ? countCourse._count.courseId : 0} */}
         </td>
       </tr >
     )

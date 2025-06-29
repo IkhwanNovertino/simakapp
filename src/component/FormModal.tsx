@@ -4,7 +4,7 @@ import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } fr
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteAssessment, deleteClass, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteStudent } from "@/lib/action";
+import { deleteAssessment, deleteClass, deleteClassDetail, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteSchedule, deleteScheduleDetail, deleteStudent, deleteTime } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
@@ -32,8 +32,10 @@ export interface FormModalProps {
   | "krs"
   | "krsDetail"
   | "class"
+  | "classDetail"
   | "time"
-  | "schedule";
+  | "schedule"
+  | "scheduleDetail";
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
   data?: any;
   id?: any;
@@ -111,7 +113,16 @@ const PositionForm = dynamic(() => import("./forms/PositionForm"), {
 const ClassForm = dynamic(() => import("./forms/ClassForm"), {
   loading: () => <h1>Loading...</h1>,
 });
+const ClassDetailForm = dynamic(() => import("./forms/ClassDetailForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
 const TimeForm = dynamic(() => import("./forms/TimeForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ScheduleForm = dynamic(() => import("./forms/ScheduleForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const ScheduleDetailForm = dynamic(() => import("./forms/ScheduleDetailForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -291,8 +302,29 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  classDetail: (setOpen, type, data, relatedData) =>
+    <ClassDetailForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
   time: (setOpen, type, data, relatedData) =>
     <TimeForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
+  schedule: (setOpen, type, data, relatedData) =>
+    <ScheduleForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
+  scheduleDetail: (setOpen, type, data, relatedData) =>
+    <ScheduleDetailForm
       setOpen={setOpen}
       type={type}
       data={data}
@@ -321,12 +353,14 @@ const deleteActionMap = {
   curriculumDetail: deleteCurriculumDetail,
   grade: deleteGrade,
   assessment: deleteAssessment,
-  krs: deleteAssessment, //Belum diubah
+  krs: deleteKrsDetail, //Belum diubah
   krsDetail: deleteKrsDetail,
   position: deletePosition,
   class: deleteClass,
-  time: deleteClass, //Belum diubah
-  schedule: deleteClass, //Belum diubah
+  classDetail: deleteClassDetail,
+  time: deleteTime,
+  schedule: deleteSchedule,
+  scheduleDetail: deleteScheduleDetail, //Belum diubah
 };
 
 const namaTabelMap = {
@@ -354,8 +388,10 @@ const namaTabelMap = {
   krsDetail: "mata kuliah di KRS",
   position: "jabatan",
   class: "kelas",
+  classDetail: "mahasiswa",
   time: "waktu pelajaran",
   schedule: "jadwal",
+  scheduleDetail: "jadwal",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {

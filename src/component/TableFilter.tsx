@@ -13,7 +13,6 @@ const TableFilter = ({ data }: { data: { id: string | number, name: string }[] }
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const itemFilter = formData.get("filter") as string || "";
-    console.log("itemFilter", itemFilter);
     // Terpanggil
     const params = new URLSearchParams(window.location.search);
     if (itemFilter === "all") {
@@ -25,19 +24,6 @@ const TableFilter = ({ data }: { data: { id: string | number, name: string }[] }
     setOpen(false);
   };
 
-  // const handleClik = (itemFilter: any) => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   params.delete("page");
-  //   params.set("filter", itemFilter);
-  //   router.push(`${window.location.pathname}?${params}`);
-  //   setOpen(false);
-  // };
-  // const handleClikAll = () => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   params.delete("filter");
-  //   router.push(`${window.location.pathname}?${params}`);
-  //   setOpen(false);
-  // }
   return (
     <div className="relative">
       <button

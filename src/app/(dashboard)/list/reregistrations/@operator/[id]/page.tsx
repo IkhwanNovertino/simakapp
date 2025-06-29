@@ -198,14 +198,6 @@ const ReregisterSinglePage = async (
         </td>
         <td>
           <div className="flex items-center gap-2">
-            <div className="md:hidden relative flex items-center justify-end gap-2">
-              {/* <ModalAction>
-                <div className="flex items-center gap-3">
-                  {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}
-                  {canDeleteData && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
-                </div>
-              </ModalAction> */}
-            </div>
             <div className="hidden md:flex items-center gap-2">
               {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}
               {canDeleteData && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}

@@ -119,7 +119,6 @@ model GradeComponent {
 model AssessmentDetail {
   id           String          @id @default(uuid())
   assessmentId String?
-  // mengubah onDelete
   assessment   Assessment?     @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
   gradeId      String?
   grade        GradeComponent? @relation(fields: [gradeId], references: [id], onDelete: Restrict)
@@ -168,36 +167,37 @@ model Operator {
 }
 
 model Student {
-  id               String             @id @default(uuid())
-  nim              String?            @unique
-  name             String?
-  year             Int?
-  religion         Religion?
-  gender           Gender?
-  address          String?
-  placeOfBirth     String?
-  birthday         DateTime?
-  domicile         String?
-  email            String?
-  hp               String?
-  photo            String?
-  statusRegister   String?
-  motherName       String?
-  motherNIK        String?
-  guardianName     String?
-  guardianNIK      String?
-  guardianHp       String?
-  guardianJob      String?
-  guardianAddress  String?
-  studentStatus    StudentStatus      @default(NONAKTIF)
-  majorId          Int?
-  major            Major?             @relation(fields: [majorId], references: [id], onDelete: Restrict)
-  lecturerId       String?
-  lecturer         Lecturer?          @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
-  userId           String?            @unique
-  user             User?              @relation(fields: [userId], references: [id], onDelete: Restrict)
-  reregisterDetail ReregisterDetail[]
-  krs              Krs[]
+  id                  String                @id @default(uuid())
+  nim                 String?               @unique
+  name                String?
+  year                Int?
+  religion            Religion?
+  gender              Gender?
+  address             String?
+  placeOfBirth        String?
+  birthday            DateTime?
+  domicile            String?
+  email               String?
+  hp                  String?
+  photo               String?
+  statusRegister      String?
+  motherName          String?
+  motherNIK           String?
+  guardianName        String?
+  guardianNIK         String?
+  guardianHp          String?
+  guardianJob         String?
+  guardianAddress     String?
+  studentStatus       StudentStatus         @default(NONAKTIF)
+  majorId             Int?
+  major               Major?                @relation(fields: [majorId], references: [id], onDelete: Restrict)
+  lecturerId          String?
+  lecturer            Lecturer?             @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
+  userId              String?               @unique
+  user                User?                 @relation(fields: [userId], references: [id], onDelete: Restrict)
+  reregisterDetail    ReregisterDetail[]
+  krs                 Krs[]
+  academicClassDetail AcademicClassDetail[]
 
   @@map("sb25_students")
 }
@@ -220,7 +220,7 @@ model Period {
   isActive      Boolean?        @default(false)
   reregister    Reregister[]
   academicClass AcademicClass[]
-  Schedule      Schedule[]
+  schedule      Schedule[]
 
   @@map("sb25_periods")
 }
@@ -319,45 +319,69 @@ model Position {
 }
 
 model AcademicClass {
-  id         String     @id @default(uuid())
-  name       String?
-  periodId   String?
-  period     Period?    @relation(fields: [periodId], references: [id], onDelete: Restrict)
-  lecturerId String?
-  lecturer   Lecturer?  @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
-  courseId   String?
-  course     Course?    @relation(fields: [courseId], references: [id], onDelete: Restrict)
-  roomId     Int?
-  room       Room?      @relation(fields: [roomId], references: [id], onDelete: Restrict)
-  semester   Int?
-  schedule   Schedule[]
+  id                  String                @id @default(uuid())
+  name                String?
+  periodId            String?
+  period              Period?               @relation(fields: [periodId], references: [id], onDelete: Restrict)
+  lecturerId          String?
+  lecturer            Lecturer?             @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
+  courseId            String?
+  course              Course?               @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  roomId              Int?
+  room                Room?                 @relation(fields: [roomId], references: [id], onDelete: Restrict)
+  semester            Int?
+  scheduleDetail      ScheduleDetail[]
+  academicClassDetail AcademicClassDetail[]
 
   @@unique([periodId, name, lecturerId, courseId, roomId])
   @@map("sb25_academic_classes")
 }
 
+model AcademicClassDetail {
+  id              String         @id @default(uuid())
+  academicClassId String?
+  academicClass   AcademicClass? @relation(fields: [academicClassId], references: [id], onDelete: Cascade)
+  studentId       String?
+  student         Student?       @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  gradeLetter     String?
+  gradeNumber     Decimal?
+
+  @@map("sb25_academic_class_detail")
+}
+
 model Time {
-  id         String     @id @default(uuid())
-  timeStart  DateTime?  @db.Time()
-  timeFinish DateTime?  @db.Time()
-  schedule   Schedule[]
+  id             String           @id @default(uuid())
+  timeStart      DateTime?        @db.Time()
+  timeFinish     DateTime?        @db.Time()
+  scheduleDetail ScheduleDetail[]
 
   @@unique([timeStart, timeFinish])
   @@map("sb25_times")
 }
 
 model Schedule {
+  id             String           @id @default(uuid())
+  periodId       String?
+  period         Period?          @relation(fields: [periodId], references: [id])
+  name           String?
+  isActive       Boolean?         @default(false)
+  scheduleDetail ScheduleDetail[]
+
+  @@map("sb25_schedules")
+}
+
+model ScheduleDetail {
   id              String         @id @default(uuid())
+  scheduleId      String
+  schedule        Schedule       @relation(fields: [scheduleId], references: [id], onDelete: Cascade)
   academicClassId String?
   academicClass   AcademicClass? @relation(fields: [academicClassId], references: [id], onDelete: Restrict)
   dayName         Day            @default(MINGGU)
   timeId          String?
   time            Time?          @relation(fields: [timeId], references: [id], onDelete: Restrict)
-  periodId        String?
-  period          Period?        @relation(fields: [periodId], references: [id], onDelete: Restrict)
 
   @@unique([academicClassId, timeId])
-  @@map("sb25_schedules")
+  @@map("sb25_schedule_details")
 }
 
 enum Day {

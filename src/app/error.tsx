@@ -3,12 +3,14 @@
 import Image from "next/image"
 
 export default function GlobalError({
-  // error,
+  error,
   reset,
 }: {
-  // error: Error & { digest?: string }
+  error: Error & { digest?: string }
   reset: () => void
 }) {
+
+
   return (
     <div className="flex flex-col w-full min-h-screen items-center md:justify-center bg-accent-light/50">
       <Image src={'/global-error.png'} alt="global-error-pic" width={500} height={500} className="mt-4 md:mt-0" />
@@ -16,6 +18,7 @@ export default function GlobalError({
       <div className="flex flex-col items-center mt-4">
         <p className="text-gray-400 font-medium mb-1 ">Perbaikan akan segera dilakukan.</p>
         <p className="text-gray-400 font-medium mb-1 ">Coba beberapa saat lagi.</p>
+        <p className="text-gray-400 font-medium mb-1 ">{error.toString()}</p>
       </div>
       <button
         onClick={() => reset()}

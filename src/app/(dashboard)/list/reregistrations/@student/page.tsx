@@ -1,5 +1,4 @@
 import FormContainer from "@/component/FormContainer";
-import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
@@ -146,13 +145,6 @@ const ReregisterStudentPage = async (
       </td>
       <td>
         <div className="flex items-center gap-2">
-          <div className="md:hidden relative flex items-center justify-end gap-2">
-            {/* <ModalAction>
-              <div className="flex items-center gap-3">
-                <FormContainer table="reregistrationStudent" type="update" data={item} />
-              </div>
-            </ModalAction> */}
-          </div>
           <div className="hidden md:flex items-center gap-2">
             <FormContainer table="reregistrationStudent" type="update" data={item} />
           </div>

@@ -910,7 +910,7 @@ async function main() {
         sks: ti.sks,
         major: {
           connect: {
-            id: 1
+            id: 2
           }
         },
         courseType: ti.courseType,
@@ -975,12 +975,6 @@ async function main() {
 
   // Periode Akademik
   const periodData = [
-    {semesterType: "GANJIL", year: 2020, name: "GANJIL 2020/2021"},
-    {semesterType: "GENAP", year: 2021, name: "GENAP 2020/2021"},
-    {semesterType: "GANJIL", year: 2021, name: "GANJIL 2021/2022"},
-    {semesterType: "GENAP", year: 2022, name: "GENAP 2021/2022"},
-    {semesterType: "GANJIL", year: 2022, name: "GANJIL 2022/2023"},
-    {semesterType: "GENAP", year: 2023, name: "GENAP 2022/2023"},
     {semesterType: "GANJIL", year: 2023, name: "GANJIL 2023/2024"},
     {semesterType: "GENAP", year: 2024, name: "GENAP 2023/2024"},
     {semesterType: "GANJIL", year: 2024, name: "GANJIL 2024/2025"},
@@ -993,11 +987,7 @@ async function main() {
         semesterType: period.semesterType as SemesterType,
         year: period.year,
         name: period.name,
-        reregister: {
-          create: {
-            name: `Herregistrasi ${period.name}`
-          }
-        }
+        isActive: period.name === "GANJIL 2023/2024" ? true : false
       }
     })
   }
@@ -1035,9 +1025,9 @@ async function main() {
   const students = []
   for (let i = 0; i < 10; i++) {
     students.push({
-      nim: `310118${i % 2 === 0 ? '01' : '02'}210${i}`,
+      nim: `310121${i % 2 === 0 ? '01' : '02'}210${i}`,
       name: `Student${i + 1}`,
-      year: 2018,
+      year: 2021,
       religion: Religion.ISLAM,
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
       majorId: (i % 2 === 0 ? 1 : 2),
@@ -1047,9 +1037,9 @@ async function main() {
   };
   for (let i = 0; i < 10; i++) {
     students.push({
-      nim: `310119${i % 2 === 0 ? '01' : '02'}220${i}`,
+      nim: `310122${i % 2 === 0 ? '01' : '02'}220${i}`,
       name: `Student1${i + 1}`,
-      year: 2019,
+      year: 2022,
       religion: Religion.ISLAM,
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
       majorId: (i % 2 === 0 ? 1 : 2),
@@ -1060,21 +1050,9 @@ async function main() {
 
   for (let i = 0; i < 10; i++) {
     students.push({
-      nim: `310120${i % 2 === 0 ? '01' : '02'}230${i}`,
+      nim: `310123${i % 2 === 0 ? '01' : '02'}230${i}`,
       name: `Student2${i + 1}`,
-      year: 2020,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: (i % 2 === 0 ? 1 : 2),
-      statusRegister: "BARU",
-      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-    })
-  }
-  for (let i = 0; i < 10; i++) {
-    students.push({
-      nim: `310121${i % 2 === 0 ? '01' : '02'}230${i}`,
-      name: `Student3${i + 1}`,
-      year: 2021,
+      year: 2023,
       religion: Religion.ISLAM,
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
       majorId: (i % 2 === 0 ? 1 : 2),

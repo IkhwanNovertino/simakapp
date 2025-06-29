@@ -2,13 +2,14 @@
 
 import path from "path";
 import {
+  AcademicClassDetailInputs,
   AssessmentInputs,
   ClassInputs,
   CourseInKrsInputs,
   CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
   OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
-  RoomInputs, studentSchema, TimeInputs, UserInputs
+  RoomInputs, ScheduleDetailInputs, ScheduleInputs, studentSchema, TimeInputs, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { CampusType, Gender, PaymentStatus, Religion, SemesterStatus, StudyPlanStatus } from "@prisma/client";
@@ -19,7 +20,6 @@ import logger from "./logger";
 import { handlePrismaError } from "./errors/prismaError";
 import { AppError } from "./errors/appErrors";
 import { calculatingSKSLimits } from "./utils";
-import { semester } from "./setting";
 
 type stateType = {
   success: boolean;
@@ -2467,9 +2467,251 @@ export const deleteTime = async (state: stateType, data: FormData) => {
   try {
     console.log("deleteTime called");
     const id = data.get("id") as string;
+    await prisma.time.delete({
+      where: {
+        id: id,
+      }
+    });
 
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const createSchedule = async (state: stateType, data: ScheduleInputs) => {
+  try {
+
+    if (data.isActive) {
+      await prisma.schedule.updateMany({
+        where: {
+          isActive: true,
+        },
+        data: {
+          isActive: false,
+        }
+      });
+    }
+
+    await prisma.schedule.create({
+      data: {
+        name: data.name,
+        periodId: data.periodId,
+        isActive: data.isActive,
+      },
+    });
+    
+    return { success: true, error: false, message: "Jadwal berhasil ditambahkan" };
+  } catch (err: any) {
+    
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateSchedule = async (state: stateType, data: ScheduleInputs) => {
+  try {
+    console.log("updateSchedule called", data);
+
+    if (data.isActive) {
+      await prisma.schedule.updateMany({
+        where: {
+          isActive: true,
+        },
+        data: {
+          isActive: false,
+        }
+      });
+    }
+
+    await prisma.schedule.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        name: data.name,
+        periodId: data.periodId,
+        isActive: data.isActive,
+      },
+    });
+
+    return { success: true, error: false, message: "Jadwal telah diubah" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const deleteSchedule = async (state: stateType, data: FormData) => {
+  try {
+    console.log("deleteSchedule called");
+    const id = data.get("id") as string;
+    await prisma.schedule.delete({
+      where: {
+        id: id,
+      }
+    });
+
+    return { success: true, error: false, message: "Data berhasil dihapus" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const createScheduleDetail = async (state: stateType, data: ScheduleDetailInputs) => {
+  try {
+    console.log("createScheduleDetail", data);
+
+    await prisma.scheduleDetail.create({
+      data: {
+        scheduleId: data?.scheduleId,
+        academicClassId: data?.academicClass,
+        dayName: data?.dayName,
+        timeId: data?.time,
+        
+      },
+    });
+    
+    return { success: true, error: false, message: "Jadwal berhasil ditambahkan" };
+  } catch (err: any) {
+    
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateScheduleDetail = async (state: stateType, data: ScheduleDetailInputs) => {
+  try {
+    console.log("updateSchedule called", data);
+
+    // if (data.isActive) {
+    //   await prisma.schedule.updateMany({
+    //     where: {
+    //       isActive: true,
+    //     },
+    //     data: {
+    //       isActive: false,
+    //     }
+    //   });
+    // }
+
+    // await prisma.schedule.update({
+    //   where: {
+    //     id: data.id,
+    //   },
+    //   data: {
+    //     name: data.name,
+    //     periodId: data.periodId,
+    //     isActive: data.isActive,
+    //   },
+    // });
+
+    return { success: true, error: false, message: "Jadwal telah diubah" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const deleteScheduleDetail = async (state: stateType, data: FormData) => {
+  try {
+    console.log("deleteSchedule called");
+    const id = data.get("id") as string;
+    await prisma.scheduleDetail.delete({
+      where: {
+        id: id,
+      }
+    });
+
+    return { success: true, error: false, message: "Data berhasil dihapus" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const createClassDetail = async (state: stateType, data: AcademicClassDetailInputs) => {
+  try {
+    console.log('CREATECLASSDETAIL', data);
+    for (const student of data.students) {
+      await prisma.academicClassDetail.create({
+        data: {
+          academicClassId: data.classId,
+          studentId: student,
+        },
+      });
+    };
+    
+    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const deleteClassDetail = async (state: stateType, data: FormData) => {
+  try {
+    const id = data.get("id") as string;
+    await prisma.academicClassDetail.delete({
+      where: {
+        id: id
+      }
+    })
+    return { success: true, error: false, message: "Data berhasil dihapus" };
+  } catch (err) {
     try {
       handlePrismaError(err)
     } catch (error: any) {
