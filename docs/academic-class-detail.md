@@ -1,8 +1,8 @@
-# Class Detail Specifications
+# Academic Class Detail Specifications
 
 ## Translate
 
-- en: class detail
+- en: academic class detail
 - id: kelas detail
 
 ## Examples of Data:
@@ -32,4 +32,4 @@
 ## Bussiness Rules
 
 - Mahasiswa tidak bisa mendapatkan jadwal mata kuliah di hari dan waktu yang sama.
-- 
+-
