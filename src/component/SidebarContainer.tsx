@@ -104,7 +104,7 @@ const menuItems = [
       {
         icon: "/icon/attendance.svg",
         label: "Presensi",
-        href: "/list/attendance",
+        href: "/list/presences",
       },
       {
         icon: "/icon/event.svg",

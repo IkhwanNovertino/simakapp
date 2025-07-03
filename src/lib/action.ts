@@ -1566,7 +1566,7 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
 
     let ipkNum = Number(parseFloat("3.25").toFixed(2));
     let maxSKS = await calculatingSKSLimits(ipkNum);
-    
+    //perlu diedit dibagian updateReregisterDetail #010101
     prisma.$transaction(async (tx: any) => {
       const dataReregister =  await tx.reregisterDetail.create({
         data: {
