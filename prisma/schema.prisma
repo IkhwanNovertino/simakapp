@@ -338,13 +338,14 @@ model AcademicClass {
 }
 
 model AcademicClassDetail {
-  id              String         @id @default(uuid())
+  id              String           @id @default(uuid())
   academicClassId String?
-  academicClass   AcademicClass? @relation(fields: [academicClassId], references: [id], onDelete: Cascade)
+  academicClass   AcademicClass?   @relation(fields: [academicClassId], references: [id], onDelete: Cascade)
   studentId       String?
-  student         Student?       @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  student         Student?         @relation(fields: [studentId], references: [id], onDelete: Restrict)
   gradeLetter     String?
   gradeNumber     Decimal?
+  PresenceDetail  PresenceDetail[]
 
   @@map("sb25_academic_class_detail")
 }
@@ -382,6 +383,40 @@ model ScheduleDetail {
 
   @@unique([academicClassId, timeId])
   @@map("sb25_schedule_details")
+}
+
+model Presence {
+  id               String           @id @default(uuid())
+  academicClassId  String
+  weekNumber       Int
+  date             DateTime
+  duration         String
+  learningMethod   String
+  lesson           String
+  lessonDetail     String
+  isActive         Boolean          @default(false)
+  presenceDuration DateTime
+  PresenceDetail   PresenceDetail[]
+
+  @@map("sb25_presences")
+}
+
+model PresenceDetail {
+  id                    String              @id @default(uuid())
+  presenceId            String
+  presence              Presence            @relation(fields: [presenceId], references: [id], onDelete: Cascade)
+  academicClassDetailId String
+  academicClassDetail   AcademicClassDetail @relation(fields: [academicClassDetailId], references: [id], onDelete: Restrict)
+  presenceStatus        PresenceStatus      @default(ALPA)
+
+  @@map("sb25_presence_details")
+}
+
+enum PresenceStatus {
+  HADIR
+  IZIN
+  SAKIT
+  ALPA
 }
 
 enum Day {
