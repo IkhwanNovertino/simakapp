@@ -118,35 +118,70 @@ const ClassSinglePage = async (
   };
 
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="flex-1 p-4 flex flex-col gap-4">
       {/* TOP */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between md:mb-6">
-        <div className="flex flex-col items-start mb-4 md:mb-0 ">
-          <h1 className="text-base font-semibold">Data Kelas {dataAcademicClass.name}</h1>
-          <h6 className="text-xs font-semibold text-gray-500">{dataAcademicClass?.course?.code}</h6>
-          <h3 className="text-sm font-semibold text-gray-500">{dataAcademicClass?.course?.name}</h3>
-          <h2 className="text-sm font-medium">
-            {lecturerName(
-              {
-                frontTitle: dataAcademicClass?.lecturer?.frontTitle,
-                name: dataAcademicClass?.lecturer?.name,
-                backTitle: dataAcademicClass.lecturer.backTitle
-              }
-            )}
-          </h2>
-        </div>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            <FormContainer table="classDetail" type="create" data={dataAcademicClass} />
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* USER INFO CARD */}
+        <div className="bg-primary py-6 px-8 rounded-md flex-1 flex gap-4 w-full lg:w-3/4">
+          <div className="w-full md:w-3/4 flex flex-col justify-between gap-4">
+            <header>
+              <h1 className="text-xl font-semibold">{dataAcademicClass?.course?.name || ""} </h1>
+              <div className="h-0.5 w-full bg-gray-300" />
+              <p className="text-sm text-slate-600 font-medium mt-1">
+                {dataAcademicClass?.course?.code} | Kelas {dataAcademicClass.name}
+              </p>
+            </header>
+            <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
+              <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
+                <span className="basis-32">Dosen Pengampu</span>
+                <span>:</span>
+                <span>
+                  {lecturerName(
+                    {
+                      frontTitle: dataAcademicClass?.lecturer?.frontTitle,
+                      name: dataAcademicClass?.lecturer?.name,
+                      backTitle: dataAcademicClass.lecturer.backTitle
+                    }
+                  )}
+                </span>
+              </div>
+              <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
+                <span className="basis-32">Thn. Akad</span>
+                <span >:</span>
+                <span>GANJIL 2023/2024</span>
+              </div>
+              <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
+                <span className="basis-32">Semester</span>
+                <span>:</span>
+                <span>3</span>
+              </div>
+              <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
+                <span className="basis-32">Jadwal</span>
+                <span>:</span>
+                <span>Rabu, 09:40 - 11:20</span>
+              </div>
+            </div>
           </div>
         </div>
+        <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md"></div>
       </div>
       {/* BOTTOM */}
-      {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
-      {/* PAGINATION */}
-      <Pagination page={p} count={count || 0} />
+      <div className="bg-white p-4 rounded-md flex-1 mt-0">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between md:mb-6">
+          <h1 className="text-base font-semibold">Data Peserta Mata Kuliah</h1>
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+            <TableSearch />
+            <div className="flex items-center gap-4 self-end">
+              <FormContainer table="classDetail" type="create" data={dataAcademicClass} />
+            </div>
+          </div>
+        </div>
+        {/* BOTTOM */}
+        {/* LIST */}
+        <Table columns={columns} renderRow={renderRow} data={data} />
+        {/* PAGINATION */}
+        <Pagination page={p} count={count || 0} />
+      </div>
     </div>
   )
 }
