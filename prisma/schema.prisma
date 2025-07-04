@@ -332,6 +332,7 @@ model AcademicClass {
   semester            Int?
   scheduleDetail      ScheduleDetail[]
   academicClassDetail AcademicClassDetail[]
+  Presence            Presence[]
 
   @@unique([periodId, name, lecturerId, courseId, roomId])
   @@map("sb25_academic_classes")
@@ -388,6 +389,7 @@ model ScheduleDetail {
 model Presence {
   id               String           @id @default(uuid())
   academicClassId  String
+  academicClass    AcademicClass    @relation(fields: [academicClassId], references: [id], onDelete: Restrict)
   weekNumber       Int
   date             DateTime
   duration         String
