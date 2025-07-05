@@ -10,15 +10,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface CurriculumFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const CurriculumForm = ({ setOpen, type, data, relatedData }: CurriculumFormProps) => {
+const CurriculumForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors } = relatedData;
   const {
     register,

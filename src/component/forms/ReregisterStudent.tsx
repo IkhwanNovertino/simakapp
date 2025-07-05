@@ -9,15 +9,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { ReregistrationStudentInputs, reregistrationStudentSchema } from "@/lib/formValidationSchema";
 import moment from "moment";
+import { FormProps } from "@/lib/datatype";
 
-interface ReregisterStudentFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const ReregisterStudentForm = ({ setOpen, type, data }: ReregisterStudentFormProps) => {
+const ReregisterStudentForm = ({ setOpen, type, data }: FormProps) => {
   const {
     register,
     handleSubmit,

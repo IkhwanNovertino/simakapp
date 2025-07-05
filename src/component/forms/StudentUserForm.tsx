@@ -9,15 +9,9 @@ import { createUserStudent, updateUserStudent } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface OperatorUserFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const OperatorUserForm = ({ setOpen, type, data, relatedData }: OperatorUserFormProps) => {
+const OperatorUserForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { role } = relatedData;
 
   const {

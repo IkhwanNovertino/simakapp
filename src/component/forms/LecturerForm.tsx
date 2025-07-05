@@ -11,15 +11,9 @@ import { toast } from "react-toastify";
 import { degree, gender, religion } from "@/lib/setting";
 import Image from "next/image";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface LecturerFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const LecturerForm = ({ setOpen, type, data, relatedData }: LecturerFormProps) => {
+const LecturerForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors } = relatedData;
   const formRef = useRef<HTMLFormElement>(null);
   const [preview, setPreview] = useState<string | null>(data?.photo ? `/api/avatar?file=${data?.photo}` : null);

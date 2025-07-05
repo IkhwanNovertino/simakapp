@@ -13,15 +13,9 @@ import Image from "next/image";
 import { StatusRegistrasi } from "@/lib/data";
 import moment from "moment";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface StudentFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const StudentForm = ({ setOpen, type, data, relatedData }: StudentFormProps) => {
+const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors, lecturer } = relatedData;
   const formRef = useRef<HTMLFormElement>(null);
   const [preview, setPreview] = useState<string | null>(data?.photo ? `/api/avatar?file=${data?.photo}` : null);

@@ -8,15 +8,10 @@ import { GradeInputs, gradeSchema } from "@/lib/formValidationSchema";
 import { createGrade, updateGrade } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { FormProps } from "@/lib/datatype";
 
-interface GradeFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const GradeForm = ({ setOpen, type, data }: GradeFormProps) => {
+const GradeForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,

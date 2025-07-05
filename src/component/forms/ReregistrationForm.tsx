@@ -9,15 +9,9 @@ import { createReregistration, updateReregistration } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface ReregistrationFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const ReregistrationForm = ({ setOpen, type, data, relatedData }: ReregistrationFormProps) => {
+const ReregistrationForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 
   const {
     register,

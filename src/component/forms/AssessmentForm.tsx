@@ -9,15 +9,10 @@ import { createAssessment, updateAssessment } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface AssessmentFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const AssessmentForm = ({ setOpen, type, data, relatedData }: AssessmentFormProps) => {
+const AssessmentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { allGradeComponent } = relatedData;
 
   const {

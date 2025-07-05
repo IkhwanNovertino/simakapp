@@ -5,15 +5,10 @@ import { reregisterCreateAll } from "@/lib/action";
 import { Dispatch, SetStateAction, useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { FormProps } from "@/lib/datatype";
 
-interface ReregistrationFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const ReregisterCreateAll = ({ setOpen, type, data }: ReregistrationFormProps) => {
+const ReregisterCreateAll = ({ setOpen, type, data }: FormProps) => {
 
   const [state, formAction] = useActionState(reregisterCreateAll, { success: false, error: false, message: "" });
 

@@ -10,15 +10,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { actionPermission, resourceData } from "@/lib/setting";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface PermissionFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const PermissionForm = ({ setOpen, type, data }: PermissionFormProps) => {
+const PermissionForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,

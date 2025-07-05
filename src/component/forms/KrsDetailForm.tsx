@@ -9,16 +9,9 @@ import { createKrsDetail } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Tooltip from "../Tooltip";
+import { FormProps } from "@/lib/datatype";
 
-
-interface KrsDetailFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const KrsDetailForm = ({ setOpen, type, data, relatedData }: KrsDetailFormProps) => {
+const KrsDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { course } = relatedData;
 
   const {

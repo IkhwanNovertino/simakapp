@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { TimeInputs, timeSchema } from "@/lib/formValidationSchema";
@@ -9,15 +9,9 @@ import { createTime, updateTime } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { FormProps } from "@/lib/datatype";
 
-interface TimeFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const TimeForm = ({ setOpen, type, data }: TimeFormProps) => {
+const TimeForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,

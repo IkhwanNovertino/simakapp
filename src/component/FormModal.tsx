@@ -6,42 +6,8 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { deleteAssessment, deleteClass, deleteClassDetail, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deletePresence, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteSchedule, deleteScheduleDetail, deleteStudent, deleteTime } from "@/lib/action";
 import { toast } from "react-toastify";
+import { FormModalProps } from "@/lib/datatype";
 
-export interface FormModalProps {
-  table: "permission"
-  | "role"
-  | "operator"
-  | "position"
-  | "lecturer"
-  | "lecturerUser"
-  | "operatorUser"
-  | "studentUser"
-  | "student"
-  | "course"
-  | "major"
-  | "room"
-  | "period"
-  | "reregistration"
-  | "reregistrationCreateAll"
-  | "reregistrationDetail"
-  | "reregistrationStudent"
-  | "curriculum"
-  | "curriculumDetail"
-  | "grade"
-  | "assessment"
-  | "krs"
-  | "krsDetail"
-  | "class"
-  | "classDetail"
-  | "time"
-  | "schedule"
-  | "scheduleDetail"
-  | "presence"
-  | "presenceDetail";
-  type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  id?: any;
-}
 
 const PermissionForm = dynamic(() => import("./forms/PermissionForm"), {
   loading: () => <h1>Loading...</h1>,
@@ -420,7 +386,7 @@ const namaTabelMap = {
   presenceDetail: "presensi",
 }
 
-const FormModal = ({ table, type, data, id, relatedData, children }: FormModalProps & { relatedData?: any } & { children: React.ReactNode }) => {
+const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
   const size = type === "create" || type === "createMany" ? "w-8 h-8" : "w-7 h-7";
   const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary")
     || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-purple-500/60")
@@ -460,16 +426,12 @@ const FormModal = ({ table, type, data, id, relatedData, children }: FormModalPr
 
   return (
     <>
-      {children ||
-        <>
-          <button
-            className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
-            onClick={() => setOpen(true)}
-          >
-            <Image src={`/icon/${type}.svg`} alt={`icon-${type}`} width={20} height={20} />
-          </button>
-        </>
-      }
+      <button
+        className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
+        onClick={() => setOpen(true)}
+      >
+        <Image src={`/icon/${type}.svg`} alt={`icon-${type}`} width={20} height={20} />
+      </button>
 
       {open && (
         <div className="w-screen h-screen fixed z-[9999] left-0 top-0 bg-black/60  flex items-start justify-center overflow-scroll">

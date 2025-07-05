@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/prisma";
-import FormModal, { FormModalProps } from "./FormModal";
+import FormModal from "./FormModal";
 import { getSession } from "@/lib/session";
 import { Course, CurriculumDetail } from "@prisma/client";
 import { ReactNode } from "react";
+import { FormModalProps } from "@/lib/datatype";
 
 const FormContainer = async (
-  { table, type, data, id, children }: FormModalProps & { children?: ReactNode }
+  { table, type, data, id }: FormModalProps
 ) => {
   let relatedData = {};
   if (type !== "delete") {
@@ -380,7 +381,7 @@ const FormContainer = async (
 
   return (
     <div>
-      <FormModal table={table} type={type} data={data} id={id} relatedData={relatedData} children={children} />
+      <FormModal table={table} type={type} data={data} id={id} relatedData={relatedData} />
     </div>
   )
 }

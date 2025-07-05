@@ -10,15 +10,9 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { semester } from "@/lib/setting";
+import { FormProps } from "@/lib/datatype";
 
-interface PeriodFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const PeriodForm = ({ setOpen, type, data }: PeriodFormProps) => {
+const PeriodForm = ({ setOpen, type, data }: FormProps) => {
 
   // untuk membuat +10thn dan -10thn di dropdown select
   const currentYear = new Date().getFullYear();

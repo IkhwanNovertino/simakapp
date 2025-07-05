@@ -11,15 +11,9 @@ import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { dayName } from "@/lib/setting";
 import Select from "react-select";
+import { FormProps } from "@/lib/datatype";
 
-interface ScheduleDetailFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: ScheduleDetailFormProps) => {
+const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 
   const {
     register,

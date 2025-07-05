@@ -10,15 +10,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { learningMethod } from "@/lib/setting";
+import { FormProps } from "@/lib/datatype";
 
-interface PresenceFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const PresenceForm = ({ setOpen, type, data }: PresenceFormProps) => {
+const PresenceForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,

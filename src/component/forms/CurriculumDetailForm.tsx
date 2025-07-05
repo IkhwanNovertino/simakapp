@@ -9,15 +9,10 @@ import { createCurriculumDetail } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface CurriculumDetailFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const CurriculumDetailForm = ({ setOpen, type, data, relatedData }: CurriculumDetailFormProps) => {
+const CurriculumDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { courses, semesterInt } = relatedData;
 
   const courseFilter = courses.filter((course: any) => course.majorId === data?.majorId);

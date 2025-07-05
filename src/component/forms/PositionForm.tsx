@@ -8,15 +8,10 @@ import { PositionInputs, positionSchema } from "@/lib/formValidationSchema";
 import { createPosition, updatePosition } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { FormProps } from "@/lib/datatype";
 
-interface PositionFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const PositionForm = ({ setOpen, type, data }: PositionFormProps) => {
+const PositionForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,

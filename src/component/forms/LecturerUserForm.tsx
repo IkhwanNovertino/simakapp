@@ -9,15 +9,10 @@ import { createUserLecturer, updateUserLecturer } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface LecturerUserFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const LecturerUserForm = ({ setOpen, type, data, relatedData }: LecturerUserFormProps) => {
+const LecturerUserForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { role } = relatedData;
 
   const {

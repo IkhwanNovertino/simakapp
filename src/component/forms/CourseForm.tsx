@@ -11,15 +11,10 @@ import { toast } from "react-toastify";
 import Select from "react-select";
 import { courseType } from "@/lib/setting";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface CourseFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const CourseForm = ({ setOpen, type, data, relatedData }: CourseFormProps) => {
+const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors, courses, assessmentType } = relatedData;
 
   const {

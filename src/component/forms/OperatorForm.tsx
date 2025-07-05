@@ -8,15 +8,10 @@ import { OperatorInputs, operatorSchema } from "@/lib/formValidationSchema";
 import { createOperator, updateOperator } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { FormProps } from "@/lib/datatype";
 
-interface OperatorFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const OperatorForm = ({ setOpen, type, data }: OperatorFormProps) => {
+const OperatorForm = ({ setOpen, type, data }: FormProps) => {
   const {
     register,
     handleSubmit,

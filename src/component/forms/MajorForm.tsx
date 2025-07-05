@@ -8,15 +8,10 @@ import { MajorInputs, majorSchema } from "@/lib/formValidationSchema";
 import { createMajor, updateMajor } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { FormProps } from "@/lib/datatype";
 
-interface PermissionFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const PermissionForm = ({ setOpen, type, data }: PermissionFormProps) => {
+const PermissionForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,

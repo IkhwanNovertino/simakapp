@@ -9,15 +9,9 @@ import { createRole } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface RoleFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const RoleForm = ({ setOpen, type, data, relatedData }: RoleFormProps) => {
+const RoleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { permissions } = relatedData;
   const {
     register,

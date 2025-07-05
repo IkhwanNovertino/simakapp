@@ -9,15 +9,9 @@ import { createSchedule, updateSchedule } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface ScheduleFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const ScheduleForm = ({ setOpen, type, data, relatedData }: ScheduleFormProps) => {
+const ScheduleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 
   const {
     register,

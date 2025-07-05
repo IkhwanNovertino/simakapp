@@ -12,15 +12,10 @@ import { ReregistrationDetailInputs, reregistrationDetailSchema } from "@/lib/fo
 import moment from "moment";
 import { status } from "@/lib/setting";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/datatype";
 
-interface ReregiterCreateOneFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: ReregiterCreateOneFormProps) => {
+const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { students, lecturers, role } = relatedData;
   const formRef = useRef<HTMLFormElement>(null);
   const {

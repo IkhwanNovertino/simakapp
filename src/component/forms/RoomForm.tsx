@@ -8,15 +8,10 @@ import { RoomInputs, roomSchema } from "@/lib/formValidationSchema";
 import { createRoom, updateRoom } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { FormProps } from "@/lib/datatype";
 
-interface RoomFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const RoomForm = ({ setOpen, type, data }: RoomFormProps) => {
+const RoomForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,

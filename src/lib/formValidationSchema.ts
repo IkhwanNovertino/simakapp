@@ -393,3 +393,13 @@ export const presenceSchema = z.object({
 })
 
 export type PresenceInputs = z.infer<typeof presenceSchema>;
+
+export const presenceActivationSchema = z.object({
+  id: z.string().optional(),
+  academicClassId: z.string().min(1, { message: "kelas tidak ditemukan" }),
+  academicClass: z.string().optional(),
+  isActive: z.boolean().default(false),
+  durationPresence: z.string().min(1, {message: "Pilih durasi presensi diaktifkan"}),
+})
+
+export type PresenceActivationInputs = z.infer<typeof presenceActivationSchema>;

@@ -10,15 +10,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { learningMethod } from "@/lib/setting";
+import { FormProps } from "@/lib/datatype";
 
-interface PresenceDetailFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
 
-const PresenceDetailForm = ({ setOpen, type, data }: PresenceDetailFormProps) => {
+const PresenceDetailForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,
@@ -86,93 +81,6 @@ const PresenceDetailForm = ({ setOpen, type, data }: PresenceDetailFormProps) =>
             inputProps={{ readOnly: true }}
             error={errors?.weekNumber}
           />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-2/5">
-          <InputField
-            label="Tanggal Perkuliahan"
-            name="date"
-            type="date"
-            defaultValue={moment(data?.date || new Date()).format('YYYY-MM-DD')}
-            register={register}
-            error={errors?.date}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-11/12">
-          <label className="text-xs text-gray-500">Pokok Bahasan</label>
-          <textarea
-            {...register("lesson")}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Pokok Bahasan"
-            defaultValue={data?.lesson}
-          ></textarea>
-          {errors.lesson?.message && (
-            <p className="text-xs text-red-400">
-              {errors.lesson.message.toString()}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-11/12">
-          <label className="text-xs text-gray-500">Sub Pokok Bahasan</label>
-          <textarea
-            {...register("lessonDetail")}
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            placeholder="Sub Pokok Bahasan"
-            defaultValue={data?.lessonDetail}
-          ></textarea>
-          {errors.lessonDetail?.message && (
-            <p className="text-xs text-red-400">
-              {errors.lessonDetail.message.toString()}
-            </p>
-          )}
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-2/5">
-          <InputField
-            label="Durasi Perkuliahan"
-            name="duration"
-            defaultValue={data?.duration}
-            register={register}
-            error={errors?.duration}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-5/9">
-          <label className="text-xs text-gray-500">Metode </label>
-          <Controller
-            name="learningMethod"
-            control={control}
-            defaultValue={data?.learningMethod}
-            render={({ field }) => (
-              <>
-                {learningMethod.map((method: string) => (
-                  <div key={method}>
-                    <label className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        className="max-w-4 max-h-4 place-items-start"
-                        value={method}
-                        checked={Array.isArray(field.value) && field.value.some((v: string) => v === method)}
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          let newValue;
-                          if (isChecked) {
-                            newValue = [...(field.value || []), method];
-                          } else {
-                            newValue = Array.isArray(field.value)
-                              ? field.value.filter((v: string) => v !== method)
-                              : [];
-                          }
-                          field.onChange(newValue);
-                        }}
-                      />
-                      <div className="text-sm">{method}</div>
-                    </label>
-                  </div>
-                ))}
-              </>
-            )}
-          />
-          {errors.learningMethod && (
-            <p className="text-red-400 text-xs mt-8 font-medium">{errors.learningMethod.message}</p>
-          )}
         </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}

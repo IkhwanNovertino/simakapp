@@ -8,16 +8,9 @@ import { CourseInKrsInputs, CourseInKrsSchema } from "@/lib/formValidationSchema
 import { createKrsDetail } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { FormProps } from "@/lib/datatype";
 
-
-interface KrsFormProps {
-  setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
-  data?: any;
-  relatedData?: any;
-}
-
-const KrsForm = ({ setOpen, type, data }: KrsFormProps) => {
+const KrsForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,
