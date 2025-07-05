@@ -404,12 +404,12 @@ model Presence {
 }
 
 model PresenceDetail {
-  id                    String              @id @default(uuid())
-  presenceId            String
-  presence              Presence            @relation(fields: [presenceId], references: [id], onDelete: Cascade)
-  academicClassDetailId String
-  academicClassDetail   AcademicClassDetail @relation(fields: [academicClassDetailId], references: [id], onDelete: Restrict)
-  presenceStatus        PresenceStatus      @default(ALPA)
+  id                    String               @id @default(uuid())
+  presenceId            String?
+  presence              Presence?            @relation(fields: [presenceId], references: [id], onDelete: Cascade)
+  academicClassDetailId String?
+  academicClassDetail   AcademicClassDetail? @relation(fields: [academicClassDetailId], references: [id], onDelete: Restrict)
+  presenceStatus        PresenceStatus       @default(ALPA)
 
   @@map("sb25_presence_details")
 }

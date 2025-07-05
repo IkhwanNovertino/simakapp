@@ -137,7 +137,9 @@ const ClassSingleTabStudentPage = async (
       duration: item.duration,
       lesson: item.lesson,
       lessonDetail: item.lessonDetail,
-      learningMethod: item?.learningMethod === null ? [] : item?.learningMethod.split(",")
+      learningMethod: item?.learningMethod === null ? [] : item?.learningMethod.split(","),
+      isActive: item.isActive,
+      presenceDuration: item.presenceDuration,
     }
 
     return (
@@ -175,9 +177,10 @@ const ClassSingleTabStudentPage = async (
             <div className="hidden lg:flex items-center gap-2">
               <FormContainer table="presence" type="update" data={dataPassToForm} />
               <FormContainer table="presence" type="delete" id={item.id} />
-              <button className={`w-7 h-7 flex items-center justify-center rounded-full ${item.isActive ? "bg-primary-dark" : "bg-accent-dark"} `}>
+              <FormContainer table="presenceDetail" type={item.isActive ? "presenceActive" : "presenceNon"} data={dataPassToForm} />
+              {/* <button className={`w-7 h-7 flex items-center justify-center rounded-full ${item.isActive ? "bg-primary-dark" : "bg-accent-dark"} `}>
                 <Image src="/icon/attendance-white.svg" alt="" width={18} height={18} />
-              </button>
+              </button> */}
             </div>
           </div>
         </td>

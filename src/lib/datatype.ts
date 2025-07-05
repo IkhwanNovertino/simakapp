@@ -31,14 +31,14 @@ export interface FormModalProps {
   | "scheduleDetail"
   | "presence"
   | "presenceDetail";
-  type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
+  type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon";
   data?: any;
   id?: any;
 }
 
 export interface FormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany";
+  type: "create" | "update" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon";
   data?: any;
   relatedData?: any;
 }

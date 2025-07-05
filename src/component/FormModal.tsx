@@ -103,7 +103,7 @@ const PresenceDetailForm = dynamic(() => import("./forms/PresenceDetailForm"), {
 const forms: {
   [key: string]: (
     setOpen: Dispatch<SetStateAction<boolean>>,
-    type: "create" | "update" | "createUser" | "updateUser" | "createMany",
+    type: "create" | "update" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon",
     data?: any,
     relatedData?: any,
   ) => JSX.Element;
@@ -390,7 +390,9 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
   const size = type === "create" || type === "createMany" ? "w-8 h-8" : "w-7 h-7";
   const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary")
     || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-purple-500/60")
-    || (type === "delete" && "bg-accent") || (type === "createMany" && "bg-secondary");
+    || (type === "delete" && "bg-accent") || (type === "createMany" && "bg-secondary")
+    || (type === "presenceActive" && "bg-primary-dark") || (type === "presenceNon" && "bg-accent-dark");
+  const icon = type === "presenceActive" || type === "presenceNon" ? 'attendance-white' : type;
   const [open, setOpen] = useState(false);
 
   const Form = () => {
@@ -417,7 +419,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
           Hapus
         </button>
       </form>
-    ) : type === "create" || type === "update" || type === "createUser" || type === "updateUser" || type === "createMany" ? (
+    ) : type === "create" || type === "update" || type === "createUser" || type === "updateUser" || type === "createMany" || type === "presenceActive" || type === "presenceNon" ? (
       forms[table](setOpen, type, data, relatedData)
     ) : (
       "Form not found!"
@@ -430,7 +432,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
         className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
         onClick={() => setOpen(true)}
       >
-        <Image src={`/icon/${type}.svg`} alt={`icon-${type}`} width={20} height={20} />
+        <Image src={`/icon/${icon}.svg`} alt={`icon-${icon}`} width={20} height={20} />
       </button>
 
       {open && (

@@ -34,4 +34,16 @@ export const courseType = ["WAJIB", "PILIHAN"];
 export const semester = ["GANJIL", "GENAP"];
 export const dayName = ["SENIN", "SELASA", "RABU", "KAMIS", "JUM'AT", "SABTU", "MINGGU"];
 export const learningMethod = ["CERAMAH", "DISKUSI", "TUGAS", "LATIHAN"];
+export const presenceDuration = [
+  {label: "AKTIF", value: "AKTIF"},
+  {label: "NONAKTIF", value: "NONAKTIF"},
+  {label: "5 MENIT", value: "MIN5"},
+  {label: "15 MENIT", value: "MIN15"},
+  {label: "30 MENIT", value: "MIN30"},
+  {label: "45 MENIT", value: "MIN45"},
+  {label: "1 JAM", value: "MIN60"},
+  {label: "1,5 JAM", value: "MIN90"},
+  {label: "2 JAM", value: "HOUR2"},
+  {label: "12 JAM", value: "HOUR12"},
+];
 
