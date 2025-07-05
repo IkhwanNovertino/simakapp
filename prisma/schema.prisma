@@ -388,16 +388,16 @@ model ScheduleDetail {
 
 model Presence {
   id               String           @id @default(uuid())
-  academicClassId  String
-  academicClass    AcademicClass    @relation(fields: [academicClassId], references: [id], onDelete: Restrict)
-  weekNumber       Int
-  date             DateTime
-  duration         String
-  learningMethod   String
-  lesson           String
-  lessonDetail     String
-  isActive         Boolean          @default(false)
-  presenceDuration DateTime
+  academicClassId  String?
+  academicClass    AcademicClass?   @relation(fields: [academicClassId], references: [id], onDelete: Restrict)
+  weekNumber       Int?
+  date             DateTime?
+  duration         String?
+  learningMethod   String?
+  lesson           String?
+  lessonDetail     String?
+  isActive         Boolean?         @default(false)
+  presenceDuration DateTime?
   PresenceDetail   PresenceDetail[]
 
   @@map("sb25_presences")

@@ -7,7 +7,7 @@ import {
   ClassInputs,
   CourseInKrsInputs,
   CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
-  OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, reregistrationDetailSchema,
+  OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, PresenceInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, ScheduleDetailInputs, ScheduleInputs, studentSchema, TimeInputs, UserInputs
 } from "./formValidationSchema";
@@ -2712,6 +2712,92 @@ export const deleteClassDetail = async (state: stateType, data: FormData) => {
     })
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const createPresence = async (state: stateType, data: PresenceInputs) => {
+  try {
+    console.log('CREATE PRESENCE', data);
+
+    await prisma.presence.create({
+      data: {
+        academicClassId: data.academicClassId,
+        weekNumber: data.weekNumber,
+        date: new Date(data.date),
+        duration: data.duration,
+        lesson: data.lesson,
+        lessonDetail: data.lessonDetail,
+        learningMethod: data.learningMethod.join(","),
+      },
+    })
+    
+    return { success: true, error: false, message: "Jadwal berhasil ditambahkan" };
+  } catch (err: any) {
+    
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updatePresence = async (state: stateType, data: PresenceInputs) => {
+  try {
+    console.log('UPDATE PRESENCE', data);
+
+    await prisma.presence.update({
+      where: {
+        id: data?.id,
+      },
+      data: {
+        academicClassId: data.academicClassId,
+        weekNumber: data.weekNumber,
+        date: new Date(data.date),
+        duration: data.duration,
+        lesson: data.lesson,
+        lessonDetail: data.lessonDetail,
+        learningMethod: data.learningMethod.join(","),
+      },
+    })
+    
+    return { success: true, error: false, message: "Jadwal telah diubah" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const deletePresence = async (state: stateType, data: FormData) => {
+  try {
+    console.log('DELETE PRESENCE', data);
+    const id = data.get("id") as string;
+    await prisma.presence.delete({
+      where: {
+        id: id,
+      }
+    })
+    
+    return { success: true, error: false, message: "Data berhasil dihapus" };
+  } catch (err: any) {
     try {
       handlePrismaError(err)
     } catch (error: any) {

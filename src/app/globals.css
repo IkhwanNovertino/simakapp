@@ -5,12 +5,14 @@
   --foreground: #171717;
   --primary:#99FFAA;
   --primary-light: #E5FFEA;
+  --primary-dark: #6CD97E;
   --secondary: #FFDD99;
   --secondary-light: #FFF7E5;
   --ternary: #99BBFF;
   --ternary-light: #E5EEFF;
   --accent: #FF99EE;
   --accent-light: #FFE0FA;
+  --accent-dark: #D97779;
 }
 
 @theme inline {
@@ -18,12 +20,14 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
   --color-secondary: var(--secondary);
   --color-secondary-light: var(--secondary-light);
   --color-ternary: var(--ternary);
   --color-ternary-light: var(--ternary-light);
   --color-accent: var(--accent);
   --color-accent-light: var(--accent-light);
+  --color-accent-dark: var(--accent-dark);
 }
 
 @media (prefers-color-scheme: dark) {

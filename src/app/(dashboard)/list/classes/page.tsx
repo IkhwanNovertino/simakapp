@@ -55,9 +55,6 @@ const ClassListPage = async (
     }
   };
 
-  console.log('DATAQUERY', query);
-
-
   const [data, count, dataFilter] = await prisma.$transaction([
     prisma.academicClass.findMany({
       where: {

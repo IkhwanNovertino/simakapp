@@ -33,4 +33,5 @@ export const status = ["NONAKTIF", "AKTIF", "CUTI", "DO", "MENGUNDURKAN_DIRI", "
 export const courseType = ["WAJIB", "PILIHAN"];
 export const semester = ["GANJIL", "GENAP"];
 export const dayName = ["SENIN", "SELASA", "RABU", "KAMIS", "JUM'AT", "SABTU", "MINGGU"];
+export const learningMethod = ["CERAMAH", "DISKUSI", "TUGAS", "LATIHAN"];
 

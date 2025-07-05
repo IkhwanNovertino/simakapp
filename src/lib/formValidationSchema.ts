@@ -379,3 +379,17 @@ export const academicClassDetailSchema = z.object({
 })
 
 export type AcademicClassDetailInputs = z.infer<typeof academicClassDetailSchema>;
+
+export const presenceSchema = z.object({
+  id: z.string().optional(),
+  academicClassId: z.string().min(1, { message: "kelas tidak ditemukan" }),
+  academicClass: z.string().optional(),
+  weekNumber: z.coerce.number().min(1, {message: "Pertemuan harus diisi"}),
+  date: z.string().min(1, {message: "Tanggal Perkuliahan harus diisi"}),
+  duration: z.string().min(1, {message: "durasi perkuliahan harus diisi"}),
+  learningMethod: z.array(z.string()).min(1, {message: "Metode Perkuliahan harus diisi"}),
+  lesson: z.string().min(1, {message: "Pokok bahasan harus diisi"}),
+  lessonDetail: z.string().min(1, {message: "Sub-pokok bahasan harus diisi"}),
+})
+
+export type PresenceInputs = z.infer<typeof presenceSchema>;

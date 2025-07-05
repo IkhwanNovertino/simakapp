@@ -1,10 +1,10 @@
 "use client";
 
-import { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } from "react";
+import React, { Dispatch, JSX, SetStateAction, useActionState, useEffect, useState } from "react";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteAssessment, deleteClass, deleteClassDetail, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteSchedule, deleteScheduleDetail, deleteStudent, deleteTime } from "@/lib/action";
+import { deleteAssessment, deleteClass, deleteClassDetail, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deletePresence, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteSchedule, deleteScheduleDetail, deleteStudent, deleteTime } from "@/lib/action";
 import { toast } from "react-toastify";
 
 export interface FormModalProps {
@@ -35,7 +35,9 @@ export interface FormModalProps {
   | "classDetail"
   | "time"
   | "schedule"
-  | "scheduleDetail";
+  | "scheduleDetail"
+  | "presence"
+  | "presenceDetail";
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany";
   data?: any;
   id?: any;
@@ -123,6 +125,12 @@ const ScheduleForm = dynamic(() => import("./forms/ScheduleForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const ScheduleDetailForm = dynamic(() => import("./forms/ScheduleDetailForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const PresenceForm = dynamic(() => import("./forms/PresenceForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const PresenceDetailForm = dynamic(() => import("./forms/PresenceDetailForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
@@ -330,6 +338,20 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  presence: (setOpen, type, data, relatedData) =>
+    <PresenceForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
+  presenceDetail: (setOpen, type, data, relatedData) =>
+    <PresenceDetailForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -360,7 +382,9 @@ const deleteActionMap = {
   classDetail: deleteClassDetail,
   time: deleteTime,
   schedule: deleteSchedule,
-  scheduleDetail: deleteScheduleDetail, //Belum diubah
+  scheduleDetail: deleteScheduleDetail,
+  presence: deletePresence, //Belum diubah
+  presenceDetail: deleteScheduleDetail, //Belum diubah
 };
 
 const namaTabelMap = {
@@ -392,9 +416,11 @@ const namaTabelMap = {
   time: "waktu pelajaran",
   schedule: "jadwal",
   scheduleDetail: "jadwal",
+  presence: "Jurnal Perkuliahan",
+  presenceDetail: "presensi",
 }
 
-const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
+const FormModal = ({ table, type, data, id, relatedData, children }: FormModalProps & { relatedData?: any } & { children: React.ReactNode }) => {
   const size = type === "create" || type === "createMany" ? "w-8 h-8" : "w-7 h-7";
   const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary")
     || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-purple-500/60")
@@ -434,12 +460,16 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
 
   return (
     <>
-      <button
-        className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
-        onClick={() => setOpen(true)}
-      >
-        <Image src={`/icon/${type}.svg`} alt={`icon-${type}`} width={20} height={20} />
-      </button>
+      {children ||
+        <>
+          <button
+            className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
+            onClick={() => setOpen(true)}
+          >
+            <Image src={`/icon/${type}.svg`} alt={`icon-${type}`} width={20} height={20} />
+          </button>
+        </>
+      }
 
       {open && (
         <div className="w-screen h-screen fixed z-[9999] left-0 top-0 bg-black/60  flex items-start justify-center overflow-scroll">

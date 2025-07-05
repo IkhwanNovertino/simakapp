@@ -2,9 +2,10 @@ import { prisma } from "@/lib/prisma";
 import FormModal, { FormModalProps } from "./FormModal";
 import { getSession } from "@/lib/session";
 import { Course, CurriculumDetail } from "@prisma/client";
+import { ReactNode } from "react";
 
 const FormContainer = async (
-  { table, type, data, id }: FormModalProps
+  { table, type, data, id, children }: FormModalProps & { children?: ReactNode }
 ) => {
   let relatedData = {};
   if (type !== "delete") {
@@ -321,8 +322,6 @@ const FormContainer = async (
         });
         const studenthaveClassId = new Set(studenthaveClass.map((item: any) => item.studentId))
         const studentPassToForm = studentList.filter((item: any) => !studenthaveClassId.has(item.id))
-        console.log('DATA MAHASISWA', studentList);
-        console.log('DATA MAHASISWA YANG SUDAH PUNYA KELAS', studenthaveClass);
 
         relatedData = { students: studentPassToForm };
         break;
@@ -371,7 +370,6 @@ const FormContainer = async (
             }
           }
         })
-        // console.log(classSchedule);
 
         relatedData = { period: periodScheduleDetail, time: time, academicClass: classSchedule };
         break;
@@ -382,7 +380,7 @@ const FormContainer = async (
 
   return (
     <div>
-      <FormModal table={table} type={type} data={data} id={id} relatedData={relatedData} />
+      <FormModal table={table} type={type} data={data} id={id} relatedData={relatedData} children={children} />
     </div>
   )
 }
