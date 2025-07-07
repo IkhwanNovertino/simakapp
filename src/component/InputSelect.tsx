@@ -35,6 +35,7 @@ const InputSelect = (
             {...field}
             isMulti={isMulti}
             options={options}
+            isClearable={true}
             className="text-sm rounded-md"
             placeholder={placeholder || "Search"}
             classNamePrefix="react-select"

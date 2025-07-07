@@ -1,20 +1,17 @@
 
 import FormContainer from "@/component/FormContainer";
 import Pagination from "@/component/Pagination";
+import PresenceStatus from "@/component/PresenceStatus";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { AcademicClass, AcademicClassDetail, Course, Lecturer, Prisma, Student, } from "@prisma/client";
+import { AcademicClass, AcademicClassDetail, Course, Lecturer, Presence, PresenceDetail, Prisma, Student, } from "@prisma/client";
 
-type AcademicClassDetailDataType = AcademicClassDetail
-  & {
-    academicClass: AcademicClass
-    & { lecturer: Lecturer }
-    & { course: Course }
-  }
-  & { student: Student }
+type PresenceDetailDataType = AcademicClassDetail
+  & { academicClass: AcademicClass }
+  & { student: Student } & { presenceDetail: PresenceDetail[] & { presence: Presence } }
 
 const ClassSingleTabStudentPage = async (
   {
@@ -47,16 +44,7 @@ const ClassSingleTabStudentPage = async (
     }
   };
 
-  const [dataAcademicClass, data, count] = await prisma.$transaction([
-    prisma.academicClass.findFirst({
-      where: {
-        id: id,
-      },
-      include: {
-        lecturer: true,
-        course: true,
-      }
-    }),
+  const [dataStudent, data, dataCreateMany, count] = await prisma.$transaction([
     prisma.academicClassDetail.findMany({
       where: {
         academicClassId: id,
@@ -70,12 +58,56 @@ const ClassSingleTabStudentPage = async (
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
+    prisma.presenceDetail.findMany({
+      where: {
+        academicClassDetail: {
+          academicClassId: id,
+        },
+      },
+      include: {
+        presence: true,
+      },
+      orderBy: [
+        {
+          presence: {
+            weekNumber: 'asc',
+          }
+        }
+      ]
+    }),
+    prisma.presence.findMany({
+      where: {
+        academicClassId: id,
+      },
+      include: {
+        academicClass: {
+          include: {
+            course: true,
+          }
+        },
+      },
+      orderBy: [
+        { weekNumber: 'asc' }
+      ]
+    }),
     prisma.academicClassDetail.count({
       where: {
         academicClassId: id,
       },
     }),
   ]);
+  console.log(dataCreateMany);
+
+
+  const dataGabungan = dataStudent.map((items: any) => {
+    const dataPresence = data.filter((element: any) => element.academicClassDetailId === items.id)
+    return (
+      {
+        ...items,
+        presenceDetail: dataPresence
+      }
+    )
+  })
 
   const columns = [
     {
@@ -90,8 +122,7 @@ const ClassSingleTabStudentPage = async (
     },
   ];
 
-  const renderRow = (item: AcademicClassDetailDataType) => {
-
+  const renderRow = (item: PresenceDetailDataType) => {
     return (
       <tr
         key={item.studentId}
@@ -107,32 +138,12 @@ const ClassSingleTabStudentPage = async (
           </div>
         </td>
         <td className="hidden md:table-cell">
-          <div className="grid grid-cols-16 gap-2">
-            <div className="bg-primary w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">H</div>
-            <div className="bg-accent w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">A</div>
-            <div className="bg-ternary w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">I</div>
-            <div className="bg-secondary w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">S</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
-            <div className="bg-gray-300 w-8 h-7 rounded-md flex justify-center items-center text-xs font-bold">-</div>
+          <div className="grid md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-16 gap-2">
+            {item.presenceDetail.map((presenceItem: any) => (
+              <PresenceStatus key={presenceItem.id} data={presenceItem} />
+            ))}
           </div>
         </td>
-        {/* <td className="hidden md:flex">
-          <div className="flex items-center gap-2">
-            <div className="hidden md:flex items-center gap-2">
-              <FormContainer table="classDetail" type="delete" id={item.id} />
-            </div>
-          </div>
-        </td> */}
       </tr>
     );
   };
@@ -144,13 +155,13 @@ const ClassSingleTabStudentPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer table="classDetail" type="create" data={dataAcademicClass} />
+            <FormContainer table="presenceAll" type="createMany" data={dataCreateMany} />
           </div>
         </div>
       </div>
       {/* BOTTOM */}
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
+      <Table columns={columns} renderRow={renderRow} data={dataGabungan} />
       {/* PAGINATION */}
       <Pagination page={p} count={count || 0} />
     </div>

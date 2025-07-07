@@ -7,7 +7,7 @@ import {
   ClassInputs,
   CourseInKrsInputs,
   CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
-  OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, PresenceActivationInputs, PresenceInputs, reregistrationDetailSchema,
+  OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, PresenceActivationInputs, PresenceAllInputs, PresenceInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, ScheduleDetailInputs, ScheduleInputs, studentSchema, TimeInputs, UserInputs
 } from "./formValidationSchema";
@@ -2848,6 +2848,56 @@ export const presenceActivation = async (state: stateType, data: PresenceActivat
     });
     
     return { success: true, error: false, message: "Presensi diaktifkan" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const updatePresenceStatus = async (state: stateType, data: { id: string, status: string }) => {
+  try {
+    await prisma.presenceDetail.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        presenceStatus: data.status,
+      }
+    });
+    return { success: true, error: false, message: "Status presensi telah diubah" };
+  } catch (err: any) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateManyPresenceStatus = async (state: stateType, data: PresenceAllInputs) => {
+  try {
+    console.log('DATA DARI UPDATE MANY PRESENCE STATUS', data);
+
+    await prisma.PresenceDetail.updateMany({
+      where: {
+        presenceId: data?.presenceId,
+      },
+      data: {
+        presenceStatus: "HADIR",
+      },
+    });
+    
+    return { success: true, error: false, message: "Status presensi telah diubah" };
   } catch (err: any) {
     try {
       handlePrismaError(err)

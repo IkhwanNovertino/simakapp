@@ -389,7 +389,7 @@ export const presenceSchema = z.object({
   duration: z.string().min(1, {message: "durasi perkuliahan harus diisi"}),
   learningMethod: z.array(z.string()).min(1, {message: "Metode Perkuliahan harus diisi"}),
   lesson: z.string().min(1, {message: "Pokok bahasan harus diisi"}),
-  lessonDetail: z.string().min(1, {message: "Sub-pokok bahasan harus diisi"}),
+  lessonDetail: z.string().min(1, { message: "Sub-pokok bahasan harus diisi" }),
 })
 
 export type PresenceInputs = z.infer<typeof presenceSchema>;
@@ -403,3 +403,10 @@ export const presenceActivationSchema = z.object({
 })
 
 export type PresenceActivationInputs = z.infer<typeof presenceActivationSchema>;
+
+export const presenceAllSchema = z.object({
+  presenceId: z.string().min(1, { message: "Pilih pertemuan" }),
+  
+})
+
+export type PresenceAllInputs = z.infer<typeof presenceAllSchema>;

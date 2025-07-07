@@ -8,97 +8,37 @@ import { deleteAssessment, deleteClass, deleteClassDetail, deleteCourse, deleteC
 import { toast } from "react-toastify";
 import { FormModalProps } from "@/lib/datatype";
 
-
-const PermissionForm = dynamic(() => import("./forms/PermissionForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const RoleForm = dynamic(() => import("./forms/RoleForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const MajorForm = dynamic(() => import("./forms/MajorForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const RoomForm = dynamic(() => import("./forms/RoomForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const CourseForm = dynamic(() => import("./forms/CourseForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const LecturerForm = dynamic(() => import("./forms/LecturerForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const LecturerUserForm = dynamic(() => import("./forms/LecturerUserForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const OperatorForm = dynamic(() => import("./forms/OperatorForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const OperatorUserForm = dynamic(() => import("./forms/OperatorUserForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const StudentForm = dynamic(() => import("./forms/StudentForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const StudentUserForm = dynamic(() => import("./forms/StudentUserForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const PeriodForm = dynamic(() => import("./forms/PeriodForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const ReregistrationForm = dynamic(() => import("./forms/ReregistrationForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const ReregistrationCreateAllForm = dynamic(() => import("./forms/ReregisterCreateAll"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const ReregistrationDetailForm = dynamic(() => import("./forms/ReregisterCreateOne"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const ReregistrationStudentForm = dynamic(() => import("./forms/ReregisterStudent"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const CurriculumForm = dynamic(() => import("./forms/CurriculumForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const CurriculumDetailForm = dynamic(() => import("./forms/CurriculumDetailForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const GradeForm = dynamic(() => import("./forms/GradeForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const AssessmentForm = dynamic(() => import("./forms/AssessmentForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const KrsForm = dynamic(() => import("./forms/KrsForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const KrsDetailForm = dynamic(() => import("./forms/KrsDetailForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const PositionForm = dynamic(() => import("./forms/PositionForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const ClassForm = dynamic(() => import("./forms/ClassForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const ClassDetailForm = dynamic(() => import("./forms/ClassDetailForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const TimeForm = dynamic(() => import("./forms/TimeForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const ScheduleForm = dynamic(() => import("./forms/ScheduleForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const ScheduleDetailForm = dynamic(() => import("./forms/ScheduleDetailForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const PresenceForm = dynamic(() => import("./forms/PresenceForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
-const PresenceDetailForm = dynamic(() => import("./forms/PresenceDetailForm"), {
-  loading: () => <h1>Loading...</h1>,
-});
+const PermissionForm = dynamic(() => import("./forms/PermissionForm"), { loading: () => <h1>Loading...</h1> });
+const RoleForm = dynamic(() => import("./forms/RoleForm"), { loading: () => <h1>Loading...</h1> });
+const MajorForm = dynamic(() => import("./forms/MajorForm"), { loading: () => <h1>Loading...</h1> });
+const RoomForm = dynamic(() => import("./forms/RoomForm"), { loading: () => <h1>Loading...</h1> });
+const CourseForm = dynamic(() => import("./forms/CourseForm"), { loading: () => <h1>Loading...</h1> });
+const LecturerForm = dynamic(() => import("./forms/LecturerForm"), { loading: () => <h1>Loading...</h1> });
+const LecturerUserForm = dynamic(() => import("./forms/LecturerUserForm"), { loading: () => <h1>Loading...</h1> });
+const OperatorForm = dynamic(() => import("./forms/OperatorForm"), { loading: () => <h1>Loading...</h1> });
+const OperatorUserForm = dynamic(() => import("./forms/OperatorUserForm"), { loading: () => <h1>Loading...</h1> });
+const StudentForm = dynamic(() => import("./forms/StudentForm"), { loading: () => <h1>Loading...</h1> });
+const StudentUserForm = dynamic(() => import("./forms/StudentUserForm"), { loading: () => <h1>Loading...</h1> });
+const PeriodForm = dynamic(() => import("./forms/PeriodForm"), { loading: () => <h1>Loading...</h1> });
+const ReregistrationForm = dynamic(() => import("./forms/ReregistrationForm"), { loading: () => <h1>Loading...</h1> });
+const ReregistrationCreateAllForm = dynamic(() => import("./forms/ReregisterCreateAll"), { loading: () => <h1>Loading...</h1> });
+const ReregistrationDetailForm = dynamic(() => import("./forms/ReregisterCreateOne"), { loading: () => <h1>Loading...</h1> });
+const ReregistrationStudentForm = dynamic(() => import("./forms/ReregisterStudent"), { loading: () => <h1>Loading...</h1> });
+const CurriculumForm = dynamic(() => import("./forms/CurriculumForm"), { loading: () => <h1>Loading...</h1> });
+const CurriculumDetailForm = dynamic(() => import("./forms/CurriculumDetailForm"), { loading: () => <h1>Loading...</h1> });
+const GradeForm = dynamic(() => import("./forms/GradeForm"), { loading: () => <h1>Loading...</h1> });
+const AssessmentForm = dynamic(() => import("./forms/AssessmentForm"), { loading: () => <h1>Loading...</h1> });
+const KrsForm = dynamic(() => import("./forms/KrsForm"), { loading: () => <h1>Loading...</h1> });
+const KrsDetailForm = dynamic(() => import("./forms/KrsDetailForm"), { loading: () => <h1>Loading...</h1> });
+const PositionForm = dynamic(() => import("./forms/PositionForm"), { loading: () => <h1>Loading...</h1> });
+const ClassForm = dynamic(() => import("./forms/ClassForm"), { loading: () => <h1>Loading...</h1> });
+const ClassDetailForm = dynamic(() => import("./forms/ClassDetailForm"), { loading: () => <h1>Loading...</h1> });
+const TimeForm = dynamic(() => import("./forms/TimeForm"), { loading: () => <h1>Loading...</h1> });
+const ScheduleForm = dynamic(() => import("./forms/ScheduleForm"), { loading: () => <h1>Loading...</h1> });
+const ScheduleDetailForm = dynamic(() => import("./forms/ScheduleDetailForm"), { loading: () => <h1>Loading...</h1> });
+const PresenceForm = dynamic(() => import("./forms/PresenceForm"), { loading: () => <h1>Loading...</h1> });
+const PresenceDetailForm = dynamic(() => import("./forms/PresenceDetailForm"), { loading: () => <h1>Loading...</h1> });
+const PresenceAllForm = dynamic(() => import("./forms/PresenceAllForm"), { loading: () => <h1>Loading...</h1> });
 
 const forms: {
   [key: string]: (
@@ -318,6 +258,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  presenceAll: (setOpen, type, data, relatedData) =>
+    <PresenceAllForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
 };
 
 const deleteActionMap = {
@@ -351,6 +298,7 @@ const deleteActionMap = {
   scheduleDetail: deleteScheduleDetail,
   presence: deletePresence, //Belum diubah
   presenceDetail: deleteScheduleDetail, //Belum diubah
+  presenceAll: deleteScheduleDetail, //Belum diubah
 };
 
 const namaTabelMap = {
@@ -384,6 +332,7 @@ const namaTabelMap = {
   scheduleDetail: "jadwal",
   presence: "Jurnal Perkuliahan",
   presenceDetail: "presensi",
+  presenceAll: "presensi",
 }
 
 const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {

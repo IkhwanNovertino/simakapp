@@ -30,7 +30,8 @@ export interface FormModalProps {
   | "schedule"
   | "scheduleDetail"
   | "presence"
-  | "presenceDetail";
+  | "presenceDetail"
+  | "presenceAll";
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon";
   data?: any;
   id?: any;

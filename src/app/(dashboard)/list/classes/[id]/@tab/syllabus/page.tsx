@@ -178,9 +178,6 @@ const ClassSingleTabStudentPage = async (
               <FormContainer table="presence" type="update" data={dataPassToForm} />
               <FormContainer table="presence" type="delete" id={item.id} />
               <FormContainer table="presenceDetail" type={item.isActive ? "presenceActive" : "presenceNon"} data={dataPassToForm} />
-              {/* <button className={`w-7 h-7 flex items-center justify-center rounded-full ${item.isActive ? "bg-primary-dark" : "bg-accent-dark"} `}>
-                <Image src="/icon/attendance-white.svg" alt="" width={18} height={18} />
-              </button> */}
             </div>
           </div>
         </td>
