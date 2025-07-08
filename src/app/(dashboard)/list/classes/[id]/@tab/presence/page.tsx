@@ -5,6 +5,7 @@ import PresenceStatus from "@/component/PresenceStatus";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
 import { AcademicClass, AcademicClassDetail, Course, Lecturer, Presence, PresenceDetail, Prisma, Student, } from "@prisma/client";
@@ -21,7 +22,8 @@ const ClassSingleTabStudentPage = async (
     params: Promise<{ id: string }>
   }
 ) => {
-
+  const user = await getSession();
+  const role = user?.roleType;
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
   const { id } = await params;

@@ -2843,7 +2843,8 @@ export const presenceActivation = async (state: stateType, data: PresenceActivat
       },
       data: {
         isActive: data?.durationPresence === "NONAKTIF" ? false : true,
-        presenceDuration: new Date(),
+        presenceDuration: data?.durationPresence,
+        activatedAt: new Date(),
       },
     });
     
@@ -2910,3 +2911,42 @@ export const updateManyPresenceStatus = async (state: stateType, data: PresenceA
     }
   }
 }
+
+// function calculateEndTime(start: Date, duration: string): Date {
+//   switch (duration) {
+//     case "MIN15":
+//       return addMinutes(start, 15);
+//     case "30 menit":
+//       return addMinutes(start, 30);
+//     case "1 jam":
+//       return addHours(start, 1);
+//     case "1:30 menit":
+//       return addMinutes(start, 90);
+//     case "1 hari":
+//       return addDays(start, 1);
+//     default:
+//       return start;
+//   }
+// }
+
+// export async function deactivateExpiredPresences() {
+//   const now = new Date();
+//   const activePresences = await prisma.presence.findMany({
+//     where: { isActive: true },
+//   });
+
+//   for (const presence of activePresences) {
+//     if (!presence.presenceDuration || !presence.date) continue;
+
+//     const end = calculateEndTime(presence.date, presence.presenceDuration);
+//     if (isAfter(now, end)) {
+//       await prisma.presence.update({
+//         where: { id: presence.id },
+//         data: { isActive: false },
+//       });
+//       console.log(`[✔] Presensi dinonaktifkan: ${presence.id}`);
+//     }
+//   }
+
+//   console.log("⏱️ Scheduler selesai dijalankan pada", now.toISOString());
+// }

@@ -397,7 +397,8 @@ model Presence {
   lesson           String?
   lessonDetail     String?
   isActive         Boolean?         @default(false)
-  presenceDuration DateTime?
+  presenceDuration String?
+  activatedAt      DateTime?
   PresenceDetail   PresenceDetail[]
 
   @@map("sb25_presences")
