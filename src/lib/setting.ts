@@ -37,6 +37,7 @@ export const learningMethod = ["CERAMAH", "DISKUSI", "TUGAS", "LATIHAN"];
 export const presenceDuration = [
   {label: "AKTIF", value: "AKTIF"},
   {label: "NONAKTIF", value: "NONAKTIF"},
+  {label: "1 MENIT", value: "MIN1"},
   {label: "5 MENIT", value: "MIN5"},
   {label: "15 MENIT", value: "MIN15"},
   {label: "30 MENIT", value: "MIN30"},

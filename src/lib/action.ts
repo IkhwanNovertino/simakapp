@@ -20,6 +20,7 @@ import logger from "./logger";
 import { handlePrismaError } from "./errors/prismaError";
 import { AppError } from "./errors/appErrors";
 import { calculatingSKSLimits } from "./utils";
+import { addMinutes, addHours, addDays, isAfter } from "date-fns";
 
 type stateType = {
   success: boolean;
@@ -2912,41 +2913,65 @@ export const updateManyPresenceStatus = async (state: stateType, data: PresenceA
   }
 }
 
-// function calculateEndTime(start: Date, duration: string): Date {
-//   switch (duration) {
-//     case "MIN15":
-//       return addMinutes(start, 15);
-//     case "30 menit":
-//       return addMinutes(start, 30);
-//     case "1 jam":
-//       return addHours(start, 1);
-//     case "1:30 menit":
-//       return addMinutes(start, 90);
-//     case "1 hari":
-//       return addDays(start, 1);
-//     default:
-//       return start;
-//   }
-// }
+function calculateEndTime(start: Date, duration: string): Date {
 
-// export async function deactivateExpiredPresences() {
-//   const now = new Date();
-//   const activePresences = await prisma.presence.findMany({
-//     where: { isActive: true },
-//   });
 
-//   for (const presence of activePresences) {
-//     if (!presence.presenceDuration || !presence.date) continue;
+"MIN5"
+"MIN15"
+"MIN30"
+"MIN45"
+"MIN60"
+"MIN90"
+"HOUR2"
+"HOUR12"
 
-//     const end = calculateEndTime(presence.date, presence.presenceDuration);
-//     if (isAfter(now, end)) {
-//       await prisma.presence.update({
-//         where: { id: presence.id },
-//         data: { isActive: false },
-//       });
-//       console.log(`[✔] Presensi dinonaktifkan: ${presence.id}`);
-//     }
-//   }
+  switch (duration) {
+    case "MIN1":
+      return addMinutes(start, 1);
+    case "MIN5":
+      return addMinutes(start, 5);
+    case "MIN15":
+      return addMinutes(start, 15);
+    case "MIN30":
+      return addMinutes(start, 30);
+    case "MIN45":
+      return addMinutes(start, 45);
+    case "MIN60":
+      return addHours(start, 1);
+    case "MIN90":
+      return addMinutes(start, 90);
+    case "HOUR2":
+      return addHours(start, 2);
+    case "HOUR12":
+      return addHours(start, 12);
+    // case "1 hari":
+    //   return addDays(start, 1);
+    default:
+      return start;
+  }
+}
 
-//   console.log("⏱️ Scheduler selesai dijalankan pada", now.toISOString());
-// }
+export async function deactivateExpiredPresences() {
+  const now = new Date();
+  const activePresences = await prisma.presence.findMany({
+    where: {
+      isActive: true,
+    }
+  });
+
+  for (const presence of activePresences) {
+    if (!presence.presenceDuration || !presence.activatedAt) continue;
+    if (presence.presenceDuration === "AKTIF" || presence.presenceDuration === "NONAKTIF") continue;
+
+    const end = calculateEndTime(presence.activatedAt, presence.presenceDuration);
+    if (isAfter(now, end)) {
+      await prisma.presence.update({
+        where: { id: presence.id },
+        data: { isActive: false },
+      });
+      console.log(`[✔] Presensi dinonaktifkan: ${presence.id}`);
+    }
+  }
+
+  console.log("⏱️ Scheduler selesai dijalankan pada", now.toISOString());
+}
