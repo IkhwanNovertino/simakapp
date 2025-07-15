@@ -48,8 +48,8 @@ const ClassSingleTabAssessmentPage = async (
     }
   };
 
-  const [dataAcademicClass, data, count] = await prisma.$transaction([
-    prisma.academicClass.findFirst({
+  const [dataAcademicClass, dataAssessment, data, count] = await prisma.$transaction(async (prisma: any) => {
+    const dataAcademicClass = await prisma.academicClass.findFirst({
       where: {
         id: id,
       },
@@ -57,8 +57,16 @@ const ClassSingleTabAssessmentPage = async (
         lecturer: true,
         course: true,
       }
-    }),
-    prisma.academicClassDetail.findMany({
+    });
+    const dataAssessment = await prisma.assessmentDetail.findMany({
+      where: {
+        assessmentId: dataAcademicClass.course.assessmentId,
+      },
+      include: {
+        grade: true,
+      },
+    });
+    const data = await prisma.academicClassDetail.findMany({
       where: {
         academicClassId: id,
       },
@@ -70,14 +78,15 @@ const ClassSingleTabAssessmentPage = async (
       ],
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
-    }),
-    prisma.academicClassDetail.count({
+    });
+    const count = await prisma.academicClassDetail.count({
       where: {
         academicClassId: id,
       },
-    }),
-  ]);
-  console.log(data);
+    });
+    return [dataAcademicClass, dataAssessment, data, count];
+  });
+  console.log('dataAssessment', dataAssessment);
 
 
   const columns = [
@@ -114,7 +123,7 @@ const ClassSingleTabAssessmentPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer table="classDetail" type="create" data={dataAcademicClass} />
+            {/* <FormContainer table="classDetail" type="create" data={dataAcademicClass} /> */}
           </div>
         </div>
       </div>
