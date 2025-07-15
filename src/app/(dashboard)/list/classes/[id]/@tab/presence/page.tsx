@@ -23,7 +23,6 @@ const ClassSingleTabStudentPage = async (
   }
 ) => {
   const user = await getSession();
-  const role = user?.roleType;
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
   const { id } = await params;
@@ -142,7 +141,7 @@ const ClassSingleTabStudentPage = async (
         <td className="hidden md:table-cell">
           <div className="grid md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-16 gap-2">
             {item.presenceDetail.map((presenceItem: any) => (
-              <PresenceStatus key={presenceItem.id} data={presenceItem} />
+              <PresenceStatus key={presenceItem.id} data={presenceItem} role={user?.roleType} />
             ))}
           </div>
         </td>

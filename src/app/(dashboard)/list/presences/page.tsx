@@ -163,7 +163,7 @@ const PresenceListPage = async (
         <td className="hidden md:table-cell">
           <div className="grid md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-16 gap-2">
             {item.presence.map((presenceItem: any) => (
-              <PresenceStatus key={presenceItem.id} data={presenceItem} />
+              <PresenceStatus key={presenceItem.id} data={presenceItem} role={user?.roleType} />
             ))}
           </div>
         </td>

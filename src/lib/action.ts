@@ -2915,16 +2915,6 @@ export const updateManyPresenceStatus = async (state: stateType, data: PresenceA
 
 function calculateEndTime(start: Date, duration: string): Date {
 
-
-"MIN5"
-"MIN15"
-"MIN30"
-"MIN45"
-"MIN60"
-"MIN90"
-"HOUR2"
-"HOUR12"
-
   switch (duration) {
     case "MIN1":
       return addMinutes(start, 1);

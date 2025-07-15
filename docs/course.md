@@ -54,7 +54,7 @@
 - assessmentId
   - String
   - FK
-    -required
+  - required
 
 ## Bussiness Rules
 

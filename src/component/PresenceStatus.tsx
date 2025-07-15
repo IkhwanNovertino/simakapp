@@ -6,14 +6,16 @@ import { startTransition, useActionState, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface PresenceStatusProps {
+  role: string,
   data?: any,
 }
 
-const PresenceStatus = ({ data }: PresenceStatusProps) => {
+const PresenceStatus = ({ role, data }: PresenceStatusProps) => {
   // console.log('DATA DARI COMPONENT PRESENCE STATUS', data);
-
   const [open, setOpen] = useState(false);
   const router = useRouter();
+
+  data.presence.isActive = role === "STUDENT" ? data.presence.isActive : true;
 
   const style = ['w-10 h-7 px-2 rounded-md flex justify-start items-center text-xs font-bold border-b-4 gap-1 cursor-pointer']
   if (data.presence.isActive) {
