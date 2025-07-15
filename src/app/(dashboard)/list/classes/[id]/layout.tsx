@@ -36,6 +36,7 @@ const ClassDetailLayout = async (
     { href: `/list/classes/${id}/student`, label: "Peserta" },
     { href: `/list/classes/${id}/syllabus`, label: "Perkuliahan" },
     { href: `/list/classes/${id}/presence`, label: "Presensi" },
+    { href: `/list/classes/${id}/assessment`, label: "Penilaian" },
   ];
 
   return (
