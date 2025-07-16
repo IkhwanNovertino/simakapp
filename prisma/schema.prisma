@@ -199,6 +199,7 @@ model Student {
   reregisterDetail    ReregisterDetail[]
   krs                 Krs[]
   academicClassDetail AcademicClassDetail[]
+  KrsGrade            KrsGrade[]
 
   @@map("sb25_students")
 }
@@ -290,7 +291,7 @@ model Krs {
   reregister   Reregister      @relation(fields: [reregisterId], references: [id], onDelete: Restrict)
   studentId    String
   student      Student         @relation(fields: [studentId], references: [id], onDelete: Restrict)
-  ipk          Float
+  ipk          Decimal
   maxSks       String
   lecturerId   String
   lecturer     Lecturer        @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
@@ -320,6 +321,8 @@ model KrsGrade {
   id                 String            @id @default(uuid())
   krsDetailId        String?
   krsDetail          KrsDetail?        @relation(fields: [krsDetailId], references: [id], onDelete: Cascade)
+  studentId          String?
+  student            Student?          @relation(fields: [studentId], references: [id], onDelete: Restrict)
   assessmentDetailId String?
   assessmentDetail   AssessmentDetail? @relation(fields: [assessmentDetailId], references: [id], onDelete: Restrict)
   percentage         Int?
