@@ -123,6 +123,7 @@ model AssessmentDetail {
   gradeId      String?
   grade        GradeComponent? @relation(fields: [gradeId], references: [id], onDelete: Restrict)
   percentage   Int?
+  krsGrade     KrsGrade[]
 
   @@map("sb25_assessments_details")
 }
@@ -307,7 +308,24 @@ model KrsDetail {
   course   Course  @relation(fields: [courseId], references: [id], onDelete: Restrict)
   isAcc    Boolean @default(false)
 
+  finalScore  Decimal?
+  gradeLetter String?
+  weight      Decimal?
+  krsGrade    KrsGrade[]
+
   @@map("sb25_krs_details")
+}
+
+model KrsGrade {
+  id                 String            @id @default(uuid())
+  krsDetailId        String?
+  krsDetail          KrsDetail?        @relation(fields: [krsDetailId], references: [id], onDelete: Cascade)
+  assessmentDetailId String?
+  assessmentDetail   AssessmentDetail? @relation(fields: [assessmentDetailId], references: [id], onDelete: Restrict)
+  percentage         Int?
+  score              Decimal?
+
+  @@map("sb25_krs_grades")
 }
 
 model Position {
