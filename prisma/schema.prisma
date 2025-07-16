@@ -291,10 +291,10 @@ model Krs {
   reregister   Reregister      @relation(fields: [reregisterId], references: [id], onDelete: Restrict)
   studentId    String
   student      Student         @relation(fields: [studentId], references: [id], onDelete: Restrict)
-  ipk          Decimal
-  maxSks       String
-  lecturerId   String
-  lecturer     Lecturer        @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
+  ipk          Decimal?
+  maxSks       String?
+  lecturerId   String?
+  lecturer     Lecturer?        @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
   isStatusForm StudyPlanStatus @default(DRAFT)
   krsDetail    KrsDetail[]
 
