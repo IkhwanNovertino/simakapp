@@ -1,6 +1,6 @@
 import { role } from "@/lib/data";
 import { courseType } from "@/lib/setting";
-import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterType } from "@prisma/client";
+import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterStatus, SemesterType, StudentStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -939,14 +939,6 @@ async function main() {
       }
     })
   };
-  
-
-  // create curriculum detail
-  await prisma.curriculumDetail.createMany({
-    data: [
-
-    ]
-  })
 
   // Lokal/Ruang
   const roomData = [
@@ -974,23 +966,23 @@ async function main() {
   }
 
   // Periode Akademik
-  const periodData = [
-    {semesterType: "GANJIL", year: 2023, name: "GANJIL 2023/2024"},
-    {semesterType: "GENAP", year: 2024, name: "GENAP 2023/2024"},
-    {semesterType: "GANJIL", year: 2024, name: "GANJIL 2024/2025"},
-    {semesterType: "GENAP", year: 2025, name: "GENAP 2024/2025"},
-  ]
+  const period = await prisma.period.create({
+    data: {
+      semesterType: "GANJIL" as SemesterType,
+      year: 2024,
+      name: "GANJIL 2024/2025",
+      isActive: true,
+    }
+  })
 
-  for (const period of periodData) {
-    await prisma.period.create({
-      data: {
-        semesterType: period.semesterType as SemesterType,
-        year: period.year,
-        name: period.name,
-        isActive: period.name === "GANJIL 2023/2024" ? true : false
-      }
-    })
-  }
+  // Her-registrasi
+  const herregistrasi = await prisma.reregister.create({
+    data: {
+      name: "HERREGISTRASI GANJIL 2024/2025",
+      periodId: period.id,
+      isReregisterActive: true,
+    }
+  })
 
   for (let i = 1; i <= 10; i++) {
     await prisma.user.create({
@@ -1022,48 +1014,56 @@ async function main() {
       }
     }
   })
-  const students = []
-  for (let i = 0; i < 10; i++) {
-    students.push({
-      nim: `310121${i % 2 === 0 ? '01' : '02'}210${i}`,
-      name: `Student${i + 1}`,
-      year: 2021,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: (i % 2 === 0 ? 1 : 2),
-      statusRegister: "BARU",
-      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-    })
-  };
-  for (let i = 0; i < 10; i++) {
-    students.push({
-      nim: `310122${i % 2 === 0 ? '01' : '02'}220${i}`,
-      name: `Student1${i + 1}`,
-      year: 2022,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: (i % 2 === 0 ? 1 : 2),
-      statusRegister: "BARU",
-      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-    })
-  };
+  // const students = []
+  // for (let i = 0; i < 10; i++) {
+  //   students.push({
+  //     nim: `310124${i % 2 === 0 ? '01' : '02'}210${i}`,
+  //     name: `Student${i + 1}`,
+  //     year: 2024,
+  //     religion: Religion.ISLAM,
+  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+  //     majorId: (i % 2 === 0 ? 1 : 2),
+  //     statusRegister: "BARU",
+  //     lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+  //   })
+  // };
+  // const student = await prisma.student.createMany({
+  //   data: students,
+  // })
 
-  for (let i = 0; i < 10; i++) {
-    students.push({
-      nim: `310123${i % 2 === 0 ? '01' : '02'}230${i}`,
-      name: `Student2${i + 1}`,
-      year: 2023,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: (i % 2 === 0 ? 1 : 2),
-      statusRegister: "BARU",
-      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+  // Student
+  for (let i = 0; i < 10 ; i++) {
+    await prisma.student.create({
+      data: {
+        nim: `310124${i % 2 === 0 ? '01' : '02'}870${i}`,
+        name: `Student${i + 1}`,
+        year: 2024,
+        religion: Religion.ISLAM,
+        gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+        majorId: (i % 2 === 0 ? 1 : 2),
+        statusRegister: "BARU",
+        studentStatus: StudentStatus.AKTIF,
+        lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+        reregisterDetail: {
+          create: {
+            reregisterId: herregistrasi.id,
+            semester: 1,
+            semesterStatus: SemesterStatus.AKTIF,
+            lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+          }
+        },
+        krs: {
+          create: {
+            reregisterId: herregistrasi.id,
+            ipk: 0,
+            maxSks: '20-21',
+            lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+          }
+        }
+      }
     })
+    
   }
-
-  await prisma.student.createMany({
-    data: students,
-  })
 };
 
 main()

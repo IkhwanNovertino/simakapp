@@ -199,7 +199,6 @@ model Student {
   reregisterDetail    ReregisterDetail[]
   krs                 Krs[]
   academicClassDetail AcademicClassDetail[]
-  KrsGrade            KrsGrade[]
 
   @@map("sb25_students")
 }
@@ -294,10 +293,11 @@ model Krs {
   ipk          Decimal?
   maxSks       String?
   lecturerId   String?
-  lecturer     Lecturer?        @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
+  lecturer     Lecturer?       @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
   isStatusForm StudyPlanStatus @default(DRAFT)
   krsDetail    KrsDetail[]
 
+  @@unique([reregisterId, studentId])
   @@map("sb25_krs")
 }
 
@@ -306,7 +306,7 @@ model KrsDetail {
   krsId    String
   krs      Krs     @relation(fields: [krsId], references: [id], onDelete: Cascade)
   courseId String
-  course   Course  @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  course   Course  @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   isAcc    Boolean @default(false)
 
   finalScore  Decimal?
@@ -314,6 +314,7 @@ model KrsDetail {
   weight      Decimal?
   krsGrade    KrsGrade[]
 
+  @@unique([krsId, courseId])
   @@map("sb25_krs_details")
 }
 
@@ -321,10 +322,8 @@ model KrsGrade {
   id                 String            @id @default(uuid())
   krsDetailId        String?
   krsDetail          KrsDetail?        @relation(fields: [krsDetailId], references: [id], onDelete: Cascade)
-  studentId          String?
-  student            Student?          @relation(fields: [studentId], references: [id], onDelete: Restrict)
   assessmentDetailId String?
-  assessmentDetail   AssessmentDetail? @relation(fields: [assessmentDetailId], references: [id], onDelete: Restrict)
+  assessmentDetail   AssessmentDetail? @relation(fields: [assessmentDetailId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   percentage         Int?
   score              Decimal?
 
