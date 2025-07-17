@@ -61,7 +61,7 @@ const ClassDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             placeholder="Pilih Mahasiswa"
             error={Array.isArray(errors.students) ? errors.students[0] : errors.students}
             options={students.map((student: any) => ({
-              value: student.id,
+              value: `${student.id}`,
               label: `${student.nim} ${student.name}`,
             }))}
             isMulti={true}

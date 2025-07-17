@@ -6,7 +6,7 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { AcademicClass, AcademicClassDetail, Course, Lecturer, Prisma, Student, } from "@prisma/client";
+import { AcademicClass, AcademicClassDetail, AssessmentDetail, Course, GradeComponent, Lecturer, Prisma, Student, } from "@prisma/client";
 
 type AcademicClassDetailDataType = AcademicClassDetail
   & {
@@ -48,7 +48,7 @@ const ClassSingleTabAssessmentPage = async (
     }
   };
 
-  const [dataAcademicClass, dataAssessment, data, count] = await prisma.$transaction(async (prisma: any) => {
+  const [dataAcademicClass, dataKrs, dataAssessment, data, count] = await prisma.$transaction(async (prisma: any) => {
     const dataAcademicClass = await prisma.academicClass.findFirst({
       where: {
         id: id,
@@ -58,6 +58,7 @@ const ClassSingleTabAssessmentPage = async (
         course: true,
       }
     });
+
     const dataAssessment = await prisma.assessmentDetail.findMany({
       where: {
         assessmentId: dataAcademicClass.course.assessmentId,
@@ -65,13 +66,18 @@ const ClassSingleTabAssessmentPage = async (
       include: {
         grade: true,
       },
+      orderBy: [
+        { grade: { name: 'asc' } },
+      ]
     });
     const data = await prisma.academicClassDetail.findMany({
       where: {
         academicClassId: id,
       },
       include: {
-        student: true,
+        student: {
+          select: { id: true, name: true, nim: true }
+        },
       },
       orderBy: [
         { student: { nim: 'asc' } },
@@ -79,14 +85,56 @@ const ClassSingleTabAssessmentPage = async (
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     });
+    const arrStudent = new Set(data.map((item: AcademicClassDetailDataType) => item.studentId));
+
+    const dataKrs = await prisma.krsDetail.findMany({
+      where: {
+        courseId: dataAcademicClass?.courseId,
+        krs: {
+          student: {
+            id: {
+              in: Array.from(arrStudent),
+            }
+          },
+          reregister: {
+            periodId: dataAcademicClass?.periodId,
+          }
+        },
+      },
+      include: {
+        krs: {
+          include: {
+            student: {
+              select: { id: true, name: true, nim: true }
+            },
+          }
+        },
+        krsGrade: {
+          include: {
+            assessmentDetail: {
+              include: {
+                grade: true,
+              }
+            }
+          }
+        },
+      }
+    })
     const count = await prisma.academicClassDetail.count({
       where: {
         academicClassId: id,
       },
     });
-    return [dataAcademicClass, dataAssessment, data, count];
+    return [dataAcademicClass, dataKrs, dataAssessment, data, count];
   });
-  console.log('dataAssessment', dataAssessment);
+
+  const columnGrade = dataAssessment.map((item: any) => (
+    {
+      header: `${item.grade.name} (${item.percentage}%)`,
+      accessor: item.grade.name,
+      className: "hidden md:table-cell w-24 px-4 text-[11px] lowercase"
+    }
+  ));
 
 
   const columns = [
@@ -94,6 +142,16 @@ const ClassSingleTabAssessmentPage = async (
       header: "Mahasiswa",
       accessor: "mahasiswa",
       className: "px-2 md:px-4"
+    },
+    {
+      header: 'Penilaian',
+      accessor: 'penilaian',
+      className: "hidden md:table-cell px-4"
+    },
+    {
+      header: 'abs',
+      accessor: 'abs',
+      className: "hidden md:table-cell px-4"
     },
   ];
 
@@ -112,6 +170,13 @@ const ClassSingleTabAssessmentPage = async (
           <div className="flex items-center justify-end gap-2 md:hidden ">
           </div>
         </td>
+        <td className="hidden md:table-cell"></td>
+        <td className="hidden md:table-cell"></td>
+        <td className="hidden md:table-cell"></td>
+        <td className="hidden md:table-cell"></td>
+        <td className="hidden md:table-cell"></td>
+        <td className="hidden md:table-cell"></td>
+        <td className="hidden md:table-cell"></td>
       </tr>
     );
   };
@@ -119,7 +184,7 @@ const ClassSingleTabAssessmentPage = async (
   return (
     <div className="bg-white p-4 rounded-md flex-1 mt-0">
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between md:mb-6">
-        <h1 className="text-base font-semibold">Daftar Peserta Mata Kuliah</h1>
+        <h1 className="text-base font-semibold">Daftar Nilai Mata Kuliah</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">

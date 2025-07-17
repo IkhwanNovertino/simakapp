@@ -40,7 +40,7 @@ export function handlePrismaError(error: unknown): never {
         throw new AppError("Data sudah ada dan tidak boleh duplikat.", 400);
 
       case "P2003":
-        throw new AppError("Data tidak dapat dihapus. Hapus relasi data, untuk menghapus data", 400);
+        throw new AppError("Data tidak dapat dihapus atau diubah. Hapus relasi data terlebih dahulu", 400);
       
       case "P2025":
         throw new AppError("Data tidak ditemukan. Mungkin sudah dihapus.", 404);

@@ -2186,12 +2186,46 @@ export const createKrsDetail = async (state: stateType, data: CourseInKrsInputs)
     }
   }
 }
+
+async function seedKrsGradeStudent({krsDetailId}: { krsDetailId: string }) {
+  const krsDetail = await prisma.krsDetail.findUnique({
+    where: {
+      id: krsDetailId,
+    },
+    include: {
+      course: {
+        include: {
+          assessment: {
+            include: {
+              assessmentDetail: true,
+            }
+          }
+        }
+      }
+    }
+  });
+  
+  if (!krsDetail) {
+    throw new AppError("KRS Detail tidak ditemukan", 404);
+  }
+  
+  const dataKrsGradeStudent = krsDetail.course.assessment?.assessmentDetail.map((assessmentDetail: any) => (
+    {
+      krsDetailId: krsDetailId,
+      assessmentDetailId: assessmentDetail.id,
+      percentage: assessmentDetail.percentage,
+    }
+  ));
+  return dataKrsGradeStudent;
+}
+
 export const updateKrsDetail = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
     const isAcc = data.get("isAcc") as string === "false" ? false : true;
     
     prisma.$transaction(async (tx: any) => {
+      const dataKrsGrade = await seedKrsGradeStudent({ krsDetailId: id }); 
       const data = await tx.krsDetail.update({
         where: {
           id: id,
@@ -2200,6 +2234,14 @@ export const updateKrsDetail = async (state: stateType, data: FormData) => {
           isAcc: !isAcc
         }
       })
+
+      if (dataKrsGrade.length > 0) {
+        await tx.krsGrade.createMany({
+          data: dataKrsGrade,
+        });
+      } else {
+        throw new AppError("Gagal melakukan pengubahan data krs", 400);
+      }
 
       const dataCheck = await tx.krsDetail.findMany({
         where: {
@@ -2681,14 +2723,17 @@ export const deleteScheduleDetail = async (state: stateType, data: FormData) => 
 export const createClassDetail = async (state: stateType, data: AcademicClassDetailInputs) => {
   try {
     console.log('CREATECLASSDETAIL', data);
-    for (const student of data.students) {
-      await prisma.academicClassDetail.create({
-        data: {
-          academicClassId: data.classId,
-          studentId: student,
-        },
-      });
-    };
+
+    const dataAcademiDetail = data.students.map((student: string) => (
+      {
+        academicClassId: data.classId,
+        studentId: student,
+      }
+    ));
+
+    await prisma.academicClassDetail.createMany({
+      data: dataAcademiDetail,
+    });
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err) {

@@ -167,7 +167,7 @@ const KRSDetailPage = async (
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="basis-16">IPK</span>
                 <span>:</span>
-                <span>{dataKRS.ipk}</span>
+                <span>{dataKRS?.ipk?.toString() ?? 0}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="basis-16">Max SKS</span>

@@ -298,7 +298,14 @@ const FormContainer = async (
             krs: {
               include: {
                 reregister: true,
-                student: true,
+                student: {
+                  select: {
+                    id: true,
+                    name: true,
+                    nim: true,
+                    year: true,
+                  }
+                },
               },
             },
           },
