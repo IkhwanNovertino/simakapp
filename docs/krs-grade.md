@@ -25,8 +25,7 @@
   - Int?
   - required
 - score
-  - Decimal (2 digit dibelakang koma)?
+  - Int?
   - required
 
 ## Bussiness Rules
-
