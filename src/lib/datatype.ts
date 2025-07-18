@@ -24,6 +24,7 @@ export interface FormModalProps {
   | "assessment"
   | "krs"
   | "krsDetail"
+  | "krsGrade"
   | "class"
   | "classDetail"
   | "time"

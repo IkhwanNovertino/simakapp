@@ -36,10 +36,10 @@ const ClassSingleTabAssessmentPage = async (
       if (value !== undefined) {
         switch (key) {
           case "search":
-            query.OR = [
-              { student: { name: { contains: value, mode: "insensitive" } } },
-              { student: { nim: { contains: value, mode: "insensitive" } } },
-            ]
+            // query.OR = [
+            //   { student: { name: { contains: value, mode: "insensitive" } } },
+            //   { student: { nim: { contains: value, mode: "insensitive" } } },
+            // ]
             break;
           default:
             break;
@@ -47,57 +47,42 @@ const ClassSingleTabAssessmentPage = async (
       }
     }
   };
-
-  const [dataAcademicClass, dataKrs, dataAssessment, data, count] = await prisma.$transaction(async (prisma: any) => {
-    const dataAcademicClass = await prisma.academicClass.findFirst({
+  const [academicClass, students, assessmentDetails] = await prisma.$transaction(async (prisma: any) => {
+    const academicClass = await prisma.academicClass.findFirst({
       where: {
         id: id,
       },
-      include: {
-        lecturer: true,
-        course: true,
+      select: {
+        academicClassDetail: true,
+        course: {
+          include: {
+            assessment: {
+              include: {
+                assessmentDetail: {
+                  include: {
+                    grade: true,
+                  },
+                  orderBy: { grade: { name: 'asc' } }
+                }
+              }
+            }
+          }
+        }
       }
-    });
-
-    const dataAssessment = await prisma.assessmentDetail.findMany({
+    })
+    const enrolledStudents = academicClass?.academicClassDetail.map((detail: AcademicClassDetail) => detail.studentId) || [];
+    const assessmentDetails = academicClass?.course.assessment?.assessmentDetail || [];
+    const students = await prisma.krsDetail.findMany({
       where: {
-        assessmentId: dataAcademicClass.course.assessmentId,
-      },
-      include: {
-        grade: true,
-      },
-      orderBy: [
-        { grade: { name: 'asc' } },
-      ]
-    });
-    const data = await prisma.academicClassDetail.findMany({
-      where: {
-        academicClassId: id,
-      },
-      include: {
-        student: {
-          select: { id: true, name: true, nim: true }
-        },
-      },
-      orderBy: [
-        { student: { nim: 'asc' } },
-      ],
-      take: ITEM_PER_PAGE,
-      skip: ITEM_PER_PAGE * (p - 1),
-    });
-    const arrStudent = new Set(data.map((item: AcademicClassDetailDataType) => item.studentId));
-
-    const dataKrs = await prisma.krsDetail.findMany({
-      where: {
-        courseId: dataAcademicClass?.courseId,
+        courseId: academicClass?.course?.id,
         krs: {
           student: {
             id: {
-              in: Array.from(arrStudent),
+              in: enrolledStudents,
             }
           },
           reregister: {
-            periodId: dataAcademicClass?.periodId,
+            periodId: academicClass?.periodId,
           }
         },
       },
@@ -114,25 +99,41 @@ const ClassSingleTabAssessmentPage = async (
             assessmentDetail: {
               include: {
                 grade: true,
-              }
+              },
             }
+          },
+          orderBy: {
+            assessmentDetail: { grade: { name: 'asc' } }
           }
         },
       }
     })
-    const count = await prisma.academicClassDetail.count({
-      where: {
-        academicClassId: id,
-      },
-    });
-    return [dataAcademicClass, dataKrs, dataAssessment, data, count];
-  });
 
-  const columnGrade = dataAssessment.map((item: any) => (
+    const dataTransformed = [];
+    for (const items of students) {
+      dataTransformed.push(
+        {
+          ...items,
+          finalScore: parseFloat(items.finalScore),
+          weight: parseFloat(items.weight),
+          krs: {
+            ...items.krs,
+            ipk: parseFloat(items.krs.ipk)
+          },
+        }
+      )
+    }
+    return [academicClass, dataTransformed, assessmentDetails];
+  })
+
+  console.log("Students:", students);
+
+
+  const columnGrade = assessmentDetails.map((item: any) => (
     {
       header: `${item.grade.name} (${item.percentage}%)`,
       accessor: item.grade.name,
-      className: "hidden md:table-cell w-24 px-4 text-[11px] lowercase"
+      className: "hidden md:table-cell w-8 text-[11px] lowercase"
     }
   ));
 
@@ -143,40 +144,57 @@ const ClassSingleTabAssessmentPage = async (
       accessor: "mahasiswa",
       className: "px-2 md:px-4"
     },
+    ...columnGrade,
     {
-      header: 'Penilaian',
-      accessor: 'penilaian',
-      className: "hidden md:table-cell px-4"
+      header: 'nilai akhir',
+      accessor: 'nilai akhir',
+      className: "hidden md:table-cell w-24 text-[11px] lowercase"
     },
     {
       header: 'abs',
       accessor: 'abs',
-      className: "hidden md:table-cell px-4"
+      className: "hidden md:table-cell w-24 text-[11px] lowercase"
+    },
+    {
+      header: 'Keterangan',
+      accessor: 'keterangan',
+      className: "hidden md:table-cell text-[11px]"
+    },
+    {
+      header: 'Actions',
+      accessor: 'actions',
+      className: "hidden md:table-cell text-[11px]"
     },
   ];
 
-  const renderRow = (item: AcademicClassDetailDataType) => {
+  const renderRow = (item: any) => {
 
     return (
       <tr
-        key={item.studentId}
+        key={item.id}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
           <div className="flex flex-col col-span-5 items-start">
-            <h3 className="text-sm font-semibold">{item.student.name}</h3>
-            <p className="text-xs text-gray-600">{item.student.nim}</p>
+            <h3 className="text-sm font-semibold">{item.krs.student.name}</h3>
+            <p className="text-xs text-gray-600">{item.krs.student.nim}</p>
           </div>
           <div className="flex items-center justify-end gap-2 md:hidden ">
           </div>
         </td>
-        <td className="hidden md:table-cell"></td>
-        <td className="hidden md:table-cell"></td>
-        <td className="hidden md:table-cell"></td>
-        <td className="hidden md:table-cell"></td>
-        <td className="hidden md:table-cell"></td>
-        <td className="hidden md:table-cell"></td>
-        <td className="hidden md:table-cell"></td>
+        {item.krsGrade.map((grade: any) => (
+          <td key={grade.id} className="hidden md:table-cell w-24">{grade.score || 0}</td>
+        ))}
+        <td className="hidden md:table-cell w-24">{item.finalScore || 0}</td>
+        <td className="hidden md:table-cell w-24 text-xs">{item.gradeLetter || "TBC"}</td>
+        <td className="hidden md:table-cell text-xs">{item.gradeLetter || "Diumumkan"}</td>
+        <td className="hidden md:table-cell text-xs">
+          <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2">
+              <FormContainer table="krsGrade" type="update" id={item.id} data={item} />
+            </div>
+          </div>
+        </td>
       </tr>
     );
   };
@@ -194,9 +212,9 @@ const ClassSingleTabAssessmentPage = async (
       </div>
       {/* BOTTOM */}
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
+      <Table columns={columns} renderRow={renderRow} data={students} />
       {/* PAGINATION */}
-      <Pagination page={p} count={count || 0} />
+      {/* <Pagination page={p} count={count || 0} /> */}
     </div>
   )
 }
