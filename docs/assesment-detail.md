@@ -13,6 +13,9 @@
   - String
   - PK
   - uuid
+- seq_number
+  - Int
+  - @default(autoincrement())
 - assesmentId
   - String
   - FK

@@ -186,6 +186,55 @@ async function main() {
   })
   await prisma.assessment.create({
     data: {
+        name: "CASE METHOD",
+        assessmentDetail: {
+          create: [
+            {
+              percentage: 10,
+              grade: {
+                connect: {
+                  name: "Absensi dan Aktivitas"
+                }
+              },
+            },
+            {
+              percentage: 25,
+              grade: {
+                connect: {
+                  name: "Tugas Mandiri"
+                }
+              },
+            },
+            {
+              percentage: 20,
+              grade: {
+                connect: {
+                  name: "Tugas Kelompok"
+                }
+              },
+            },
+            {
+              percentage: 20,
+              grade: {
+                connect: {
+                  name: "Ujian Tengah Semester"
+                }
+              },
+            },
+            {
+              percentage: 25,
+              grade: {
+                connect: {
+                  name: "Ujian Akhir Semester"
+                }
+              },
+            },
+          ]
+        },
+      },
+  })
+  await prisma.assessment.create({
+    data: {
         name: "PRAKTIKUM",
         assessmentDetail: {
           create: [
@@ -328,20 +377,6 @@ async function main() {
     }
   });
 
-  const courseOld = [
-    // TI
-    { code: "SKB-T016", name: "Pengolahan Citra", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
-    { code: "SKB-T027", name: "Grafika Komputer", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
-    { code: "IKB-T004", name: "Dasar-Dasar Pemrograman", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
-    { code: "SKB-T024", name: "Pemrosesan Data Terdistribusi (PDT)", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
-    { code: "SKK-T010", name: "Logika Informatika", sks: 3, prodi: "TI", courseType: "WAJIB", isPKL: false, isSkripsi: false, assessment: "REGULER", predecessor: null },
-    // SI
-    { code: "SKB-S020", name: "Manajemen Kualitas Software (Pilihan PSI)", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "PILIHAN", sks: 3, assessment: "REGULER", predecessor: null },
-    { code: "IBB-S001", name: "Kepemimpinan", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "WAJIB", sks: 2, assessment: "REGULER", predecessor: null },
-    { code: "IKB-S012", name: "Infrastrcture TI : Sistem Operasi", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "WAJIB", sks: 3, assessment: "REGULER", predecessor: null },
-    { code: "IKB-S034", name: "Logika (Berfikir Kritis, Analitis)", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "WAJIB", sks: 3, assessment: "REGULER", predecessor: null },
-    { code: "SKB-S029", name: "Komputasi Awan (Pilihan PBB)", isPKL: false, isSkripsi: false, prodi: "SI", courseType: "WAJIB", sks: 3, assessment: "REGULER", predecessor: null },
-  ];
   const courseSI = [
     {
       code: "SB-ISI-007", name: "Pengantar Teknologi Informasi", 
@@ -362,7 +397,7 @@ async function main() {
     },
     { code: "SB-ISI-014", name:"Dasar Pemrograman", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:1, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISI-029", name:"Bahasa Indonesia", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:1, 
@@ -402,7 +437,7 @@ async function main() {
     },
     { code: "SB-ISI-004", name:"Sistem Basis Data", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISI-015", name:"Transformasi Digital", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
@@ -422,11 +457,11 @@ async function main() {
     },
     { code: "SB-ISPS1-004", name:"Analisis & Desain Proses Bisnis (Pemodelan Bisnis) (PSI)", 
       isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:3, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISI-006", name:"Jaringan komputer", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISI-016", name:"Pemrograman Berbasis Objek", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:3, 
@@ -462,11 +497,11 @@ async function main() {
     },
     { code: "SB-ISPS2-005", name:"Data Mining (PSI)", 
       isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:4, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISI-017", name:"Pemrograman Berbasis Web", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:4, smt:4, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISI-022", name:"Metodologi Penelitian dan Penulisan Ilmiah", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:2, smt:4, 
@@ -482,7 +517,7 @@ async function main() {
     },
     { code: "SB-ISI-008", name:"Manajemen Proyek Sistem Informasi", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISI-011", name:"Software Testing dan Quality Assurance", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:2, smt:5, 
@@ -502,7 +537,7 @@ async function main() {
     },
     { code: "SB-ISPS1-001", name:"Implementasi Perangkat Lunak (Deployment, Testing, Adoption) (PSI)", 
       isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:5, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISI-009", name:"Proyek Perangkat lunak", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
@@ -526,7 +561,7 @@ async function main() {
     },
     { code: "SB-ISPS2-006", name:"Artificial Intelligence (PSI)", 
       isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:5, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISO-101", name:"Big Data", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
@@ -597,7 +632,7 @@ async function main() {
     { code: "SB-ITI-009", name: "Pengenalan Pemrograman", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:1, 
-      assessment: "REGULER", predecessor: "IKB-T004"
+      assessment: "CASE METHOD", predecessor: "IKB-T004"
     },
     { code: "SB-ITI-023", name: "Statistika dan Probabilitas", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
@@ -647,7 +682,7 @@ async function main() {
     { code: "SB-ITI-022", name: "Basis Data", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:2, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITI-029", name: "Big Data", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
@@ -707,7 +742,7 @@ async function main() {
     { code: "SB-ITSC-002",name: "Expert System (Konsentrasi SC)", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:4, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITI-013", name: "Pemrograman Berorientasi Objek", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
@@ -717,17 +752,17 @@ async function main() {
     { code: "SB-ITO-001", name: "Mikrokontroller", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:4, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITI-010", name: "Pembelajaran Mesin (Machine Learning)", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:4, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITI-011", name: "Kecerdasan Buatan (AI)", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:4, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITSC-005",name: "Sistem Penunjang Keputusan (Konsentrasi SC)", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
@@ -762,7 +797,7 @@ async function main() {
     { code: "SB-ITI-003", name: "Manajemen Proyek Teknologi Informasi", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:5, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITI-026", name: "Pemrograman Berbasis Platform", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
@@ -807,7 +842,7 @@ async function main() {
     { code: "SB-ITO-101", name: "Mobile Computing", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:6, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITO-105", name: "Kreatif Digital", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
@@ -817,7 +852,7 @@ async function main() {
     { code: "SB-ITI-004", name: "Proyek Prangkat Lunak", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:6, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITO-102", name: "Pengantar Teknologi Informasi", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
@@ -842,28 +877,6 @@ async function main() {
   ]
 
   // course
-  for (const course of courseOld) {
-    await prisma.course.create({
-      data: {
-        name: course.name,
-        code: course.code,
-        sks: course.sks,
-        major: {
-          connect: {
-            id: course.prodi === "SI" ? 1 : 2,
-          }
-        },
-        courseType: course.courseType,
-        isPKL: course.isPKL,
-        isSkripsi: course.isSkripsi,
-        assessment: {
-          connect: {
-            name: course.assessment,
-          },
-        },
-      }
-    })
-  }
   for (const si of courseSI) {
     await prisma.course.create({
       data: {
@@ -885,7 +898,6 @@ async function main() {
         },
       }
     });
-
     await prisma.curriculumDetail.create({
       data: {
         curriculum: {

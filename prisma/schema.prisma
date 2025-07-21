@@ -118,6 +118,7 @@ model GradeComponent {
 
 model AssessmentDetail {
   id           String          @id @default(uuid())
+  seq_number   Int             @default(autoincrement())
   assessmentId String?
   assessment   Assessment?     @relation(fields: [assessmentId], references: [id], onDelete: Restrict)
   gradeId      String?
