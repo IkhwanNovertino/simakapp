@@ -16,7 +16,7 @@ const KRSDetailPage = async (
   const { id } = await params;
   const user = await getSession();
 
-  const dataKRS = await prisma.krs.findUnique({
+  const dataKRSRaw = await prisma.krs.findUnique({
     where: {
       id: id,
     },
@@ -38,6 +38,19 @@ const KRSDetailPage = async (
       },
     }
   });
+
+
+  const dataKRS = {
+    ...dataKRSRaw,
+    ipk: dataKRSRaw?.ipk ? parseFloat(dataKRSRaw.ipk.toString()) : 0,
+    krsDetail: dataKRSRaw?.krsDetail.map((item: any) => (
+      {
+        ...item,
+        finalScore: item.finalScore ? parseFloat(item.finalScore.toString()) : 0,
+        weight: item.weight ? parseFloat(item.weight.toString()) : 0,
+      }
+    ))
+  }
 
   const dataReregistrasi = await prisma.reregisterDetail.findUnique({
     where: {

@@ -62,14 +62,17 @@ const ClassSingleTabAssessmentPage = async (
                   include: {
                     grade: true,
                   },
-                  orderBy: { grade: { name: 'asc' } }
-                }
-              }
+                  orderBy: {
+                    seq_number: 'desc',
+                  }
+                },
+              },
             }
           }
         }
       }
-    })
+    });
+
     const enrolledStudents = academicClass?.academicClassDetail.map((detail: AcademicClassDetail) => detail.studentId) || [];
     const assessmentDetails = academicClass?.course.assessment?.assessmentDetail || [];
     const students = await prisma.krsDetail.findMany({
@@ -103,7 +106,7 @@ const ClassSingleTabAssessmentPage = async (
             }
           },
           orderBy: {
-            assessmentDetail: { grade: { name: 'asc' } }
+            assessmentDetail: { seq_number: 'desc' }
           }
         },
       }
@@ -125,9 +128,6 @@ const ClassSingleTabAssessmentPage = async (
     }
     return [academicClass, dataTransformed, assessmentDetails];
   })
-
-  console.log("Students:", students);
-
 
   const columnGrade = assessmentDetails.map((item: any) => (
     {
@@ -187,7 +187,7 @@ const ClassSingleTabAssessmentPage = async (
         ))}
         <td className="hidden md:table-cell w-24">{item.finalScore || 0}</td>
         <td className="hidden md:table-cell w-24 text-xs">{item.gradeLetter || "TBC"}</td>
-        <td className="hidden md:table-cell text-xs">{item.gradeLetter || "Diumumkan"}</td>
+        <td className="hidden md:table-cell text-xs">{"-"}</td>
         <td className="hidden md:table-cell text-xs">
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-2">

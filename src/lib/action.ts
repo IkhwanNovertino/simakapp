@@ -6,7 +6,7 @@ import {
   AssessmentInputs,
   ClassInputs,
   CourseInKrsInputs,
-  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, lecturerSchema, MajorInputs,
+  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, KrsGradeInputs, lecturerSchema, MajorInputs,
   OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, PresenceActivationInputs, PresenceAllInputs, PresenceInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, ScheduleDetailInputs, ScheduleInputs, studentSchema, TimeInputs, UserInputs
@@ -3009,4 +3009,44 @@ export async function deactivateExpiredPresences() {
   }
 
   console.log("⏱️ Scheduler selesai dijalankan pada", now.toISOString());
+}
+
+export const updateKrsGrade = async (state: stateType, data: KrsGradeInputs) => {
+  try {
+    console.log('DATA UPDATE KRS GRADE', data);
+
+    await prisma.krsDetail.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        finalScore: data.finalScore,
+        gradeLetter: data.gradeLetter,
+        weight: data.weight,
+      }
+    });
+
+    for (const items of data.krsGrade) {
+      await prisma.krsGrade.update({
+        where: {
+          id: items.id,
+        },
+        data: {
+          score: items.score,
+        }
+      })
+    }
+    
+    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
 }

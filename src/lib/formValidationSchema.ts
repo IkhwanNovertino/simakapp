@@ -406,7 +406,33 @@ export type PresenceActivationInputs = z.infer<typeof presenceActivationSchema>;
 
 export const presenceAllSchema = z.object({
   presenceId: z.string().min(1, { message: "Pilih pertemuan" }),
-  
 })
 
 export type PresenceAllInputs = z.infer<typeof presenceAllSchema>;
+
+export const krsGradeSchema = z.object({
+  id: z.string().optional(),
+  studentName: z.string().optional(),
+  studentNIM: z.string().optional(),
+  finalScore: z.coerce.number().min(0, { message: "Nilai akhir harus diisi" }),
+  gradeLetter: z.string().optional(),
+  weight: z.coerce.number().optional(),
+  krsGrade: z.array(
+    z.object({
+      id: z.string().min(1, { message: "Krs Grade ID tidak ditemukan" }),
+      assessmentDetailId: z.string().optional(),
+      krsDetailId: z.string().optional(),
+      assessmentDetail: z.object({
+        id: z.string().optional(),
+        grade: z.object({
+          id: z.string().optional(),
+          name: z.string().optional(),
+        }),
+      }),
+      percentage: z.coerce.number().min(0, { message: "Persentase harus diisi" }).max(100, { message: "Persentase tidak boleh lebih dari 100%" }),
+      score: z.coerce.number().min(0, { message: "Nilai harus diisi" }).max(100, { message: "Nilai tidak boleh lebih dari 100" }),
+    })
+  )
+})
+
+export type KrsGradeInputs = z.infer<typeof krsGradeSchema>;
