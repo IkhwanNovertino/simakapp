@@ -222,11 +222,20 @@ const ClassSingleTabAssessmentPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <button
+            <a
+              href={`/api/grade?academicClassId=${id}`}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-primary/70 rounded-full cursor-pointer capitalize hover:bg-primary"
+            >
+              Export
+            </a>
+            {/* <button
               className={`text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-primary/70 rounded-full cursor-pointer capitalize hover:bg-primary`}
             >
               {"export"}
-            </button>
+            </button> */}
             <button
               className={`text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-secondary/70 rounded-full cursor-pointer capitalize hover:bg-secondary`}
             >
