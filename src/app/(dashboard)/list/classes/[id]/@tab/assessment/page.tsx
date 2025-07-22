@@ -47,7 +47,7 @@ const ClassSingleTabAssessmentPage = async (
       }
     }
   };
-  const [academicClass, students, assessmentDetails] = await prisma.$transaction(async (prisma: any) => {
+  const [students, assessmentDetails, count] = await prisma.$transaction(async (prisma: any) => {
     const academicClass = await prisma.academicClass.findFirst({
       where: {
         id: id,
@@ -110,6 +110,22 @@ const ClassSingleTabAssessmentPage = async (
           }
         },
       }
+    });
+
+    const count = await prisma.krsDetail.count({
+      where: {
+        courseId: academicClass?.course?.id,
+        krs: {
+          student: {
+            id: {
+              in: enrolledStudents,
+            }
+          },
+          reregister: {
+            periodId: academicClass?.periodId,
+          }
+        },
+      },
     })
 
     const dataTransformed = [];
@@ -126,7 +142,7 @@ const ClassSingleTabAssessmentPage = async (
         }
       )
     }
-    return [academicClass, dataTransformed, assessmentDetails];
+    return [dataTransformed, assessmentDetails, count];
   })
 
   const columnGrade = assessmentDetails.map((item: any) => (
@@ -206,7 +222,16 @@ const ClassSingleTabAssessmentPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            {/* <FormContainer table="classDetail" type="create" data={dataAcademicClass} /> */}
+            <button
+              className={`text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-primary/70 rounded-full cursor-pointer capitalize hover:bg-primary`}
+            >
+              {"export"}
+            </button>
+            <button
+              className={`text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-secondary/70 rounded-full cursor-pointer capitalize hover:bg-secondary`}
+            >
+              {"import"}
+            </button>
           </div>
         </div>
       </div>
@@ -214,7 +239,7 @@ const ClassSingleTabAssessmentPage = async (
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={students} />
       {/* PAGINATION */}
-      {/* <Pagination page={p} count={count || 0} /> */}
+      <Pagination page={p} count={count || 0} />
     </div>
   )
 }
