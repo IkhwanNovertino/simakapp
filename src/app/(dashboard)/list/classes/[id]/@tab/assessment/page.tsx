@@ -1,5 +1,6 @@
 
 import FormContainer from "@/component/FormContainer";
+import ImportForm from "@/component/ImportForm";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
@@ -109,7 +110,16 @@ const ClassSingleTabAssessmentPage = async (
             assessmentDetail: { seq_number: 'desc' }
           }
         },
-      }
+      },
+      orderBy: [
+        {
+          krs: {
+            student: {
+              nim: 'asc'
+            }
+          }
+        }
+      ]
     });
 
     const count = await prisma.krsDetail.count({
@@ -231,16 +241,7 @@ const ClassSingleTabAssessmentPage = async (
             >
               Export
             </a>
-            {/* <button
-              className={`text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-primary/70 rounded-full cursor-pointer capitalize hover:bg-primary`}
-            >
-              {"export"}
-            </button> */}
-            <button
-              className={`text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-secondary/70 rounded-full cursor-pointer capitalize hover:bg-secondary`}
-            >
-              {"import"}
-            </button>
+            <ImportForm />
           </div>
         </div>
       </div>

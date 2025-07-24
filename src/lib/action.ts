@@ -19,8 +19,9 @@ import { v4 } from "uuid";
 import logger from "./logger";
 import { handlePrismaError } from "./errors/prismaError";
 import { AppError } from "./errors/appErrors";
-import { calculatingSKSLimits } from "./utils";
+import { calculatingSKSLimits, getGradeLetter } from "./utils";
 import { addMinutes, addHours, addDays, isAfter } from "date-fns";
+import { importAssessment } from "./excel/importAssessment";
 
 type stateType = {
   success: boolean;
@@ -3038,6 +3039,102 @@ export const updateKrsGrade = async (state: stateType, data: KrsGradeInputs) => 
     }
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const importExcelFile = async (state: stateType, data: FormData) => {
+  try {
+    const file = data.get("uploadFile") as File;
+    if (!file) {
+      throw new AppError("File tidak ditemukan", 400);
+    }
+    
+
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const result = await importAssessment(buffer)
+
+    // IF import Success
+    console.log('RESULT', result);
+    
+    const krsDetailIdFromRowsData = result.map((items: any) => items.uids);
+
+    await prisma.$transaction(async (prisma: any) => {
+      const krsDetails = await prisma.krsDetail.findMany({
+        where: {
+          id: {
+            in: krsDetailIdFromRowsData,
+          },
+        },
+        include: {
+          krsGrade: {
+            include: {
+              assessmentDetail: {
+                include: {
+                  grade: true,
+                },
+              },
+            },
+          },
+        },
+      });
+      for (const [key, value] of Object.entries(result)) {
+        const weight = getGradeLetter(value.finalScore);
+        await prisma.krsDetail.update({
+          where: {
+            id: value?.uids,
+          },
+          data: {
+            finalScore: value?.finalScore,
+            gradeLetter: value?.gradeLetter,
+            weight: weight[1],
+          },
+        });
+        
+        const krsGradeByKrsDetailId = await prisma.krsGrade.findMany({
+          where: {
+            krsDetailId: value.uids,
+          },
+          include: {
+            assessmentDetail: {
+              include: {
+                grade: true,
+              },
+            },
+          },
+        });
+
+        for (const items of krsGradeByKrsDetailId) {
+          const gradeName = items.assessmentDetail.grade.name ?? "";
+          console.log('GRADENAME', gradeName);
+          
+          const newScore = value[gradeName];
+
+          if (newScore !== undefined && newScore !== '') {
+            await prisma.krsGrade.update({
+              where: {
+                id: items.id,
+              },
+              data: {
+                score: Number(newScore),
+              },
+            });
+          };
+        };
+      }
+    })
+
+    return { success: true, error: false, message: "File berhasil diunggah"};
+    
   } catch (err) {
     try {
       handlePrismaError(err)

@@ -1,4 +1,5 @@
 import { exportAssessment } from "@/lib/excel/exportAssessment";
+import { exportAssessmentGrade } from "@/lib/excel/exportAssessmentGrade";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -23,7 +24,7 @@ export async function GET(req: NextRequest) {
         },
       },
     })
-    const bufferFile = await exportAssessment(academicClassId);
+    const bufferFile = await exportAssessmentGrade(academicClassId);
 
     return new NextResponse(bufferFile, {
       headers: {
