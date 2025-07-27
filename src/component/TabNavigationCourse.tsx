@@ -17,7 +17,7 @@ const TabNavigation = ({ tabs }: { tabs: Tab[] }) => {
   const router = useRouter();
   const pathname = usePathname();
   return (
-    <div className="flex px-4 pt-4">
+    <div className="w-full px-4 pt-4">
       {tabs.map((tab) => (
         <button
           key={tab.label}

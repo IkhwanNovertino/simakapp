@@ -88,7 +88,9 @@ const ClassDetailLayout = async (
       </div>
       {/* BOTTOM */}
       <div className="bg-white rounded-md flex-1 mt-0">
-        <TabNavigation tabs={tabs} />
+        <div className="w-full">
+          <TabNavigation tabs={tabs} />
+        </div>
         {tab}
       </div>
     </div>

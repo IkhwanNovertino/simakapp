@@ -1,5 +1,6 @@
 
 import FormContainer from "@/component/FormContainer";
+import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
@@ -148,13 +149,20 @@ const ClassSingleTabStudentPage = async (
         className="border-b border-gray-300 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className="grid grid-cols-6 lg:hidden py-4 px-2">
-          {/* <div className="flex flex-col col-span-5 items-start">
-            <h3 className="text-sm font-semibold">{item.student.name}</h3>
-            <p className="text-xs text-gray-600">{item.student.nim}</p>
+          <div className="flex flex-col col-span-5 items-start">
+            <p className="text-xs text-gray-600 mb-2">{item.weekNumber} | {new Intl.DateTimeFormat("id-ID").format(item.date || Date.now())}</p>
+            <h3 className="text-sm font-semibold tracking-wide">{item.lesson}</h3>
+            <p className="text-sm font-light mb-2 tracking-wide">{item.lessonDetail}</p>
           </div>
           <div className="flex items-center justify-end gap-2 md:hidden ">
-            <FormContainer table="classDetail" type="delete" id={item.id} />
-          </div> */}
+            <ModalAction>
+              <div className="flex items-center gap-3">
+                <FormContainer table="presence" type="update" data={dataPassToForm} />
+                <FormContainer table="presence" type="delete" id={item.id} />
+                <FormContainer table="presenceDetail" type={item.isActive ? "presenceActive" : "presenceNon"} data={dataPassToForm} />
+              </div>
+            </ModalAction>
+          </div>
         </td>
         <td className="hidden lg:table-cell lg:px-2 lg:py-4">{item.weekNumber}</td>
         <td className="hidden lg:table-cell">{new Intl.DateTimeFormat("id-ID").format(item.date || Date.now())}</td>
