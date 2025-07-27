@@ -73,6 +73,9 @@ export async function exportAssessmentGrade(academicClassId: string) {
         },
       },
     },
+    orderBy: [
+      {krs: {student: {nim: 'asc'}}}
+    ]
   });
 
   const assessmentDetails = academicClass?.course.assessment?.assessmentDetail || [];
@@ -94,6 +97,8 @@ export async function exportAssessmentGrade(academicClassId: string) {
     { header: 'uids', key: 'uids' }
   ]
 
+  // COlUMN HURUF
+  const strColumn = ['A', 'B', 'C', 'D','E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O']
   const headers = [
     'No',
     'NIM',
@@ -162,6 +167,7 @@ export async function exportAssessmentGrade(academicClassId: string) {
   lecturer.font = { size: 11, }
   lecturer.alignment = { vertical: 'middle' }
   
+  worksheet.mergeCells("F6:K6")
   const lecturerField = worksheet.getCell('F6')
   lecturerField.value = `: ${academicClass?.lecturer?.name.toUpperCase()}`
   lecturerField.font = { size: 11, }
@@ -186,6 +192,7 @@ export async function exportAssessmentGrade(academicClassId: string) {
   academicClassName.font = { size: 11, }
   academicClassName.alignment = { vertical: 'middle' }
   
+  worksheet.mergeCells("F7:K7")
   const academicClassField = worksheet.getCell('F7')
   academicClassField.value = `: ${academicClass?.name.toUpperCase()}`
   academicClassField.font = { size: 11, }
@@ -210,6 +217,7 @@ export async function exportAssessmentGrade(academicClassId: string) {
   schedule.font = { size: 11, }
   schedule.alignment = { vertical: 'middle' }
   
+  worksheet.mergeCells("F8:K8")
   const scheduleField = worksheet.getCell('F8')
   scheduleField.value = `: -`
   scheduleField.font = { size: 11, }
@@ -234,12 +242,11 @@ export async function exportAssessmentGrade(academicClassId: string) {
   date.font = { size: 11, }
   date.alignment = { vertical: 'middle' }
   
+  worksheet.mergeCells("F9:K9")
   const dateField = worksheet.getCell('F9')
   dateField.value = `: -`
   dateField.font = { size: 11, }
   dateField.alignment = { vertical: 'middle'}
-
-
 
   worksheet.addRow([])
   const header = worksheet.addRow(headers);
@@ -265,17 +272,23 @@ export async function exportAssessmentGrade(academicClassId: string) {
     worksheet.getColumn(i + 1).width = w
   })
 
+  const uidsColumnsIndex = headers.indexOf('uids') + 1;
+  const finalScoreColumnsIndex = headers.indexOf('Nilai Akhir') + 1;
+  const absColumnsIndex = headers.indexOf('Abs') + 1;
+  const assessmentDetailIndex = assessmentDetails.map((_: any, i: number) => i + 3)
+  
+
   krsDetails.forEach((items: any, i: number) => {
     const rowdata: any = [
       i + 1,
       items.krs.student.nim,
-      items.krs.student.name,
+      items.krs.student.name.toUpperCase(),
       ...assessmentDetails.map((assessmentDetail: any) => {
         const grade = items.krsGrade.find((g: any) => g.assessmentDetailId === assessmentDetail.id);
         return grade ? grade.score : 0;
       }),
       Number(items.finalScore),
-      items.gradeLetter ?? "",
+      items.gradeLetter ?? "E",
       items.id,
     ];
 
@@ -289,7 +302,6 @@ export async function exportAssessmentGrade(academicClassId: string) {
       }
       cell.alignment = { vertical: 'middle' }
     });
-    const uidsColumnsIndex = headers.indexOf('uids') + 1;
 
     worksheet.eachRow((row, rowNumber) => {
       const cell = row.getCell(uidsColumnsIndex);
@@ -299,11 +311,59 @@ export async function exportAssessmentGrade(academicClassId: string) {
           pattern: 'solid',
           fgColor: { argb: '000000' }, // abu-abu muda
         }
+        
       }
     });
+
+    // finalScore & Abs formula
+    worksheet.eachRow((row, rowNumber) => {
+      if (rowNumber >= 12) {
+        // finalScore
+        const finalScoreColumns = `${strColumn[finalScoreColumnsIndex - 1]}${rowNumber}`;
+        const finalScoreCell = worksheet.getCell(finalScoreColumns)
+        const formulaStr = assessmentDetailIndex.map((el: number, i: number) => `(${strColumn[el]}${rowNumber} * (${assessmentDetails[i].percentage} / 100))`)
+        finalScoreCell.value = {
+          formula: `${formulaStr.join(" + ")}`,
+        }
+
+        // Abs
+        const absColumns = `${strColumn[absColumnsIndex - 1]}${rowNumber}`;
+        const absCell = worksheet.getCell(absColumns);
+        absCell.value = {
+          formula: `IF(${finalScoreColumns}>=85,"A",IF(${finalScoreColumns}>=80,"AB",IF(${finalScoreColumns}>=70,"B",IF(${finalScoreColumns}>=60,"BC",IF(${finalScoreColumns}>=56,"C",IF(${finalScoreColumns}>=40,"D","E"))))))`
+        }
+      }
+    })
   });
 
-  
+  // Locked Cell
+  worksheet.eachRow((row, rowNumber) => {
+    row.eachCell((cell, cellNumber) => {
+      cell.protection = { locked: true };
+      if (rowNumber >= 12 && cellNumber >= 4 && cellNumber !== uidsColumnsIndex) {
+        cell.protection = { locked: false };
+      }
+      if (rowNumber < 11 && rowNumber !== 1) {
+        cell.fill = {
+          type: 'pattern',
+          pattern: 'solid',
+          fgColor: { argb: 'FFFFFF' },
+        }
+      }
+    })
+  });
+
+  await worksheet.protect(`${academicClass?.course.code}`, {
+    selectLockedCells: true,
+    selectUnlockedCells: true,
+    formatCells: false,
+    formatColumns: false,
+    formatRows: false,
+    insertColumns: false,
+    insertRows: false,
+    deleteColumns: false,
+    deleteRows: false,
+  })
 
 
 
