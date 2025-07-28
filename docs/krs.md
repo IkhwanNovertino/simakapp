@@ -26,8 +26,6 @@
 - isStatusForm
   - StudyPlanStatus?
   - default (DRAFT)
-- ipk
-  - Float ? 2 angka dibelakang koma
 - maxSks
 - lecturerId
   - String?
