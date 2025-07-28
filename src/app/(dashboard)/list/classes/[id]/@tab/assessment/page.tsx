@@ -231,7 +231,7 @@ const ClassSingleTabAssessmentPage = async (
         <h1 className="text-base font-semibold">Daftar Nilai Mata Kuliah</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
-          <div className="flex items-center gap-4 self-end">
+          <div className="hidden md:flex items-center gap-4 self-end ">
             <a
               href={`/api/grade?academicClassId=${id}`}
               download
@@ -246,6 +246,7 @@ const ClassSingleTabAssessmentPage = async (
         </div>
       </div>
       {/* BOTTOM */}
+      <div className="block md:hidden font-semibold text-xs my-4 py-2 px-3 bg-amber-300 rounded-md">GUNAKAN TABLET/LAPTOP UNTUK MELAKUKAN PENILAIAN!</div>
       {/* LIST */}
       <Table columns={columns} renderRow={renderRow} data={students} />
       {/* PAGINATION */}

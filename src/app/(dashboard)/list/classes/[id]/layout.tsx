@@ -54,10 +54,10 @@ const ClassDetailLayout = async (
               </p>
             </header>
             <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
-              <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="basis-32">Dosen Pengampu</span>
+              <div className="w-full 2xl:w-1/3 gap-2 flex justify-start">
+                <span className="w-3/10">Dosen Pengampu</span>
                 <span>:</span>
-                <span>
+                <span className="w-6/10">
                   {lecturerName(
                     {
                       frontTitle: dataAcademicClass?.lecturer?.frontTitle,
@@ -68,19 +68,19 @@ const ClassDetailLayout = async (
                 </span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="basis-32">Thn. Akad</span>
+                <span className="w-3/10">Thn. Akad</span>
                 <span >:</span>
-                <span>GANJIL 2023/2024</span>
+                <span className="w-6/10 self-start">GANJIL 2023/2024</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="basis-32">Semester</span>
+                <span className="w-3/10">Semester</span>
                 <span>:</span>
-                <span>3</span>
+                <span className="w-6/10 self-start">3</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="basis-32">Jadwal</span>
+                <span className="w-3/10">Jadwal</span>
                 <span>:</span>
-                <span>Rabu, 09:40 - 11:20</span>
+                <span className="w-6/10 self-start">Rabu, 09:40 - 11:20</span>
               </div>
             </div>
           </div>

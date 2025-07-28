@@ -4,6 +4,7 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
 import { AcademicClass, AcademicClassDetail, Course, Lecturer, Prisma, Student, } from "@prisma/client";
@@ -29,6 +30,7 @@ const ClassSingleTabStudentPage = async (
   const p = page ? parseInt(page) : 1;
   const { id } = await params;
 
+  const role = await getSession();
   const query: Prisma.ReregisterDetailWhereInput = {}
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
@@ -103,13 +105,13 @@ const ClassSingleTabStudentPage = async (
             <p className="text-xs text-gray-600">{item.student.nim}</p>
           </div>
           <div className="flex items-center justify-end gap-2 md:hidden ">
-            <FormContainer table="classDetail" type="delete" id={item.id} />
+            {role?.roleType === "OPERATOR" && (<FormContainer table="classDetail" type="delete" id={item.id} />)}
           </div>
         </td>
         <td>
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-2">
-              <FormContainer table="classDetail" type="delete" id={item.id} />
+              {role?.roleType === "OPERATOR" && (<FormContainer table="classDetail" type="delete" id={item.id} />)}
             </div>
           </div>
         </td>
@@ -124,7 +126,7 @@ const ClassSingleTabStudentPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer table="classDetail" type="create" data={dataAcademicClass} />
+            {role?.roleType === "OPERATOR" && (<FormContainer table="classDetail" type="create" data={dataAcademicClass} />)}
           </div>
         </div>
       </div>

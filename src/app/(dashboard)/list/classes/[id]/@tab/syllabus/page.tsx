@@ -5,6 +5,7 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE, learningMethod } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
 import { AcademicClass, AcademicClassDetail, Course, Lecturer, Presence, Prisma, Student, } from "@prisma/client";
@@ -32,6 +33,7 @@ const ClassSingleTabStudentPage = async (
   const p = page ? parseInt(page) : 1;
   const { id } = await params;
 
+  const role = await getSession();
   const query: Prisma.PresenceWhereInput = {}
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
@@ -158,7 +160,7 @@ const ClassSingleTabStudentPage = async (
             <ModalAction>
               <div className="flex items-center gap-3">
                 <FormContainer table="presence" type="update" data={dataPassToForm} />
-                <FormContainer table="presence" type="delete" id={item.id} />
+                {role?.roleType === 'OPERATOR' && (<FormContainer table="presence" type="delete" id={item.id} />)}
                 <FormContainer table="presenceDetail" type={item.isActive ? "presenceActive" : "presenceNon"} data={dataPassToForm} />
               </div>
             </ModalAction>
@@ -184,7 +186,7 @@ const ClassSingleTabStudentPage = async (
           <div className="flex items-center gap-2">
             <div className="hidden lg:flex items-center gap-2">
               <FormContainer table="presence" type="update" data={dataPassToForm} />
-              <FormContainer table="presence" type="delete" id={item.id} />
+              {role?.roleType === 'OPERATOR' && (<FormContainer table="presence" type="delete" id={item.id} />)}
               <FormContainer table="presenceDetail" type={item.isActive ? "presenceActive" : "presenceNon"} data={dataPassToForm} />
             </div>
           </div>

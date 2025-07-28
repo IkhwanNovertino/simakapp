@@ -97,8 +97,6 @@ const ClassSingleTabStudentPage = async (
       },
     }),
   ]);
-  console.log(dataCreateMany);
-
 
   const dataGabungan = dataStudent.map((items: any) => {
     const dataPresence = data.filter((element: any) => element.academicClassDetailId === items.id)
@@ -129,13 +127,17 @@ const ClassSingleTabStudentPage = async (
         key={item.studentId}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
-        <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4 lg:w-80">
-          <div className="flex flex-col col-span-5 items-start w-full">
+        <td className="flex flex-col gap-2 py-4 px-2 md:px-4 lg:w-80">
+          <div className="flex flex-col items-start w-full">
             <h3 className="text-sm font-semibold truncate">{item.student.name}</h3>
             <p className="text-xs text-gray-600">{item.student.nim}</p>
           </div>
-          <div className="flex items-center justify-end gap-2 md:hidden ">
-            <FormContainer table="classDetail" type="delete" id={item.id} />
+          <div className="flex items-center justify-start gap-2 md:hidden ">
+            <div className="grid grid-cols-4 gap-2">
+              {item.presenceDetail.map((presenceItem: any) => (
+                <PresenceStatus key={presenceItem.id} data={presenceItem} role={user?.roleType} />
+              ))}
+            </div>
           </div>
         </td>
         <td className="hidden md:table-cell">
