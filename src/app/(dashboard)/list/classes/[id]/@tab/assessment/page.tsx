@@ -233,6 +233,15 @@ const ClassSingleTabAssessmentPage = async (
           <TableSearch />
           <div className="hidden md:flex items-center gap-4 self-end ">
             <a
+              href={`/api/grade?academicClassId=${id}&template=true`}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-ternary/70 rounded-full cursor-pointer capitalize hover:bg-ternary"
+            >
+              Template Nilai
+            </a>
+            <a
               href={`/api/grade?academicClassId=${id}`}
               download
               target="_blank"

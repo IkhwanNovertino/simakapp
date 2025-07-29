@@ -52,7 +52,7 @@ async function main() {
         description: element,
         roleType: (element === "dosen" && "LECTURER") || (element === "mahasiswa" && "STUDENT") ||
           (element === "perwalian akademik" && "ADVISOR") || (element === "admin" && "OPERATOR") ||
-          (element === "finance" && "OPERATOR") || (element === "akademik" && "OPERATOR")as RoleType,
+          (element === "finance" && "OPERATOR") || (element === "akademik" && "OPERATOR") as RoleType,
       }
     })
   }
@@ -1047,12 +1047,12 @@ async function main() {
   for (let i = 0; i < 10 ; i++) {
     await prisma.student.create({
       data: {
-        nim: `310124${i % 2 === 0 ? '01' : '02'}870${i}`,
+        nim: `31012402870${i}`,
         name: `Student${i + 1}`,
         year: 2024,
         religion: Religion.ISLAM,
         gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-        majorId: (i % 2 === 0 ? 1 : 2),
+        majorId: 2,
         statusRegister: "BARU",
         studentStatus: StudentStatus.AKTIF,
         lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
@@ -1067,9 +1067,15 @@ async function main() {
         krs: {
           create: {
             reregisterId: herregistrasi.id,
-            ipk: 0,
             maxSks: '20-21',
             lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+            ips: {
+              create: {
+                periodId: period.id,
+                ipsKrs: 0,
+                ipsConfig: 0,
+              }
+            }
           }
         }
       }

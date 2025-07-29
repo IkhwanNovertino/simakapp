@@ -2723,8 +2723,6 @@ export const deleteScheduleDetail = async (state: stateType, data: FormData) => 
 
 export const createClassDetail = async (state: stateType, data: AcademicClassDetailInputs) => {
   try {
-    console.log('CREATECLASSDETAIL', data);
-
     const dataAcademiDetail = data.students.map((student: string) => (
       {
         academicClassId: data.classId,

@@ -1,5 +1,5 @@
-import { exportAssessment } from "@/lib/excel/exportAssessment";
 import { exportAssessmentGrade } from "@/lib/excel/exportAssessmentGrade";
+import { exportAssessmentTemplate } from "@/lib/excel/exportAssessmentTemplate";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -7,6 +7,7 @@ export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const academicClassId = searchParams.get('academicClassId');
+    const template = searchParams.get('template');
   
     if (!academicClassId) {
       return new NextResponse('Missing Params', { status: 400 });
@@ -24,8 +25,9 @@ export async function GET(req: NextRequest) {
         },
       },
     })
-    const bufferFile = await exportAssessmentGrade(academicClassId);
 
+    // const bufferFile = await exportAssessmentGrade(academicClassId);
+    const bufferFile = template ? await exportAssessmentTemplate(academicClassId) : await exportAssessmentGrade(academicClassId)
     return new NextResponse(bufferFile, {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
