@@ -27,7 +27,7 @@ const ClassSingleTabStudentPage = async (
   const p = page ? parseInt(page) : 1;
   const { id } = await params;
 
-  const query: Prisma.ReregisterDetailWhereInput = {}
+  const query: Prisma.AcademicClassDetailWhereInput = {}
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
@@ -49,6 +49,7 @@ const ClassSingleTabStudentPage = async (
     prisma.academicClassDetail.findMany({
       where: {
         academicClassId: id,
+        query,
       },
       include: {
         student: true,
@@ -94,6 +95,7 @@ const ClassSingleTabStudentPage = async (
     prisma.academicClassDetail.count({
       where: {
         academicClassId: id,
+        query,
       },
     }),
   ]);

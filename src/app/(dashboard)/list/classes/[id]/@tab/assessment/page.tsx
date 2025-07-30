@@ -31,16 +31,16 @@ const ClassSingleTabAssessmentPage = async (
   const p = page ? parseInt(page) : 1;
   const { id } = await params;
 
-  const query: Prisma.ReregisterDetailWhereInput = {}
+  const query: Prisma.KrsDetailWhereInput = {}
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
         switch (key) {
           case "search":
-            // query.OR = [
-            //   { student: { name: { contains: value, mode: "insensitive" } } },
-            //   { student: { nim: { contains: value, mode: "insensitive" } } },
-            // ]
+            query.OR = [
+              { krs: { student: { name: { contains: value, mode: "insensitive" } } } },
+              { krs: { student: { nim: { contains: value, mode: "insensitive" } } } }
+            ]
             break;
           default:
             break;
@@ -89,6 +89,7 @@ const ClassSingleTabAssessmentPage = async (
             periodId: academicClass?.periodId,
           }
         },
+        query,
       },
       include: {
         krs: {
@@ -135,6 +136,7 @@ const ClassSingleTabAssessmentPage = async (
             periodId: academicClass?.periodId,
           }
         },
+        query,
       },
     })
 

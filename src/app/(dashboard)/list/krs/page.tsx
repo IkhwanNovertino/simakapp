@@ -39,7 +39,12 @@ const KRSListPage = async (
                 student: {
                   name: { contains: value, mode: "insensitive" }
                 }
-              }
+              },
+              {
+                student: {
+                  nim: { contains: value, mode: "insensitive" }
+                }
+              },
             ]
             break;
 
