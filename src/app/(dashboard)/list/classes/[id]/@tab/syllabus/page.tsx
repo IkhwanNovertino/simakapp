@@ -34,23 +34,6 @@ const ClassSingleTabStudentPage = async (
   const { id } = await params;
 
   const role = await getSession();
-  const query: Prisma.PresenceWhereInput = {}
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          // case "search":
-          //   query.OR = [
-          //     { student: { name: { contains: value, mode: "insensitive" } } },
-          //     { student: { nim: { contains: value, mode: "insensitive" } } },
-          //   ]
-          //   break;
-          default:
-            break;
-        }
-      }
-    }
-  };
 
   const [dataAcademicClass, data, count] = await prisma.$transaction([
     prisma.academicClass.findFirst({
@@ -64,7 +47,6 @@ const ClassSingleTabStudentPage = async (
     prisma.presence.findMany({
       where: {
         academicClassId: id,
-        ...query,
       },
       orderBy: [
         { weekNumber: 'asc' },
@@ -73,7 +55,6 @@ const ClassSingleTabStudentPage = async (
     prisma.presence.count({
       where: {
         academicClassId: id,
-        ...query,
       },
     }),
   ]);

@@ -62,7 +62,7 @@ const ClassSingleTabStudentPage = async (
     prisma.academicClassDetail.findMany({
       where: {
         academicClassId: id,
-        query,
+        ...query,
       },
       include: {
         student: true,
@@ -76,7 +76,7 @@ const ClassSingleTabStudentPage = async (
     prisma.academicClassDetail.count({
       where: {
         academicClassId: id,
-        query,
+        ...query,
       },
     }),
   ]);

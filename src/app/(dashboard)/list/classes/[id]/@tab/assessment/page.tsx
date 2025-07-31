@@ -89,7 +89,7 @@ const ClassSingleTabAssessmentPage = async (
             periodId: academicClass?.periodId,
           }
         },
-        query,
+        ...query,
       },
       include: {
         krs: {
@@ -136,7 +136,7 @@ const ClassSingleTabAssessmentPage = async (
             periodId: academicClass?.periodId,
           }
         },
-        query,
+        ...query,
       },
     })
 
