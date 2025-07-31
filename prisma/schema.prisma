@@ -93,8 +93,9 @@ model Course {
   predecessor      Course?            @relation("CourseHistory", fields: [predecessorId], references: [id], onDelete: Restrict)
   successor        Course?            @relation("CourseHistory")
   curriculumDetail CurriculumDetail[]
-  krsDetail        KrsDetail[]
   academicClass    AcademicClass[]
+  krsDetail        KrsDetail[]
+  khsDetail        KhsDetail[]
 
   @@map("sb25_courses")
 }
@@ -124,9 +125,33 @@ model AssessmentDetail {
   gradeId      String?
   grade        GradeComponent? @relation(fields: [gradeId], references: [id], onDelete: Restrict)
   percentage   Int?
-  krsGrade     KrsGrade[]
+  khsGrade     KhsGrade[]
 
   @@map("sb25_assessments_details")
+}
+
+model Curriculum {
+  id               String             @id @default(uuid())
+  name             String?            @unique
+  majorId          Int?
+  major            Major?             @relation(fields: [majorId], references: [id], onDelete: Restrict)
+  startDate        DateTime?
+  endDate          DateTime?
+  isActive         Boolean?           @default(false)
+  curriculumDetail CurriculumDetail[]
+
+  @@map("sb25_curriculums")
+}
+
+model CurriculumDetail {
+  id           String     @id @default(uuid())
+  curriculumId String
+  curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Restrict)
+  courseId     String
+  course       Course     @relation(fields: [courseId], references: [id], onDelete: Restrict)
+  semester     Int?
+
+  @@map("sb25_curriculum_details")
 }
 
 model Lecturer {
@@ -200,8 +225,17 @@ model Student {
   reregisterDetail    ReregisterDetail[]
   krs                 Krs[]
   academicClassDetail AcademicClassDetail[]
+  khs                 Khs[]
 
   @@map("sb25_students")
+}
+
+model Position {
+  id           String  @id @default(uuid())
+  positionName String? @unique
+  personName   String?
+
+  @@map("sb25_position")
 }
 
 model Room {
@@ -223,7 +257,7 @@ model Period {
   reregister    Reregister[]
   academicClass AcademicClass[]
   schedule      Schedule[]
-  ips           Ips[]
+  khs           Khs[]
 
   @@map("sb25_periods")
 }
@@ -262,95 +296,34 @@ model ReregisterDetail {
   @@map("sb25_reregister_details")
 }
 
-model Curriculum {
-  id               String             @id @default(uuid())
-  name             String?            @unique
-  majorId          Int?
-  major            Major?             @relation(fields: [majorId], references: [id], onDelete: Restrict)
-  startDate        DateTime?
-  endDate          DateTime?
-  isActive         Boolean?           @default(false)
-  curriculumDetail CurriculumDetail[]
-
-  @@map("sb25_curriculums")
-}
-
-model CurriculumDetail {
-  id           String     @id @default(uuid())
-  curriculumId String
-  curriculum   Curriculum @relation(fields: [curriculumId], references: [id], onDelete: Restrict)
-  courseId     String
-  course       Course     @relation(fields: [courseId], references: [id], onDelete: Restrict)
-  semester     Int?
-
-  @@map("sb25_curriculum_details")
-}
-
-model Ips {
-  id        String   @id @default(uuid())
-  krsId     String?  @unique
-  krs       Krs?     @relation(fields: [krsId], references: [id], onDelete: Cascade)
-  periodId  String?
-  period    Period?  @relation(fields: [periodId], references: [id], onDelete: Restrict)
-  semester  Int?     @default(1)
-  ipsKrs    Decimal? @default(0)
-  ipsKhs    Decimal? @default(0)
-  ipsConfig Decimal? @default(0)
-
-  @@map("sb25_ips")
-}
-
 model Krs {
   id           String          @id @default(uuid())
   reregisterId String
   reregister   Reregister      @relation(fields: [reregisterId], references: [id], onDelete: Restrict)
   studentId    String
   student      Student         @relation(fields: [studentId], references: [id], onDelete: Restrict)
-  maxSks       String?
+  maxSks       Int?
+  ipk          Decimal         @default(0) @db.Decimal(3, 2)
   lecturerId   String?
   lecturer     Lecturer?       @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
   isStatusForm StudyPlanStatus @default(DRAFT)
   krsDetail    KrsDetail[]
-  ips          Ips?
+  khs          Khs[]
 
   @@unique([reregisterId, studentId])
   @@map("sb25_krs")
 }
 
 model KrsDetail {
-  id          String     @id @default(uuid())
-  krsId       String
-  krs         Krs        @relation(fields: [krsId], references: [id], onDelete: Cascade)
-  courseId    String
-  course      Course     @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  isAcc       Boolean    @default(false)
-  finalScore  Decimal?   @default(0) @db.Decimal(4, 2)
-  gradeLetter String?
-  weight      Decimal?   @default(0) @db.Decimal(2, 1)
-  krsGrade    KrsGrade[]
+  id       String  @id @default(uuid())
+  krsId    String
+  krs      Krs     @relation(fields: [krsId], references: [id], onDelete: Cascade)
+  courseId String
+  course   Course  @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  isAcc    Boolean @default(false)
 
   @@unique([krsId, courseId])
   @@map("sb25_krs_details")
-}
-
-model KrsGrade {
-  id                 String            @id @default(uuid())
-  krsDetailId        String?
-  krsDetail          KrsDetail?        @relation(fields: [krsDetailId], references: [id], onDelete: Cascade)
-  assessmentDetailId String?
-  assessmentDetail   AssessmentDetail? @relation(fields: [assessmentDetailId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  percentage         Int?
-  score              Int?              @default(0)
-
-  @@map("sb25_krs_grades")
-}
-
-model Position {
-  id           String  @id @default(uuid())
-  positionName String? @unique
-  personName   String?
-
-  @@map("sb25_position")
 }
 
 model AcademicClass {
@@ -384,6 +357,35 @@ model AcademicClassDetail {
   presenceDetail  PresenceDetail[]
 
   @@map("sb25_academic_class_detail")
+}
+
+model Presence {
+  id               String           @id @default(uuid())
+  academicClassId  String?
+  academicClass    AcademicClass?   @relation(fields: [academicClassId], references: [id], onDelete: Restrict)
+  weekNumber       Int?
+  date             DateTime?
+  duration         String?
+  learningMethod   String?
+  lesson           String?
+  lessonDetail     String?
+  isActive         Boolean?         @default(false)
+  presenceDuration String?
+  activatedAt      DateTime?
+  presenceDetail   PresenceDetail[]
+
+  @@map("sb25_presences")
+}
+
+model PresenceDetail {
+  id                    String               @id @default(uuid())
+  presenceId            String?
+  presence              Presence?            @relation(fields: [presenceId], references: [id], onDelete: Cascade)
+  academicClassDetailId String?
+  academicClassDetail   AcademicClassDetail? @relation(fields: [academicClassDetailId], references: [id], onDelete: Restrict)
+  presenceStatus        PresenceStatus       @default(ALPA)
+
+  @@map("sb25_presence_details")
 }
 
 model Time {
@@ -421,33 +423,57 @@ model ScheduleDetail {
   @@map("sb25_schedule_details")
 }
 
-model Presence {
-  id               String           @id @default(uuid())
-  academicClassId  String?
-  academicClass    AcademicClass?   @relation(fields: [academicClassId], references: [id], onDelete: Restrict)
-  weekNumber       Int?
-  date             DateTime?
-  duration         String?
-  learningMethod   String?
-  lesson           String?
-  lessonDetail     String?
-  isActive         Boolean?         @default(false)
-  presenceDuration String?
-  activatedAt      DateTime?
-  presenceDetail   PresenceDetail[]
+model Khs {
+  id        String      @id @default(uuid())
+  krsId     String?
+  krs       Krs?        @relation(fields: [krsId], references: [id], onDelete: Restrict)
+  studentId String
+  student   Student     @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  periodId  String
+  period    Period      @relation(fields: [periodId], references: [id], onDelete: Restrict)
+  semester  Int?        @default(1)
+  ips       Decimal?    @default(0) @db.Decimal(3, 2)
+  maxSks    Int?
+  date      DateTime    @default(now())
+  isRPL     Boolean     @default(false)
+  khsDetail KhsDetail[]
 
-  @@map("sb25_presences")
+  @@map("sb25_khs")
 }
 
-model PresenceDetail {
-  id                    String               @id @default(uuid())
-  presenceId            String?
-  presence              Presence?            @relation(fields: [presenceId], references: [id], onDelete: Cascade)
-  academicClassDetailId String?
-  academicClassDetail   AcademicClassDetail? @relation(fields: [academicClassDetailId], references: [id], onDelete: Restrict)
-  presenceStatus        PresenceStatus       @default(ALPA)
+model KhsDetail {
+  id          String  @id @default(uuid())
+  khsId       String
+  khs         Khs     @relation(fields: [khsId], references: [id], onDelete: Cascade)
+  courseId    String
+  course      Course  @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  finalScore  Decimal @default(0) @db.Decimal(4, 2)
+  weight      Decimal @default(0) @db.Decimal(2, 1)
+  gradeLetter String  @default("E")
 
-  @@map("sb25_presence_details")
+  // versioning untuk revisi
+  version       Int        @default(1)
+  isLatest      Boolean    @default(true)
+  validFrom     DateTime   @default(now())
+  valodTo       DateTime?
+  predecessorId String?    @unique
+  predecessor   KhsDetail? @relation("khsDetailHistory", fields: [predecessorId], references: [id], onDelete: Restrict)
+  successor     KhsDetail? @relation("khsDetailHistory")
+  khsGrade      KhsGrade[]
+
+  @@map("sb25_khs_details")
+}
+
+model KhsGrade {
+  id                 String           @id @default(uuid())
+  khsDetailId        String
+  khsDetail          KhsDetail        @relation(fields: [khsDetailId], references: [id], onDelete: Cascade)
+  assessmentDetailId String
+  assessmentDetail   AssessmentDetail @relation(fields: [assessmentDetailId], references: [id], onDelete: Restrict)
+  percentage         Int              @default(0)
+  score              Int              @default(0)
+
+  @@map("sb25_khs_grades")
 }
 
 enum PresenceStatus {
