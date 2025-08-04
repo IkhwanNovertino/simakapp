@@ -24,7 +24,8 @@ export interface FormModalProps {
   | "assessment"
   | "krs"
   | "krsDetail"
-  | "krsGrade"
+  | "khsGrade"
+  | "rpl"
   | "class"
   | "classDetail"
   | "time"
@@ -33,6 +34,7 @@ export interface FormModalProps {
   | "presence"
   | "presenceDetail"
   | "presenceAll";
+
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon";
   data?: any;
   id?: any;

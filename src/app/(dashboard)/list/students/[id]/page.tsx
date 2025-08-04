@@ -1,5 +1,7 @@
 import Announcements from "@/component/Announcements";
 import BigCalendar from "@/component/BigCalendar";
+import FormContainer from "@/component/FormContainer";
+import RPLForm from "@/component/forms/RplForm";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,6 +21,24 @@ const SingleStudentPage = async (
       lecturer: true,
     },
   });
+  const coursesCompleted = await prisma.khsDetail.findMany({
+    where: {
+      khs: {
+        studentId: id,
+        isRPL: false,
+      },
+      isLatest: true,
+    },
+    include: {
+      course: {
+        select: { code: true, name: true }
+      },
+    },
+    distinct: ["courseId"],
+  });
+
+  console.log('COURSE COMPLETE', coursesCompleted);
+
   if (!dataStudent) {
     notFound()
   }
@@ -111,7 +131,7 @@ const SingleStudentPage = async (
             {/* CARD */}
             <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] lg:w-[45%] 2xl:w-[48%]">
               <Image
-                src="/singleClass.png"
+                src="/Transcript.png"
                 alt=""
                 width={24}
                 height={24}
@@ -135,21 +155,34 @@ const SingleStudentPage = async (
         <div className="bg-white p-4 rounded-md">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
-            <Link className="p-3 rounded-md bg-lamaSkyLight" href={`/list/lessons?classId=${2}`}>
-              Student&apos;s Lessons
+            <Link className="p-3 rounded-md bg-green-50" href={`/list/lessons?classId=${2}`}>
+              Data KRS
             </Link>
-            <Link className="p-3 rounded-md bg-lamaPurpleLight" href={`/list/teachers?classId=${2}`}>
-              Student&apos;s Teachers
+            <Link className="p-3 rounded-md bg-orange-50" href={`/list/teachers?classId=${2}`}>
+              Data KHS
             </Link>
-            <Link className="p-3 rounded-md bg-pink-50" href={`/list/exams?classId=${2}`}>
-              Student&apos;s Exams
+            <Link className="p-3 rounded-md bg-fuchsia-100" href={`/list/exams?classId=${2}`}>
+              Presensi
             </Link>
-            <Link className="p-3 rounded-md bg-lamaSkyLight" href={`/list/assignments?classId=${2}`}>
-              Student&apos;s Assignments
-            </Link>
-            <Link className="p-3 rounded-md bg-lamaYellowLight" href={`/list/results?studentId=${"student1"}`}>
-              Student&apos;s Results
-            </Link>
+          </div>
+        </div>
+        <div className="bg-white p-4 rounded-md">
+          <h1 className="text-lg font-semibold">Mata Kuliah yang Telah Diambil</h1>
+          <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start ">
+            <ul className="flex flex-col  mt-4">
+              {coursesCompleted.map((items: any) => (
+                <li className="p-4 text-sm border-b border-gray-200">{items.course.name}</li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="bg-white p-4 rounded-md">
+          <h1 className="text-xl font-semibold">Mata Kuliah RPL</h1>
+
+          <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start xl:justify-end">
+            <div className="flex items-center gap-4 self-end">
+              <FormContainer table="rpl" type="create" data={dataStudent} />
+            </div>
           </div>
         </div>
         {/* <Performance /> */}

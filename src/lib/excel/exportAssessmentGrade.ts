@@ -38,29 +38,27 @@ export async function exportAssessmentGrade(academicClassId: string) {
     },
   });
 
-  const krsDetails = await prisma.krsDetail.findMany({
+  const khsDetails = await prisma.khsDetail.findMany({
     where: {
       courseId: academicClass?.course?.id,
-      krs: {
+      khs: {
         student: {
           id: {
             in: academicClass?.academicClassDetail.map((detail: any) => detail.studentId) || [],
           }
         },
-        reregister: {
-          periodId: academicClass?.periodId,
-        },
+        periodId: academicClass?.periodId,
       },
     },
     include: {
-      krs: {
+      khs: {
         include: {
           student: {
             select: { id: true, name: true, nim: true }
           },
         }
       },
-      krsGrade: {
+      khsGrade: {
         include: {
           assessmentDetail: {
             include: {
@@ -74,7 +72,7 @@ export async function exportAssessmentGrade(academicClassId: string) {
       },
     },
     orderBy: [
-      {krs: {student: {nim: 'asc'}}}
+      {khs: {student: {nim: 'asc'}}}
     ]
   });
 
@@ -278,13 +276,13 @@ export async function exportAssessmentGrade(academicClassId: string) {
   const assessmentDetailIndex = assessmentDetails.map((_: any, i: number) => i + 3)
   
 
-  krsDetails.forEach((items: any, i: number) => {
+  khsDetails.forEach((items: any, i: number) => {
     const rowdata: any = [
       i + 1,
-      items.krs.student.nim,
-      items.krs.student.name.toUpperCase(),
+      items.khs.student.nim,
+      items.khs.student.name.toUpperCase(),
       ...assessmentDetails.map((assessmentDetail: any) => {
-        const grade = items.krsGrade.find((g: any) => g.assessmentDetailId === assessmentDetail.id);
+        const grade = items.khsGrade.find((g: any) => g.assessmentDetailId === assessmentDetail.id);
         return grade ? grade.score : 0;
       }),
       Number(items.finalScore),

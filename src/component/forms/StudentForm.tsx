@@ -14,6 +14,7 @@ import { StatusRegistrasi } from "@/lib/data";
 import moment from "moment";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
+import { Gender } from "@prisma/client";
 
 const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors, lecturer } = relatedData;
@@ -156,32 +157,16 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Gender</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full overflow-hidden"
-            {...register("gender")}
-            size={3}
+          <InputSelect
+            control={control}
+            label="Gender"
+            name="gender"
             defaultValue={data?.gender}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih gender
-            </option>
-            {gender.map((item) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.gender?.message && (
-            <p className="text-xs text-red-400">
-              {errors.gender.message.toString()}
-            </p>
-          )}
+            placeholder="--Pilih Gender"
+            required={true}
+            error={errors?.gender}
+            options={[{ value: Gender.PRIA, label: "PRIA" }, { value: Gender.WANITA, label: "WANITA" }]}
+          />
         </div>
 
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">

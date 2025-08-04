@@ -30,7 +30,8 @@ const GradeForm = dynamic(() => import("./forms/GradeForm"), { loading: () => <h
 const AssessmentForm = dynamic(() => import("./forms/AssessmentForm"), { loading: () => <h1>Loading...</h1> });
 const KrsForm = dynamic(() => import("./forms/KrsForm"), { loading: () => <h1>Loading...</h1> });
 const KrsDetailForm = dynamic(() => import("./forms/KrsDetailForm"), { loading: () => <h1>Loading...</h1> });
-const KrsGradeForm = dynamic(() => import("./forms/KrsGradeForm"), { loading: () => <h1>Loading...</h1> });
+const KhsGradeForm = dynamic(() => import("./forms/KhsGradeForm"), { loading: () => <h1>Loading...</h1> });
+const RplForm = dynamic(() => import("./forms/RplForm"), { loading: () => <h1>Loading...</h1> });
 const PositionForm = dynamic(() => import("./forms/PositionForm"), { loading: () => <h1>Loading...</h1> });
 const ClassForm = dynamic(() => import("./forms/ClassForm"), { loading: () => <h1>Loading...</h1> });
 const ClassDetailForm = dynamic(() => import("./forms/ClassDetailForm"), { loading: () => <h1>Loading...</h1> });
@@ -203,8 +204,15 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
-  krsGrade: (setOpen, type, data, relatedData) =>
-    <KrsGradeForm
+  khsGrade: (setOpen, type, data, relatedData) =>
+    <KhsGradeForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
+  rpl: (setOpen, type, data, relatedData) =>
+    <RplForm
       setOpen={setOpen}
       type={type}
       data={data}
@@ -298,7 +306,8 @@ const deleteActionMap = {
   assessment: deleteAssessment,
   krs: deleteKrsDetail, //Belum diubah
   krsDetail: deleteKrsDetail,
-  krsGrade: deleteKrsDetail, //Belum diubah
+  khsGrade: deleteKrsDetail, //Belum diubah
+  rpl: deleteKrsDetail, //Belum diubah
   position: deletePosition,
   class: deleteClass,
   classDetail: deleteClassDetail,
@@ -333,7 +342,8 @@ const namaTabelMap = {
   assessment: "penilaian",
   krs: "KRS",
   krsDetail: "mata kuliah di KRS",
-  krsGrade: "nilai mata kuliah",
+  khsGrade: "nilai mata kuliah",
+  rpl: "mata kuliah RPL",
   position: "jabatan",
   class: "kelas",
   classDetail: "mahasiswa",

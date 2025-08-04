@@ -1,6 +1,4 @@
 import * as xlsx from "xlsx";
-import { prisma } from "../prisma";
-import { AssessmentDetail, GradeComponent, KrsGrade } from "@prisma/client";
 
 export async function importAssessment(buffer: Buffer) {
   const workbook = xlsx.read(buffer, { type: 'array' });

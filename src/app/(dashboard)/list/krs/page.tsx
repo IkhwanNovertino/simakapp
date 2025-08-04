@@ -7,12 +7,12 @@ import { canRoleDeleteData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Ips, Krs, Lecturer, Period, Prisma, Reregister, Student } from "@prisma/client";
+import { Krs, Lecturer, Period, Prisma, Reregister, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-type KrsDataType = Krs & { student: Student } & { lecturer: Lecturer } & { reregister: Reregister & { period: Period } } & { ips: Ips };
+type KrsDataType = Krs & { student: Student } & { lecturer: Lecturer } & { reregister: Reregister & { period: Period } };
 
 const KRSListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -89,7 +89,6 @@ const KRSListPage = async (
           }
         },
         krsDetail: true,
-        ips: true,
       },
       orderBy: [
 
@@ -190,7 +189,7 @@ const KRSListPage = async (
           </div>
         </td>
         <td className="hidden md:table-cell">{item?.reregister?.period?.name ?? ""}</td>
-        <td className="hidden md:table-cell">{item?.ips?.ipsKrs?.toString() ?? ""}</td>
+        <td className="hidden md:table-cell">{item?.ips.toString() ?? ""}</td>
         <td className="hidden md:table-cell capitalize">{item.maxSks || ""}</td>
         <td className="hidden lg:table-cell capitalize">
           <span className={isStatusForm.join(" ")}>

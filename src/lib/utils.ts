@@ -1,5 +1,3 @@
-import { KrsGrade } from "@prisma/client";
-import { parse } from "path";
 
 export const calculatingSKSLimits = async (ipk: number) => {
   // const ipkFloat = Number(ipk);

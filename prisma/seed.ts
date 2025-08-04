@@ -1,6 +1,6 @@
 import { role } from "@/lib/data";
 import { courseType } from "@/lib/setting";
-import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterStatus, SemesterType, StudentStatus } from "@prisma/client";
+import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterStatus, SemesterType, StudentStatus, StudyPlanStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -1044,44 +1044,80 @@ async function main() {
   // })
 
   // Student
-  for (let i = 0; i < 10 ; i++) {
-    await prisma.student.create({
+  // for (let i = 0; i < 5 ; i++) {
+  //   await prisma.student.create({
+  //     data: {
+  //       nim: `31012402870${i}`,
+  //       name: `Student${i + 1}`,
+  //       year: 2024,
+  //       religion: Religion.ISLAM,
+  //       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+  //       majorId: 2,
+  //       statusRegister: "BARU",
+  //       studentStatus: StudentStatus.AKTIF,
+  //       lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+  //       // reregisterDetail: {
+  //       //   create: {
+  //       //     reregisterId: herregistrasi.id,
+  //       //     semester: 1,
+  //       //     // semesterStatus: SemesterStatus.AKTIF,
+  //       //     lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+  //       //   }
+  //       // },
+  //       // krs: {
+  //       //   create: {
+  //       //     reregisterId: herregistrasi.id,
+  //       //     ipk: 0,
+  //       //     maxSks: 22,
+  //       //     lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+  //       //   }
+  //       // }
+  //     }
+  //   })
+    
+  // }
+
+  const student = await prisma.student.create({
       data: {
-        nim: `31012402870${i}`,
-        name: `Student${i + 1}`,
+        nim: `310124028701`,
+        name: `Student01`,
         year: 2024,
         religion: Religion.ISLAM,
-        gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+        gender: Gender.PRIA,
         majorId: 2,
         statusRegister: "BARU",
         studentStatus: StudentStatus.AKTIF,
-        lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-        reregisterDetail: {
-          create: {
-            reregisterId: herregistrasi.id,
-            semester: 1,
-            semesterStatus: SemesterStatus.AKTIF,
-            lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-          }
-        },
-        krs: {
-          create: {
-            reregisterId: herregistrasi.id,
-            maxSks: '20-21',
-            lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-            ips: {
-              create: {
-                periodId: period.id,
-                ipsKrs: 0,
-                ipsConfig: 0,
-              }
-            }
-          }
-        }
+        lecturerId: lecturer[0].id,
+        // reregisterDetail: {
+        //   create: {
+        //     reregisterId: herregistrasi.id,
+        //     semester: 1,
+        //     // semesterStatus: SemesterStatus.AKTIF,
+        //     lecturerId: lecturer[0].id,
+        //   }
+        // },
+        // krs: {
+        //   create: {
+        //     reregisterId: herregistrasi.id,
+        //     ips: 0,
+        //     maxSks: 22,
+        //     isStatusForm: StudyPlanStatus.SUBMITTED,
+        //     lecturerId: lecturer[0].id,
+        //     krsDetail: {
+        //       create: [
+        //         { course: { connect: { code: "SB-ITI-016" }}, isAcc: false},
+        //         { course: { connect: { code: "SB-ITI-006" }}, isAcc: false},
+        //         { course: { connect: { code: "SB-ITI-014" }}, isAcc: false},
+        //         { course: { connect: { code: "SB-ITI-009" }}, isAcc: false},
+        //         { course: { connect: { code: "SB-ITI-023" }}, isAcc: false},
+        //         { course: { connect: { code: "SB-ITI-002" }}, isAcc: false},
+        //         { course: { connect: { code: "SB-ITO-004" }}, isAcc: false},
+        //       ]
+        //     }
+        //   }
+        // },
       }
     })
-    
-  }
 };
 
 main()

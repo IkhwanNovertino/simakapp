@@ -4,12 +4,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import InputField from "../InputField";
-import { KrsGradeInputs, krsGradeSchema, PositionInputs, positionSchema } from "@/lib/formValidationSchema";
-import { createPosition, updateKrsGrade, updatePosition } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FormProps } from "@/lib/datatype";
 import { getFinalScore, getGradeLetter } from "@/lib/utils";
+import { KhsGradeInputs, khsGradeSchema } from "@/lib/formValidationSchema";
+import { updateKhsGrade } from "@/lib/action";
 
 
 const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
@@ -22,23 +22,23 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
     setValue,
     control,
     formState: { errors },
-  } = useForm<KrsGradeInputs>({
-    resolver: zodResolver(krsGradeSchema),
+  } = useForm<KhsGradeInputs>({
+    resolver: zodResolver(khsGradeSchema),
     defaultValues: {
       id: data?.id || "",
-      studentName: data?.krs?.student?.name || "",
-      studentNIM: data?.krs?.student?.nim || "",
+      studentName: data?.khs?.student?.name || "",
+      studentNIM: data?.khs?.student?.nim || "",
       finalScore: data?.finalScore || 0,
       gradeLetter: data?.gradeLetter || "",
       weight: data?.weight || 0,
-      krsGrade: data?.krsGrade || [],
+      khsGrade: data?.khsGrade || [],
     }
   })
-  const { fields } = useFieldArray({ control, name: "krsGrade" })
-  const krsGradeWatch = useWatch({ control, name: "krsGrade" });
+  const { fields } = useFieldArray({ control, name: "khsGrade" })
+  const krsGradeWatch = useWatch({ control, name: "khsGrade" });
 
   // const action = type === "create" ? createPosition : updatePosition;
-  const [state, formAction] = useActionState(updateKrsGrade, { success: false, error: false, message: "" });
+  const [state, formAction] = useActionState(updateKhsGrade, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -64,7 +64,7 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
 
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <div className="visible w-full">
+          <div className="hidden">
             <InputField
               label="id"
               name="id"
@@ -103,20 +103,20 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
               <div className="hidden">
                 <InputField
                   label={`ID Komponen ${field.assessmentDetail?.grade?.name || ""}`}
-                  name={`krsGrade.${index}.id`}
+                  name={`khsGrade.${index}.id`}
                   defaultValue={field.id}
                   register={register}
-                  error={errors?.krsGrade?.[index]?.id}
+                  error={errors?.khsGrade?.[index]?.id}
                   inputProps={{ readOnly: true }}
                 />
               </div>
               <div className="w-3/6">
                 <InputField
                   label={`Nilai ${field.assessmentDetail?.grade?.name || ""}`}
-                  name={`krsGrade.${index}.score`}
+                  name={`khsGrade.${index}.score`}
                   register={register}
                   inputProps={{ inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
-                  error={errors?.krsGrade?.[index]?.score}
+                  error={errors?.khsGrade?.[index]?.score}
                   required
                 />
               </div>
@@ -124,10 +124,10 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
                 <InputField
                   label="Persentase"
                   type="number"
-                  name={`krsGrade.${index}.percentage`}
+                  name={`khsGrade.${index}.percentage`}
                   register={register}
                   inputProps={{ readOnly: true }}
-                  error={errors?.krsGrade?.[index]?.percentage}
+                  error={errors?.khsGrade?.[index]?.percentage}
                   required
                 />
               </div>

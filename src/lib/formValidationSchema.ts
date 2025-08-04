@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { optional, z } from "zod";
 
 export const permissionSchema = z.object({
   id: z.coerce.number().optional(),
@@ -410,18 +410,18 @@ export const presenceAllSchema = z.object({
 
 export type PresenceAllInputs = z.infer<typeof presenceAllSchema>;
 
-export const krsGradeSchema = z.object({
+export const khsGradeSchema = z.object({
   id: z.string().optional(),
   studentName: z.string().optional(),
   studentNIM: z.string().optional(),
   finalScore: z.coerce.number().min(0, { message: "Nilai akhir harus diisi" }),
   gradeLetter: z.string().optional(),
   weight: z.coerce.number().optional(),
-  krsGrade: z.array(
+  khsGrade: z.array(
     z.object({
       id: z.string().min(1, { message: "Krs Grade ID tidak ditemukan" }),
       assessmentDetailId: z.string().optional(),
-      krsDetailId: z.string().optional(),
+      khsDetailId: z.string().optional(),
       assessmentDetail: z.object({
         id: z.string().optional(),
         grade: z.object({
@@ -435,4 +435,40 @@ export const krsGradeSchema = z.object({
   )
 })
 
-export type KrsGradeInputs = z.infer<typeof krsGradeSchema>;
+export type KhsGradeInputs = z.infer<typeof khsGradeSchema>;
+
+export const RplSchema = z.object({
+  id: z.string().optional(),
+  studentId: z.string().optional(),
+  periodId: z.string().optional(),
+  khsDetail: z.array(
+    z.object({
+      id: z.string().min(1, { message: "komponen nilai harus diisi" }),
+      gradeLetter: z.string().optional(),
+      weight: z.coerce.number().min(0, { message: "Nilai harus diisi" }),
+    })
+  ).min(1, "Pilih minimal satu mata kuliah")
+  .superRefine((components, ctx) => {
+      // Cek duplikat ID
+      const seen = new Map<string, number[]>();
+      components.forEach((c, index) => {
+        if (!seen.has(c.id)) {
+          seen.set(c.id, []);
+        }
+        seen.get(c.id)!.push(index);
+      });
+
+      for (const [, indices] of seen.entries()) {
+        if (indices.length > 1) {
+          indices.forEach((i) => {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Mata kuliah tidak boleh duplikat",
+              path: [i, "id"],
+            });
+          });
+        }
+      }
+    })
+});
+export type RplInputs = z.infer<typeof RplSchema>

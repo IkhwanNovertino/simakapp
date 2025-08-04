@@ -42,7 +42,7 @@ const KRSDetailPage = async (
 
   const dataKRS = {
     ...dataKRSRaw,
-    ipk: dataKRSRaw?.ipk ? parseFloat(dataKRSRaw.ipk.toString()) : 0,
+    ips: dataKRSRaw?.ips ? parseFloat(dataKRSRaw.ips.toString()) : 0,
     krsDetail: dataKRSRaw?.krsDetail.map((item: any) => (
       {
         ...item,
@@ -70,8 +70,8 @@ const KRSDetailPage = async (
     student: dataKRS?.student,
     krsDetail: dataKRS?.krsDetail || [],
     semester: dataKRS?.reregister?.period?.semesterType,
-    sisaSKS: parseInt(dataKRS?.maxSks.slice(-2)) - totalSKS,
-    maxSKS: parseInt(dataKRS?.maxSks.slice(-2)),
+    sisaSKS: dataKRS?.maxSks - totalSKS,
+    maxSKS: dataKRS?.maxSks,
   }
 
   const columns = [
@@ -180,7 +180,7 @@ const KRSDetailPage = async (
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="basis-16">IPK</span>
                 <span>:</span>
-                <span>{dataKRS?.ipk?.toString() ?? 0}</span>
+                <span>{dataKRS?.ips?.toString() ?? 0}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="basis-16">Max SKS</span>

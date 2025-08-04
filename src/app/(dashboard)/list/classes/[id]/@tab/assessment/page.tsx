@@ -54,7 +54,13 @@ const ClassSingleTabAssessmentPage = async (
         id: id,
       },
       select: {
-        academicClassDetail: true,
+        academicClassDetail: {
+          include: {
+            student: {
+              select: { id: true, name: true, nim: true }
+            },
+          },
+        },
         course: {
           include: {
             assessment: {
@@ -74,38 +80,35 @@ const ClassSingleTabAssessmentPage = async (
       }
     });
 
+
+
     const enrolledStudents = academicClass?.academicClassDetail.map((detail: AcademicClassDetail) => detail.studentId) || [];
     const assessmentDetails = academicClass?.course.assessment?.assessmentDetail || [];
-    const students = await prisma.krsDetail.findMany({
+    const students = await prisma.khsDetail.findMany({
       where: {
         courseId: academicClass?.course?.id,
-        krs: {
+        khs: {
           student: {
-            id: {
-              in: enrolledStudents,
-            }
+            id: { in: enrolledStudents },
           },
-          reregister: {
-            periodId: academicClass?.periodId,
-          }
+          periodId: academicClass?.periodId,
         },
-        ...query,
       },
       include: {
-        krs: {
+        khs: {
           include: {
             student: {
-              select: { id: true, name: true, nim: true }
+              select: { id: true, name: true, nim: true },
             },
-          }
+          },
         },
-        krsGrade: {
+        khsGrade: {
           include: {
             assessmentDetail: {
               include: {
                 grade: true,
               },
-            }
+            },
           },
           orderBy: {
             assessmentDetail: { seq_number: 'desc' }
@@ -114,7 +117,7 @@ const ClassSingleTabAssessmentPage = async (
       },
       orderBy: [
         {
-          krs: {
+          khs: {
             student: {
               nim: 'asc'
             }
@@ -123,22 +126,23 @@ const ClassSingleTabAssessmentPage = async (
       ]
     });
 
-    const count = await prisma.krsDetail.count({
+    const count = await prisma.khsDetail.count({
       where: {
         courseId: academicClass?.course?.id,
-        krs: {
+        khs: {
           student: {
             id: {
               in: enrolledStudents,
             }
           },
-          reregister: {
-            periodId: academicClass?.periodId,
-          }
+          periodId: academicClass?.periodId,
         },
-        ...query,
       },
     })
+
+    console.log('DATA PENILAIAN', students);
+
+
 
     const dataTransformed = [];
     for (const items of students) {
@@ -147,13 +151,13 @@ const ClassSingleTabAssessmentPage = async (
           ...items,
           finalScore: parseFloat(items.finalScore),
           weight: parseFloat(items.weight),
-          krs: {
-            ...items.krs,
-            ipk: parseFloat(items.krs.ipk)
+          khs: {
+            ...items.khs,
+            ips: parseFloat(items.khs.ips)
           },
-        }
-      )
-    }
+        },
+      );
+    };
     return [dataTransformed, assessmentDetails, count];
   })
 
@@ -204,13 +208,13 @@ const ClassSingleTabAssessmentPage = async (
       >
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
           <div className="flex flex-col col-span-5 items-start">
-            <h3 className="text-sm font-semibold">{item.krs.student.name}</h3>
-            <p className="text-xs text-gray-600">{item.krs.student.nim}</p>
+            <h3 className="text-sm font-semibold">{item.khs.student.name}</h3>
+            <p className="text-xs text-gray-600">{item.khs.student.nim}</p>
           </div>
           <div className="flex items-center justify-end gap-2 md:hidden ">
           </div>
         </td>
-        {item.krsGrade.map((grade: any) => (
+        {item.khsGrade.map((grade: any) => (
           <td key={grade.id} className="hidden md:table-cell w-24">{grade.score || 0}</td>
         ))}
         <td className="hidden md:table-cell w-24">{item.finalScore || 0}</td>
@@ -219,7 +223,7 @@ const ClassSingleTabAssessmentPage = async (
         <td className="hidden md:table-cell text-xs">
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-2">
-              <FormContainer table="krsGrade" type="update" id={item.id} data={item} />
+              <FormContainer table="khsGrade" type="update" id={item.id} data={item} />
             </div>
           </div>
         </td>

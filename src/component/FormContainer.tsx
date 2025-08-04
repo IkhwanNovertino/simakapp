@@ -381,6 +381,34 @@ const FormContainer = async (
 
         relatedData = { period: periodScheduleDetail, time: time, academicClass: classSchedule };
         break;
+      case "rpl":
+        const curriculum = await prisma.curriculumDetail.findMany({
+          where: {
+            curriculum: {
+              isActive: true,
+            },
+          },
+          include: {
+            course: {
+              include: {
+                major: true,
+              },
+            },
+            curriculum: true,
+          },
+          orderBy: [
+            { curriculum: { major: { name: "asc" } } },
+            { semester: "asc" },
+          ],
+        });
+
+        const periodAcademic = await prisma.period.findFirst({
+          where: {
+            isActive: true,
+          }
+        })
+        relatedData = { period: periodAcademic, courses: curriculum }
+        break;
       default:
         break;
     }
