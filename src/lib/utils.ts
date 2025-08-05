@@ -1,7 +1,6 @@
 
 export const calculatingSKSLimits = async (ipk: number) => {
-  // const ipkFloat = Number(ipk);
-  // 2.35
+
   if (ipk < 1.5) {
     return "12"
   } else if (ipk >= 1.5 && ipk <= 1.99) {
