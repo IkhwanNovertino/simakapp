@@ -1622,7 +1622,7 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
           });
 
           ips = dataKHS?.ips;
-          maxSKS = dataKHS?.maxSks
+          maxSKS = dataKHS?.maxSks;
         }
 
         const createkrs = await tx.krs.create({
@@ -1640,6 +1640,7 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
             krsId: createkrs.id,
             studentId: validation?.data?.studentId,
             periodId: createReregisterDetail.reregister.period.id,
+            semester: createReregisterDetail.semester,
           }
         })
       }
@@ -1797,6 +1798,7 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
             krsId: createkrs.id,
             studentId: validation?.data?.studentId,
             periodId: dataReregisterDetail.reregister.period.id,
+            semester: dataReregisterDetail.semester
           }
         })
         console.log('UPDATEREREGISTERDETAIL: create data khs');

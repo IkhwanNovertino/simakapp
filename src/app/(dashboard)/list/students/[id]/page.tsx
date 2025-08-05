@@ -37,7 +37,20 @@ const SingleStudentPage = async (
     distinct: ["courseId"],
   });
 
-  console.log('COURSE COMPLETE', coursesCompleted);
+  const courseRPL = await prisma.khsDetail.findMany({
+    where: {
+      khs: {
+        studentId: id,
+        isRPL: true,
+      },
+      isLatest: true,
+    },
+    include: {
+      course: {
+        select: { code: true, name: true }
+      },
+    },
+  })
 
   if (!dataStudent) {
     notFound()
@@ -171,7 +184,10 @@ const SingleStudentPage = async (
           <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start ">
             <ul className="flex flex-col  mt-4">
               {coursesCompleted.map((items: any) => (
-                <li className="p-4 text-sm border-b border-gray-200">{items.course.name}</li>
+                <li className="p-4 text-sm border-b border-gray-200" key={items.course.code}>
+                  <span className="block text-xs font-semibold mb-1">{items.course.code}</span>
+                  {items.course.name}
+                </li>
               ))}
             </ul>
           </div>
@@ -183,6 +199,15 @@ const SingleStudentPage = async (
             <div className="flex items-center gap-4 self-end">
               <FormContainer table="rpl" type="create" data={dataStudent} />
             </div>
+          </div>
+          <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start ">
+            <ul className="flex flex-col  mt-4">
+              {courseRPL.map((items: any) => (
+                <li className="p-4 text-sm border-b border-gray-200" key={items.course.code}>
+                  {items.course.name}
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
         {/* <Performance /> */}

@@ -1,9 +1,9 @@
-# Krs Grade Specifications
+# KHS Grade Specifications
 
 ## Translate
 
-- en: Krs Grade
-- id: Ketentuan Nilai Krs
+- en: Khs Grade
+- id: Ketentuan Nilai Khs
 
 ## Data Model and Form
 
@@ -11,7 +11,7 @@
   - String
   - PK
   - uuid
-- krsDetailId
+- khsDetailId
   - String?
   - FK
   - uuid

@@ -455,7 +455,7 @@ model KhsDetail {
   version       Int        @default(1)
   isLatest      Boolean    @default(true)
   validFrom     DateTime   @default(now())
-  valodTo       DateTime?
+  validTo       DateTime?
   predecessorId String?    @unique
   predecessor   KhsDetail? @relation("khsDetailHistory", fields: [predecessorId], references: [id], onDelete: Cascade)
   successor     KhsDetail? @relation("khsDetailHistory")

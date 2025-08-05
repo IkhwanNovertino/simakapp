@@ -26,16 +26,6 @@
   - default false
   - required
 
-- finalScore
-  - Decimal (2 digit dibelakang koma)?
-  - required
-- gradeLetter
-  - string [A, AB, B, BC, C, D, E]?
-  - required
-- weight
-  - Decimal (1 digit dibelakang koma) ?
-  - required
-
 ## Bussiness Rules
 
 - mata kuliah yang ditawarkan di KRS berasal dari curriculum detail. Namun, ketika menambahkan data ke KrsDetail yang diambil hanya courseId saja.
