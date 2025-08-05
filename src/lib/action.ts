@@ -1519,7 +1519,6 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
   }
 }
 
-// Apakah studentStatus di student model akan mengikuti semesterStatus di reregisterDetail model
 export const createReregisterDetail = async (state: stateType, data: FormData) => {
   try {
     const dataRaw = {
@@ -1900,6 +1899,7 @@ export const deleteReregisterDetail = async (state: stateType, data: FormData) =
   }
 };
 
+// Form Herregistrasi yang diisi oleh mahasiswa
 export const createReregisterStudent = async (state: stateType, data: ReregistrationStudentInputs) => {
   try {
     await prisma.$transaction([
