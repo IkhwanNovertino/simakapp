@@ -3,14 +3,9 @@ import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
-import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { ITEM_PER_PAGE, learningMethod } from "@/lib/setting";
-import { lecturerName } from "@/lib/utils";
-import { AcademicClass, AcademicClassDetail, Course, Lecturer, Presence, Prisma, Student, } from "@prisma/client";
-import { duration } from "moment";
-import Image from "next/image";
+import { AcademicClass, Course, Lecturer, Presence, Student, } from "@prisma/client";
 
 type PresenceDataType = Presence
   & {
@@ -29,7 +24,7 @@ const ClassSingleTabStudentPage = async (
   }
 ) => {
 
-  const { page, ...queryParams } = await searchParams;
+  const { page } = await searchParams;
   const p = page ? parseInt(page) : 1;
   const { id } = await params;
 

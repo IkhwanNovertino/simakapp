@@ -1,12 +1,8 @@
 
-import FormContainer from "@/component/FormContainer";
-import FormCourseKrs from "@/component/FormCourseKrs";
-import ModalAction from "@/component/ModalAction";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
-import { getSession } from "@/lib/session";
 import { calculatingSKSLimits } from "@/lib/utils";
-import { Course, KhsDetail, KhsGrade, KrsDetail, } from "@prisma/client";
+import { Course, KhsDetail } from "@prisma/client";
 import Image from "next/image";
 
 type KhsDetailDataType = KhsDetail & { course: Course };
@@ -15,7 +11,6 @@ const KHSDetailPage = async (
   { params }: { params: Promise<{ id: string }> }
 ) => {
   const { id } = await params;
-  const user = await getSession();
 
   const dataKhs = await prisma.khs.findUnique({
     where: {
@@ -50,55 +45,6 @@ const KHSDetailPage = async (
       weight: Number(items.weight),
     })),
   };
-
-  console.log('DATA KHS DI KHSDETAILPAGE', khs);
-
-
-  // const dataKRSRaw = await prisma.krs.findUnique({
-  //   where: {
-  //     id: id,
-  //   },
-  //   include: {
-  //     student: {
-  //       include: {
-  //         major: true,
-  //       }
-  //     },
-  //     reregister: {
-  //       include: {
-  //         period: true,
-  //       }
-  //     },
-  //     krsDetail: {
-  //       include: {
-  //         course: true,
-  //       }
-  //     },
-  //   }
-  // });
-
-
-  // const dataKRS = {
-  //   ...dataKRSRaw,
-  //   ips: dataKRSRaw?.ips ? parseFloat(dataKRSRaw.ips.toString()) : 0,
-  //   krsDetail: dataKRSRaw?.krsDetail.map((item: any) => (
-  //     {
-  //       ...item,
-  //       finalScore: item.finalScore ? parseFloat(item.finalScore.toString()) : 0,
-  //       weight: item.weight ? parseFloat(item.weight.toString()) : 0,
-  //     }
-  //   ))
-  // }
-
-  // const dataReregistrasi = await prisma.reregisterDetail.findUnique({
-  //   where: {
-  //     reregisterId_studentId: {
-  //       reregisterId: dataKRS.reregisterId,
-  //       studentId: dataKRS.studentId,
-  //     },
-  //   },
-  // });
-
   const totalSKS = khs?.khsDetail
     .map((item: any) => item.course.sks)
     .reduce((acc: any, init: any) => acc + init, 0);
@@ -107,15 +53,6 @@ const KHSDetailPage = async (
     .reduce((acc: any, init: any) => acc + init, 0);
   const resultIPK = Number(totalSKSxNAB / totalSKS).toFixed(2);
   const limitSKS = await calculatingSKSLimits(parseFloat(resultIPK));
-
-  // const dataPassToForm = {
-  //   id: dataKRS.id,
-  //   student: dataKRS?.student,
-  //   krsDetail: dataKRS?.krsDetail || [],
-  //   semester: dataKRS?.reregister?.period?.semesterType,
-  //   sisaSKS: dataKRS?.maxSks - totalSKS,
-  //   maxSKS: dataKRS?.maxSks,
-  // }
 
   const columns = [
     {
@@ -158,14 +95,6 @@ const KHSDetailPage = async (
             <h3 className="font-semibold md:font-normal">{item?.course?.name}</h3>
             <p className="text-xs text-gray-500 md:hidden">{item?.course?.sks} sks</p>
           </div>
-          {/* <div className="flex items-center justify-end gap-2 md:hidden ">
-            <ModalAction>
-              <div className="flex items-center gap-3">
-                {user?.roleType !== "STUDENT" && <FormCourseKrs id={item.id} isAcc={item.isAcc} />}
-                <FormContainer table="krsDetail" type="delete" id={item.id} />
-              </div>
-            </ModalAction>
-          </div> */}
         </td>
         <td className="hidden md:table-cell md:w-1/10">{item?.course?.sks}</td>
         <td className="hidden md:table-cell md:w-1/10">

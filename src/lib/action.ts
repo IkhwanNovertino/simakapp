@@ -19,8 +19,8 @@ import { v4 } from "uuid";
 import logger from "./logger";
 import { handlePrismaError } from "./errors/prismaError";
 import { AppError } from "./errors/appErrors";
-import { calculatingSKSLimits, getGradeLetter } from "./utils";
-import { addMinutes, addHours, addDays, isAfter } from "date-fns";
+import { getGradeLetter } from "./utils";
+import { addMinutes, addHours, isAfter } from "date-fns";
 import { importAssessment } from "./excel/importAssessment";
 
 type stateType = {
@@ -1620,8 +1620,8 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
             }
           });
 
-          ips = dataKHS?.ips;
-          maxSKS = dataKHS?.maxSks;
+          ips = dataKHS?.ips || 0;
+          maxSKS = dataKHS?.maxSks || 22;
         }
 
         const createkrs = await tx.krs.create({
@@ -1634,7 +1634,8 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
           }
         });
 
-        const createkhs = await tx.khs.create({
+        // createKHS
+        await tx.khs.create({
           data: {
             krsId: createkrs.id,
             studentId: validation?.data?.studentId,
@@ -1742,7 +1743,6 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
           }
         }
       });
-      console.log('UPDATEREREGISTERDETAIL: update data student reregister');
       await tx.student.update({
         where: {
           id: validation?.data.studentId
@@ -1751,10 +1751,6 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
           studentStatus: validation.data?.semesterStatus as StudentStatus,
         }
       });
-
-      console.log('UPDATEREREGISTERDETAIL: update data student');
-      
-      
       let ips: number = 0;
       let maxSKS: number = 0;
 
@@ -1777,11 +1773,9 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
               },
             }
           });
-          console.log('UPDATEREREGISTERDETAIL: get dataKHS');
-          ips = dataKHS?.ips;
-          maxSKS = dataKHS?.maxSks
+          ips = dataKHS?.ips || 0;
+          maxSKS = dataKHS?.maxSks || 22;
         }
-        console.log('UPDATEREREGISTERDETAIL: ingin menambahkan data krs');
         const createkrs = await tx.krs.create({
           data: {
             reregisterId: validation?.data?.reregisterId,
@@ -1791,8 +1785,8 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
             lecturerId: validation.data.lecturerId,
           }
         });
-        console.log('UPDATEREREGISTERDETAIL: create data krs');
-        const createkhs = await tx.khs.create({
+        // createKHS
+        await tx.khs.create({
           data: {
             krsId: createkrs.id,
             studentId: validation?.data?.studentId,
@@ -1800,54 +1794,8 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
             semester: dataReregisterDetail.semester
           }
         })
-        console.log('UPDATEREREGISTERDETAIL: create data khs');
       }
     })
-
-    // if (validation.data?.semesterStatus === "AKTIF") {
-    //   // jika ada data khs, maka ipk diambil dari studentId di KHS 
-    //   const ipkNum = Number(parseFloat("3.25").toFixed(2));
-    //   const maxSKS = await calculatingSKSLimits(ipkNum);
-    //   await prisma.krs.create({
-    //     data: {
-    //       reregisterId: validation?.data?.reregisterId,
-    //       studentId: validation?.data?.studentId,
-    //       ipk: ipkNum,
-    //       maxSks: maxSKS,
-    //       lecturerId: validation.data.lecturerId,
-    //     }
-    //   })
-    // }
-
-    // await prisma.$transaction([
-    //   prisma.student.update({
-    //     where: {
-    //       id: validation?.data.studentId
-    //     },
-    //     data: {
-    //       studentStatus: validation?.data?.semesterStatus,
-    //     }
-    //   }),
-    //   prisma.reregisterDetail.update({
-    //     where: {
-    //       reregisterId_studentId: {
-    //         reregisterId: validation?.data.reregisterId,
-    //         studentId: validation?.data.studentId,
-    //       }
-    //     },
-    //     data: {
-    //       lecturerId: validation?.data.lecturerId,
-    //       campusType: validation?.data?.campusType || "BJB" as CampusType,
-    //       semesterStatus: validation?.data?.semesterStatus as SemesterStatus,
-    //       semester: parseInt(validation?.data?.semester),
-    //       nominal: validation?.data.nominal,
-    //       paymentStatus: validation?.data?.paymentStatus as PaymentStatus,
-    //       paymentReceiptFile: validation?.data?.paymentReceiptFile,
-    //       paymentDescription: validation?.data?.paymentDescription,
-    //     },
-    //   })
-    // ])
-    
     return { success: true, error: false, message: "Data berhasil diubah" };
   } catch (err: any) {
     try {
@@ -2333,11 +2281,6 @@ async function seedKhsDetailStudent({ krsDetailId }: { krsDetailId: string }) {
   if (!krsDetail) {
     throw new AppError("KRS Detail tidak ditemukan", 404);
   }
-
-  const KhsDetail = {
-    courseId: krsDetail.courseId,
-    khsGrade: [],
-  }
   
   const dataKrsGradeStudent = krsDetail.course.assessment?.assessmentDetail.map((assessmentDetail: any) => (
     {
@@ -2372,7 +2315,7 @@ export const updateKrsDetail = async (state: stateType, data: FormData) => {
       });
 
       // menambahkan data khsDetail & khsGrade
-      const khsDetail = await prisma.khsDetail.create({
+      await prisma.khsDetail.create({
         data: {
           khsId: khs.id,
           courseId: krsDetailUpdate.courseId,
@@ -3192,7 +3135,7 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
     const khsDetailIdFromRowsData = result.map((items: any) => items.uids);
 
     await prisma.$transaction(async (prisma: any) => {
-      const khsDetails = await prisma.khsDetail.findMany({
+      await prisma.khsDetail.findMany({
         where: {
           id: {
             in: khsDetailIdFromRowsData,
@@ -3210,7 +3153,7 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
           },
         },
       });
-      for (const [key, value] of Object.entries(result)) {
+      for (const [, value] of Object.entries(result)) {
         const weight = getGradeLetter(value.finalScore);
         await prisma.khsDetail.update({
           where: {
@@ -3238,7 +3181,6 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
 
         for (const items of khsGradeByKhsDetailId) {
           const gradeName = items.assessmentDetail.grade.name ?? "";
-          console.log('GRADENAME', gradeName);
           
           const newScore = value[gradeName];
 
@@ -3286,7 +3228,8 @@ export const createRplTranscript = async (state: stateType, data: RplInputs) => 
       });
 
       for (const items of data.khsDetail) {
-        const dataKhsDetail = await prisma.khsDetail.create({
+        // createKHSDetail
+        await prisma.khsDetail.create({
           data: {
             khsId: dataKhs.id,
             courseId: items.id,

@@ -1,5 +1,6 @@
 import { exportAssessmentGrade } from "@/lib/excel/exportAssessmentGrade";
 import { exportAssessmentTemplate } from "@/lib/excel/exportAssessmentTemplate";
+import logger from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -35,6 +36,7 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch (err) {
+    logger.error(err)
     return new NextResponse('Someting wrong!', { status: 400 });
   }
   

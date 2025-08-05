@@ -7,7 +7,6 @@ import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
 import { AcademicClass, AcademicClassDetail, Course, Lecturer, Period, PresenceDetail, Prisma } from "@prisma/client";
-import Image from "next/image";
 import { redirect } from "next/navigation";
 
 type AcademicClassDetailDataType = AcademicClassDetail
@@ -58,7 +57,7 @@ const PresenceListPage = async (
     default:
       break;
   }
-  const [dataAcademicClass, dataPresence, dataTable, count] = await prisma.$transaction(async (tx: any) => {
+  const [dataTable, count] = await prisma.$transaction(async (tx: any) => {
     const dataAcademicClass = await tx.academicClassDetail.findMany({
       where: query,
       include: {
@@ -103,11 +102,8 @@ const PresenceListPage = async (
       }
     })
 
-    return [dataAcademicClass, dataPresence, dataTable, count];
+    return [dataTable, count];
   });
-  console.log(dataAcademicClass);
-  console.log(dataPresence);
-  console.log(dataTable);
 
   const columns = [
     {

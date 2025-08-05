@@ -5,19 +5,8 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
-import { ITEM_PER_PAGE } from "@/lib/setting";
-import { lecturerName } from "@/lib/utils";
-import { AcademicClass, AcademicClassDetail, AssessmentDetail, Course, GradeComponent, Lecturer, Prisma, Student, } from "@prisma/client";
+import { AcademicClassDetail, Prisma } from "@prisma/client";
 
-type AcademicClassDetailDataType = AcademicClassDetail
-  & {
-    academicClass: AcademicClass
-    & { lecturer: Lecturer }
-    & { course: Course }
-  }
-  & { student: Student }
-
-// Tidak bisa menggunakan useState karena disini sudah menggunakan server component.
 const ClassSingleTabAssessmentPage = async (
   {
     searchParams, params
@@ -200,7 +189,6 @@ const ClassSingleTabAssessmentPage = async (
   ];
 
   const renderRow = (item: any) => {
-
     return (
       <tr
         key={item.id}

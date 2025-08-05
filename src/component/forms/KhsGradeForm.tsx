@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import InputField from "../InputField";
 import { useRouter } from "next/navigation";
@@ -13,9 +13,6 @@ import { updateKhsGrade } from "@/lib/action";
 
 
 const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
-
-  console.log('KRSGRADEFORM', data);
-
   const {
     register,
     handleSubmit,
@@ -46,7 +43,7 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
 
   const router = useRouter();
   useEffect(() => {
-    let finalscore = getFinalScore(krsGradeWatch);
+    const finalscore = getFinalScore(krsGradeWatch);
 
     setValue("finalScore", finalscore.finalScore);
     setValue("gradeLetter", finalscore.gradeLetter);

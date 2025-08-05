@@ -1,13 +1,6 @@
-
-import FormContainer from "@/component/FormContainer";
-import Pagination from "@/component/Pagination";
-import Table from "@/component/Table";
-import TableSearch from "@/component/TableSearch";
 import TabNavigation from "@/component/TabNavigationCourse";
 import { prisma } from "@/lib/prisma";
-import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { AcademicClass, AcademicClassDetail, Course, Lecturer, Prisma, Student, } from "@prisma/client";
 
 const ClassDetailLayout = async (
   {
@@ -20,7 +13,7 @@ const ClassDetailLayout = async (
 ) => {
 
   const { id } = await params;
-  const [dataAcademicClass, data, count] = await prisma.$transaction([
+  const [dataAcademicClass] = await prisma.$transaction([
     prisma.academicClass.findFirst({
       where: {
         id: id,

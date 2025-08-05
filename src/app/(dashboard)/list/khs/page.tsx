@@ -1,12 +1,10 @@
-import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { canRoleDeleteData, canRoleViewData } from "@/lib/dal";
+import { canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Khs, Period, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -18,7 +16,6 @@ const KHSListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
   const user = await getSession();
-  const canDeleteData = await canRoleDeleteData("khs");
   const canViewData = await canRoleViewData("khs");
 
   if (!canViewData) {
@@ -172,9 +169,6 @@ const KHSListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
-              <Image src="/create.png" alt="" width={14} height={14} />
-            </button> */}
           </div>
         </div>
       </div>

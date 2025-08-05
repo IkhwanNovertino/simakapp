@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 import { FieldError, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { CurriculumDetailInputs, curriculumDetailSchema } from "@/lib/formValidationSchema";

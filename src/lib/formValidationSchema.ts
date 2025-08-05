@@ -1,4 +1,4 @@
-import { optional, z } from "zod";
+import { z } from "zod";
 
 export const permissionSchema = z.object({
   id: z.coerce.number().optional(),

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useActionState, useEffect, useRef } from "react";
+import { useActionState, useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { createReregisterDetail, updateReregisterDetail } from "@/lib/action";

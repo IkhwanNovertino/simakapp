@@ -1,14 +1,14 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { StudentInputs, studentSchema } from "@/lib/formValidationSchema";
 import { createStudent, updateStudent } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { gender, religion, status } from "@/lib/setting";
+import { religion, status } from "@/lib/setting";
 import Image from "next/image";
 import { StatusRegistrasi } from "@/lib/data";
 import moment from "moment";

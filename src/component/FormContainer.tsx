@@ -2,7 +2,6 @@ import { prisma } from "@/lib/prisma";
 import FormModal from "./FormModal";
 import { getSession } from "@/lib/session";
 import { Course, CurriculumDetail } from "@prisma/client";
-import { ReactNode } from "react";
 import { FormModalProps } from "@/lib/datatype";
 
 const FormContainer = async (

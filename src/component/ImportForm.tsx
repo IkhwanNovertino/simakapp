@@ -17,7 +17,7 @@ const ImportForm = () => {
       router.refresh();
       setOpen(false);
     }
-  }, [state, setOpen]);
+  }, [state, setOpen, router]);
   return (
     <>
       <button

@@ -55,7 +55,7 @@ const PresenceStatus = ({ role, data }: PresenceStatusProps) => {
       toast.error(state?.message.toString());
     }
     router.refresh();
-  }, [state, setOpen,])
+  }, [state, setOpen, router])
 
   return (
     <div className="relative">

@@ -282,7 +282,7 @@ export async function exportAssessmentTemplate(academicClassId: string) {
       items.khs.student.nim,
       items.khs.student.name.toUpperCase(),
       ...assessmentDetails.map((assessmentDetail: any) => {
-        const grade = items.khsGrade.find((g: any) => g.assessmentDetailId === assessmentDetail.id);
+        items.khsGrade.find((g: any) => g.assessmentDetailId === assessmentDetail.id);
         return 0;
       }),
       0,

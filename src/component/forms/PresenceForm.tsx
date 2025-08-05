@@ -1,11 +1,11 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dispatch, SetStateAction, startTransition, useActionState, useEffect } from "react";
+import { startTransition, useActionState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { PositionInputs, positionSchema, PresenceInputs, presenceSchema } from "@/lib/formValidationSchema";
-import { createPosition, createPresence, updatePosition, updatePresence } from "@/lib/action";
+import { PresenceInputs, presenceSchema } from "@/lib/formValidationSchema";
+import { createPresence, updatePresence } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";

@@ -6,7 +6,6 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { lecturerName } from "@/lib/utils";
 import { AcademicClass, AcademicClassDetail, Course, Lecturer, Prisma, Student, } from "@prisma/client";
 
 type AcademicClassDetailDataType = AcademicClassDetail
