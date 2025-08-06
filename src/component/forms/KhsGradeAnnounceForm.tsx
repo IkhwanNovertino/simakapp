@@ -1,6 +1,6 @@
 'use client';
 
-import { importExcelFile, updateKhsGradeAnnouncement } from "@/lib/action";
+import { updateKhsGradeAnnouncement } from "@/lib/action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";

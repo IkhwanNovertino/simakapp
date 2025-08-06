@@ -1,7 +1,6 @@
 
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
-import { calculatingSKSLimits } from "@/lib/utils";
 import { AnnouncementKhs, Course, KhsDetail } from "@prisma/client";
 import Image from "next/image";
 

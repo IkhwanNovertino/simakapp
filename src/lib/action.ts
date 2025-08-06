@@ -3121,7 +3121,6 @@ export const updateKhsGrade = async (state: stateType, data: KhsGradeInputs) => 
 }
 export const updateKhsGradeAnnouncement = async (state: stateType, data: FormData) => {
   try {
-    const courseId = data.get("courseId") as string;
     const khsDetailId = data.get("khsDetailId") as string;
     const arrKhsDetailId = khsDetailId.split(",");
     console.log(arrKhsDetailId);
