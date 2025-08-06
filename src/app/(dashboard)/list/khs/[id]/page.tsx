@@ -2,7 +2,7 @@
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { calculatingSKSLimits } from "@/lib/utils";
-import { Course, KhsDetail } from "@prisma/client";
+import { AnnouncementKhs, Course, KhsDetail } from "@prisma/client";
 import Image from "next/image";
 
 type KhsDetailDataType = KhsDetail & { course: Course };
@@ -36,23 +36,65 @@ const KHSDetailPage = async (
     }
   })
 
-  const khs = {
-    ...dataKhs,
-    ips: Number(dataKhs?.ips),
-    khsDetail: dataKhs.khsDetail.map((items: KhsDetail) => ({
-      ...items,
-      finalScore: Number(items.finalScore),
-      weight: Number(items.weight),
-    })),
-  };
-  const totalSKS = khs?.khsDetail
-    .map((item: any) => item.course.sks)
-    .reduce((acc: any, init: any) => acc + init, 0);
-  const totalSKSxNAB = khs?.khsDetail
-    .map((item: any) => item.course.sks * item.weight)
-    .reduce((acc: any, init: any) => acc + init, 0);
-  const resultIPK = Number(totalSKSxNAB / totalSKS).toFixed(2);
-  const limitSKS = await calculatingSKSLimits(parseFloat(resultIPK));
+  const cekStatusAnnouncement = dataKhs.khsDetail.filter((item: any) => item.status === AnnouncementKhs.DRAFT);
+
+  let khs;
+  let totalSKS;
+  let totalSKSxNAB;
+  let limitSKS;
+  // const khs = {
+  //   ...dataKhs,
+  //   ips: Number(dataKhs?.ips),
+  //   khsDetail: dataKhs.khsDetail.map((items: KhsDetail) => ({
+  //     ...items,
+  //     finalScore: Number(items.finalScore),
+  //     weight: Number(items.weight),
+  //   })),
+  // };
+  // const totalSKS = khs?.khsDetail
+  //   .map((item: any) => item.course.sks)
+  //   .reduce((acc: any, init: any) => acc + init, 0);
+  // const totalSKSxNAB = khs?.khsDetail
+  //   .map((item: any) => item.course.sks * item.weight)
+  //   .reduce((acc: any, init: any) => acc + init, 0);
+  // const resultIPK = Number(totalSKSxNAB / totalSKS).toFixed(2);
+  // const limitSKS = await calculatingSKSLimits(parseFloat(resultIPK));
+
+  if (cekStatusAnnouncement.length === 0) {
+    khs = {
+      ...dataKhs,
+      ips: Number(dataKhs?.ips),
+      khsDetail: dataKhs.khsDetail.map((items: KhsDetail) => ({
+        ...items,
+        finalScore: Number(items.finalScore),
+        weight: Number(items.weight),
+      })),
+    };
+    totalSKS = khs?.khsDetail
+      .map((item: any) => item.course.sks)
+      .reduce((acc: any, init: any) => acc + init, 0);
+    totalSKSxNAB = khs?.khsDetail
+      .map((item: any) => item.course.sks * item.weight)
+      .reduce((acc: any, init: any) => acc + init, 0);
+    // ipk = Number(totalSKSxNAB / totalSKS).toFixed(2);
+    limitSKS = `${dataKhs.maxSks - 1} - ${dataKhs.maxSks}`;
+  } else {
+    khs = {
+      ...dataKhs,
+      ips: 0,
+      khsDetail: dataKhs.khsDetail.map((items: KhsDetail) => ({
+        ...items,
+        gradeLetter: "E",
+        finalScore: 0,
+        weight: 0,
+      })),
+    };
+    totalSKS = khs?.khsDetail
+      .map((item: any) => item.course.sks)
+      .reduce((acc: any, init: any) => acc + init, 0);
+    totalSKSxNAB = 0;
+    limitSKS = 0
+  }
 
   const columns = [
     {
@@ -176,7 +218,7 @@ const KHSDetailPage = async (
             </div>
             <div className="flex items-center p-2 mx-2 justify-start gap-8">
               <h1 className="text-sm font-bold md:w-40">IPK</h1>
-              <h3 className="text-sm font-medium">{resultIPK}</h3>
+              <h3 className="text-sm font-medium">{khs.ips}</h3>
             </div>
             <div className="flex items-center p-2 mx-2 justify-start gap-8">
               <h1 className="text-sm font-bold md:w-40">max. SKS</h1>

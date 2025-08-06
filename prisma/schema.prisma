@@ -442,14 +442,15 @@ model Khs {
 }
 
 model KhsDetail {
-  id          String  @id @default(uuid())
+  id          String          @id @default(uuid())
   khsId       String
-  khs         Khs     @relation(fields: [khsId], references: [id], onDelete: Cascade)
+  khs         Khs             @relation(fields: [khsId], references: [id], onDelete: Cascade)
   courseId    String
-  course      Course  @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  finalScore  Decimal @default(0) @db.Decimal(4, 2)
-  weight      Decimal @default(0) @db.Decimal(2, 1)
-  gradeLetter String  @default("E")
+  course      Course          @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  finalScore  Decimal         @default(0) @db.Decimal(4, 2)
+  weight      Decimal         @default(0) @db.Decimal(2, 1)
+  gradeLetter String          @default("E")
+  status      AnnouncementKhs @default(DRAFT)
 
   // data versioning untuk revisi
   version       Int        @default(1)
@@ -475,6 +476,11 @@ model KhsGrade {
   score              Int              @default(0)
 
   @@map("sb25_khs_grades")
+}
+
+enum AnnouncementKhs {
+  DRAFT
+  ANNOUNCEMENT
 }
 
 enum PresenceStatus {

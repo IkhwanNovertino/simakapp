@@ -36,6 +36,7 @@ export interface FormModalProps {
   | "presenceAll";
 
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon";
+  label?: string,
   data?: any;
   id?: any;
 }

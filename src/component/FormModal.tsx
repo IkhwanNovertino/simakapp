@@ -355,7 +355,7 @@ const namaTabelMap = {
   presenceAll: "presensi",
 }
 
-const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
+const FormModal = ({ table, type, label, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
   const size = type === "create" || type === "createMany" ? "w-8 h-8" : "w-7 h-7";
   const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary")
     || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-purple-500/60")
@@ -401,7 +401,7 @@ const FormModal = ({ table, type, data, id, relatedData }: FormModalProps & { re
         className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
         onClick={() => setOpen(true)}
       >
-        <Image src={`/icon/${icon}.svg`} alt={`icon-${icon}`} width={20} height={20} />
+        <Image src={`/icon/${icon}.svg`} alt={`icon-${icon}`} width={20} height={20} />  {label}
       </button>
 
       {open && (

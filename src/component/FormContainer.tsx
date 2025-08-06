@@ -5,7 +5,7 @@ import { Course, CurriculumDetail } from "@prisma/client";
 import { FormModalProps } from "@/lib/datatype";
 
 const FormContainer = async (
-  { table, type, data, id }: FormModalProps
+  { table, type, label, data, id }: FormModalProps
 ) => {
   let relatedData = {};
   if (type !== "delete") {
@@ -415,7 +415,7 @@ const FormContainer = async (
 
   return (
     <div>
-      <FormModal table={table} type={type} data={data} id={id} relatedData={relatedData} />
+      <FormModal table={table} type={type} label={label} data={data} id={id} relatedData={relatedData} />
     </div>
   )
 }

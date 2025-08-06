@@ -12,14 +12,14 @@ import {
   RoomInputs, RplInputs, ScheduleDetailInputs, ScheduleInputs, studentSchema, TimeInputs, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { CampusType, Gender, PaymentStatus, Religion, SemesterStatus, StudentStatus, StudyPlanStatus } from "@prisma/client";
+import { AnnouncementKhs, CampusType, Gender, PaymentStatus, Religion, SemesterStatus, StudentStatus, StudyPlanStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
 import logger from "./logger";
 import { handlePrismaError } from "./errors/prismaError";
 import { AppError } from "./errors/appErrors";
-import { getGradeLetter } from "./utils";
+import { calculatingSKSLimits, getGradeLetter } from "./utils";
 import { addMinutes, addHours, isAfter } from "date-fns";
 import { importAssessment } from "./excel/importAssessment";
 
@@ -1610,7 +1610,7 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
           const lastPeriodSemester = currentPeriodSemester === "GANJIL" ? "GENAP" : "GANJIL";
           const lastPeriodYear = currentPeriodSemester === "GANJIL" ? currentPeriodYear : currentPeriodYear - 1;
 
-          const dataKHS = await prisma.khs.findUnique({
+          const dataKHS = await prisma.khs.findFirst({
             where: {
               studentId: validation.data.studentId,
               period: {
@@ -1620,7 +1620,7 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
             }
           });
 
-          ips = dataKHS?.ips || 0;
+          ips = Number(dataKHS?.ips) || 0;
           maxSKS = dataKHS?.maxSks || 22;
         }
 
@@ -1764,7 +1764,7 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
           const lastPeriodSemester = currentPeriodSemester === "GANJIL" ? "GENAP" : "GANJIL";
           const lastPeriodYear = currentPeriodSemester === "GANJIL" ? currentPeriodYear : currentPeriodYear - 1;
 
-          const dataKHS = await prisma.khs.findUnique({
+          const dataKHS = await prisma.khs.findFirst({
             where: {
               studentId: validation.data.studentId,
               period: {
@@ -1773,7 +1773,9 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
               },
             }
           });
-          ips = dataKHS?.ips || 0;
+          console.log('dataKHS', dataKHS);
+          
+          ips = Number(dataKHS?.ips) || 0;
           maxSKS = dataKHS?.maxSks || 22;
         }
         const createkrs = await tx.krs.create({
@@ -3103,6 +3105,73 @@ export const updateKhsGrade = async (state: stateType, data: KhsGradeInputs) => 
         }
       })
     }
+    
+    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateKhsGradeAnnouncement = async (state: stateType, data: FormData) => {
+  try {
+    const courseId = data.get("courseId") as string;
+    const khsDetailId = data.get("khsDetailId") as string;
+    const arrKhsDetailId = khsDetailId.split(",");
+    console.log(arrKhsDetailId);
+
+    await prisma.$transaction(async (prisma: any) => {
+      for (const items of arrKhsDetailId) {
+        const dataUpdate = await prisma.khsDetail.update({
+          where: {
+            id: items
+          },
+          data: {
+            status: AnnouncementKhs.ANNOUNCEMENT,
+          },
+        });
+        // console.log('finish update status Annnouncement');
+        
+        // dapatkan data KHS untuk menghitung jumlah SKS, jumlah SKSxNAB dan IPS
+        const khsDetailByKhsId = await prisma.khsDetail.findMany({
+          where: {
+            khsId: dataUpdate.khsId,
+            isLatest: true,
+          },
+          include: {
+            course: true
+          },
+        });
+        // console.log(`get data khsDetail By khsId`);
+        
+        const totalSKS = khsDetailByKhsId
+          .map((item: any) => item.course.sks)
+          .reduce((acc: any, init: any) => acc + init, 0);
+        const totalSKSxNAB = khsDetailByKhsId
+          .map((items: any) => items.course.sks * items.weight)
+          .reduce((acc: any, init: any) => acc + init, 0);
+        
+        const IPK = Number(totalSKSxNAB / totalSKS).toFixed(2) 
+        const maxSKS = await calculatingSKSLimits(parseFloat(IPK))
+
+        // updateIPK dan mxSKS di KHS
+        await prisma.khs.update({
+          where: {
+            id: dataUpdate.khsId,
+          },
+          data: {
+            ips: parseFloat(IPK),
+            maxSks: maxSKS,
+          }
+        })
+      }
+    })
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err) {

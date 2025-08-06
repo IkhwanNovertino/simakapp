@@ -1056,22 +1056,6 @@ async function main() {
   //       statusRegister: "BARU",
   //       studentStatus: StudentStatus.AKTIF,
   //       lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-  //       // reregisterDetail: {
-  //       //   create: {
-  //       //     reregisterId: herregistrasi.id,
-  //       //     semester: 1,
-  //       //     // semesterStatus: SemesterStatus.AKTIF,
-  //       //     lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-  //       //   }
-  //       // },
-  //       // krs: {
-  //       //   create: {
-  //       //     reregisterId: herregistrasi.id,
-  //       //     ipk: 0,
-  //       //     maxSks: 22,
-  //       //     lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-  //       //   }
-  //       // }
   //     }
   //   })
     
