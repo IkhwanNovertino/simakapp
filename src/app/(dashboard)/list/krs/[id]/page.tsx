@@ -3,6 +3,7 @@ import FormContainer from "@/component/FormContainer";
 import FormCourseKrs from "@/component/FormCourseKrs";
 import ModalAction from "@/component/ModalAction";
 import Table from "@/component/Table";
+import { krsOverride } from "@/lib/formValidationSchema";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { Course, KrsDetail, } from "@prisma/client";
@@ -36,9 +37,40 @@ const KRSDetailPage = async (
           course: true,
         }
       },
+      // krsOverride: true,
+    },
+  });
+  const KRSOverride = await prisma.krsOverride.findFirst({
+    where: {
+      krsId: id,
     }
   });
+  console.log(KRSOverride);
 
+  console.log('RESULT', dataKRSRaw);
+
+  let dataKrsOverridePassToForm;
+  if (KRSOverride.id) {
+    dataKrsOverridePassToForm = {
+      id: KRSOverride.id,
+      krsId: KRSOverride.krsId,
+      student: dataKRSRaw.student,
+      ips: Number(dataKRSRaw.ips),
+      maxSks: dataKRSRaw.maxSks,
+      ips_allowed: Number(KRSOverride.ips_allowed),
+      sks_allowed: KRSOverride.sks_allowed,
+    };
+  } else {
+    dataKrsOverridePassToForm = {
+      id: "",
+      krsId: id,
+      student: dataKRSRaw.student,
+      ips: Number(dataKRSRaw.ips),
+      maxSks: dataKRSRaw.maxSks,
+      ips_allowed: 0,
+      sks_allowed: 0,
+    };
+  }
 
   const dataKRS = {
     ...dataKRSRaw,
@@ -70,8 +102,8 @@ const KRSDetailPage = async (
     student: dataKRS?.student,
     krsDetail: dataKRS?.krsDetail || [],
     semester: dataKRS?.reregister?.period?.semesterType,
-    sisaSKS: dataKRS?.maxSks - totalSKS,
-    maxSKS: dataKRS?.maxSks,
+    sisaSKS: (KRSOverride?.sks_allowed || dataKRS?.maxSks) - totalSKS,
+    maxSKS: KRSOverride?.sks_allowed || dataKRS?.maxSks,
   }
 
   const columns = [
@@ -168,24 +200,24 @@ const KRSDetailPage = async (
             </header>
             <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="basis-16">Semester</span>
+                <span className="w-1/3">Semester</span>
                 <span>:</span>
                 <span>{dataReregistrasi.semester}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="basis-16">Thn. Akad</span>
+                <span className="w-1/3">Thn. Akad</span>
                 <span >:</span>
                 <span>{dataKRS.reregister?.period?.name}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="basis-16">IPK</span>
+                <span className="w-1/3">IPK</span>
                 <span>:</span>
                 <span>{dataKRS?.ips?.toString() ?? 0}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="basis-16">Max SKS</span>
+                <span className="w-1/3">Max.SKS/SKS diizinkan</span>
                 <span>:</span>
-                <span>{dataKRS.maxSks}</span>
+                <span>{dataKRS.maxSks}/ {KRSOverride?.sks_allowed ?? ""}</span>
               </div>
             </div>
           </div>
@@ -199,6 +231,7 @@ const KRSDetailPage = async (
             <h1 className="text-lg font-semibold">Kartu Rencana Studi</h1>
             <div className="flex items-center gap-4 self-end">
               <FormContainer type="create" table="krsDetail" data={dataPassToForm} />
+              {user?.roleType !== "STUDENT" && <FormContainer type="update" table="krsOverride" data={dataKrsOverridePassToForm} />}
             </div>
           </div>
         </div>

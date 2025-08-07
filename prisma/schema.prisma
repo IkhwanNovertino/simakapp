@@ -309,9 +309,21 @@ model Krs {
   isStatusForm StudyPlanStatus @default(DRAFT)
   krsDetail    KrsDetail[]
   khs          Khs?
+  KrsOverride  KrsOverride?
 
   @@unique([reregisterId, studentId])
   @@map("sb25_krs")
+}
+
+model KrsOverride {
+  id          String   @id @default(uuid())
+  krsId       String   @unique
+  krs         Krs      @relation(fields: [krsId], references: [id], onDelete: Cascade)
+  ips_allowed Decimal  @default(0) @db.Decimal(3, 2)
+  sks_allowed Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@map("sb25_krs_override")
 }
 
 model KrsDetail {

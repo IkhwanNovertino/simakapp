@@ -472,3 +472,12 @@ export const RplSchema = z.object({
     })
 });
 export type RplInputs = z.infer<typeof RplSchema>
+
+export const krsOverride = z.object({
+  id: z.string().optional(),
+  krsId: z.string().optional(),
+  ips_allowed: z.coerce.number().min(0, { message: "IP yang diizinkan harus diisi" }),
+  sks_allowed: z.coerce.number().min(0, { message: "IP yang diizinkan harus diisi" }),
+})
+
+export type KrsOverrideInputs = z.infer<typeof krsOverride>

@@ -28,7 +28,7 @@ const CurriculumForm = dynamic(() => import("./forms/CurriculumForm"), { loading
 const CurriculumDetailForm = dynamic(() => import("./forms/CurriculumDetailForm"), { loading: () => <h1>Loading...</h1> });
 const GradeForm = dynamic(() => import("./forms/GradeForm"), { loading: () => <h1>Loading...</h1> });
 const AssessmentForm = dynamic(() => import("./forms/AssessmentForm"), { loading: () => <h1>Loading...</h1> });
-const KrsForm = dynamic(() => import("./forms/KrsForm"), { loading: () => <h1>Loading...</h1> });
+const KrsOverrideForm = dynamic(() => import("./forms/KrsForm"), { loading: () => <h1>Loading...</h1> });
 const KrsDetailForm = dynamic(() => import("./forms/KrsDetailForm"), { loading: () => <h1>Loading...</h1> });
 const KhsGradeForm = dynamic(() => import("./forms/KhsGradeForm"), { loading: () => <h1>Loading...</h1> });
 const RplForm = dynamic(() => import("./forms/RplForm"), { loading: () => <h1>Loading...</h1> });
@@ -190,8 +190,8 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
-  krs: (setOpen, type, data, relatedData) =>
-    <KrsForm
+  krsOverride: (setOpen, type, data, relatedData) =>
+    <KrsOverrideForm
       setOpen={setOpen}
       type={type}
       data={data}
@@ -304,7 +304,7 @@ const deleteActionMap = {
   curriculumDetail: deleteCurriculumDetail,
   grade: deleteGrade,
   assessment: deleteAssessment,
-  krs: deleteKrsDetail, //Belum diubah
+  krsOverride: deleteKrsDetail, //Belum diubah
   krsDetail: deleteKrsDetail,
   khsGrade: deleteKrsDetail, //Belum diubah
   rpl: deleteKrsDetail, //Belum diubah
@@ -340,7 +340,7 @@ const namaTabelMap = {
   curriculumDetail: "",
   grade: "komponen nilai",
   assessment: "penilaian",
-  krs: "KRS",
+  krsOverride: "KRS Overriding",
   krsDetail: "mata kuliah di KRS",
   khsGrade: "nilai mata kuliah",
   rpl: "mata kuliah RPL",

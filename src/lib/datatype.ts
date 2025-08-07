@@ -22,7 +22,7 @@ export interface FormModalProps {
   | "curriculumDetail"
   | "grade"
   | "assessment"
-  | "krs"
+  | "krsOverride"
   | "krsDetail"
   | "khsGrade"
   | "rpl"

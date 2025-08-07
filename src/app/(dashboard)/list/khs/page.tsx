@@ -5,12 +5,12 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { Khs, Period, Prisma, Student } from "@prisma/client";
+import { Khs, KhsDetail, Period, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-type KhsDataType = Khs & { student: Student } & { period: Period };
+type KhsDataType = Khs & { student: Student } & { period: Period } & { khsDetail: KhsDetail[] };
 
 const KHSListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -75,9 +75,9 @@ const KHSListPage = async (
             major: true,
           }
         },
+        khsDetail: true,
       },
       orderBy: [
-
         {
           period: {
             year: "desc",
@@ -150,11 +150,13 @@ const KHSListPage = async (
         <td className="hidden md:table-cell">{item?.period?.name ?? ""}</td>
         <td>
           <div className="hidden md:flex items-center gap-2">
-            <Link href={`/list/khs/${item.id}`}>
-              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                <Image src="/icon/view.svg" alt="" width={20} height={20} />
-              </button>
-            </Link>
+            {item?.khsDetail.length > 0 && (
+              <Link href={`/list/khs/${item.id}`}>
+                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                </button>
+              </Link>
+            )}
           </div>
         </td >
       </tr >

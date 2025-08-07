@@ -6,7 +6,7 @@ import {
   AssessmentInputs,
   ClassInputs,
   CourseInKrsInputs,
-  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, KhsGradeInputs, lecturerSchema, MajorInputs,
+  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, KhsGradeInputs, KrsOverrideInputs, lecturerSchema, MajorInputs,
   OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, PresenceActivationInputs, PresenceAllInputs, PresenceInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, RplInputs, ScheduleDetailInputs, ScheduleInputs, studentSchema, TimeInputs, UserInputs
@@ -3309,6 +3309,32 @@ export const createRplTranscript = async (state: stateType, data: RplInputs) => 
     })
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const createKrsOverride = async (state: stateType, data: KrsOverrideInputs) => {
+  try {
+    console.log('RESULT', data);
+    await prisma.krsOverride.create({
+      data: {
+        krsId: data.id,
+        ips_allowed: data.ips_allowed,
+        sks_allowed: data.sks_allowed,
+      }
+    })
+    
+    return { success: true, error: false, message: "Data berhasil ditambahkan"};
+    
   } catch (err) {
     try {
       handlePrismaError(err)
