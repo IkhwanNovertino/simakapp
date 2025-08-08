@@ -9,12 +9,15 @@ import { createPosition, updatePosition } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FormProps } from "@/lib/datatype";
+import InputSelect from "../InputSelect";
+import { position } from "@/lib/setting";
 
 
 const PositionForm = ({ setOpen, type, data }: FormProps) => {
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors },
   } = useForm<PositionInputs>({
@@ -53,12 +56,18 @@ const PositionForm = ({ setOpen, type, data }: FormProps) => {
           </div>
         )}
         <div className="flex flex-col gap-2 w-full md:w-2/5">
-          <InputField
+          <InputSelect
+            control={control}
             label="Jabatan"
             name="positionName"
             defaultValue={data?.positionName}
-            register={register}
-            error={errors?.positionName}
+            placeholder="--Pilih Jabatan"
+            error={errors.positionName}
+            required={true}
+            options={position.map((item: string) => ({
+              value: item,
+              label: item,
+            }))}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-2/5">
@@ -68,6 +77,7 @@ const PositionForm = ({ setOpen, type, data }: FormProps) => {
             defaultValue={data?.personName}
             register={register}
             error={errors?.personName}
+            required={true}
           />
         </div>
       </div>

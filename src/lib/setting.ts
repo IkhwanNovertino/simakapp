@@ -48,3 +48,5 @@ export const presenceDuration = [
   {label: "12 JAM", value: "HOUR12"},
 ];
 
+export const position = ["Wakabid Akademik", "Kaprodi TI", "Kaprodi SI"];
+
