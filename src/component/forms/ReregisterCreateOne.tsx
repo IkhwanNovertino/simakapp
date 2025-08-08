@@ -13,6 +13,7 @@ import moment from "moment";
 import { status } from "@/lib/setting";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
+import { CampusType } from "@prisma/client";
 
 
 const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps) => {
@@ -188,77 +189,34 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Status Herregistrasi</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("semesterStatus")}
+          <InputSelect
+            label="Status Herregistrasi"
+            name="semesterStatus"
             defaultValue={data?.semesterStatus}
-          >
-            <option
-              value={""} key={""}
-              className="text-sm py-0.5 capitalize"
-            >
-              -- Status Herregistrasi
-            </option>
-            {status.map((item: any) => (
-              <option
-                value={item} key={item}
-                className="text-sm py-0.5 capitalize"
-              >
-                {item}
-              </option>
-            ))}
-          </select>
-          {errors.semesterStatus?.message && (
-            <p className="text-xs text-red-400">
-              {errors.semesterStatus.message.toString()}
-            </p>
-          )}
+            control={control}
+            placeholder="--pilih Status"
+            error={errors.semesterStatus}
+            options={status.map((status: any) => ({
+              value: status,
+              label: status,
+            }))}
+          />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Tipe Perkuliahan</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
-            {...register("campusType")}
+          <InputSelect
+            label="Tipe Perkuliahan"
+            name="campusType"
             defaultValue={data?.campusType}
-            disabled={role !== "admin" ? true : false}
-          >
-            <option
-              value={""} key={""}
-              className="text-sm py-0.5 capitalize"
-            >
-              -- Pilih Tipe Perkuliahan
-            </option>
-            <option
-              value={"BJM"} key={"bjm"}
-              className="text-sm py-0.5 capitalize"
-            >
-              Banjarmasin
-            </option>
-            <option
-              value={"BJB"} key={"bjb"}
-              className="text-sm py-0.5 capitalize"
-            >
-              Banjarbaru
-            </option>
-            <option
-              value={"ONLINE"} key={"online"}
-              className="text-sm py-0.5 capitalize"
-            >
-              Online
-            </option>
-            <option
-              value={"SORE"} key={"sore"}
-              className="text-sm py-0.5 capitalize"
-            >
-              Sore
-            </option>
-          </select>
-          {errors.campusType?.message && (
-            <p className="text-xs text-red-400">
-              {errors.campusType.message.toString()}
-            </p>
-          )}
+            control={control}
+            placeholder="--pilih Status"
+            error={errors.campusType}
+            options={[
+              { value: CampusType.BJB, label: "Banjarbaru" },
+              { value: CampusType.BJM, label: "Banjarmasin" },
+              { value: CampusType.ONLINE, label: "Online" },
+              { value: CampusType.SORE, label: "Sore" },
+            ]}
+          />
         </div>
       </div>
 
