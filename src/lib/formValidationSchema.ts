@@ -481,3 +481,30 @@ export const krsOverride = z.object({
 })
 
 export type KrsOverrideInputs = z.infer<typeof krsOverride>
+
+export const khsGradeRevisionSchema = z.object({
+  id: z.string().optional(),
+  studentName: z.string().optional(),
+  studentNIM: z.string().optional(),
+  finalScore: z.coerce.number().min(0, { message: "Nilai akhir harus diisi" }),
+  gradeLetter: z.string().optional(),
+  weight: z.coerce.number().optional(),
+  khsGrade: z.array(
+    z.object({
+      id: z.string().min(1, { message: "Krs Grade ID tidak ditemukan" }),
+      assessmentDetailId: z.string().optional(),
+      khsDetailId: z.string().optional(),
+      assessmentDetail: z.object({
+        id: z.string().optional(),
+        grade: z.object({
+          id: z.string().optional(),
+          name: z.string().optional(),
+        }),
+      }),
+      percentage: z.coerce.number().min(0, { message: "Persentase harus diisi" }).max(100, { message: "Persentase tidak boleh lebih dari 100%" }),
+      score: z.coerce.number().min(0, { message: "Nilai harus diisi" }).max(100, { message: "Nilai tidak boleh lebih dari 100" }),
+    })
+  )
+})
+
+export type KhsGradeRevisionInputs = z.infer<typeof khsGradeRevisionSchema>;

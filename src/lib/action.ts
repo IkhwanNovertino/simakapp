@@ -3054,7 +3054,6 @@ function calculateEndTime(start: Date, duration: string): Date {
       return start;
   }
 }
-
 export async function deactivateExpiredPresences() {
   const now = new Date();
   const activePresences = await prisma.presence.findMany({

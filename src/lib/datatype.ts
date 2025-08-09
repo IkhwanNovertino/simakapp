@@ -25,6 +25,7 @@ export interface FormModalProps {
   | "krsOverride"
   | "krsDetail"
   | "khsGrade"
+  | "khsRevision"
   | "rpl"
   | "class"
   | "classDetail"

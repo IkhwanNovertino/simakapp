@@ -50,7 +50,7 @@ const KRSDetailPage = async (
   console.log('RESULT', dataKRSRaw);
 
   let dataKrsOverridePassToForm;
-  if (KRSOverride.id) {
+  if (KRSOverride?.id) {
     dataKrsOverridePassToForm = {
       id: KRSOverride.id,
       krsId: KRSOverride.krsId,
@@ -217,7 +217,7 @@ const KRSDetailPage = async (
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="w-1/3">Max.SKS/SKS diizinkan</span>
                 <span>:</span>
-                <span>{dataKRS.maxSks}/ {KRSOverride?.sks_allowed ?? ""}</span>
+                <span>{dataKRS.maxSks}/ {KRSOverride?.sks_allowed ?? 0}</span>
               </div>
             </div>
           </div>

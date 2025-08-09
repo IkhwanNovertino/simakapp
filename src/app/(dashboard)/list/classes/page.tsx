@@ -182,6 +182,7 @@ const ClassListPage = async (
       </tr>
     );
   }
+  console.log('PERIODNAME', period.name);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">

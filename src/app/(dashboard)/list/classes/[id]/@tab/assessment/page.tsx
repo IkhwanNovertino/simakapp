@@ -219,7 +219,7 @@ const ClassSingleTabAssessmentPage = async (
               {item.status === AnnouncementKhs.DRAFT ? (
                 <FormContainer table="khsGrade" type="update" id={item.id} data={item} />
               ) : (
-                <FormContainer table="khsGrade" type="create" id={item.id} data={item} />
+                <FormContainer table="khsRevision" type="update" id={item.id} data={item} />
               )}
             </div>
           </div>

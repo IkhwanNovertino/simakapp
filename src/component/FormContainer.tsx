@@ -170,8 +170,6 @@ const FormContainer = async (
         });
         relatedData = { allGradeComponent: gradeComponents };
         break;
-      case "krs":
-        break;
       case "krsDetail":
         const semester = data?.semester === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
 
@@ -216,9 +214,12 @@ const FormContainer = async (
         relatedData = { course: coursePassToForm };
         break;
       case "class":
+        // const periodClass
         const periodClass = data?.periodId || '098';
-        const semesterType = data?.periodName?.split(" ")[0] || "GANJIL"
-        const semesterClass = semesterType ? [1, 3, 5, 7] : [2, 4, 6, 8];
+        const semesterType = data?.periodName?.split(" ")[0] || "GANJIL";
+        console.log('SEMESTERTYPE', semesterType);
+
+        const semesterClass = semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
         const period = await prisma.period.findMany({
           select: { id: true, name: true },
         });
