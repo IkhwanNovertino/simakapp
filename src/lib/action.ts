@@ -6,7 +6,7 @@ import {
   AssessmentInputs,
   ClassInputs,
   CourseInKrsInputs,
-  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, KhsGradeInputs, KrsOverrideInputs, lecturerSchema, MajorInputs,
+  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, KhsGradeInputs, KhsGradeRevisionInputs, KrsOverrideInputs, lecturerSchema, MajorInputs,
   OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, PresenceActivationInputs, PresenceAllInputs, PresenceInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, RplInputs, ScheduleDetailInputs, ScheduleInputs, studentSchema, TimeInputs, UserInputs
@@ -3171,6 +3171,92 @@ export const updateKhsGradeAnnouncement = async (state: stateType, data: FormDat
       }
     })
     
+    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateKhsGradeRevision = async (state: stateType, data: KhsGradeRevisionInputs) => {
+  try {
+
+    await prisma.$transaction(async (prisma: any) => {
+      const khsDetailCurrent = await prisma.khsDetail.update({
+        where: {
+          id: data?.id,
+        },
+        data: {
+          isLatest: false,
+          validTo: new Date(),
+        }
+      });
+
+      const khsDetailCreateRevision = await prisma.khsDetail.create({
+        data: {
+          khsId: data?.khsId,
+          courseId: data?.courseId,
+          finalScore: data?.finalScore,
+          gradeLetter: data?.gradeLetter,
+          weight: data?.weight,
+          status: AnnouncementKhs.ANNOUNCEMENT,
+          version: khsDetailCurrent?.version + 1,
+          predecessorId: data?.id,
+        },
+      });
+
+      for (const element of data?.khsGrade) {
+        await prisma.khsGrade.create({
+          data: {
+            khsDetailId: khsDetailCreateRevision?.id,
+            assessmentDetailId: element.assessmentDetailId,
+            score: element.score,
+            percentage: element?.percentage,
+          }
+        })
+      };
+
+      // update IPS dan SKS
+      // dapatkan data KHS untuk menghitung jumlah SKS, jumlah SKSxNAB dan IPS
+        const khsDetailByKhsId = await prisma.khsDetail.findMany({
+          where: {
+            khsId: data.khsId,
+            isLatest: true,
+          },
+          include: {
+            course: true
+          },
+        });
+        // console.log(`get data khsDetail By khsId`);
+        
+        const totalSKS = khsDetailByKhsId
+          .map((item: any) => item.course.sks)
+          .reduce((acc: any, init: any) => acc + init, 0);
+        const totalSKSxNAB = khsDetailByKhsId
+          .map((items: any) => items.course.sks * items.weight)
+          .reduce((acc: any, init: any) => acc + init, 0);
+        
+        const IPK = Number(totalSKSxNAB / totalSKS).toFixed(2) 
+        const maxSKS = await calculatingSKSLimits(parseFloat(IPK))
+
+        // updateIPK dan mxSKS di KHS
+        await prisma.khs.update({
+          where: {
+            id: data.khsId,
+          },
+          data: {
+            ips: parseFloat(IPK),
+            maxSks: maxSKS,
+          }
+        })
+    })
+    console.log('DATA UPDATE KRH GRADE REVISION', data);
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err) {
     try {

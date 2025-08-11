@@ -8,21 +8,23 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FormProps } from "@/lib/datatype";
 import { getFinalScore, getGradeLetter } from "@/lib/utils";
-import { KhsGradeInputs, khsGradeSchema } from "@/lib/formValidationSchema";
-import { updateKhsGrade } from "@/lib/action";
+import { KhsGradeRevisionInputs, khsGradeRevisionSchema } from "@/lib/formValidationSchema";
+import { updateKhsGradeRevision } from "@/lib/action";
 
 
-const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
+const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
   const {
     register,
     handleSubmit,
     setValue,
     control,
     formState: { errors },
-  } = useForm<KhsGradeInputs>({
-    resolver: zodResolver(khsGradeSchema),
+  } = useForm<KhsGradeRevisionInputs>({
+    resolver: zodResolver(khsGradeRevisionSchema),
     defaultValues: {
       id: data?.id || "",
+      khsId: data?.khsId,
+      courseId: data?.courseId,
       studentName: data?.khs?.student?.name || "",
       studentNIM: data?.khs?.student?.nim || "",
       finalScore: data?.finalScore || 0,
@@ -34,8 +36,7 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
   const { fields } = useFieldArray({ control, name: "khsGrade" })
   const krsGradeWatch = useWatch({ control, name: "khsGrade" });
 
-  // const action = type === "create" ? createPosition : updatePosition;
-  const [state, formAction] = useActionState(updateKhsGrade, { success: false, error: false, message: "" });
+  const [state, formAction] = useActionState(updateKhsGradeRevision, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -61,14 +62,28 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
 
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <div className="hidden">
-            <InputField
-              label="id"
-              name="id"
-              defaultValue={data?.id}
-              register={register}
-              error={errors?.id}
-            />
+          <div className="visible">
+            <>
+              <InputField
+                label="id"
+                name="id"
+                defaultValue={data?.id}
+                register={register}
+                error={errors?.id}
+              />
+              <InputField
+                label="Khsid"
+                name="khsId"
+                register={register}
+                error={errors?.khsId}
+              />
+              <InputField
+                label="CourseId"
+                name="courseId"
+                register={register}
+                error={errors?.courseId}
+              />
+            </>
           </div>
         )}
         <div className="flex flex-col gap-2 w-full md:w-3/5">
@@ -77,7 +92,6 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
             name="studentName"
             register={register}
             inputProps={{ readOnly: true }}
-            error={errors?.studentName}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-2/6">
@@ -86,7 +100,32 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
             name="studentNIM"
             register={register}
             inputProps={{ readOnly: true }}
-            error={errors?.studentNIM}
+          />
+        </div>
+      </div>
+      <span className="text-xs text-gray-400 font-medium">
+        Penilaian Sebelumnya
+      </span>
+      <div className="flex justify-between flex-wrap gap-2">
+        {data?.khsGrade.map((items: any) => (
+          <div key={items.id} className="flex flex-col gap-2 w-full md:w-2/7">
+            <InputField
+              type="number"
+              label={`${items.assessmentDetail?.grade?.name} (${items.percentage}%)`}
+              name={items.assessmentDetail?.grade?.name}
+              register={register}
+              defaultValue={items.score}
+              inputProps={{ disabled: true }}
+            />
+          </div>
+        ))}
+        <div className="flex flex-col gap-2 w-full md:w-2/7">
+          <InputField
+            label="Nilai Akhir | Abs"
+            name="Nilai Akhir Abs"
+            register={register}
+            defaultValue={`${data?.finalScore} | ${data?.gradeLetter}`}
+            inputProps={{ disabled: true }}
           />
         </div>
       </div>
@@ -97,13 +136,13 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
         <div className="flex flex-col gap-2 w-full">
           {fields.map((field, index) => (
             <div key={field.id} className="flex justify-start flex-wrap gap-4">
-              <div className="hidden">
+              <div className="visible">
                 <InputField
                   label={`ID Komponen ${field.assessmentDetail?.grade?.name || ""}`}
-                  name={`khsGrade.${index}.id`}
-                  defaultValue={field.id}
+                  name={`khsGrade.${index}.assessmentDetailId`}
+                  defaultValue={field.assessmentDetailId}
                   register={register}
-                  error={errors?.khsGrade?.[index]?.id}
+                  error={errors?.khsGrade?.[index]?.assessmentDetailId}
                   inputProps={{ readOnly: true }}
                 />
               </div>
@@ -131,20 +170,12 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
             </div>
           ))}
         </div>
-      </div>
+      </div >
       <span className="text-xs text-gray-400 font-medium">
         Penilaian Akhir
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         <div className="w-4/12">
-          {/* <InputField
-            label="Nilai Angka"
-            name="finalScore"
-            register={register}
-            inputProps={{ inputMode: "decimal", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
-            error={errors?.finalScore}
-            required
-          /> */}
           <label className={"text-xs text-gray-500 after:content-['_(*)'] after:text-red-400"}>{"Nilai Akhir"}</label>
           <input
             type="text"
@@ -192,4 +223,4 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
   )
 }
 
-export default KrsGradeForm;
+export default KrsGradeRevisionForm;

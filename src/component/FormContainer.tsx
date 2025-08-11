@@ -409,6 +409,38 @@ const FormContainer = async (
         })
         relatedData = { period: periodAcademic, courses: curriculum }
         break;
+      case "khsRevision":
+        // const khsMany = await prisma.khsDetail.findMany({
+        //   where: {
+        //     khsId: data?.khsId,
+        //     courseId: data?.courseId,
+        //   }
+        // })
+        // const assessmentDetail = await prisma.course.findFirst({
+        //   where: {
+        //     id: data.courseId,
+        //   },
+        //   select: {
+        //     code: true,
+        //     name: true,
+        //     assessment: {
+        //       include: {
+        //         assessmentDetail: {
+        //           include: {
+        //             grade: true,
+        //           },
+        //           orderBy: {
+        //             seq_number: 'desc',
+        //           }
+        //         },
+        //       }
+        //     }
+        //   }
+        // });
+        // console.log('ASSESSMENTDETAIL', assessmentDetail.assessment.assessmentDetail);
+
+        // relatedData = { period: periodAcademicRevision, courses: curriculumRevision }
+        break;
       default:
         break;
     }

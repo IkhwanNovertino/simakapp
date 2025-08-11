@@ -83,6 +83,7 @@ const ClassSingleTabAssessmentPage = async (
           },
           periodId: academicClass?.periodId,
         },
+        isLatest: true,
       },
       include: {
         khs: {
