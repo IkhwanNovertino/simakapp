@@ -62,7 +62,7 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
 
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <div className="visible">
+          <div className="hidden">
             <>
               <InputField
                 label="id"
@@ -136,7 +136,7 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
         <div className="flex flex-col gap-2 w-full">
           {fields.map((field, index) => (
             <div key={field.id} className="flex justify-start flex-wrap gap-4">
-              <div className="visible">
+              <div className="hidden">
                 <InputField
                   label={`ID Komponen ${field.assessmentDetail?.grade?.name || ""}`}
                   name={`khsGrade.${index}.assessmentDetailId`}
