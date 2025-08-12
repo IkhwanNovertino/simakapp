@@ -3184,6 +3184,39 @@ export const updateKhsGradeAnnouncement = async (state: stateType, data: FormDat
     }
   }
 }
+export const updateKhsGradeSubmitted = async (state: stateType, data: FormData) => {
+  try {
+    const khsDetailId = data.get("khsDetailId") as string;
+    const arrKhsDetailId = khsDetailId.split(",");
+    console.log(arrKhsDetailId);
+
+    await prisma.$transaction(async (prisma: any) => {
+      for (const items of arrKhsDetailId) {
+        const dataUpdate = await prisma.khsDetail.update({
+          where: {
+            id: items
+          },
+          data: {
+            status: AnnouncementKhs.SUBMITTED,
+          },
+        });
+        // console.log('finish update status Annnouncement');
+      }
+    })
+    
+    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
 export const updateKhsGradeRevision = async (state: stateType, data: KhsGradeRevisionInputs) => {
   try {
 

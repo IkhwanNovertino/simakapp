@@ -130,7 +130,7 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
         </div>
       </div>
       <span className="text-xs text-gray-400 font-medium">
-        Komponen Penilaian
+        Komponen Penilaian Revisi
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         <div className="flex flex-col gap-2 w-full">

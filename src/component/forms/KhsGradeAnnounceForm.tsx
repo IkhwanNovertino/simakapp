@@ -1,15 +1,21 @@
 'use client';
 
-import { updateKhsGradeAnnouncement } from "@/lib/action";
+import { updateKhsGradeAnnouncement, updateKhsGradeSubmitted } from "@/lib/action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const KhsGradeAnnounceForm = ({ data }: { data?: any }) => {
+interface TypeKhsGradeAnnounceForm {
+  type: "announcement" | "submitted",
+  data?: any
+}
+
+const KhsGradeAnnounceForm = ({ type, data }: TypeKhsGradeAnnounceForm) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  const [state, formAction] = useActionState(updateKhsGradeAnnouncement, { success: false, error: false, message: "" });
+  let action = type === "announcement" ? updateKhsGradeAnnouncement : updateKhsGradeSubmitted;
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
   console.log('KhsGradeAnnounceForm', data);
 
   useEffect(() => {
@@ -25,7 +31,7 @@ const KhsGradeAnnounceForm = ({ data }: { data?: any }) => {
         onClick={() => setOpen(true)}
         className={`text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-secondary/70 rounded-full cursor-pointer capitalize hover:bg-secondary`}
       >
-        {"umumkan nilai"}
+        {type === "announcement" ? "umumkan nilai" : "serahkan nilai"}
       </button>
 
       {open && (
@@ -39,7 +45,7 @@ const KhsGradeAnnounceForm = ({ data }: { data?: any }) => {
             </div>
             <div>
               <form action={formAction} className="flex flex-col gap-8">
-                <h1 className="text-xl font-semibold">{"Umumkan Nilai Mata kuliah"}</h1>
+                <h1 className="text-xl font-semibold">{type === "announcement" ? "Umumkan Nilai Mata kuliah" : "Serahkan Nilai Mata kuliah"}</h1>
                 <div className="flex justify-between flex-wrap gap-4">
                   <div className="hidden">
                     <label
@@ -73,7 +79,7 @@ const KhsGradeAnnounceForm = ({ data }: { data?: any }) => {
                       readOnly
                     />
                   </div>
-                  <div className="hidden">
+                  <div className="visible">
                     <label
                       className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
                       htmlFor="khsDetailId"
@@ -91,8 +97,8 @@ const KhsGradeAnnounceForm = ({ data }: { data?: any }) => {
                   </div>
                 </div>
                 {state?.error && (<span className="text-xs text-red-400">{state?.message}</span>)}
-                <button className="bg-blue-400 text-white p-2 rounded-md">
-                  Umumkan Nilai
+                <button className="bg-blue-400 text-white p-2 rounded-md capitalize">
+                  {type === "announcement" ? "umumkan nilai" : "serahkan nilai"}
                 </button>
               </form>
             </div>

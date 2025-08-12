@@ -263,12 +263,20 @@ const ClassSingleTabAssessmentPage = async (
           <ImportForm />
         </div>
         {user?.roleType === "OPERATOR" && (
-          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-            {students.find((item: any) => item.status === AnnouncementKhs.DRAFT) && (
-              <KhsGradeAnnounceForm data={dataKhsAnnouncement} />
+          <div className="flex flex-col md:flex-row items-center w-full md:w-auto">
+            {students.find((item: any) => item.status === AnnouncementKhs.SUBMITTED) && (
+              <KhsGradeAnnounceForm type="announcement" data={dataKhsAnnouncement} />
             )}
           </div>
         )}
+        <div className="flex flex-col md:flex-row items-center w-full md:w-auto">
+          {students.find((item: any) => item.status === AnnouncementKhs.DRAFT) && (
+            <KhsGradeAnnounceForm type="submitted" data={dataKhsAnnouncement} />
+          )}
+        </div>
+        {/* {user?.roleType !== "OPERATOR" && (
+
+        )} */}
       </div>
       <Table columns={columns} renderRow={renderRow} data={students} />
       {/* PAGINATION */}

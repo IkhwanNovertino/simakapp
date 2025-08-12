@@ -116,7 +116,7 @@ const KHSDetailPage = async (
     let totalSKS = 0;
     let totalSKSxNAB = 0;
     let limitSKS = `0`;
-    if (khsDetailRaw.filter((el: any) => el.status === AnnouncementKhs.DRAFT).length === 0) {
+    if (khsDetailRaw.filter((el: any) => (el.status === AnnouncementKhs.DRAFT || el.status === AnnouncementKhs.SUBMITTED)).length === 0) {
       khsDetail = khsDetailRaw.map((items: any) => ({
         ...items,
         finalScore: Number(items.finalScore),

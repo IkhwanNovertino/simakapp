@@ -492,6 +492,7 @@ model KhsGrade {
 
 enum AnnouncementKhs {
   DRAFT
+  SUBMITTED
   ANNOUNCEMENT
 }
 
