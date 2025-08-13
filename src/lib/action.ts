@@ -1755,6 +1755,9 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
       let maxSKS: number = 0;
 
       if (dataReregisterDetail.semesterStatus === "AKTIF") {
+        // mulai krsRule
+        // periksa semester dan statusRegister
+        
         if (dataReregisterDetail.semester === 1) {
           ips = 0;
           maxSKS = 22;

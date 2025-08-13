@@ -217,7 +217,7 @@ const ClassSingleTabAssessmentPage = async (
         <td className="hidden md:table-cell text-xs">
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-2">
-              {item.status === AnnouncementKhs.DRAFT ? (
+              {(item.status === AnnouncementKhs.DRAFT || item.status === AnnouncementKhs.SUBMITTED) ? (
                 <FormContainer table="khsGrade" type="update" id={item.id} data={item} />
               ) : (
                 <FormContainer table="khsRevision" type="update" id={item.id} data={item} />

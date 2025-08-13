@@ -79,7 +79,7 @@ const KhsGradeAnnounceForm = ({ type, data }: TypeKhsGradeAnnounceForm) => {
                       readOnly
                     />
                   </div>
-                  <div className="visible">
+                  <div className="hidden">
                     <label
                       className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
                       htmlFor="khsDetailId"
