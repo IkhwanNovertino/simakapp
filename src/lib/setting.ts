@@ -4,6 +4,7 @@ export const resourceData = [
   { pathname: "periods", name: "period", nama: "periode" },
   { pathname: "permissions", name: "permission", nama: "hak akses" },
   { pathname: "roles", name: "role", nama: "role" },
+  { pathname: "krsrules", name: "krsrule", nama: "pengaturan krs" },
   { pathname: "users", name: "user", nama: "pengguna" },
   { pathname: "lecturers", name: "lecturer", nama: "dosen" },
   { pathname: "students", name: "student", nama: "mahasiswa" },
@@ -26,6 +27,7 @@ export const resourceData = [
 ];
 export const actionPermission = ["view", "create", "edit", "delete"];
 
+export const StatusRegister = ["BARU", "TRANSFER_KREDIT", "RENIM", "PEROLEHAN_KREDIT"]
 export const degree = ["S1", "S2", "S3"];
 export const gender = ["PRIA", "WANITA"];
 export const religion = ["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"];

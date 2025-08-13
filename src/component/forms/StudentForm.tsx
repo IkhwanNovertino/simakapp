@@ -8,9 +8,8 @@ import { StudentInputs, studentSchema } from "@/lib/formValidationSchema";
 import { createStudent, updateStudent } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { religion, status } from "@/lib/setting";
+import { religion, status, StatusRegister } from "@/lib/setting";
 import Image from "next/image";
-import { StatusRegistrasi } from "@/lib/data";
 import moment from "moment";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
@@ -150,7 +149,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             control={control}
             placeholder="-- Pilih status.."
             required={true}
-            options={StatusRegistrasi.map((item: string) => ({
+            options={StatusRegister.map((item: string) => ({
               value: item,
               label: item,
             }))}

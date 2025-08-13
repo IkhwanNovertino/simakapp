@@ -269,14 +269,13 @@ const ClassSingleTabAssessmentPage = async (
             )}
           </div>
         )}
-        <div className="flex flex-col md:flex-row items-center w-full md:w-auto">
-          {students.find((item: any) => item.status === AnnouncementKhs.DRAFT) && (
-            <KhsGradeAnnounceForm type="submitted" data={dataKhsAnnouncement} />
-          )}
-        </div>
-        {/* {user?.roleType !== "OPERATOR" && (
-
-        )} */}
+        {user?.roleType !== "OPERATOR" && (
+          <div className="flex flex-col md:flex-row items-center w-full md:w-auto">
+            {students.find((item: any) => item.status === AnnouncementKhs.DRAFT) && (
+              <KhsGradeAnnounceForm type="submitted" data={dataKhsAnnouncement} />
+            )}
+          </div>
+        )}
       </div>
       <Table columns={columns} renderRow={renderRow} data={students} />
       {/* PAGINATION */}

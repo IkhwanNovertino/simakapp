@@ -207,7 +207,7 @@ model Student {
   email               String?
   hp                  String?
   photo               String?
-  statusRegister      String?
+  statusRegister      StatusRegister        @default(BARU)
   motherName          String?
   motherNIK           String?
   guardianName        String?
@@ -336,6 +336,18 @@ model KrsDetail {
 
   @@unique([krsId, courseId])
   @@map("sb25_krs_details")
+}
+
+model KrsRule {
+  id                   String         @id @default(uuid())
+  statusRegister       StatusRegister @default(BARU)
+  semester             Int            @default(1)
+  maxSks               Int            @default(0)
+  autoPackage          Boolean        @default(false)
+  allowManualSelection Boolean        @default(false)
+  isActive             Boolean        @default(false)
+
+  @@map("sb25_krs_rules")
 }
 
 model AcademicClass {
@@ -550,6 +562,13 @@ enum StudentStatus {
   DO
   MENGUNDURKAN_DIRI
   LULUS
+}
+
+enum StatusRegister {
+  BARU
+  TRANSFER_KREDIT
+  RENIM
+  PEROLEHAN_KREDIT
 }
 
 enum SemesterStatus {

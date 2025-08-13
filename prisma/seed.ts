@@ -11,6 +11,7 @@ async function main() {
     { pathname: "periods", name: "period", nama: "periode" },
     { pathname: "permissions", name: "permission", nama: "hak akses" },
     { pathname: "roles", name: "role", nama: "role" },
+    { pathname: "krsrules", name: "krsrule", nama: "pengaturan krs" },
     { pathname: "users", name: "user", nama: "pengguna" },
     { pathname: "lecturers", name: "lecturer", nama: "dosen" },
     { pathname: "students", name: "student", nama: "mahasiswa" },
@@ -1043,65 +1044,19 @@ async function main() {
   //   data: students,
   // })
 
-  // Student
-  // for (let i = 0; i < 5 ; i++) {
-  //   await prisma.student.create({
+  // const student = await prisma.student.create({
   //     data: {
-  //       nim: `31012402870${i}`,
-  //       name: `Student${i + 1}`,
+  //       nim: `310124028701`,
+  //       name: `Student01`,
   //       year: 2024,
   //       religion: Religion.ISLAM,
-  //       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+  //       gender: Gender.PRIA,
   //       majorId: 2,
   //       statusRegister: "BARU",
   //       studentStatus: StudentStatus.AKTIF,
-  //       lecturerId: (i % 3 === 0 && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+  //       lecturerId: lecturer[0].id,
   //     }
   //   })
-    
-  // }
-
-  const student = await prisma.student.create({
-      data: {
-        nim: `310124028701`,
-        name: `Student01`,
-        year: 2024,
-        religion: Religion.ISLAM,
-        gender: Gender.PRIA,
-        majorId: 2,
-        statusRegister: "BARU",
-        studentStatus: StudentStatus.AKTIF,
-        lecturerId: lecturer[0].id,
-        // reregisterDetail: {
-        //   create: {
-        //     reregisterId: herregistrasi.id,
-        //     semester: 1,
-        //     // semesterStatus: SemesterStatus.AKTIF,
-        //     lecturerId: lecturer[0].id,
-        //   }
-        // },
-        // krs: {
-        //   create: {
-        //     reregisterId: herregistrasi.id,
-        //     ips: 0,
-        //     maxSks: 22,
-        //     isStatusForm: StudyPlanStatus.SUBMITTED,
-        //     lecturerId: lecturer[0].id,
-        //     krsDetail: {
-        //       create: [
-        //         { course: { connect: { code: "SB-ITI-016" }}, isAcc: false},
-        //         { course: { connect: { code: "SB-ITI-006" }}, isAcc: false},
-        //         { course: { connect: { code: "SB-ITI-014" }}, isAcc: false},
-        //         { course: { connect: { code: "SB-ITI-009" }}, isAcc: false},
-        //         { course: { connect: { code: "SB-ITI-023" }}, isAcc: false},
-        //         { course: { connect: { code: "SB-ITI-002" }}, isAcc: false},
-        //         { course: { connect: { code: "SB-ITO-004" }}, isAcc: false},
-        //       ]
-        //     }
-        //   }
-        // },
-      }
-    })
 };
 
 main()
