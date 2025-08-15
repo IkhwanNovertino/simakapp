@@ -1974,7 +1974,9 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
             semester: reregisterDetail?.semester,
           }
         });
-      })
+      });
+
+      return {success: true, error: false, message: "data berhasil ditambahkan"}
     } else {
       await prisma.$transaction(async (prisma: any) => {
         const createkrs = await prisma.krs.create({
@@ -1993,7 +1995,9 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
             semester: reregisterDetail?.semester,
           }
         });
-      })
+      });
+
+      return {success: true, error: false, message: "data berhasil ditambahkan"}
     }
 
   } catch (err: any) {
