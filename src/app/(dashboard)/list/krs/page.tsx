@@ -190,7 +190,7 @@ const KRSListPage = async (
         </td>
         <td className="hidden md:table-cell">{item?.reregister?.period?.name ?? ""}</td>
         <td className="hidden md:table-cell">{item?.ips.toString() ?? ""}</td>
-        <td className="hidden md:table-cell capitalize">{item.maxSks || ""}</td>
+        <td className="hidden md:table-cell capitalize">{item?.maxSks ?? ""}</td>
         <td className="hidden lg:table-cell capitalize">
           <span className={isStatusForm.join(" ")}>
             {item?.isStatusForm || ""}
