@@ -7,6 +7,7 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
+import { lecturerName } from "@/lib/utils";
 import { Lecturer, Major, Prisma, Role, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -116,7 +117,13 @@ const LecturerListPage = async (
             className="hidden lg:block w-16 h-16 rounded-full object-cover"
           />
           <div className="flex flex-col">
-            <h3 className="text-sm font-semibold">{`${item.frontTitle || ""} ${item.name}, ${item.backTitle || ""}`}</h3>
+            <h3 className="text-sm font-semibold">
+              {lecturerName({
+                frontTitle: item.frontTitle,
+                name: item.name,
+                backTitle: item.backTitle,
+              })}
+            </h3>
             <p className="text-xs text-gray-500 italic">NUPTK : {item.nuptk || "-"}</p>
             <p className="text-xs text-gray-500 ">{item?.user?.email || ""}</p>
           </div>

@@ -6,6 +6,7 @@ import Table from "@/component/Table";
 import { krsOverride } from "@/lib/formValidationSchema";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
+import { lecturerName } from "@/lib/utils";
 import { Course, KrsDetail, } from "@prisma/client";
 import Image from "next/image";
 
@@ -25,7 +26,8 @@ const KRSDetailPage = async (
       student: {
         include: {
           major: true,
-        }
+          lecturer: true,
+        },
       },
       reregister: {
         include: {
@@ -45,9 +47,6 @@ const KRSDetailPage = async (
       krsId: id,
     }
   });
-  console.log(KRSOverride);
-
-  console.log('RESULT', dataKRSRaw);
 
   let dataKrsOverridePassToForm;
   if (KRSOverride?.id) {
@@ -180,7 +179,7 @@ const KRSDetailPage = async (
       {/* TOP */}
       <div className="flex flex-col lg:flex-row gap-4">
         {/* USER INFO CARD */}
-        <div className="bg-primary py-6 px-4 rounded-md flex-1 flex gap-4 w-full lg:w-3/4">
+        <div className="bg-primary py-6 px-4 rounded-md flex-1 flex gap-4 w-full lg:w-4/5">
           <div className="hidden md:inline md:w-1/4">
             <Image
               src={dataKRS?.student?.photo ? `/api/avatar?file=${dataKRS?.student?.photo}` : '/avatar.png'}
@@ -200,29 +199,42 @@ const KRSDetailPage = async (
             </header>
             <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="w-1/3">Semester</span>
+                <span className="w-1/4">Dosen Pembimbing</span>
+                <span>:</span>
+                <span>
+                  {lecturerName(
+                    {
+                      frontTitle: dataKRS?.student?.lecturer?.frontTitle,
+                      name: dataKRS?.student?.lecturer?.name,
+                      backTitle: dataKRS?.student?.lecturer.backTitle
+                    }
+                  )}
+                </span>
+              </div>
+              <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
+                <span className="w-1/4">Semester</span>
                 <span>:</span>
                 <span>{dataReregistrasi.semester}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="w-1/3">Thn. Akad</span>
+                <span className="w-1/4">Thn. Akad</span>
                 <span >:</span>
                 <span>{dataKRS.reregister?.period?.name}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="w-1/3">IPK</span>
+                <span className="w-1/4">IPK</span>
                 <span>:</span>
                 <span>{dataKRS?.ips?.toString() ?? 0}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
-                <span className="w-1/3">Max.SKS/SKS diizinkan</span>
+                <span className="w-1/4">Max.SKS/SKS diizinkan</span>
                 <span>:</span>
-                <span>{dataKRS.maxSks}/ {KRSOverride?.sks_allowed ?? 0}</span>
+                <span>{dataKRS.maxSks}/{KRSOverride?.sks_allowed ?? 0}</span>
               </div>
             </div>
           </div>
         </div>
-        <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md"></div>
+        <div className="bg-white w-full lg:w-1/5 flex flex-col gap-4 p-4 rounded-md"></div>
       </div>
       {/* BOTTOM */}
       <div className="bg-white p-4 rounded-md flex-1 mt-0">

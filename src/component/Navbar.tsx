@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getSession } from "@/lib/session";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { lecturerName } from "@/lib/utils";
 
 const Navbar = async () => {
   const sidebarContainerWrapper = await SidebarContainer();
@@ -23,8 +24,14 @@ const Navbar = async () => {
     },
   })
 
+  const userLecturerName = lecturerName({
+    frontTitle: user?.lecturer?.frontTitle,
+    name: user?.lecturer?.name,
+    backTitle: user?.lecturer?.backTitle,
+  })
+
   const userProfile = {
-    name: (user?.operator?.name || user?.student?.name || `${user?.lecturer?.frontTitle} ${user?.lecturer?.name}, ${user?.lecturer?.backTitle}`) || "User",
+    name: (user?.operator?.name || user?.student?.name || `${userLecturerName}`) || "User",
     role: user?.role?.name || "User",
     avatar: user?.student?.photo || user?.lecturer?.photo || "/avatar.png",
   }

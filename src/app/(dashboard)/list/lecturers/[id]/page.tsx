@@ -1,6 +1,7 @@
 import Announcements from "@/component/Announcements";
 import BigCalendar from "@/component/BigCalendar";
 import { prisma } from "@/lib/prisma";
+import { lecturerName } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -38,7 +39,13 @@ const SingleLecturerPage = async (
             </div>
             <div className="w-2/3 flex flex-col justify-between gap-4">
               <div className="flex items-center gap-4">
-                <h1 className="text-xl font-semibold">{`${data?.frontTitle} ${data?.name}, ${data?.backTitle}`}</h1>
+                <h1 className="text-xl font-semibold">
+                  {lecturerName({
+                    frontTitle: data?.frontTitle,
+                    name: data?.name,
+                    backTitle: data?.backTitle,
+                  })}
+                </h1>
                 {/* {role === "admin" && <FormModal
                   table="teacher"
                   type="update"

@@ -50,7 +50,6 @@ const menuItems = [
   {
     title: "MENU MASTER",
     items: [
-
       {
         icon: "/icon/lecturer.svg",
         label: "Dosen",
@@ -81,36 +80,13 @@ const menuItems = [
         label: "Lokal/Ruangan",
         href: "/list/rooms",
       },
-      {
-        icon: "/icon/krs.svg",
-        label: "KRS",
-        href: "/list/krs",
-      },
-      {
-        icon: "/icon/khs.svg",
-        label: "KHS",
-        href: "/list/khs",
-      },
-      {
-        icon: "/icon/transkip.svg",
-        label: "Transkip",
-        href: "/list/transkip",
-      },
-      {
-        icon: "/icon/class.svg",
-        label: "Kelas",
-        href: "/list/classes",
-      },
+
       {
         icon: "/icon/schedule.svg",
         label: "Jadwal",
         href: "/list/schedules",
       },
-      {
-        icon: "/icon/attendance.svg",
-        label: "Presensi",
-        href: "/list/presences",
-      },
+
       {
         icon: "/icon/event.svg",
         label: "Events",
@@ -123,6 +99,36 @@ const menuItems = [
       },
     ],
   },
+  {
+    title: "PERKULIAHAN",
+    items: [
+      {
+        icon: "/icon/krs.svg",
+        label: "KRS",
+        href: "/list/krs",
+      },
+      {
+        icon: "/icon/class.svg",
+        label: "Kelas",
+        href: "/list/classes",
+      },
+      {
+        icon: "/icon/attendance.svg",
+        label: "Presensi",
+        href: "/list/presences",
+      },
+      {
+        icon: "/icon/khs.svg",
+        label: "KHS",
+        href: "/list/khs",
+      },
+      {
+        icon: "/icon/transkip.svg",
+        label: "Transkip",
+        href: "/list/transkip",
+      },
+    ],
+  }
 ];
 
 const SidebarContainer = async () => {

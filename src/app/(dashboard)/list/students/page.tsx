@@ -8,6 +8,7 @@ import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpd
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
+import { lecturerName } from "@/lib/utils";
 import { Lecturer, Major, Prisma, Student, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
@@ -162,7 +163,13 @@ const StudentListPage = async (
         </td>
         <td className="hidden md:table-cell">{item?.nim || "-"}</td>
         <td className="hidden md:table-cell">{item.major?.name || "-"}</td>
-        <td className="hidden lg:table-cell">{item.lecturer?.name || "-"}</td>
+        <td className="hidden lg:table-cell">
+          {lecturerName({
+            frontTitle: item?.lecturer?.frontTitle,
+            name: item?.lecturer?.name,
+            backTitle: item?.lecturer?.backTitle,
+          }) ?? "-"}
+        </td>
         <td>
           <div className="hidden md:flex items-center gap-2">
             {canViewData && (
