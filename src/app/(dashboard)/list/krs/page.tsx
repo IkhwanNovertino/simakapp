@@ -183,7 +183,7 @@ const KRSListPage = async (
                     <Image src="/icon/view.svg" alt="" width={20} height={20} />
                   </button>
                 </Link>
-                {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
+                {/* {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)} */}
               </div>
             </ModalAction>
           </div>
@@ -203,7 +203,7 @@ const KRSListPage = async (
                 <Image src="/icon/view.svg" alt="" width={20} height={20} />
               </button>
             </Link>
-            {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)}
+            {/* {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)} */}
           </div>
         </td >
       </tr >

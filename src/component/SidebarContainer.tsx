@@ -40,6 +40,11 @@ const menuItems = [
         label: "Kurikulum",
         href: "/list/curriculums",
       },
+      {
+        icon: "/icon/setting.svg",
+        label: "Pengaturan KRS",
+        href: "/list/krsrules",
+      },
     ]
   },
   {

@@ -434,7 +434,6 @@ export const khsGradeSchema = z.object({
     })
   )
 })
-
 export type KhsGradeInputs = z.infer<typeof khsGradeSchema>;
 
 export const RplSchema = z.object({
@@ -479,7 +478,6 @@ export const krsOverride = z.object({
   ips_allowed: z.coerce.number().min(0, { message: "IP yang diizinkan harus diisi" }),
   sks_allowed: z.coerce.number().min(0, { message: "IP yang diizinkan harus diisi" }),
 })
-
 export type KrsOverrideInputs = z.infer<typeof krsOverride>
 
 export const khsGradeRevisionSchema = z.object({
@@ -506,5 +504,16 @@ export const khsGradeRevisionSchema = z.object({
     })
   )
 })
-
 export type KhsGradeRevisionInputs = z.infer<typeof khsGradeRevisionSchema>;
+
+export const krsRulesSchema = z.object({
+  id: z.string().optional(),
+  statusRegister: z.string().min(1, { message: "Status register harus dipilih" }),
+  semester: z.coerce.number().min(1, { message: "minimum semester 1" }).max(14, { message: "maksimum tidak boleh lebih dari 14" }),
+  maxSks: z.coerce.number().min(0, { message: "maxSks harus diisi. default 0" }),
+  autoPackage: z.boolean().default(false),
+  allowManualSelection: z.boolean().default(false),
+  isActive: z.boolean().default(false),
+})
+
+export type KrsRulesInputs = z.infer<typeof krsRulesSchema>;

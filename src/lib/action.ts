@@ -6,13 +6,13 @@ import {
   AssessmentInputs,
   ClassInputs,
   CourseInKrsInputs,
-  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, KhsGradeInputs, KhsGradeRevisionInputs, KrsOverrideInputs, lecturerSchema, MajorInputs,
+  CourseInputs, CurriculumDetailInputs, CurriculumInputs, GradeInputs, KhsGradeInputs, KhsGradeRevisionInputs, KrsOverrideInputs, KrsRulesInputs, lecturerSchema, MajorInputs,
   OperatorInputs, PeriodInputs, PermissionInputs, PositionInputs, PresenceActivationInputs, PresenceAllInputs, PresenceInputs, reregistrationDetailSchema,
   ReregistrationInputs, ReregistrationStudentInputs, RoleInputs,
   RoomInputs, RplInputs, ScheduleDetailInputs, ScheduleInputs, studentSchema, TimeInputs, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { AnnouncementKhs, CampusType, Gender, PaymentStatus, Religion, SemesterStatus, StudentStatus, StudyPlanStatus } from "@prisma/client";
+import { AnnouncementKhs, CampusType, Gender, PaymentStatus, Religion, SemesterStatus, StatusRegister, StudentStatus, StudyPlanStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
@@ -22,12 +22,7 @@ import { AppError } from "./errors/appErrors";
 import { calculatingSKSLimits, getGradeLetter } from "./utils";
 import { addMinutes, addHours, isAfter } from "date-fns";
 import { importAssessment } from "./excel/importAssessment";
-
-type stateType = {
-  success: boolean;
-  error: boolean;
-  message: string;
-}
+import { stateType } from "./datatype";
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 const avatarFilePath = process.env.AVATAR_FOLDER as string;
@@ -3456,6 +3451,89 @@ export const createKrsOverride = async (state: stateType, data: KrsOverrideInput
     
     return { success: true, error: false, message: "Data berhasil ditambahkan"};
     
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+
+export const createKrsRules = async (state: stateType, data: KrsRulesInputs) => {
+  try {
+    console.log('CREATE KRS RULES', data);
+
+    await prisma.krsRule.create({
+      data: {
+        statusRegister: data?.statusRegister as StatusRegister,
+        semester: data?.semester,
+        maxSks: data?.maxSks,
+        autoPackage: data?.autoPackage,
+        allowManualSelection: data?.allowManualSelection,
+        isActive: data?.isActive,
+      }
+    })
+    
+    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateKrsRules = async (state: stateType, data: KrsRulesInputs) => {
+  try {
+    console.log('UPDATE KRS RULES', data);
+
+    await prisma.krsRule.update({
+      where: {
+        id: data?.id,
+      },
+      data: {
+        statusRegister: data?.statusRegister as StatusRegister,
+        semester: data?.semester,
+        maxSks: data?.maxSks,
+        autoPackage: data?.autoPackage,
+        allowManualSelection: data?.allowManualSelection,
+        isActive: data?.isActive,
+      }
+    })
+    
+    return { success: true, error: false, message: "Data berhasil diubah" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const deleteKrsRules = async (state: stateType, data: FormData) => {
+  try {
+    console.log('DELETE KRS RULES', data);
+    const id = data.get("id") as string;
+    await prisma.krsRule.delete({
+      where: {
+        id: id,
+      }
+    });
+
+    return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err) {
     try {
       handlePrismaError(err)

@@ -4,7 +4,7 @@ import React, { Dispatch, JSX, SetStateAction, useActionState, useEffect, useSta
 import Image from "next/image";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { deleteAssessment, deleteClass, deleteClassDetail, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deletePresence, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteSchedule, deleteScheduleDetail, deleteStudent, deleteTime } from "@/lib/action";
+import { deleteAssessment, deleteClass, deleteClassDetail, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteKrsRules, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deletePresence, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteSchedule, deleteScheduleDetail, deleteStudent, deleteTime } from "@/lib/action";
 import { toast } from "react-toastify";
 import { FormModalProps } from "@/lib/datatype";
 
@@ -30,6 +30,7 @@ const GradeForm = dynamic(() => import("./forms/GradeForm"), { loading: () => <h
 const AssessmentForm = dynamic(() => import("./forms/AssessmentForm"), { loading: () => <h1>Loading...</h1> });
 const KrsOverrideForm = dynamic(() => import("./forms/KrsForm"), { loading: () => <h1>Loading...</h1> });
 const KrsDetailForm = dynamic(() => import("./forms/KrsDetailForm"), { loading: () => <h1>Loading...</h1> });
+const KrsRulesForm = dynamic(() => import("./forms/KrsRulesForm"), { loading: () => <h1>Loading...</h1> });
 const KhsGradeForm = dynamic(() => import("./forms/KhsGradeForm"), { loading: () => <h1>Loading...</h1> });
 const KhsRevisionForm = dynamic(() => import("./forms/KhsGradeRevisionForm"), { loading: () => <h1>Loading...</h1> });
 const RplForm = dynamic(() => import("./forms/RplForm"), { loading: () => <h1>Loading...</h1> });
@@ -205,6 +206,13 @@ const forms: {
       data={data}
       relatedData={relatedData}
     />,
+  krsRules: (setOpen, type, data, relatedData) =>
+    <KrsRulesForm
+      setOpen={setOpen}
+      type={type}
+      data={data}
+      relatedData={relatedData}
+    />,
   khsGrade: (setOpen, type, data, relatedData) =>
     <KhsGradeForm
       setOpen={setOpen}
@@ -314,6 +322,7 @@ const deleteActionMap = {
   assessment: deleteAssessment,
   krsOverride: deleteKrsDetail, //Belum diubah
   krsDetail: deleteKrsDetail,
+  krsRules: deleteKrsRules,
   khsGrade: deleteKrsDetail, //Belum diubah
   khsRevision: deleteKrsDetail, //Belum diubah
   rpl: deleteKrsDetail, //Belum diubah
@@ -351,6 +360,7 @@ const namaTabelMap = {
   assessment: "penilaian",
   krsOverride: "KRS Overriding",
   krsDetail: "mata kuliah di KRS",
+  krsRules: "pengaturan KRS",
   khsGrade: "nilai mata kuliah",
   khsRevision: "revisi nilai mata kuliah",
   rpl: "mata kuliah RPL",

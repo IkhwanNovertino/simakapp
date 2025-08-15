@@ -24,6 +24,7 @@ export interface FormModalProps {
   | "assessment"
   | "krsOverride"
   | "krsDetail"
+  | "krsRules"
   | "khsGrade"
   | "khsRevision"
   | "rpl"
@@ -47,4 +48,10 @@ export interface FormProps {
   type: "create" | "update" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon";
   data?: any;
   relatedData?: any;
+}
+
+export type stateType = {
+  success: boolean;
+  error: boolean;
+  message: string;
 }
