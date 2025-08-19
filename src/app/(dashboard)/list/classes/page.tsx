@@ -4,7 +4,9 @@ import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
 import { AcademicClass, Course, Lecturer, Major, Period, Prisma, Room } from "@prisma/client";
@@ -20,15 +22,13 @@ const ClassListPage = async (
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
 
-  const period = await prisma.period.findFirst({
-    where: {
-      isActive: true,
-    },
-    select: {
-      id: true,
-      name: true,
-    },
-  });
+  const user = await getSession();
+  const canViewData = await canRoleViewData("classes");
+  const canCreateData = await canRoleCreateData("classes")
+  const canUpdateData = await canRoleUpdateData("classes");
+  const canDeleteData = await canRoleDeleteData("classes")
+
+
 
   const query: Prisma.AcademicClassWhereInput = {}
   if (queryParams) {
@@ -39,6 +39,7 @@ const ClassListPage = async (
             query.OR = [
               { name: { contains: value, mode: "insensitive" } },
               { period: { name: { contains: value, mode: "insensitive" } } },
+              { lecturer: { name: { contains: value, mode: "insensitive" } } },
               { course: { name: { contains: value, mode: "insensitive" } } },
               { course: { code: { contains: value, mode: "insensitive" } } },
             ]
@@ -55,11 +56,25 @@ const ClassListPage = async (
     }
   };
 
-  const [data, count, dataFilter] = await prisma.$transaction([
-    prisma.academicClass.findMany({
+  switch (user?.roleType) {
+    case "ADVISOR":
+      query.lecturer = {
+        userId: user.userId,
+      }
+      break;
+    case "LECTURER":
+      query.lecturer = {
+        userId: user.userId,
+      }
+      break;
+    default:
+      break;
+  }
+
+  const [data, count, dataFilter, period] = await prisma.$transaction(async (prisma: any) => {
+    const dataClass = await prisma.academicClass.findMany({
       where: {
         ...query,
-        // course: { majorId: 1 },
       },
       include: {
         course: {
@@ -78,14 +93,26 @@ const ClassListPage = async (
       ],
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
-    }),
-    prisma.academicClass.count({ where: query }),
-    prisma.major.findMany({
+    });
+    const count = await prisma.academicClass.count({ where: query });
+    const dataFilter = await prisma.major.findMany({
       select: { id: true, name: true }
-    })
-  ]);
+    });
+    dataFilter.unshift({ id: "all", name: "Semua" })
 
-  dataFilter.unshift({ id: "all", name: "Semua" })
+    const period = await prisma.period.findFirst({
+      where: {
+        isActive: true,
+      },
+      select: {
+        id: true,
+        name: true,
+      },
+    });
+
+    return [dataClass, count, dataFilter, period]
+  });
+
 
 
   const columns = [
@@ -144,13 +171,15 @@ const ClassListPage = async (
           <div className="flex items-center justify-end gap-2 md:hidden ">
             <ModalAction>
               <div className="flex items-center gap-3">
-                <Link href={`/list/classes/${item.id}`}>
-                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                  </button>
-                </Link>
-                <FormContainer table="class" type="update" data={itemUpdate} />
-                <FormContainer table="class" type="delete" id={item.id} />
+                {canViewData && (
+                  <Link href={`/list/classes/${item.id}`}>
+                    <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                      <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                    </button>
+                  </Link>
+                )}
+                {canUpdateData && (<FormContainer table="class" type="update" data={itemUpdate} />)}
+                {canDeleteData && (<FormContainer table="class" type="delete" id={item.id} />)}
               </div>
             </ModalAction>
           </div>
@@ -170,19 +199,20 @@ const ClassListPage = async (
         <td className="hidden md:table-cell">{item.period?.name}</td>
         <td>
           <div className="hidden md:flex items-center gap-2">
-            <Link href={`/list/classes/${item.id}`}>
-              <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                <Image src="/icon/view.svg" alt="" width={20} height={20} />
-              </button>
-            </Link>
-            <FormContainer table="class" type="update" data={itemUpdate} />
-            <FormContainer table="class" type="delete" id={item.id} />
+            {canViewData && (
+              <Link href={`/list/classes/${item.id}`}>
+                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
+                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
+                </button>
+              </Link>
+            )}
+            {canUpdateData && (<FormContainer table="class" type="update" data={itemUpdate} />)}
+            {canDeleteData && (<FormContainer table="class" type="delete" id={item.id} />)}
           </div>
         </td>
       </tr>
     );
   }
-  console.log('PERIODNAME', period.name);
 
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
@@ -192,7 +222,7 @@ const ClassListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <FormContainer type="create" table="class" data={{ periodId: period?.id, periodName: period?.name }} />
+            {canCreateData && (<FormContainer type="create" table="class" data={{ periodId: period?.id, periodName: period?.name }} />)}
           </div>
         </div>
       </div>

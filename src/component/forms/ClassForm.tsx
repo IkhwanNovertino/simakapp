@@ -14,7 +14,7 @@ import { FormProps } from "@/lib/datatype";
 
 
 const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
-  const { rooms, lecturers, period, courses } = relatedData;
+  const { rooms, lecturers, courses } = relatedData;
   const {
     register,
     handleSubmit,
@@ -46,28 +46,31 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
           <div className="hidden">
-            <InputField
-              label="id"
-              name="id"
-              defaultValue={data?.id}
-              register={register}
-              error={errors?.id}
-            />
+            <>
+              <InputField
+                label="id"
+                name="id"
+                defaultValue={data?.id}
+                register={register}
+                error={errors?.id}
+              />
+              <InputField
+                label="PeriodeId"
+                name="periodId"
+                defaultValue={data?.periodId}
+                register={register}
+                error={errors?.periodId}
+              />
+            </>
           </div>
         )}
         <div className="flex flex-col gap-2 w-full md:w-1/2">
-          <InputSelect
-            control={control}
+          <InputField
             label="Periode Akademik"
-            name="periodId"
-            placeholder="Pilih Periode Akademik"
-            defaultValue={data?.periodId}
-            options={period.map((item: any) => ({
-              value: item.id,
-              label: item.name,
-            }))}
-            error={errors?.periodId}
-            required={true}
+            name="period"
+            inputProps={{ disabled: true }}
+            defaultValue={data?.periodName}
+            register={register}
           />
         </div>
       </div>

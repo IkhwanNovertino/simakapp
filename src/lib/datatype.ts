@@ -37,7 +37,7 @@ export interface FormModalProps {
   | "presenceDetail"
   | "presenceAll";
 
-  type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon";
+  type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon" | "revision";
   label?: string,
   data?: any;
   id?: any;
@@ -45,7 +45,7 @@ export interface FormModalProps {
 
 export interface FormProps {
   setOpen: Dispatch<SetStateAction<boolean>>;
-  type: "create" | "update" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon";
+  type: "create" | "update" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon" | "revision";
   data?: any;
   relatedData?: any;
 }

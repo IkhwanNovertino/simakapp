@@ -105,26 +105,6 @@ const KRSRuleListPage = async (
             {canDeleteData && (<FormContainer table="krsRules" type="delete" id={`${item.id}`} />)}
           </div>
         </td >
-        {/* <td className="hidden md:table-cell md:px-4">{item.statusRegister}</td>
-      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-0">
-        <div className="flex flex-col col-span-5 items-start">
-          <h3 className="font-semibold">{item.name}</h3>
-        </div>
-        <div className="flex items-center justify-end gap-2 md:hidden ">
-          <ModalAction>
-            <div className="flex items-center gap-3">
-              {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
-              {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
-            </div>
-          </ModalAction>
-        </div>
-      </td>
-      <td>
-        <div className="hidden md:flex items-center gap-2">
-          {canUpdateData && (<FormContainer table="major" type="update" data={item} />)}
-          {canDeleteData && (<FormContainer table="major" type="delete" id={item.id} />)}
-        </div>
-      </td> */}
       </tr>
     );
   }

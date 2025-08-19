@@ -24,7 +24,7 @@ const Navbar = async () => {
     },
   })
 
-  const userLecturerName = lecturerName({
+  const userLecturerName = await lecturerName({
     frontTitle: user?.lecturer?.frontTitle,
     name: user?.lecturer?.name,
     backTitle: user?.lecturer?.backTitle,

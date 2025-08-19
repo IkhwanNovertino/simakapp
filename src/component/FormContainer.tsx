@@ -217,7 +217,6 @@ const FormContainer = async (
         // const periodClass
         const periodClass = data?.periodId || '098';
         const semesterType = data?.periodName?.split(" ")[0] || "GANJIL";
-        console.log('SEMESTERTYPE', semesterType);
 
         const semesterClass = semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
         const period = await prisma.period.findMany({
@@ -410,36 +409,6 @@ const FormContainer = async (
         relatedData = { period: periodAcademic, courses: curriculum }
         break;
       case "khsRevision":
-        // const khsMany = await prisma.khsDetail.findMany({
-        //   where: {
-        //     khsId: data?.khsId,
-        //     courseId: data?.courseId,
-        //   }
-        // })
-        // const assessmentDetail = await prisma.course.findFirst({
-        //   where: {
-        //     id: data.courseId,
-        //   },
-        //   select: {
-        //     code: true,
-        //     name: true,
-        //     assessment: {
-        //       include: {
-        //         assessmentDetail: {
-        //           include: {
-        //             grade: true,
-        //           },
-        //           orderBy: {
-        //             seq_number: 'desc',
-        //           }
-        //         },
-        //       }
-        //     }
-        //   }
-        // });
-        // console.log('ASSESSMENTDETAIL', assessmentDetail.assessment.assessmentDetail);
-
-        // relatedData = { period: periodAcademicRevision, courses: curriculumRevision }
         break;
       default:
         break;

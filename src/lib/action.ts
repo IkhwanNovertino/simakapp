@@ -3511,6 +3511,39 @@ export const updateKhsGradeSubmitted = async (state: stateType, data: FormData) 
     }
   }
 }
+export const updateKhsGradeUnsubmitted = async (state: stateType, data: FormData) => {
+  try {
+    const khsDetailId = data.get("khsDetailId") as string;
+    const arrKhsDetailId = khsDetailId.split(",");
+    console.log(arrKhsDetailId);
+
+    await prisma.$transaction(async (prisma: any) => {
+      for (const items of arrKhsDetailId) {
+        const dataUpdate = await prisma.khsDetail.update({
+          where: {
+            id: items
+          },
+          data: {
+            status: AnnouncementKhs.DRAFT,
+          },
+        });
+        // console.log('finish update status Annnouncement');
+      }
+    })
+    
+    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
 export const updateKhsGradeRevision = async (state: stateType, data: KhsGradeRevisionInputs) => {
   try {
 
@@ -3532,7 +3565,7 @@ export const updateKhsGradeRevision = async (state: stateType, data: KhsGradeRev
           finalScore: data?.finalScore,
           gradeLetter: data?.gradeLetter,
           weight: data?.weight,
-          status: AnnouncementKhs.ANNOUNCEMENT,
+          status: AnnouncementKhs.SUBMITTED,
           version: khsDetailCurrent?.version + 1,
           predecessorId: data?.id,
         },
@@ -3736,17 +3769,15 @@ export const createRplTranscript = async (state: stateType, data: RplInputs) => 
 
 export const createKrsOverride = async (state: stateType, data: KrsOverrideInputs) => {
   try {
-    console.log('RESULT', data);
     await prisma.krsOverride.create({
       data: {
-        krsId: data.id,
+        krsId: data.krsId,
         ips_allowed: data.ips_allowed,
         sks_allowed: data.sks_allowed,
       }
     })
     
     return { success: true, error: false, message: "Data berhasil ditambahkan"};
-    
   } catch (err) {
     try {
       handlePrismaError(err)

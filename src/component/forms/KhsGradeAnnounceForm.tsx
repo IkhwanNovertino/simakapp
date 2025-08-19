@@ -1,21 +1,30 @@
 'use client';
 
-import { updateKhsGradeAnnouncement, updateKhsGradeSubmitted } from "@/lib/action";
+import { updateKhsGradeAnnouncement, updateKhsGradeSubmitted, updateKhsGradeUnsubmitted } from "@/lib/action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface TypeKhsGradeAnnounceForm {
-  type: "announcement" | "submitted",
+  type: "announcement" | "submitted" | "unsubmitted",
   data?: any
 }
 
 const KhsGradeAnnounceForm = ({ type, data }: TypeKhsGradeAnnounceForm) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-  let action = type === "announcement" ? updateKhsGradeAnnouncement : updateKhsGradeSubmitted;
-  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
+  const actionType = {
+    announcement: updateKhsGradeAnnouncement,
+    submitted: updateKhsGradeSubmitted,
+    unsubmitted: updateKhsGradeUnsubmitted,
+  };
+  const namedType = {
+    announcement: "umumkan nilai",
+    submitted: "serahkan ke prodi",
+    unsubmitted: "kembalikan ke dosen",
+  };
+  const [state, formAction] = useActionState(actionType[type], { success: false, error: false, message: "" });
   console.log('KhsGradeAnnounceForm', data);
 
   useEffect(() => {
@@ -31,7 +40,7 @@ const KhsGradeAnnounceForm = ({ type, data }: TypeKhsGradeAnnounceForm) => {
         onClick={() => setOpen(true)}
         className={`text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-secondary/70 rounded-full cursor-pointer capitalize hover:bg-secondary`}
       >
-        {type === "announcement" ? "umumkan nilai" : "serahkan nilai"}
+        {namedType[type]}
       </button>
 
       {open && (
@@ -45,7 +54,14 @@ const KhsGradeAnnounceForm = ({ type, data }: TypeKhsGradeAnnounceForm) => {
             </div>
             <div>
               <form action={formAction} className="flex flex-col gap-8">
-                <h1 className="text-xl font-semibold">{type === "announcement" ? "Umumkan Nilai Mata kuliah" : "Serahkan Nilai Mata kuliah"}</h1>
+                <h1 className="text-xl font-semibold capitalize">{namedType[type]}</h1>
+                {type === "submitted" && (
+                  <div className="w-full py-4 px-2 bg-amber-300 rounded-md flex flex-col items-center">
+                    <span className="font-semibold text-xs">
+                      Harap data nilai telah diisi. hubungi Admin untuk pembatalan/perbaikan. Atau lakukan di Form Revisi Nilai.
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between flex-wrap gap-4">
                   <div className="hidden">
                     <label
@@ -98,7 +114,7 @@ const KhsGradeAnnounceForm = ({ type, data }: TypeKhsGradeAnnounceForm) => {
                 </div>
                 {state?.error && (<span className="text-xs text-red-400">{state?.message}</span>)}
                 <button className="bg-blue-400 text-white p-2 rounded-md capitalize">
-                  {type === "announcement" ? "umumkan nilai" : "serahkan nilai"}
+                  {namedType[type]}
                 </button>
               </form>
             </div>

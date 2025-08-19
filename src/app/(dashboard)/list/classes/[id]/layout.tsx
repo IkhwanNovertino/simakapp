@@ -21,6 +21,8 @@ const ClassDetailLayout = async (
       include: {
         lecturer: true,
         course: true,
+        period: true,
+        scheduleDetail: true,
       }
     }),
   ]);
@@ -30,6 +32,7 @@ const ClassDetailLayout = async (
     { href: `/list/classes/${id}/syllabus`, label: "Perkuliahan" },
     { href: `/list/classes/${id}/presence`, label: "Presensi" },
     { href: `/list/classes/${id}/assessment`, label: "Penilaian" },
+    { href: `/list/classes/${id}/revision`, label: "Revisi" },
   ];
 
   return (
@@ -63,12 +66,12 @@ const ClassDetailLayout = async (
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="w-3/10">Thn. Akad</span>
                 <span >:</span>
-                <span className="w-6/10 self-start">GANJIL 2023/2024</span>
+                <span className="w-6/10 self-start">{dataAcademicClass?.period?.name}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="w-3/10">Semester</span>
                 <span>:</span>
-                <span className="w-6/10 self-start">3</span>
+                <span className="w-6/10 self-start">{dataAcademicClass?.semester || 0}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="w-3/10">Jadwal</span>

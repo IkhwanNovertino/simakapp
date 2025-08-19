@@ -58,7 +58,7 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <h1 className="text-xl font-semibold">{"Tambahkan Data Nilai Mata Kuliah"}</h1>
+      <h1 className="text-xl font-semibold">{"Revisi Nilai Mata Kuliah"}</h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
@@ -107,7 +107,18 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
         Penilaian Sebelumnya
       </span>
       <div className="flex justify-between flex-wrap gap-2">
-        {data?.khsGrade.map((items: any) => (
+        {data?.predecessor ? data.predecessor.khsGrade.map((items: any) => (
+          <div key={items.id} className="flex flex-col gap-2 w-full md:w-2/7">
+            <InputField
+              type="number"
+              label={`${items.assessmentDetail?.grade?.name} (${items.percentage}%)`}
+              name={items.assessmentDetail?.grade?.name}
+              register={register}
+              defaultValue={items.score}
+              inputProps={{ disabled: true }}
+            />
+          </div>
+        )) : data?.khsGrade.map((items: any) => (
           <div key={items.id} className="flex flex-col gap-2 w-full md:w-2/7">
             <InputField
               type="number"
@@ -119,12 +130,24 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
             />
           </div>
         ))}
+        {/* {data?.khsGrade.map((items: any) => (
+          <div key={items.id} className="flex flex-col gap-2 w-full md:w-2/7">
+            <InputField
+              type="number"
+              label={`${items.assessmentDetail?.grade?.name} (${items.percentage}%)`}
+              name={items.assessmentDetail?.grade?.name}
+              register={register}
+              defaultValue={items.score}
+              inputProps={{ disabled: true }}
+            />
+          </div>
+        ))} */}
         <div className="flex flex-col gap-2 w-full md:w-2/7">
           <InputField
             label="Nilai Akhir | Abs"
             name="Nilai Akhir Abs"
             register={register}
-            defaultValue={`${data?.finalScore} | ${data?.gradeLetter}`}
+            defaultValue={`${data?.predecessor ? data?.predecessor?.finalScore : data?.finalScore} | ${data?.predecessor ? data?.predecessor?.gradeLetter : data?.gradeLetter}`}
             inputProps={{ disabled: true }}
           />
         </div>

@@ -47,7 +47,7 @@ const PresenceAllForm = dynamic(() => import("./forms/PresenceAllForm"), { loadi
 const forms: {
   [key: string]: (
     setOpen: Dispatch<SetStateAction<boolean>>,
-    type: "create" | "update" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon",
+    type: "create" | "update" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon" | "revision",
     data?: any,
     relatedData?: any,
   ) => JSX.Element;
@@ -375,13 +375,24 @@ const namaTabelMap = {
   presenceAll: "presensi",
 }
 
+const iconMap = {
+  create: "create",
+  createMany: "createMany",
+  createUser: "createUser",
+  update: "update",
+  updateUser: "updateUser",
+  delete: "delete",
+  presenceActive: "attendance-white",
+  presenceNon: "attendance-white",
+  revision: "update",
+}
+
 const FormModal = ({ table, type, label, data, id, relatedData }: FormModalProps & { relatedData?: any }) => {
   const size = type === "create" || type === "createMany" ? "w-8 h-8" : "w-7 h-7";
   const bgColor = (type === "createUser" && "bg-secondary") || (type === "create" && "bg-secondary")
-    || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-purple-500/60")
+    || (type === "update" && "bg-ternary") || (type === "updateUser" && "bg-purple-500/60") || (type === "revision" && "bg-purple-500/60")
     || (type === "delete" && "bg-accent") || (type === "createMany" && "bg-secondary")
     || (type === "presenceActive" && "bg-primary-dark") || (type === "presenceNon" && "bg-accent-dark");
-  const icon = type === "presenceActive" || type === "presenceNon" ? 'attendance-white' : type;
   const [open, setOpen] = useState(false);
 
   const Form = () => {
@@ -408,7 +419,7 @@ const FormModal = ({ table, type, label, data, id, relatedData }: FormModalProps
           Hapus
         </button>
       </form>
-    ) : type === "create" || type === "update" || type === "createUser" || type === "updateUser" || type === "createMany" || type === "presenceActive" || type === "presenceNon" ? (
+    ) : type === "create" || type === "update" || type === "createUser" || type === "updateUser" || type === "createMany" || type === "presenceActive" || type === "presenceNon" || type === "revision" ? (
       forms[table](setOpen, type, data, relatedData)
     ) : (
       "Form not found!"
@@ -421,7 +432,7 @@ const FormModal = ({ table, type, label, data, id, relatedData }: FormModalProps
         className={`${size} flex items-center justify-center rounded-full ${bgColor}`}
         onClick={() => setOpen(true)}
       >
-        <Image src={`/icon/${icon}.svg`} alt={`icon-${icon}`} width={20} height={20} />  {label}
+        <Image src={`/icon/${iconMap[type]}.svg`} alt={`icon-${iconMap[type]}`} width={20} height={20} />  {label}
       </button>
 
       {open && (

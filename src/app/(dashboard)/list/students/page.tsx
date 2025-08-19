@@ -115,7 +115,7 @@ const StudentListPage = async (
   ];
 
   const renderRow = (item: StudentDataType) => {
-    const semesterStyle = ["p-1 rounded-lg text-[10px] font-bold self-start"];
+    const semesterStyle = ["p-1 rounded-lg text-[9px] font-bold self-start"];
     if (item.studentStatus === "NONAKTIF") semesterStyle.push("text-rose-500 bg-rose-100");
     if (item.studentStatus === "AKTIF") semesterStyle.push("text-green-500 bg-green-100");
     if (item.studentStatus === "CUTI") semesterStyle.push("text-amber-500 bg-amber-100");

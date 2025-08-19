@@ -103,14 +103,14 @@ const menuItems = [
     title: "PERKULIAHAN",
     items: [
       {
-        icon: "/icon/krs.svg",
-        label: "KRS",
-        href: "/list/krs",
-      },
-      {
         icon: "/icon/class.svg",
         label: "Kelas",
         href: "/list/classes",
+      },
+      {
+        icon: "/icon/krs.svg",
+        label: "KRS",
+        href: "/list/krs",
       },
       {
         icon: "/icon/attendance.svg",

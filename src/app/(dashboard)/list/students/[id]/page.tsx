@@ -33,6 +33,7 @@ const SingleStudentPage = async (
         select: { code: true, name: true }
       },
     },
+    take: 7,
     distinct: ["courseId"],
   });
 
@@ -49,6 +50,7 @@ const SingleStudentPage = async (
         select: { code: true, name: true }
       },
     },
+    take: 7,
   })
 
   if (!dataStudent) {
@@ -196,7 +198,7 @@ const SingleStudentPage = async (
 
           <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start xl:justify-end">
             <div className="flex items-center gap-4 self-end">
-              <FormContainer table="rpl" type="create" data={dataStudent} />
+              {dataStudent?.statusRegister !== "BARU" && (<FormContainer table="rpl" type="create" data={dataStudent} />)}
             </div>
           </div>
           <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start ">

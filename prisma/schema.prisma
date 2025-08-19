@@ -477,7 +477,7 @@ model KhsDetail {
   status      AnnouncementKhs @default(DRAFT)
 
   // data versioning untuk revisi
-  version       Int        @default(1)
+  version       Int        @default(0)
   isLatest      Boolean    @default(true)
   validFrom     DateTime   @default(now())
   validTo       DateTime?
