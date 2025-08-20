@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { FormProps } from "@/lib/datatype";
 import { getFinalScore, getGradeLetter } from "@/lib/utils";
 import { KhsGradeRevisionInputs, khsGradeRevisionSchema } from "@/lib/formValidationSchema";
-import { updateKhsGradeRevision } from "@/lib/action";
+import { updateKhsGradeRevAnnouncement, updateKhsGradeRevision } from "@/lib/action";
 
 
 const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
@@ -36,7 +36,8 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
   const { fields } = useFieldArray({ control, name: "khsGrade" })
   const krsGradeWatch = useWatch({ control, name: "khsGrade" });
 
-  const [state, formAction] = useActionState(updateKhsGradeRevision, { success: false, error: false, message: "" });
+  const action = type === "revision" ? updateKhsGradeRevision : updateKhsGradeRevAnnouncement;
+  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))
@@ -62,7 +63,7 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
 
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <div className="hidden">
+          <div className="visible">
             <>
               <InputField
                 label="id"

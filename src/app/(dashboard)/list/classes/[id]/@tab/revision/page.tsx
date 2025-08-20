@@ -148,8 +148,6 @@ const ClassSingleTabAssessmentPage = async (
         },
       },
     })
-    console.log('PREDECESSOR', students[0]);
-
 
     const dataTransformed = [];
     for (const items of students) {
@@ -225,11 +223,20 @@ const ClassSingleTabAssessmentPage = async (
       accessor: 'abs',
       className: "hidden md:table-cell w-8 text-[10px] lowercase px-2"
     },
-    {
-      header: 'Actions',
-      accessor: 'actions',
-      className: "hidden md:table-cell text-xs"
-    },
+    ...(user?.roleType === "OPERATOR"
+      ? [
+        {
+          header: 'Actions',
+          accessor: 'actions',
+          className: "hidden md:table-cell text-xs"
+        },
+      ]
+      : []),
+    // {
+    //   header: 'Actions',
+    //   accessor: 'actions',
+    //   className: "hidden md:table-cell text-xs"
+    // },
   ];
 
   const renderRow = (item: any) => {
@@ -257,14 +264,16 @@ const ClassSingleTabAssessmentPage = async (
         ))}
         <td className="hidden md:table-cell w-10 px-2 text-xs font-medium">{item.finalScore || 0}</td>
         <td className="hidden md:table-cell w-10 px-2 text-xs font-medium">{item.gradeLetter || "TBC"}</td>
-        <td className="hidden md:table-cell text-xs">
-          <div className="flex items-center gap-2">
-            <div className="hidden md:flex items-center gap-2">
-              <FormContainer type="revision" table="khsRevision" data={item} />
-              <FormContainer type="delete" table="khsGrade" id={item.id} />
+        {user?.roleType === "OPERATOR" && (
+          <td className="hidden md:table-cell text-xs">
+            <div className="flex items-center gap-2">
+              <div className="hidden md:flex items-center gap-2">
+                <FormContainer type="update" table="khsRevision" data={item} />
+                <FormContainer type="delete" table="khsGrade" id={item.id} />
+              </div>
             </div>
-          </div>
-        </td>
+          </td>
+        )}
       </tr>
     );
   };

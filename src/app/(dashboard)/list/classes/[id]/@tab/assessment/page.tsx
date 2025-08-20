@@ -262,9 +262,9 @@ const ClassSingleTabAssessmentPage = async (
               download
               target="_blank"
               rel="noopener noreferrer"
-              className="text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-primary/70 rounded-full cursor-pointer capitalize hover:bg-primary"
+              className="text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-primary/70 rounded-full cursor-pointer hover:bg-primary"
             >
-              Export
+              Export .xlsx
             </a>
             <ImportForm />
           </div>

@@ -2617,10 +2617,20 @@ export const updateKrsDetail = async (state: stateType, data: FormData) => {
           courseId: krsDetailUpdate.courseId,
           khsGrade: {
             create: khsGradeComponent
-          }
+          },
+        },
+      });
+
+      // update krs status
+      await prisma.krs.update({
+        where: {
+          id: krsDetailUpdate.krsId,
+        },
+        data: {
+          isStatusForm: StudyPlanStatus.APPROVED,
         }
-      })
-    })
+      });
+    });
     
     return { success: true, error: false, message: "Status mata kuliah telah diubah" };
   } catch (err: any) {
@@ -2646,6 +2656,15 @@ export const deleteKrsDetail = async (state: stateType, data: FormData) => {
           id: id,
         }
       });
+
+      await prisma.krs.update({
+        where: {
+          id: krsDetail.krsId,
+        },
+        data: {
+          isStatusForm: StudyPlanStatus.NEED_REVISION,
+        }
+      })
 
       // menghapus course di khsDetail
       await prisma.khsDetail.deleteMany({
@@ -3584,6 +3603,66 @@ export const updateKhsGradeRevision = async (state: stateType, data: KhsGradeRev
 
       // update IPS dan SKS
       // dapatkan data KHS untuk menghitung jumlah SKS, jumlah SKSxNAB dan IPS
+      // const khsDetailByKhsId = await prisma.khsDetail.findMany({
+      //   where: {
+      //     khsId: data.khsId,
+      //     isLatest: true,
+      //   },
+      //   include: {
+      //     course: true
+      //   },
+      // });
+      
+      // const totalSKS = khsDetailByKhsId
+      //   .map((item: any) => item.course.sks)
+      //   .reduce((acc: any, init: any) => acc + init, 0);
+      // const totalSKSxNAB = khsDetailByKhsId
+      //   .map((items: any) => items.course.sks * items.weight)
+      //   .reduce((acc: any, init: any) => acc + init, 0);
+      
+      // const IPK = Number(totalSKSxNAB / totalSKS).toFixed(2) 
+      // const maxSKS = await calculatingSKSLimits(parseFloat(IPK))
+      
+      // updateIPK dan mxSKS di KHS
+      // await prisma.khs.update({
+      //   where: {
+      //     id: data.khsId,
+      //   },
+      //   data: {
+      //     ips: parseFloat(IPK),
+      //     maxSks: maxSKS,
+      //   }
+      // })
+    })
+    console.log('DATA UPDATE KRH GRADE REVISION', data);
+    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateKhsGradeRevAnnouncement = async (state: stateType, data: KhsGradeRevisionInputs) => {
+  try {
+
+    await prisma.$transaction(async (prisma: any) => {
+      await prisma.khsDetail.update({
+        where: {
+          id: data?.id,
+        },
+        data: {
+          status: AnnouncementKhs.ANNOUNCEMENT,
+        },
+      });
+
+      // update IPS dan SKS
+      // dapatkan data KHS untuk menghitung jumlah SKS, jumlah SKSxNAB dan IPS
         const khsDetailByKhsId = await prisma.khsDetail.findMany({
           where: {
             khsId: data.khsId,
@@ -3593,7 +3672,6 @@ export const updateKhsGradeRevision = async (state: stateType, data: KhsGradeRev
             course: true
           },
         });
-        // console.log(`get data khsDetail By khsId`);
         
         const totalSKS = khsDetailByKhsId
           .map((item: any) => item.course.sks)
