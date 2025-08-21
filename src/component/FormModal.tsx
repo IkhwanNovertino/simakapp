@@ -370,7 +370,7 @@ const namaTabelMap = {
   time: "waktu pelajaran",
   schedule: "jadwal",
   scheduleDetail: "jadwal",
-  presence: "Jurnal Perkuliahan",
+  presence: "jurnal perkuliahan",
   presenceDetail: "presensi",
   presenceAll: "presensi",
 }

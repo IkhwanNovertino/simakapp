@@ -23,19 +23,64 @@ export const resourceData = [
   { pathname: "transkip", name: "transkip", nama: "transkip" },
   { pathname: "events", name: "event", nama: "event" },
   { pathname: "announcements", name: "announcements", nama: "pengumuman" },
-  { pathname: "test", name: "test", nama: "testForCRUD" },
 ];
 export const actionPermission = ["view", "create", "edit", "delete"];
 
-export const StatusRegister = ["BARU", "TRANSFER_KREDIT", "RENIM", "PEROLEHAN_KREDIT"]
-export const degree = ["S1", "S2", "S3"];
-export const gender = ["PRIA", "WANITA"];
-export const religion = ["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"];
-export const status = ["NONAKTIF", "AKTIF", "CUTI", "DO", "MENGUNDURKAN_DIRI", "LULUS"];
-export const courseType = ["WAJIB", "PILIHAN"];
-export const semester = ["GANJIL", "GENAP"];
-export const dayName = ["SENIN", "SELASA", "RABU", "KAMIS", "JUM'AT", "SABTU", "MINGGU"];
-export const learningMethod = ["CERAMAH", "DISKUSI", "TUGAS", "LATIHAN"];
+export const StatusRegister = [
+  "BARU",
+  "TRANSFER_KREDIT",
+  "RENIM",
+  "PEROLEHAN_KREDIT"
+];
+export const degree = [
+  "S1",
+  "S2",
+  "S3"
+];
+export const gender = [
+  "PRIA", 
+  "WANITA"
+];
+export const religion = [
+  "ISLAM", 
+  "KATOLIK", 
+  "PROTESTAN", 
+  "BUDDHA", 
+  "HINDU", 
+  "KONGHUCU", 
+  "DLL"
+];
+export const status = [
+  "NONAKTIF", 
+  "AKTIF", 
+  "CUTI", 
+  "DO", 
+  "MENGUNDURKAN_DIRI", 
+  "LULUS"
+];
+export const courseType = [
+  "WAJIB", 
+  "PILIHAN"
+];
+export const semester = [
+  "GANJIL", 
+  "GENAP"
+];
+export const dayName = [
+  "SENIN", 
+  "SELASA", 
+  "RABU", 
+  "KAMIS", 
+  "JUM'AT", 
+  "SABTU", 
+  "MINGGU"
+];
+export const learningMethod = [
+  "CERAMAH", 
+  "DISKUSI", 
+  "TUGAS", 
+  "LATIHAN"
+];
 export const presenceDuration = [
   {label: "AKTIF", value: "AKTIF"},
   {label: "NONAKTIF", value: "NONAKTIF"},
@@ -49,6 +94,9 @@ export const presenceDuration = [
   {label: "2 JAM", value: "HOUR2"},
   {label: "12 JAM", value: "HOUR12"},
 ];
-
-export const position = ["Wakabid Akademik", "Kaprodi TI", "Kaprodi SI"];
+export const position = [
+  "Wakabid Akademik", 
+  "Kaprodi TI", 
+  "Kaprodi SI"
+];
 
