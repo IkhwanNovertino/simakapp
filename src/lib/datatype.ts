@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import React, { Dispatch, SetStateAction } from "react";
 
 export interface FormModalProps {
   table: "permission"
@@ -54,4 +54,22 @@ export type stateType = {
   success: boolean;
   error: boolean;
   message: string;
+}
+
+export type PdfType = "reregister" | "assessment" | "khs" | "krs";
+
+export interface GeneratePdfProps {
+  data?: any,
+  img?: Buffer | string,
+};
+
+export interface ButtonPdfDownloadProps {
+  id: string;
+  type: PdfType;
+  label?: string;
+};
+
+export interface RenderPdfProps {
+  type: PdfType;
+  data: any;
 }

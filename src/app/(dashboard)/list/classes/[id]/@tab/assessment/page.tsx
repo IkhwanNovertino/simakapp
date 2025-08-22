@@ -1,4 +1,5 @@
 
+import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import FormContainer from "@/component/FormContainer";
 import KhsGradeAnnounceForm from "@/component/forms/KhsGradeAnnounceForm";
 import ImportForm from "@/component/ImportForm";
@@ -279,7 +280,7 @@ const ClassSingleTabAssessmentPage = async (
             >
               Export .xlsx
             </a>
-            <a
+            {/* <a
               href={`/api/grade?academicClassId=${id}`}
               download
               target="_blank"
@@ -287,7 +288,12 @@ const ClassSingleTabAssessmentPage = async (
               className="text-xs font-medium w-fit py-2 px-4 text-gray-900 bg-primary/70 rounded-full cursor-pointer hover:bg-primary"
             >
               Export .pdf
-            </a>
+            </a> */}
+            <ButtonPdfDownload
+              id={id}
+              type="assessment"
+              label="Export .pdf"
+            />
           </div>
         )}
         {user?.roleType === "OPERATOR" && (
