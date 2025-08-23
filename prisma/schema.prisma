@@ -112,6 +112,7 @@ model Assessment {
 model GradeComponent {
   id               String             @id @default(uuid())
   name             String?            @unique
+  acronym          String?            @unique
   assessmentDetail AssessmentDetail[]
 
   @@map("sb25_grade_components")

@@ -1,6 +1,6 @@
 import { role } from "@/lib/data";
 import { courseType } from "@/lib/setting";
-import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterStatus, SemesterType, StudentStatus, StudyPlanStatus } from "@prisma/client";
+import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterStatus, SemesterType, StatusRegister, StudentStatus, StudyPlanStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -119,20 +119,20 @@ async function main() {
   // GradeComponent
   await prisma.gradeComponent.createMany({
     data: [
-      { name: "Absensi dan Aktivitas" },
-      { name: "Tugas Kelompok" },
-      { name: "Tugas Mandiri" },
-      { name: "Ujian Tengah Semester" },
-      { name: "Ujian Akhir Semester" },
-      { name: "Praktikum" },
-      { name: "Report/ Laporan" },
-      { name: "Presentasi Laporan" },
-      { name: "Kejelasan Permasalahan Penelitian" },
-      { name: "Tinjauan Pustaka dan Landasan Teori" },
-      { name: "Kelengkapan Data" },
-      { name: "Instrumen Penelitian" },
-      { name: "Metode Pengujian" },
-      { name: "Demonstrasi" },
+      { name: "Absensi dan Aktivitas", acronym: "absns" },
+      { name: "Tugas Kelompok", acronym: "kel" },
+      { name: "Tugas Mandiri", acronym: "mand" },
+      { name: "Ujian Tengah Semester", acronym: "uts" },
+      { name: "Ujian Akhir Semester", acronym: "uas" },
+      { name: "Praktikum", acronym: "prakti" },
+      { name: "Report/ Laporan", acronym: "lapor" },
+      { name: "Presentasi Laporan", acronym: "prest" },
+      { name: "Kejelasan Permasalahan Penelitian", acronym: "KPP" },
+      { name: "Tinjauan Pustaka dan Landasan Teori", acronym: "pustaka" },
+      { name: "Kelengkapan Data", acronym: "kelDa" },
+      { name: "Instrumen Penelitian", acronym: "Inspen" },
+      { name: "Metode Pengujian", acronym: "metuji" },
+      { name: "Demonstrasi", acronym: "demo" },
     ]
   })
 
@@ -997,6 +997,16 @@ async function main() {
     }
   })
 
+  // Jabatan/Position
+  await prisma.position.createMany({
+    data: [
+      {personName: "Wakabid Surname", positionName: "Wakabid Akademik"},
+      {personName: "Kaprodisi Surname", positionName: "Kaprodi SI"},
+      {personName: "Kaproditi Surname", positionName: "Kaprodi TI"},
+    ]
+  })
+
+  // lecturer
   for (let i = 1; i <= 10; i++) {
     await prisma.user.create({
       data: {
@@ -1008,8 +1018,10 @@ async function main() {
           create: {
             npk: `110.0${i}`,
             nidn: `12340001${i}`,
-            name: `Lecturer${i}`,
-            degree: (i % 2 === 0 ? DegreeStatus.S3 : DegreeStatus.S2) ,
+            name: `Lecturer Surname${i}`,
+            frontTitle: (i % 2 === 0 ? "Dr." : ""),
+            backTitle: (i % 2 === 0 ? "S.Kom, M.Sc" : "M.Kom"),
+            degree: (i % 2 === 0 ? DegreeStatus.S3 : DegreeStatus.S2),
             gender: Gender.WANITA,
             religion: Religion.KATOLIK,
             majorId: (i % 2 === 0 ? 1 : 2),
@@ -1027,22 +1039,48 @@ async function main() {
       }
     }
   })
-  // const students = []
-  // for (let i = 0; i < 10; i++) {
-  //   students.push({
-  //     nim: `310124${i % 2 === 0 ? '01' : '02'}210${i}`,
-  //     name: `Student${i + 1}`,
-  //     year: 2024,
-  //     religion: Religion.ISLAM,
-  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-  //     majorId: (i % 2 === 0 ? 1 : 2),
-  //     statusRegister: "BARU",
-  //     lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
-  //   })
-  // };
-  // const student = await prisma.student.createMany({
-  //   data: students,
-  // })
+
+  // Student
+  const students = []
+  for (let i = 1; i <= 10; i++) {
+    students.push({
+      nim: `310124${i % 2 === 0 ? '01' : '02'}240${i}`,
+      name: `Student Surname 24${i}`,
+      year: 2024,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 === 0 ? 1 : 2),
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+    })
+  };
+  for (let i = 1; i <= 10; i++) {
+    students.push({
+      nim: `310123${i % 2 === 0 ? '01' : '02'}230${i}`,
+      name: `Student Surname 23${i}`,
+      year: 2023,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 === 0 ? 1 : 2),
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+    })
+  };
+  for (let i = 1; i <= 10; i++) {
+    students.push({
+      nim: `310122${i % 2 === 0 ? '01' : '02'}220${i}`,
+      name: `Student Surname 22${i}`,
+      year: 2022,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 === 0 ? 1 : 2),
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+    })
+  };
+  const student = await prisma.student.createMany({
+    data: students,
+  })
 
   // const student = await prisma.student.create({
   //     data: {

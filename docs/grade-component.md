@@ -23,3 +23,6 @@
     - Tugas Kelompok
     - UTS
     - UAS
+- acronym
+  - String?
+  - required
