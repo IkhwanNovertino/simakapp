@@ -183,7 +183,9 @@ const KHSDetailPage = async (
           <div className="flex flex-col md:flex-row items-center gap-4 w-full md:justify-between">
             <h1 className="text-lg font-semibold">Kartu Hasil Studi</h1>
             <div className="flex items-center gap-4 self-end">
-              <ButtonPdfDownload id={id} type="khs" label="Export KHS .pdf" />
+              {totalSKS > 0 && (
+                <ButtonPdfDownload id={id} type="khs" label="Export KHS .pdf" />
+              )}
             </div>
           </div>
         </div>
