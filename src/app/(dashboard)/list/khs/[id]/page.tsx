@@ -1,4 +1,5 @@
 
+import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { AnnouncementKhs, Course, KhsDetail } from "@prisma/client";
@@ -10,74 +11,6 @@ const KHSDetailPage = async (
   { params }: { params: Promise<{ id: string }> }
 ) => {
   const { id } = await params;
-
-  // const dataKhs = await prisma.khs.findUnique({
-  //   where: {
-  //     id: id,
-  //   },
-  //   include: {
-  //     khsDetail: {
-  //       include: {
-  //         course: true,
-  //         khsGrade: {
-  //           include: {
-  //             assessmentDetail: {
-  //               include: {
-  //                 grade: true,
-  //               }
-  //             }
-  //           }
-  //         }
-  //       }
-  //     },
-  //     student: true,
-  //     period: true,
-  //   }
-  // });
-  // const dataKhsDetailAcc = dataKhs.khsDetail.map((items: any) => items.isLatest === true);
-
-  // const cekStatusAnnouncement = dataKhsDetailAcc.filter((item: any) => item.status === AnnouncementKhs.DRAFT);
-
-  // let khs;
-  // let totalSKS;
-  // let totalSKSxNAB;
-  // let limitSKS;
-
-  // if (cekStatusAnnouncement.length === 0) {
-  //   khs = {
-  //     ...dataKhs,
-  //     ips: Number(dataKhs?.ips),
-  //     khsDetail: dataKhs.khsDetail.map((items: KhsDetail) => ({
-  //       ...items,
-  //       finalScore: Number(items.finalScore),
-  //       weight: Number(items.weight),
-  //     })),
-  //   };
-  //   totalSKS = khs?.khsDetail
-  //     .map((item: any) => item.course.sks)
-  //     .reduce((acc: any, init: any) => acc + init, 0);
-  //   totalSKSxNAB = khs?.khsDetail
-  //     .map((item: any) => item.course.sks * item.weight)
-  //     .reduce((acc: any, init: any) => acc + init, 0);
-  //   // ipk = Number(totalSKSxNAB / totalSKS).toFixed(2);
-  //   limitSKS = `${dataKhs.maxSks - 1} - ${dataKhs.maxSks}`;
-  // } else {
-  //   khs = {
-  //     ...dataKhs,
-  //     ips: 0,
-  //     khsDetail: dataKhs.khsDetail.map((items: KhsDetail) => ({
-  //       ...items,
-  //       gradeLetter: "E",
-  //       finalScore: 0,
-  //       weight: 0,
-  //     })),
-  //   };
-  //   totalSKS = khs?.khsDetail
-  //     .map((item: any) => item.course.sks)
-  //     .reduce((acc: any, init: any) => acc + init, 0);
-  //   totalSKSxNAB = 0;
-  //   limitSKS = 0
-  // }
 
   const [student, khs, khsDetail, totalSKS, totalSKSxNAB, limitSKS] = await prisma.$transaction(async (prisma: any) => {
     let khs = await prisma.khs.findUnique({
@@ -249,6 +182,9 @@ const KHSDetailPage = async (
         <div className="flex">
           <div className="flex flex-col md:flex-row items-center gap-4 w-full md:justify-between">
             <h1 className="text-lg font-semibold">Kartu Hasil Studi</h1>
+            <div className="flex items-center gap-4 self-end">
+              <ButtonPdfDownload id={id} type="khs" label="Export KHS .pdf" />
+            </div>
           </div>
         </div>
         <Table columns={columns} renderRow={renderRow} data={khsDetail} />
