@@ -312,6 +312,76 @@ export async function GET(req: NextRequest) {
             'Content-Disposition': `attachment; filename=${type}.pdf`,
           },
         });
+      case "reregister":
+        const [reregisterId, studentId] = uid.split(':');
+        const reregister = await prisma.reregisterDetail.findUnique({
+          where: {
+            reregisterId_studentId: {
+              reregisterId: reregisterId,
+              studentId: studentId,
+            },
+          },
+          select: {
+            semester: true,
+            campusType: true,
+            reregister: {
+              select: {
+                period: {
+                  select: {
+                    semesterType: true,
+                    year: true,
+                  }
+                }
+              },
+            },
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: {
+                  select: { name: true }
+                },
+                placeOfBirth: true,
+                birthday: true,
+                address: true,
+                domicile: true,
+                email: true,
+                hp: true,
+                guardianName: true,
+                guardianNIK: true,
+                guardianHp: true,
+                guardianJob: true,
+                guardianAddress: true,
+                motherName: true,
+                motherNIK: true,
+              },
+            }
+          },
+        });
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            reregister: {
+              ...reregister,
+              student: {
+                ...reregister?.student,
+                birthday: reregister?.student?.birthday ? format(reregister.student.birthday, 'dd/MM/yyyy') : '',
+              },
+              campusType: (reregister?.campusType === "BJB" && 'BANJARBARU') || (reregister?.campusType === "BJM" && 'BANJARMASIN') || reregister?.campusType,
+            },
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=${type}.pdf`,
+          },
+        });
       default:
         break;
     }

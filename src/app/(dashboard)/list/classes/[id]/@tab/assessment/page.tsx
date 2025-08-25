@@ -9,6 +9,7 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { AcademicClassDetail, AnnouncementKhs, Prisma } from "@prisma/client";
+import Image from "next/image";
 
 const ClassSingleTabAssessmentPage = async (
   {
@@ -289,11 +290,11 @@ const ClassSingleTabAssessmentPage = async (
             >
               Export .pdf
             </a> */}
-            <ButtonPdfDownload
-              id={id}
-              type="assessment"
-              label="Export .pdf"
-            />
+            <ButtonPdfDownload id={id} type="assessment">
+              <div className={`w-fit h-fit p-3 text-xs font-medium flex items-center justify-center rounded-full bg-primary-dark`}>
+                <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} /> Export .pdf
+              </div>
+            </ButtonPdfDownload>
           </div>
         )}
         {user?.roleType === "OPERATOR" && (

@@ -244,7 +244,11 @@ const KRSDetailPage = async (
             <h1 className="text-lg font-semibold">Kartu Rencana Studi</h1>
             <div className="flex items-center gap-4 self-end">
               <FormContainer type="create" table="krsDetail" data={dataPassToForm} />
-              <ButtonPdfDownload id={id} type="krs" label="Export KRS .pdf" />
+              <ButtonPdfDownload id={id} type="krs">
+                <div className={`w-8 h-8 flex items-center justify-center rounded-full bg-primary-dark`}>
+                  <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} />
+                </div>
+              </ButtonPdfDownload>
               {user?.roleType !== "STUDENT" && <FormContainer type="update" table="krsOverride" data={dataKrsOverridePassToForm} />}
             </div>
           </div>

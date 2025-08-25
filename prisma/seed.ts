@@ -119,19 +119,19 @@ async function main() {
   // GradeComponent
   await prisma.gradeComponent.createMany({
     data: [
-      { name: "Absensi dan Aktivitas", acronym: "absns" },
-      { name: "Tugas Kelompok", acronym: "kel" },
-      { name: "Tugas Mandiri", acronym: "mand" },
-      { name: "Ujian Tengah Semester", acronym: "uts" },
-      { name: "Ujian Akhir Semester", acronym: "uas" },
-      { name: "Praktikum", acronym: "prakti" },
-      { name: "Report/ Laporan", acronym: "lapor" },
-      { name: "Presentasi Laporan", acronym: "prest" },
+      { name: "Absensi dan Aktivitas", acronym: "absensi" },
+      { name: "Tugas Kelompok", acronym: "kelompok" },
+      { name: "Tugas Mandiri", acronym: "mandiri" },
+      { name: "Ujian Tengah Semester", acronym: "UTS" },
+      { name: "Ujian Akhir Semester", acronym: "UAS" },
+      { name: "Praktikum", acronym: "praktik" },
+      { name: "Report/ Laporan", acronym: "laporan" },
+      { name: "Presentasi Laporan", acronym: "presentasi" },
       { name: "Kejelasan Permasalahan Penelitian", acronym: "KPP" },
       { name: "Tinjauan Pustaka dan Landasan Teori", acronym: "pustaka" },
       { name: "Kelengkapan Data", acronym: "kelDa" },
-      { name: "Instrumen Penelitian", acronym: "Inspen" },
-      { name: "Metode Pengujian", acronym: "metuji" },
+      { name: "Instrumen Penelitian", acronym: "Instrumen" },
+      { name: "Metode Pengujian", acronym: "metode uji" },
       { name: "Demonstrasi", acronym: "demo" },
     ]
   })

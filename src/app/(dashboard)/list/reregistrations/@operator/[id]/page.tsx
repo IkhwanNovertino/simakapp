@@ -1,4 +1,5 @@
 
+import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
@@ -8,6 +9,7 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData } from "@/lib/d
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@prisma/client";
+import Image from "next/image";
 
 type ReregisterDetailDataType = ReregisterDetail & { student: Student & { major: Major } } & { reregister: Reregister };
 
@@ -199,6 +201,13 @@ const ReregisterSinglePage = async (
         <td>
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-2">
+              {item.isStatusForm && (
+                <ButtonPdfDownload type="reregister" id={`${item.reregisterId}:${item.studentId}`}>
+                  <div className={`w-7 h-7 flex items-center justify-center rounded-full bg-primary-dark`}>
+                    <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} />
+                  </div>
+                </ButtonPdfDownload>
+              )}
               {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}
               {canDeleteData && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
             </div>

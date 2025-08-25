@@ -131,52 +131,52 @@ const ReregisterPdf = ({ data, img }: GeneratePdfProps) => {
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Nama Lengkap</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>MUHAMMAD IKHWAN</Text>
+              <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.name}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>NIM</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>310118012620</Text>
+              <Text style={styles.columnData}>{data?.reregister?.student?.nim}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Tempat/Tanggal Lahir</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>MEDAN, 21/11/2020</Text>
+              <Text style={styles.columnData}>{data?.reregister?.student?.placeOfBirth.toUpperCase()}, {data?.reregister?.student?.birthday}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Alamat Sekarang</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>JL. CEMPAKA SARI III NO.22, RT.048, RW.003, KEL. BASIRIH, KEC. BANJARMASIN BARAT, KOTA BANJARMASIN, KALIMANTAN SELATAN</Text>
+              <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.address}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Alamat Asal</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>JL. CEMPAKA SARI III NO.22, RT.048, RW.003, KEL. BASIRIH, KEC. BANJARMASIN BARAT, KOTA BANJARMASIN, KALIMANTAN SELATAN</Text>
+              <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.domicile}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>No. HP</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>081108234509</Text>
+              <Text style={styles.columnData}>{data?.reregister?.student?.hp}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Program Studi</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>SISTEM INFORMASI</Text>
+              <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.major?.name}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Semester</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>GANJIL</Text>
+              <Text style={styles.columnData}>{data?.reregister?.reregister?.period?.semesterType}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Tahun Akademik</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>2023/2024</Text>
+              <Text style={styles.columnData}>{data?.reregister?.reregister?.period?.year}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Kampus</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>BANJARBARU</Text>
+              <Text style={styles.columnData}>{data?.reregister?.campusType}</Text>
             </View>
           </View>
           <View style={styles.table}>
@@ -184,27 +184,27 @@ const ReregisterPdf = ({ data, img }: GeneratePdfProps) => {
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Nama Orang Tua/Wali</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>MUHAMMAD IKHWAN</Text>
+              <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.guardianName}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>NIK Orang Tua/Wali</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>6371035009890009</Text>
+              <Text style={styles.columnData}>{data?.reregister?.student?.guardianNIK}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Alamat Lengkap</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>JL. CEMPAKA SARI III NO.22, RT.048, RW.003, KEL. BASIRIH, KEC. BANJARMASIN BARAT, KOTA BANJARMASIN, KALIMANTAN SELATAN</Text>
+              <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.guardianAddress}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>No. Telp/HP</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>089908779866</Text>
+              <Text style={styles.columnData}>{data?.reregister?.student?.guardianHp}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Pekerjaan</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>PNS</Text>
+              <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.guardianJob}</Text>
             </View>
           </View>
           <View style={styles.table}>
@@ -212,19 +212,19 @@ const ReregisterPdf = ({ data, img }: GeneratePdfProps) => {
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>Nama Ibu Kandung</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>MUHAMMAD IKHWAN</Text>
+              <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.motherName}</Text>
             </View>
             <View style={styles.tableRow}>
               <Text style={styles.columnField}>NIK Ibu Kandung</Text>
               <Text style={styles.columnComma}>:</Text>
-              <Text style={styles.columnData}>6371035009890009</Text>
+              <Text style={styles.columnData}>{data?.reregister?.student?.motherNIK}</Text>
             </View>
           </View>
         </View>
         <View style={styles.footer}>
-          <Text>Banjarbaru, 05 Aug 2023</Text>
+          <Text>Banjarmasin/Banjarbaru, {data?.date}</Text>
           <Text>Mahasiswa</Text>
-          <Text style={{ marginTop: 12, fontWeight: "bold" }}>MUHAMMAD IKHWAN</Text>
+          <Text style={{ marginTop: 12, fontWeight: "bold", textTransform: "uppercase" }}>{data?.reregister?.student?.name}</Text>
         </View>
       </Page>
     </Document>

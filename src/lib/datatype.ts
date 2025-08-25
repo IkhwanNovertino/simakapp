@@ -66,7 +66,7 @@ export interface GeneratePdfProps {
 export interface ButtonPdfDownloadProps {
   id: string;
   type: PdfType;
-  label?: string;
+  children: React.ReactNode;
 };
 
 export interface RenderPdfProps {

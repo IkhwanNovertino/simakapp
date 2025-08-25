@@ -184,7 +184,11 @@ const KHSDetailPage = async (
             <h1 className="text-lg font-semibold">Kartu Hasil Studi</h1>
             <div className="flex items-center gap-4 self-end">
               {totalSKS > 0 && (
-                <ButtonPdfDownload id={id} type="khs" label="Export KHS .pdf" />
+                <ButtonPdfDownload id={id} type="khs">
+                  <div className={`w-8 h-8 flex items-center justify-center rounded-full bg-primary-dark`}>
+                    <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} />
+                  </div>
+                </ButtonPdfDownload>
               )}
             </div>
           </div>
