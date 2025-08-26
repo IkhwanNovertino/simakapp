@@ -128,6 +128,16 @@ const menuItems = [
         href: "/list/transkip",
       },
     ],
+  },
+  {
+    title: "LAPORAN",
+    items: [
+      {
+        icon: "/icon/recap.svg",
+        label: "Rekap Registrasi",
+        href: "/list/recapreregister",
+      },
+    ],
   }
 ];
 

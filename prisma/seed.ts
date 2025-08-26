@@ -30,6 +30,9 @@ async function main() {
     { pathname: "transkip", name: "transkip", nama: "transkip" },
     { pathname: "events", name: "event", nama: "event" },
     { pathname: "announcements", name: "announcements", nama: "pengumuman" },
+    { pathname: "recapreregister", name: "recapreregister", nama: "rekap her-registrasi" },
+    { pathname: "recapkrs", name: "recapkrs", nama: "rekap krs" },
+    { pathname: "recapclass", name: "recapclass", nama: "recap kelas" },
   ];
   const action = ["view", "create", "edit", "delete"];
   for (const resource of permissionData) {

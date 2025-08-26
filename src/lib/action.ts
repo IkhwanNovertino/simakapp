@@ -3855,7 +3855,7 @@ export const createKrsOverride = async (state: stateType, data: KrsOverrideInput
       }
     })
     
-    return { success: true, error: false, message: "Data berhasil ditambahkan"};
+    return { success: true, error: false, message: "Data Krs Override berhasil ditambahkan"};
   } catch (err) {
     try {
       handlePrismaError(err)

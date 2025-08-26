@@ -63,7 +63,7 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
 
       <div className="flex justify-between flex-wrap gap-4">
         {data && (
-          <div className="visible">
+          <div className="hidden">
             <>
               <InputField
                 label="id"

@@ -235,7 +235,20 @@ const KRSDetailPage = async (
             </div>
           </div>
         </div>
-        <div className="bg-white w-full lg:w-1/5 flex flex-col gap-4 p-4 rounded-md"></div>
+        <div className="bg-white w-full lg:w-1/5 flex flex-col gap-4 p-4 rounded-md">
+          <ButtonPdfDownload id={id} type="krs">
+            <div className={`sm:w-8 md:w-full sm:h-16 md:h-18 gap-2 flex items-center justify-center rounded-md bg-primary-dark hover:bg-primary-dark/90`}>
+              <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={32} height={32} />
+              <span className="text-white font-medium text-sm">CETAK KRS</span>
+            </div>
+          </ButtonPdfDownload>
+          <ButtonPdfDownload id={id} type="krs">
+            <div className={`sm:w-8 md:w-full sm:h-16 md:h-18 gap-2 flex items-center justify-center rounded-md bg-gray-400 hover:bg-gray-400/90`}>
+              <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={32} height={32} />
+              <span className="text-white font-medium text-sm">CETAK MK</span>
+            </div>
+          </ButtonPdfDownload>
+        </div>
       </div>
       {/* BOTTOM */}
       <div className="bg-white p-4 rounded-md flex-1 mt-0">
@@ -244,11 +257,7 @@ const KRSDetailPage = async (
             <h1 className="text-lg font-semibold">Kartu Rencana Studi</h1>
             <div className="flex items-center gap-4 self-end">
               <FormContainer type="create" table="krsDetail" data={dataPassToForm} />
-              <ButtonPdfDownload id={id} type="krs">
-                <div className={`w-8 h-8 flex items-center justify-center rounded-full bg-primary-dark`}>
-                  <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} />
-                </div>
-              </ButtonPdfDownload>
+
               {user?.roleType !== "STUDENT" && <FormContainer type="update" table="krsOverride" data={dataKrsOverridePassToForm} />}
             </div>
           </div>
