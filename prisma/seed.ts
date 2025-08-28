@@ -30,9 +30,7 @@ async function main() {
     { pathname: "transkip", name: "transkip", nama: "transkip" },
     { pathname: "events", name: "event", nama: "event" },
     { pathname: "announcements", name: "announcements", nama: "pengumuman" },
-    { pathname: "recapreregister", name: "recapreregister", nama: "rekap her-registrasi" },
-    { pathname: "recapkrs", name: "recapkrs", nama: "rekap krs" },
-    { pathname: "recapclass", name: "recapclass", nama: "recap kelas" },
+    { pathname: "recapitulations", name: "recapitulation", nama: "rekapitulasi" },
   ];
   const action = ["view", "create", "edit", "delete"];
   for (const resource of permissionData) {
@@ -1010,24 +1008,50 @@ async function main() {
   })
 
   // lecturer
-  for (let i = 1; i <= 10; i++) {
+  // buat jadi 15 SI dan 15TI
+  // masing2 prodi 5 dosen wali
+  for (let i = 1; i <= 15; i++) {
     await prisma.user.create({
       data: {
         email: `lecturer${i}@stmik.com`,
         password: bcrypt.hashSync(`lecturer`, 10),
-        roleId: (i % 2 === 0 ? 3: 2),
+        roleId: (i <= 5 ? 3 : 2),
         isStatus: true,
         lecturer: {
           create: {
             npk: `110.0${i}`,
             nidn: `12340001${i}`,
-            name: `Lecturer Surname${i}`,
+            name: `Lecturer TSurname${i}`,
             frontTitle: (i % 2 === 0 ? "Dr." : ""),
             backTitle: (i % 2 === 0 ? "S.Kom, M.Sc" : "M.Kom"),
             degree: (i % 2 === 0 ? DegreeStatus.S3 : DegreeStatus.S2),
-            gender: Gender.WANITA,
-            religion: Religion.KATOLIK,
-            majorId: (i % 2 === 0 ? 1 : 2),
+            gender: (i % 2 === 0 ? Gender.WANITA : Gender.PRIA),
+            religion: (i > 10 && Religion.ISLAM) || (i > 5 && Religion.KATOLIK) || (i <= 5 && Religion.BUDDHA) || Religion.KONGHUCU,
+            majorId: 2,
+            year: 2014,
+          }
+        }
+      }
+    })
+  };
+  for (let i = 16; i <= 30; i++) {
+    await prisma.user.create({
+      data: {
+        email: `lecturer${i}@stmik.com`,
+        password: bcrypt.hashSync(`lecturer`, 10),
+        roleId: (i <= 20 ? 3 : 2),
+        isStatus: true,
+        lecturer: {
+          create: {
+            npk: `110.0${i}`,
+            nidn: `12340001${i}`,
+            name: `Lecturer ISurname${i}`,
+            frontTitle: (i % 2 === 0 ? "Dr." : ""),
+            backTitle: (i % 2 === 0 ? "S.Kom, M.Sc" : "M.Kom"),
+            degree: (i % 2 === 0 ? DegreeStatus.S3 : DegreeStatus.S2),
+            gender: (i % 2 === 0 ? Gender.WANITA : Gender.PRIA),
+            religion: (i > 10 && Religion.ISLAM) || (i > 5 && Religion.KATOLIK) || (i <= 5 && Religion.BUDDHA) || Religion.KONGHUCU,
+            majorId: 1,
             year: 2014,
           }
         }
@@ -1035,50 +1059,121 @@ async function main() {
     })
   }
 
-  const lecturer = await prisma.lecturer.findMany({
+  const lecturerSI = await prisma.lecturer.findMany({
     where: {
       user: {
         roleId: 3,
-      }
+      },
+      majorId: 1,
     }
-  })
+  });
+  const lecturerTI = await prisma.lecturer.findMany({
+    where: {
+      user: {
+        roleId: 3,
+      },
+      majorId: 2,
+    }
+  });
 
   // Student
   const students = []
-  for (let i = 1; i <= 10; i++) {
+  // for (let i = 1; i <= 10; i++) {
+  //   students.push({
+  //     nim: `310124${i % 2 === 0 ? '01' : '02'}240${i}`,
+  //     name: `Student Surname 24${i}`,
+  //     year: 2024,
+  //     religion: Religion.ISLAM,
+  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+  //     majorId: (i % 2 === 0 ? 1 : 2),
+  //     statusRegister: StatusRegister.BARU,
+  //     lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+  //   })
+  // };
+  // for (let i = 1; i <= 10; i++) {
+  //   students.push({
+  //     nim: `310123${i % 2 === 0 ? '01' : '02'}230${i}`,
+  //     name: `Student Surname 23${i}`,
+  //     year: 2023,
+  //     religion: Religion.ISLAM,
+  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+  //     majorId: (i % 2 === 0 ? 1 : 2),
+  //     statusRegister: StatusRegister.BARU,
+  //     lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+  //   })
+  // };
+  // Student SI
+  for (let i = 0; i <= 9; i++) {
     students.push({
-      nim: `310124${i % 2 === 0 ? '01' : '02'}240${i}`,
+      nim: `31012401240${i}`,
       name: `Student Surname 24${i}`,
       year: 2024,
       religion: Religion.ISLAM,
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: (i % 2 === 0 ? 1 : 2),
+      majorId: 1,
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+      lecturerId: (i % 2 === 0 ? lecturerSI[3].id : lecturerSI[4].id), 
     })
   };
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 6; i++) {
     students.push({
-      nim: `310123${i % 2 === 0 ? '01' : '02'}230${i}`,
+      nim: `31012301230${i}`,
       name: `Student Surname 23${i}`,
       year: 2023,
       religion: Religion.ISLAM,
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: (i % 2 === 0 ? 1 : 2),
+      majorId: 1,
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+      lecturerId: (i === 1  && lecturerSI[0].id) || (i === 2 && lecturerSI[1].id) || (i === 3 && lecturerSI[2].id) || lecturerSI[3].id,
     })
   };
-  for (let i = 1; i <= 10; i++) {
+  for (let i = 1; i <= 6; i++) {
     students.push({
-      nim: `310122${i % 2 === 0 ? '01' : '02'}220${i}`,
+      nim: `31012201220${i}`,
       name: `Student Surname 22${i}`,
       year: 2022,
       religion: Religion.ISLAM,
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: (i % 2 === 0 ? 1 : 2),
+      majorId: 1,
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 3 === 0  && lecturer[0].id) || (i % 4 === 0 && lecturer[1].id) || (i % 5 === 0 && lecturer[2].id) || lecturer[3].id,
+      lecturerId: (i === 1  && lecturerSI[0].id) || (i === 2 && lecturerSI[1].id) || (i === 3 && lecturerSI[2].id) || lecturerSI[3].id,
+    })
+  };
+  // Student TI
+  for (let i = 0; i <= 9; i++) {
+    students.push({
+      nim: `31012402240${i}`,
+      name: `Student TSurname 24${i}`,
+      year: 2024,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 2,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerTI[3].id : lecturerTI[4].id), 
+    })
+  };
+  for (let i = 1; i <= 6; i++) {
+    students.push({
+      nim: `31012302230${i}`,
+      name: `Student TSurname 23${i}`,
+      year: 2023,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 2,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i === 1  && lecturerTI[0].id) || (i === 2 && lecturerTI[1].id) || (i === 3 && lecturerTI[2].id) || lecturerTI[3].id,
+    })
+  };
+  for (let i = 1; i <= 6; i++) {
+    students.push({
+      nim: `31012202220${i}`,
+      name: `Student TSurname 22${i}`,
+      year: 2022,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 2,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i === 1  && lecturerTI[0].id) || (i === 2 && lecturerTI[1].id) || (i === 3 && lecturerTI[2].id) || lecturerTI[3].id,
     })
   };
   const student = await prisma.student.createMany({

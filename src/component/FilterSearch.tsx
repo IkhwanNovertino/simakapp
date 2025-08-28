@@ -10,6 +10,7 @@ const FilterSearch = ({ data }: { data: any }) => {
     const params = new URLSearchParams(window.location.search);
     if (itemFilter === 'all') {
       params.delete("filter");
+      params.delete("search");
     } else {
       params.set("filter", itemFilter);
     };

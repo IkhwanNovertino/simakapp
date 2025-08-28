@@ -39,7 +39,9 @@ const CourseListPage = async (
             ]
             break;
           case "filter":
-            query.majorId = parseInt(value)
+            query.OR = [
+              { majorId: parseInt(value) }
+            ]
             break;
           default:
             break;
@@ -70,6 +72,7 @@ const CourseListPage = async (
       select: { id: true, name: true }
     })
   ]);
+  dataFilter.unshift({ id: "all", name: "Semua" })
 
   const columns = [
     {

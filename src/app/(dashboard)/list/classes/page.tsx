@@ -9,11 +9,11 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { AcademicClass, Course, Lecturer, Major, Period, Prisma, Room } from "@prisma/client";
+import { AcademicClass, AcademicClassDetail, Course, Lecturer, Major, Period, Prisma, Room } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 
-type AcademicClassDataType = AcademicClass & { course: Course & { major: Major } } & { lecturer: Lecturer } & { room: Room } & { period: Period };
+type AcademicClassDataType = AcademicClass & { course: Course & { major: Major } } & { lecturer: Lecturer } & { room: Room } & { period: Period } & { academicClassDetail: AcademicClassDetail[] };
 
 const ClassListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -85,11 +85,13 @@ const ClassListPage = async (
         period: true,
         lecturer: true,
         room: true,
+        academicClassDetail: true,
       },
       orderBy: [
         { period: { year: "desc" } },
         { period: { semesterType: "asc" } },
         { name: 'asc' },
+        { course: { code: 'asc' } },
       ],
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
@@ -132,11 +134,6 @@ const ClassListPage = async (
       className: "hidden md:table-cell",
     },
     {
-      header: "Periode",
-      accessor: "period",
-      className: "hidden md:table-cell",
-    },
-    {
       header: "Actions",
       accessor: "action",
       className: "hidden md:table-cell",
@@ -157,22 +154,24 @@ const ClassListPage = async (
     }
     return (
       <tr
-        key={item.id}
+        key={item?.id}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
           <div className="flex flex-col col-span-5 items-start gap-2">
-            <h3 className="font-semibold">Kelas : {item.name}</h3>
-            <div className="flex flex-col w-full md:w-44">
-              <p className="text-sm text-gray-500">{item.course.code}</p>
-              <p className="text-sm text-gray-500 truncate">{item.course.name}</p>
+            <h3 className="font-semibold">Kelas : {item?.name}</h3>
+            <div className="flex flex-col max-w-48 lg:max-w-60 xl:max-w-full">
+              <p className="text-sm text-gray-500">{item?.course?.code}</p>
+              <p className="text-sm text-gray-500 truncate">{item?.course?.name}</p>
+              <p className="text-xs text-gray-500">{`Jumlah : ${item?.academicClassDetail.length} peserta`}</p>
             </div>
+            <p className="text-xs text-gray-800">{item?.period?.name}</p>
           </div>
           <div className="flex items-center justify-end gap-2 md:hidden ">
             <ModalAction>
               <div className="flex items-center gap-3">
                 {canViewData && (
-                  <Link href={`/list/classes/${item.id}`}>
+                  <Link href={`/list/classes/${item?.id}`}>
                     <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
                       <Image src="/icon/view.svg" alt="" width={20} height={20} />
                     </button>
@@ -184,8 +183,8 @@ const ClassListPage = async (
             </ModalAction>
           </div>
         </td>
-        <td className="hidden md:table-cell md:w-36 pr-2">
-          <p className="truncate">
+        <td className="hidden md:table-cell">
+          <p className="w-44 xl:w-full truncate">
             {lecturerName(
               {
                 frontTitle: item?.lecturer?.frontTitle,
@@ -195,8 +194,7 @@ const ClassListPage = async (
             )}
           </p>
         </td>
-        <td className="hidden md:table-cell">{item.room?.name}</td>
-        <td className="hidden md:table-cell">{item.period?.name}</td>
+        <td className="hidden md:table-cell">{item?.room?.name}</td>
         <td>
           <div className="hidden md:flex items-center gap-2">
             {canViewData && (

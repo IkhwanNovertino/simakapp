@@ -134,8 +134,8 @@ const menuItems = [
     items: [
       {
         icon: "/icon/recap.svg",
-        label: "Rekap Registrasi",
-        href: "/list/recapreregister",
+        label: "Rekapitulasi",
+        href: "/list/recapitulations",
       },
     ],
   }

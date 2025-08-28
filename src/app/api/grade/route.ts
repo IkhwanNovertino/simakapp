@@ -27,7 +27,6 @@ export async function GET(req: NextRequest) {
       },
     })
 
-    // const bufferFile = await exportAssessmentGrade(academicClassId);
     const bufferFile = template ? await exportAssessmentTemplate(academicClassId) : await exportAssessmentGrade(academicClassId)
     return new NextResponse(bufferFile, {
       headers: {

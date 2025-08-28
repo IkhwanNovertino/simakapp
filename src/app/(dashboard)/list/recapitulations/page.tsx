@@ -86,7 +86,7 @@ const RecapPage = async (
       <td className="hidden md:table-cell">{item.year || "-"}</td>
       <td>
         <div className="hidden md:flex items-center gap-2">
-          <Link href={`/list/recapreregister/${item.id}`}>
+          <Link href={`/list/recapitulations/${item?.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
               <Image src="/icon/view.svg" alt="" width={20} height={20} />
             </button>

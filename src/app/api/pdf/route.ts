@@ -382,6 +382,94 @@ export async function GET(req: NextRequest) {
             'Content-Disposition': `attachment; filename=${type}.pdf`,
           },
         });
+      case "coursekrs":
+        const dataPeriod = await prisma.period.findUnique({
+          where: {
+            id: uid,
+          },
+        });
+
+        const dataMajor = await prisma.major.findMany({
+          select: {id: true, name: true, stringCode: true}
+        })
+
+        const semesterQuery = dataPeriod?.semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
+        const coursesInCurriculumDetail = await prisma.curriculumDetail.findMany({
+          where: {
+            semester: { in: semesterQuery },
+            curriculum: {
+              isActive: true,
+            },
+          },
+          include: {
+            course: true,
+            curriculum: true,
+          },
+          orderBy: [
+            { curriculum: { major: { name: "asc" } } },
+            { semester: "asc" },
+          ],
+        });
+      
+        const countCourseInKrsDetail = await prisma.krsDetail.count({
+          where: {
+            krs: {
+              reregister: {
+                period: {
+                  id: uid,
+                }
+              }
+            }
+          }
+        });
+        let countCourseTaken = [];
+        if (countCourseInKrsDetail >= 1) {
+          countCourseTaken = await prisma.krsDetail.groupBy({
+            by: ["courseId"],
+            where: {
+              krs: {
+                reregister: {
+                  period: {
+                    id: uid,
+                  },
+                },
+              },
+            },
+            _count: {
+              courseId: true,
+            },
+          });
+        };
+      
+        const dataFinal = coursesInCurriculumDetail.map((item: any) => {
+          return {
+            ...item,
+            studentCount: countCourseTaken.find((items: any) => item.courseId === items.courseId)?._count?.courseId || 0,
+          };
+        });
+        const dataCoursesByMajor = dataMajor.map((major: any) => {
+          const course = dataFinal.filter((course: any) => course?.course?.majorId === major.id)
+          return {major: major, courses: course}
+        })
+
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            dataPeriod,
+            dataCoursesByMajor,
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=${type}.pdf`,
+          },
+        });
       default:
         break;
     }

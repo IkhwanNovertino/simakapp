@@ -216,7 +216,7 @@ const KRSListPage = async (
         <div className="flex flex-col lg:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            {user?.roleType === "OPERATOR" && (
+            {/* {user?.roleType === "OPERATOR" && (
               <Link href={`/list/krs/recap`}>
                 <button
                   className="flex items-center justify-center rounded-md bg-secondary-light text-xs 
@@ -225,7 +225,7 @@ const KRSListPage = async (
                   Rekap KRS
                 </button>
               </Link>
-            )}
+            )} */}
           </div>
         </div>
       </div>
