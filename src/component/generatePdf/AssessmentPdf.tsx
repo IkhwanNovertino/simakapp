@@ -107,7 +107,7 @@ const AssessmentPdf = ({ data, img }: GeneratePdfProps) => {
 
   return (
     <Document>
-      <Page size={"A4"} style={styles.page}>
+      <Page size={"A4"} style={styles.page} wrap={false}>
         <View style={styles.header}>
           <Image style={styles.logo} src={imgLogo} />
           <Text style={styles.textHeader}>Sekolah Tinggi Manajemen Informatika dan Komputer (STMIK) Banjarbaru</Text>
@@ -141,7 +141,7 @@ const AssessmentPdf = ({ data, img }: GeneratePdfProps) => {
             <Text style={{ width: "10%" }}>Tanggal</Text>
             <Text style={{ width: "27%" }}>: -</Text>
           </View>
-          <View style={styles.table}>
+          <View style={styles.table} wrap={false}>
             <View style={styles.tableRow}>
               <View style={[styles.tableCol, { width: "5%" }]}>
                 <Text style={styles.tableCellTh}>No</Text>
@@ -155,7 +155,7 @@ const AssessmentPdf = ({ data, img }: GeneratePdfProps) => {
 
               {data?.assessmentDetail?.map((items: any) => (
                 <View style={[styles.tableCol, { width: "7%" }]} key={items?.id}>
-                  <Text style={[styles.tableCellTh]}>{items.grade?.name}</Text>
+                  <Text style={[styles.tableCellTh]}>{items.grade?.acronym}</Text>
                 </View>
               ))}
               <View style={[styles.tableCol, { width: "7%" }]}>
@@ -167,7 +167,7 @@ const AssessmentPdf = ({ data, img }: GeneratePdfProps) => {
             </View>
             {/* Rows */}
             {data?.khsDetails?.map((item: any, index: number) => (
-              <View key={item?.id || index} style={styles.tableRow}>
+              <View key={item?.id || index} style={styles.tableRow} wrap={false}>
                 <View style={[styles.tableCol, { width: "5%" }]}>
                   <Text style={styles.tableCellTd}>{index + 1}</Text>
                 </View>

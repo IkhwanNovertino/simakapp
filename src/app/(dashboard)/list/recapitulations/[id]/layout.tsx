@@ -15,7 +15,7 @@ const RecapitulationDetailLayout = async (
   const { id } = await params;
 
   const tabs = [
-    { href: `/list/recapitulations/${id}/coursekrs`, label: "MK Rencana Studi" },
+    { href: `/list/recapitulations/${id}/coursekrs`, label: "Mata Kuliah" },
     { href: `/list/recapitulations/${id}/student`, label: "Mahasiswa" },
   ];
 

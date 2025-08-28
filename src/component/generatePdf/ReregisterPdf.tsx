@@ -107,7 +107,7 @@ const ReregisterPdf = ({ data, img }: GeneratePdfProps) => {
   const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
   return (
     <Document>
-      <Page size={"LETTER"} style={styles.page}>
+      <Page size={"LETTER"} style={styles.page} wrap={false}>
         <View style={styles.header}>
           <View style={styles.logo}>
             <Image src={imgLogo} />
@@ -143,12 +143,12 @@ const ReregisterPdf = ({ data, img }: GeneratePdfProps) => {
               <Text style={styles.columnComma}>:</Text>
               <Text style={styles.columnData}>{data?.reregister?.student?.placeOfBirth.toUpperCase()}, {data?.reregister?.student?.birthday}</Text>
             </View>
-            <View style={styles.tableRow}>
+            <View style={styles.tableRow} wrap={false}>
               <Text style={styles.columnField}>Alamat Sekarang</Text>
               <Text style={styles.columnComma}>:</Text>
               <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.address}</Text>
             </View>
-            <View style={styles.tableRow}>
+            <View style={styles.tableRow} wrap={false}>
               <Text style={styles.columnField}>Alamat Asal</Text>
               <Text style={styles.columnComma}>:</Text>
               <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.domicile}</Text>
@@ -191,7 +191,7 @@ const ReregisterPdf = ({ data, img }: GeneratePdfProps) => {
               <Text style={styles.columnComma}>:</Text>
               <Text style={styles.columnData}>{data?.reregister?.student?.guardianNIK}</Text>
             </View>
-            <View style={styles.tableRow}>
+            <View style={styles.tableRow} wrap={false}>
               <Text style={styles.columnField}>Alamat Lengkap</Text>
               <Text style={styles.columnComma}>:</Text>
               <Text style={[styles.columnData, { textTransform: "uppercase" }]}>{data?.reregister?.student?.guardianAddress}</Text>

@@ -102,7 +102,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferFile, {
           headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': `attachment; filename="REKAPITULASI-MK-${dataPeriod?.name}.xlsx"`,
+            'Content-Disposition': `attachment; filename="REKAPITULASI MATA KULIAH (${dataPeriod?.name}).xlsx"`,
           },
         });
       default:

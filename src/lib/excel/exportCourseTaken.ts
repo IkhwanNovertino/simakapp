@@ -2,12 +2,8 @@ import ExcelJS from 'exceljs';
 import { prisma } from '../prisma';
 
 export async function exportCourseTaken({ data }: { data: any }) {
-  console.log('FROM EXPORTCOURSEKRS', data); 
-  
-  // DATA_DATA
   
   const workbook = new ExcelJS.Workbook();
-
   // Iterasi data 
   for (const dataCourses of data?.dataCoursesByMajor) {
     const worksheet = workbook.addWorksheet(`Mata Kuliah ${dataCourses?.major?.stringCode}`);

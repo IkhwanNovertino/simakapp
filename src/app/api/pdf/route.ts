@@ -136,7 +136,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=${type}.pdf`,
+            'Content-Disposition': `attachment; filename=DAFTAR NILAI-([${academicClass?.course?.code}]${academicClass?.course?.name}-${academicClass?.name}).pdf`,
           },
         });
       case "krs":
@@ -225,7 +225,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=${type}.pdf`,
+            'Content-Disposition': `attachment; filename=${krsStudent?.student?.nim} (${type}-${krsStudent?.reregister?.period?.name}).pdf`,
           },
         });
       case "khs":
@@ -309,7 +309,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=${type}.pdf`,
+            'Content-Disposition': `attachment; filename=${khsStudent?.student?.nim} (${type}-${khsStudent?.period?.name}).pdf`,
           },
         });
       case "reregister":
@@ -328,6 +328,7 @@ export async function GET(req: NextRequest) {
               select: {
                 period: {
                   select: {
+                    name: true,
                     semesterType: true,
                     year: true,
                   }
@@ -379,7 +380,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=${type}.pdf`,
+            'Content-Disposition': `attachment; filename=${reregister?.student?.nim}(${type}-${reregister?.reregister?.period?.name}).pdf`,
           },
         });
       case "coursekrs":
@@ -467,7 +468,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=${type}.pdf`,
+            'Content-Disposition': `attachment; filename=REKAPITULASI MATA KULIAH (${dataPeriod?.name}).pdf`,
           },
         });
       default:
