@@ -5,6 +5,7 @@ import KrsPdf from "@/component/generatePdf/KrsPdf";
 import KhsPdf from "@/component/generatePdf/khsPdf";
 import ReregisterPdf from "@/component/generatePdf/ReregisterPdf";
 import CourseKrsPdf from "@/component/generatePdf/CourseKrsPdf";
+import StudentRegisteredKrsPdf from "@/component/generatePdf/StudentRegisteredKrsPdf";
 
 const renderPdf  = async ({ type, data }: RenderPdfProps) : Promise<Buffer | undefined> => {
   // let pdfContent: React.ReactElement<unknown, string | React.JSXElementConstructor<any>>;
@@ -19,6 +20,8 @@ const renderPdf  = async ({ type, data }: RenderPdfProps) : Promise<Buffer | und
       return await renderToBuffer(ReregisterPdf({ data }));
     case "coursekrs":
       return await renderToBuffer(CourseKrsPdf({ data }));
+    case "studentsRegisteredKrs":
+      return await renderToBuffer(StudentRegisteredKrsPdf({ data }));
     default:
       break;
   }

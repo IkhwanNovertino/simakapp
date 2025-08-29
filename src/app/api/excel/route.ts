@@ -1,4 +1,5 @@
 import { exportCourseTaken } from "@/lib/excel/exportCourseTaken";
+import { exportStudentRegisteredKrs } from "@/lib/excel/exportStudentRegisteredKrs";
 import { prisma } from "@/lib/prisma";
 import { error } from "console";
 import { format } from "date-fns";
@@ -22,17 +23,18 @@ export async function GET(req: NextRequest) {
     let bufferUint8Array;
     const date = format(new Date(), 'dd MMMM yyyy', { locale: indonesianLocale });
 
+    const dataPeriod = await prisma.period.findUnique({
+      where: {
+        id: uid,
+      },
+    });
+
+    const dataMajor = await prisma.major.findMany({
+      select: {id: true, name: true, stringCode: true}
+    })
+
     switch (type) {
       case "coursekrs":
-        const dataPeriod = await prisma.period.findUnique({
-          where: {
-            id: uid,
-          },
-        });
-
-        const dataMajor = await prisma.major.findMany({
-          select: {id: true, name: true, stringCode: true}
-        })
 
         const semesterQuery = dataPeriod?.semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
         const coursesInCurriculumDetail = await prisma.curriculumDetail.findMany({
@@ -103,6 +105,44 @@ export async function GET(req: NextRequest) {
           headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition': `attachment; filename="REKAPITULASI MATA KULIAH (${dataPeriod?.name}).xlsx"`,
+          },
+        });
+      case "studentsRegisteredKrs":
+        const studentRegisteredKrs = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              some: {},
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
+
+        const dataStudentRegisteredKrs = dataMajor.map((major: any) => {
+          const studentsRegisteredkrs = studentRegisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsRegisteredkrs}
+        })
+        
+        bufferFile = await exportStudentRegisteredKrs({
+          data: {
+            dataPeriod: dataPeriod,
+            dataStudentByMajor: dataStudentRegisteredKrs,
+          }
+        })
+        return new NextResponse(bufferFile, {
+          headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).xlsx"`,
           },
         });
       default:

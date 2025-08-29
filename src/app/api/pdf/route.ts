@@ -26,6 +26,15 @@ export async function GET(req: NextRequest) {
     let bufferFile;
     let bufferUint8Array;
     const date = format(new Date(), 'dd MMMM yyyy', { locale: indonesianLocale });
+    const dataPeriod = await prisma.period.findUnique({
+      where: {
+        id: uid,
+      },
+    });
+
+    const dataMajor = await prisma.major.findMany({
+      select: {id: true, name: true, stringCode: true}
+    })
 
     switch (type) {
       case "assessment":
@@ -384,16 +393,6 @@ export async function GET(req: NextRequest) {
           },
         });
       case "coursekrs":
-        const dataPeriod = await prisma.period.findUnique({
-          where: {
-            id: uid,
-          },
-        });
-
-        const dataMajor = await prisma.major.findMany({
-          select: {id: true, name: true, stringCode: true}
-        })
-
         const semesterQuery = dataPeriod?.semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
         const coursesInCurriculumDetail = await prisma.curriculumDetail.findMany({
           where: {
@@ -471,6 +470,52 @@ export async function GET(req: NextRequest) {
             'Content-Disposition': `attachment; filename=REKAPITULASI MATA KULIAH (${dataPeriod?.name}).pdf`,
           },
         });
+      case "studentsRegisteredKrs":
+        const studentRegisteredKrs = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              some: {},
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
+
+        const dataStudentRegisteredKrs = dataMajor.map((major: any) => {
+          const studentsRegisteredkrs = studentRegisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsRegisteredkrs}
+        })
+
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            dataPeriod,
+            dataStudentRegisteredKrs,
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).pdf`,
+          },
+        });
+
+        break;
       default:
         break;
     }

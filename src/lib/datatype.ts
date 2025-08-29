@@ -56,7 +56,22 @@ export type stateType = {
   message: string;
 }
 
-export type PdfType = "reregister" | "assessment" | "khs" | "krs" | "coursekrs";
+export type PdfType = "reregister"
+  | "assessment"
+  | "khs"
+  | "krs"
+  | "coursekrs"
+  | "studentsRegisteredKrs"
+  | "studentsUnregisteredKrs" 
+  | "studentsTakingThesis" 
+  | "studentsExtendingThesis"
+  | "studentsTakingInternship";
+
+export type RecapitulationCardType = "studentsRegisteredKrs" 
+  | "studentsUnregisteredKrs" 
+  | "studentsTakingThesis" 
+  | "studentsExtendingThesis"
+  | "studentsTakingInternship";
 
 export interface GeneratePdfProps {
   data?: any,
