@@ -47,6 +47,7 @@ export async function GET(req: NextRequest) {
               select: {
                 id: true,
                 name: true,
+                code: true,
                 major: {
                   select: {
                     name: true,
@@ -145,7 +146,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR NILAI-([${academicClass?.course?.code}]${academicClass?.course?.name}-${academicClass?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=DAFTAR NILAI (${academicClass?.course?.code}) ${academicClass?.course?.name} - KELAS ${academicClass?.name}.pdf`,
           },
         });
       case "krs":

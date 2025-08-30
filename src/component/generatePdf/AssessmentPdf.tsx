@@ -7,7 +7,7 @@ import { format } from "date-fns";
 const styles = StyleSheet.create({
   page: {
     flexDirection: "column",
-    paddingVertical: 24,
+    paddingVertical: 32,
     paddingHorizontal: 32,
     fontSize: "11pt",
   },
@@ -79,12 +79,12 @@ const styles = StyleSheet.create({
   },
   tableCellTh: {
     margin: "auto",
-    fontSize: "11pt",
+    fontSize: "10pt",
     fontWeight: "bold",
   },
   tableCellTd: {
     margin: "auto",
-    fontSize: "11pt",
+    fontSize: "10pt",
   },
   footer: {
     width: "100%",
@@ -107,7 +107,7 @@ const AssessmentPdf = ({ data, img }: GeneratePdfProps) => {
 
   return (
     <Document>
-      <Page size={"A4"} style={styles.page} wrap={false}>
+      <Page size={"A4"} style={styles.page}>
         <View style={styles.header}>
           <Image style={styles.logo} src={imgLogo} />
           <Text style={styles.textHeader}>Sekolah Tinggi Manajemen Informatika dan Komputer (STMIK) Banjarbaru</Text>
@@ -118,35 +118,35 @@ const AssessmentPdf = ({ data, img }: GeneratePdfProps) => {
         <View style={styles.body}>
           <Text style={styles.textHeading1}>DAFTAR NILAI MATA KULIAH</Text>
           <View style={styles.classTableRow}>
-            <Text style={{ width: "13%" }}>Mata Kuliah</Text>
-            <Text style={{ width: "47%", marginRight: 2 }}>: {data?.academicClass?.course?.name}</Text>
+            <Text style={{ width: "12%" }}>Mata Kuliah</Text>
+            <Text style={{ width: "45%", marginRight: 2 }}>: {data?.academicClass?.course?.name}</Text>
             <Text style={{ width: "10%" }}>Dosen</Text>
-            <Text style={{ width: "27%" }}>: {data?.academicClass?.lecturername}</Text>
+            <Text style={{ width: "33%" }}>: {data?.academicClass?.lecturername}</Text>
           </View>
           <View style={styles.classTableRow}>
-            <Text style={{ width: "13%" }}>Prodi</Text>
-            <Text style={{ width: "47%", marginRight: 2 }}>: {data?.academicClass?.course?.major?.name}</Text>
+            <Text style={{ width: "12%" }}>Prodi</Text>
+            <Text style={{ width: "45%", marginRight: 2 }}>: {data?.academicClass?.course?.major?.name}</Text>
             <Text style={{ width: "10%" }}>Kelas</Text>
-            <Text style={{ width: "27%" }}>: {data?.academicClass?.name}</Text>
+            <Text style={{ width: "33%" }}>: {data?.academicClass?.name}</Text>
           </View>
           <View style={styles.classTableRow}>
-            <Text style={{ width: "13%" }}>Semester</Text>
-            <Text style={{ width: "47%", marginRight: 2 }}>: -</Text>
+            <Text style={{ width: "12%" }}>Semester</Text>
+            <Text style={{ width: "45%", marginRight: 2 }}>: -</Text>
             <Text style={{ width: "10%" }}>Hari, Jam</Text>
-            <Text style={{ width: "27%" }}>: -</Text>
+            <Text style={{ width: "33%" }}>: -</Text>
           </View>
           <View style={styles.classTableRow}>
-            <Text style={{ width: "13%" }}>Thn. Akad</Text>
-            <Text style={{ width: "47%", marginRight: 2 }}>: {data?.academicClass?.period?.name}</Text>
+            <Text style={{ width: "12%" }}>Thn. Akad</Text>
+            <Text style={{ width: "45%", marginRight: 2 }}>: {data?.academicClass?.period?.name}</Text>
             <Text style={{ width: "10%" }}>Tanggal</Text>
-            <Text style={{ width: "27%" }}>: -</Text>
+            <Text style={{ width: "33%" }}>: -</Text>
           </View>
           <View style={styles.table} wrap={false}>
             <View style={styles.tableRow}>
               <View style={[styles.tableCol, { width: "5%" }]}>
                 <Text style={styles.tableCellTh}>No</Text>
               </View>
-              <View style={[styles.tableCol, { width: "18%" }]}>
+              <View style={[styles.tableCol, { width: "16%" }]}>
                 <Text style={styles.tableCellTh}>NIM</Text>
               </View>
               <View style={[styles.tableCol, { width: "35%" }]}>
@@ -154,7 +154,7 @@ const AssessmentPdf = ({ data, img }: GeneratePdfProps) => {
               </View>
 
               {data?.assessmentDetail?.map((items: any) => (
-                <View style={[styles.tableCol, { width: "7%" }]} key={items?.id}>
+                <View style={[styles.tableCol, { width: "8%" }]} key={items?.id} wrap={false}>
                   <Text style={[styles.tableCellTh]}>{items.grade?.acronym}</Text>
                 </View>
               ))}
@@ -171,16 +171,16 @@ const AssessmentPdf = ({ data, img }: GeneratePdfProps) => {
                 <View style={[styles.tableCol, { width: "5%" }]}>
                   <Text style={styles.tableCellTd}>{index + 1}</Text>
                 </View>
-                <View style={[styles.tableCol, { width: "18%" }]}>
+                <View style={[styles.tableCol, { width: "16%" }]}>
                   <Text style={styles.tableCellTd}>{item?.khs?.student?.nim || '-'}</Text>
                 </View>
                 <View style={[styles.tableCol, { width: "35%" }]}>
-                  <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{item?.khs?.student?.name || '-'}</Text>
+                  <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]} wrap={false}>{item?.khs?.student?.name || '-'}</Text>
                 </View>
                 {data?.assessmentDetail?.map((assessment: any) => {
                   const grade = item?.khsGrade?.find((grade: any) => grade.assessmentDetailId === assessment.id);
                   return (
-                    <View key={assessment.id} style={[styles.tableCol, { width: "7%" }]}>
+                    <View key={assessment.id} style={[styles.tableCol, { width: "8%" }]}>
                       <Text style={styles.tableCellTd}>
                         {grade ? `${grade.score}` : "-"}
                         {/* {khsDetail ? `${Number(khsDetail.score ?? 0).toFixed(2)}${khsDetail.gradeLetter ? ` (${khsDetail.gradeLetter})` : ''}` : '-'} */}

@@ -270,7 +270,7 @@ const ClassSingleTabAssessmentPage = async (
             </a>
             <ImportForm />
           </div>
-        )};
+        )}
         {students.find((item: any) => item.status === AnnouncementKhs.SUBMITTED) && (
           <div className="hidden md:flex items-center gap-4">
             <a
@@ -283,7 +283,7 @@ const ClassSingleTabAssessmentPage = async (
               Export .xlsx
             </a>
           </div>
-        )};
+        )}
         {students.find((item: any) => item.status === AnnouncementKhs.ANNOUNCEMENT) && (
           <div className="hidden md:flex items-center gap-4">
             <a
@@ -296,12 +296,12 @@ const ClassSingleTabAssessmentPage = async (
               Export .xlsx
             </a>
             <ButtonPdfDownload id={id} type="assessment">
-              <div className={`w-fit h-fit p-3 text-xs font-medium flex items-center justify-center rounded-full bg-primary-dark`}>
-                <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} /> Export .pdf
+              <div className={`w-fit h-fit py-2 px-4 text-xs font-medium flex items-center justify-center rounded-full bg-primary/70 hover:bg-primary`}>
+                Export .pdf
               </div>
             </ButtonPdfDownload>
           </div>
-        )};
+        )}
         {user?.roleType === "OPERATOR" && (
           <div className="hidden md:flex items-center gap-4">
             <div className="flex flex-col md:flex-row items-center w-full md:w-auto">

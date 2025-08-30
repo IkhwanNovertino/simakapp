@@ -22,7 +22,13 @@ export async function GET(req: NextRequest) {
           select: {
             id: true,
             name: true,
+            code: true,
           },
+        },
+        period: {
+          select: {
+            name: true,
+          }
         },
       },
     })
@@ -31,7 +37,7 @@ export async function GET(req: NextRequest) {
     return new NextResponse(bufferFile, {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'Content-Disposition': `attachment; filename="${academicClass?.course?.name}-${academicClass?.name}.xlsx"`,
+        'Content-Disposition': `attachment; filename="Kelas ${academicClass?.name} - (${academicClass?.course?.code}) ${academicClass?.course?.name} - ${academicClass?.period?.name}.xlsx"`,
       },
     });
   } catch (err) {
