@@ -1,16 +1,13 @@
-import Announcements from "@/component/Announcements";
 import ButtonPdfDownload from "@/component/ButtonPdfDownload";
-import CountChart from "@/component/CountChart";
-import EventCalender from "@/component/EventCalender";
+import CountChartContainer from "@/component/CountChartContainer";
 import FilterSearch from "@/component/FilterSearch";
 import Pagination from "@/component/Pagination";
 import RecapitulationCard from "@/component/RecapitulationCard";
+import RecapitulationCountChartContainer from "@/component/RecapitulationCountChartContainer";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import UserCard from "@/component/UserCard";
 import { prisma } from "@/lib/prisma";
 import { Course, CurriculumDetail, Prisma } from "@prisma/client";
-import Link from "next/link";
 
 type RecapitulationCourseInKrs = CurriculumDetail & { course: Course } & { studentCount: number };
 const RecapitulationDetailByPeriodPage = async ({
@@ -47,7 +44,7 @@ const RecapitulationDetailByPeriodPage = async ({
     }
   };
 
-  const [periodForQuery, data, count, dataFilter] = await prisma.$transaction(async (tx: any) => {
+  const [periodForQuery, data, count, dataFilter, dataMajor] = await prisma.$transaction(async (tx: any) => {
     const periodForQuery = await tx.period.findUnique({
       where: {
         id: id,
@@ -122,8 +119,9 @@ const RecapitulationDetailByPeriodPage = async ({
 
     let dataFilter = await tx.major.findMany({ select: { id: true, name: true } });
     dataFilter.unshift({ id: "all", name: "Semua" })
+    const dataMajor = await tx.major.findMany({ select: { id: true, name: true } });
 
-    return [periodForQuery, dataFinal, count, dataFilter]
+    return [periodForQuery, dataFinal, count, dataFilter, dataMajor]
   });
 
   const columns = [
@@ -170,24 +168,23 @@ const RecapitulationDetailByPeriodPage = async ({
         </td>
       </tr >
     )
-  }
-  // <a target="_blank" href="https://icons8.com/icon/1HxX1oulJucz/user-group-woman-woman">App</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+  };
+
   return (
     <div className="p-4 flex flex-col md:flex-row gap-4">
       {/* LEFT */}
-      <div className="w-full order-2 md:order-1 md:w-2/3 flex flex-col gap-8">
-        <div className="hidden md:flex bg-white p-4 rounded-md flex-1 mt-0 ">
+      <div className="w-full order-2 md:order-1 md:w-2/3 flex flex-col gap-4">
+        <div className="hidden md:flex bg-white p-4 rounded-xl flex-1 mt-0 ">
           <h1 className="text-lg font-semibold">REKAPITULASI/LAPORAN PERIODE {periodForQuery?.name}</h1>
         </div>
         {/* MIDDLE CHART */}
         <div className="flex flex-col lg:flex-row gap-4">
           {/* COUNT CHART */}
-          <div className="w-full lg:w-1/2 h-[400px]">
-            <CountChart title="Sistem informasi" />
-          </div>
-          <div className="w-full lg:w-1/2 h-[400px]">
-            <CountChart title="Teknik Informatika" />
-          </div>
+          {dataMajor.map((items: any) => (
+            <div key={items.id} className="w-full lg:w-1/2 h-[320px]">
+              <RecapitulationCountChartContainer periodId={id} title={items.name} />
+            </div>
+          ))}
         </div>
         <div className="bg-white p-4 rounded-md flex-1 mt-0">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">

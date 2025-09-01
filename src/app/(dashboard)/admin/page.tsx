@@ -1,5 +1,6 @@
 import Announcements from "@/component/Announcements";
 import CountChart from "@/component/CountChart";
+import CountChartContainer from "@/component/CountChartContainer";
 import EventCalender from "@/component/EventCalender";
 import UserCard from "@/component/UserCard";
 import { redirectDashboardByRole } from "@/lib/dal";
@@ -26,10 +27,10 @@ const AdminPage = async () => {
         <div className="flex flex-col lg:flex-row gap-4">
           {/* COUNT CHART */}
           <div className="w-full lg:w-1/2 h-[450px]">
-            <CountChart title="Mahasiswa/i" />
+            <CountChartContainer type="students" title="Mahasiswa/i" />
           </div>
           <div className="w-full lg:w-1/2 h-[450px]">
-            <CountChart title="Program Studi" />
+            <CountChartContainer type="studentsBymajors" title="Program Studi" />
           </div>
         </div>
       </div>

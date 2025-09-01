@@ -138,63 +138,8 @@ const RecapitulationDetailByCardPage = async (
     })
   }
 
-
-
-  console.log('DATAAAA', data);
-  console.log('COUNTTTT', count);
-
-
   let dataFilter = await prisma.major.findMany({ select: { id: true, name: true, } });
   dataFilter.unshift({ id: "all", name: "semua" })
-  // const [data, count, dataFilter] = await prisma.$transaction(async (tx: any) => {
-  //   let data = [];
-  //   let count = 0;
-  //   switch (type) {
-  //     case "studentsRegisteredKrs":
-  //       data = await tx.krs.findMany({
-  //         where: {
-  //           reregister: {
-  //             periodId: id,
-  //           },
-  //           krsDetail: {
-  //             some: {},
-  //           },
-  //           ...query,
-  //         },
-  //         select: {
-  //           student: {
-  //             select: {
-  //               nim: true,
-  //               name: true,
-  //               major: true,
-  //             }
-  //           }
-  //         },
-  //         take: ITEM_PER_PAGE,
-  //         skip: ITEM_PER_PAGE * (p - 1),
-  //         orderBy: [
-  //           { student: { nim: "desc" } }
-  //         ],
-  //       });
-  //       count = await tx.krs.count({
-  //         where: {
-  //           reregister: {
-  //             periodId: id,
-  //           },
-  //           krsDetail: {
-  //             some: {},
-  //           }
-  //         }
-  //       });
-  //       break;
-
-  //     default:
-  //       data = [];
-  //       count = 0;
-  //       break;
-  //   }
-  //   return [data, count, dataFilter]
-  // });
 
   const columns = [
     {

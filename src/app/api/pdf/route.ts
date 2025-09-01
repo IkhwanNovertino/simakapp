@@ -515,8 +515,195 @@ export async function GET(req: NextRequest) {
             'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).pdf`,
           },
         });
+      case "studentsUnregisteredKrs":
+        const studentsUnregisteredKrs = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              some: {},
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
 
-        break;
+        const dataStudentsUnregisteredKrs = dataMajor.map((major: any) => {
+          const studentsUnregisteredkrs = studentsUnregisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsUnregisteredkrs}
+        })
+
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            dataPeriod,
+            dataStudentsUnregisteredKrs,
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA BELUM KRS (${dataPeriod?.name}).pdf`,
+          },
+        });
+      case "studentsTakingThesis":
+        const studentsTakingThesis = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              some: {
+                course: {
+                isSkripsi: true,
+                },
+              },
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
+
+        const dataStudentsTakingThesis = dataMajor.map((major: any) => {
+          const studentsTakingthesis = studentsTakingThesis.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsTakingthesis}
+        })
+
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            dataPeriod,
+            dataStudentsTakingThesis,
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA MENGAMBIL TA (${dataPeriod?.name}).pdf`,
+          },
+        });
+      case "studentsExtendingThesis":
+        // BELUM DIEDIT SAMA SEPERTI STUDENTTAKINGTHESIS
+        const studentsExtendingThesis = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              some: {
+                course: {
+                isSkripsi: true,
+                },
+              },
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
+
+        const dataStudentsExtendingThesis = dataMajor.map((major: any) => {
+          const studentsExtendingthesis = studentsExtendingThesis.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsExtendingthesis}
+        })
+
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            dataPeriod,
+            dataStudentsExtendingThesis,
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).pdf`,
+          },
+        });
+      case "studentsTakingInternship":
+        const studentsTakingInternship = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              some: {
+                course: {
+                  isPKL: true,
+                },
+              },
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
+
+        const dataStudentsTakingInternship = dataMajor.map((major: any) => {
+          const studentsTakinginternship = studentsTakingInternship.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsTakinginternship}
+        })
+
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            dataPeriod,
+            dataStudentsTakingInternship,
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).pdf`,
+          },
+        });
       default:
         break;
     }

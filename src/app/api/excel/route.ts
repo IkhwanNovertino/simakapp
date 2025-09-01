@@ -145,9 +145,173 @@ export async function GET(req: NextRequest) {
             'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).xlsx"`,
           },
         });
+      case "studentsUnregisteredKrs":
+        const studentUnregisteredKrs = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              none: {},
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
+
+        const dataStudentUnregisteredKrs = dataMajor.map((major: any) => {
+          const studentsUnregisteredkrs = studentUnregisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsUnregisteredkrs}
+        })
+        
+        bufferFile = await exportStudentRegisteredKrs({
+          data: {
+            dataPeriod: dataPeriod,
+            dataStudentByMajor: dataStudentUnregisteredKrs,
+          }
+        })
+        return new NextResponse(bufferFile, {
+          headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA BELUM KRS (${dataPeriod?.name}).xlsx"`,
+          },
+        });
+      case "studentsTakingThesis":
+        const studentsTakingThesis = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              some: {
+                course: {
+                isSkripsi: true,
+                },
+              },
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
+
+        const dataStudentsTakingThesis = dataMajor.map((major: any) => {
+          const studentsTakingthesis = studentsTakingThesis.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsTakingthesis}
+        })
+        
+        bufferFile = await exportStudentRegisteredKrs({
+          data: {
+            dataPeriod: dataPeriod,
+            dataStudentByMajor: dataStudentsTakingThesis,
+          }
+        })
+        return new NextResponse(bufferFile, {
+          headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA MENGAMBIL TA (${dataPeriod?.name}).xlsx"`,
+          },
+        });
+      case "studentsExtendingThesis":
+        // BELUM DIEDIT SAMA SEPERTI STUDENTTAKINGTHESIS
+        const studentsExtendingThesis = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              some: {
+                course: {
+                isSkripsi: true,
+                },
+              },
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
+
+        const dataStudentsExtendingThesis = dataMajor.map((major: any) => {
+          const studentsExtendingthesis = studentsExtendingThesis.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsExtendingthesis}
+        })
+        
+        bufferFile = await exportStudentRegisteredKrs({
+          data: {
+            dataPeriod: dataPeriod,
+            dataStudentByMajor: dataStudentsExtendingThesis,
+          }
+        })
+        return new NextResponse(bufferFile, {
+          headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA PERPANJANGAN TA (${dataPeriod?.name}).xlsx"`,
+          },
+        });
+      case "studentsTakingInternship":
+        const studentsTakingInternship = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            krsDetail: {
+              some: {
+                course: {
+                  isPKL: true,
+                },
+              },
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            }
+          },
+        });
+
+        const dataStudentsTakingInternship = dataMajor.map((major: any) => {
+          const studentsTakinginternship = studentsTakingInternship.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsTakinginternship}
+        })
+        
+        bufferFile = await exportStudentRegisteredKrs({
+          data: {
+            dataPeriod: dataPeriod,
+            dataStudentByMajor: dataStudentsTakingInternship,
+          }
+        })
+        return new NextResponse(bufferFile, {
+          headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA PERPANJANGAN TA (${dataPeriod?.name}).xlsx"`,
+          },
+        });
       default:
         return new NextResponse('Someting wrong!', { status: 400 });
-        break;
     }
   } catch (err) {
     error(err);
