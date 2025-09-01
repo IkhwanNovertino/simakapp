@@ -1,5 +1,4 @@
-import { exportAssessmentGrade } from "@/lib/excel/exportAssessmentGrade";
-import { exportAssessmentTemplate } from "@/lib/excel/exportAssessmentTemplate";
+
 import logger from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
 import renderPdf from "@/lib/renderPdf";
@@ -522,7 +521,7 @@ export async function GET(req: NextRequest) {
               periodId: uid,
             },
             krsDetail: {
-              some: {},
+              none: {},
             },
           },
           select: {
@@ -540,6 +539,9 @@ export async function GET(req: NextRequest) {
           const studentsUnregisteredkrs = studentsUnregisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
           return {major: major, students: studentsUnregisteredkrs}
         })
+
+        console.log('DATA STUDENTUNREGIST', dataStudentsUnregisteredKrs);
+        
 
         bufferFile = await renderPdf({
           type: type,
@@ -701,7 +703,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA MENGAMBIL PKL (${dataPeriod?.name}).pdf`,
           },
         });
       default:

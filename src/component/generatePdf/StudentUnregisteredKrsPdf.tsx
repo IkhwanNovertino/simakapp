@@ -102,12 +102,12 @@ const styles = StyleSheet.create({
 })
 
 
-const CourseKrsPdf = ({ data, img }: GeneratePdfProps) => {
+const StudentUnregisteredKrsPdf = ({ data, img }: GeneratePdfProps) => {
   const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
 
   return (
     <Document>
-      {data?.dataCoursesByMajor?.map((items: any) => (
+      {data?.dataStudentsUnregisteredKrs?.map((items: any) => (
         <Page size={"A4"} style={styles.page} key={items?.major?.id}>
           <View>
             <View style={styles.header}>
@@ -118,51 +118,45 @@ const CourseKrsPdf = ({ data, img }: GeneratePdfProps) => {
             </View>
             <View style={styles.bottomLine}></View>
             <View style={styles.body}>
-              <Text style={[styles.textHeading1, { marginTop: "14px" }]}>DAFTAR MATA KULIAH PROGRAM STUDI {items?.major?.name}</Text>
+              <Text style={[styles.textHeading1, { marginTop: "14px" }]}>DAFTAR MAHASISWA YANG BELUM KRS PROGRAM STUDI {items?.major?.name}</Text>
               <Text style={styles.textHeading1}>{data?.dataPeriod?.name}</Text>
               <View style={[styles.table, { marginTop: "18px" }]}>
                 <View style={styles.tableRow}>
-                  <View style={[styles.tableCol, { width: "5%" }]}>
+                  <View style={[styles.tableCol, { width: "6%" }]}>
                     <Text style={styles.tableCellTh}>No</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "14%" }]}>
-                    <Text style={styles.tableCellTh}>Kode MK</Text>
+                  <View style={[styles.tableCol, { width: "25%" }]}>
+                    <Text style={styles.tableCellTh}>NIM</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "48%" }]}>
-                    <Text style={styles.tableCellTh}>Nama Mata Kuliah</Text>
-                  </View>
-                  <View style={[styles.tableCol, { width: "8%" }]}>
-                    <Text style={[styles.tableCellTh]}>SKS</Text>
-                  </View>
-                  <View style={[styles.tableCol, { width: "12%" }]}>
-                    <Text style={[styles.tableCellTh]}>Semester</Text>
-                  </View>
-                  <View style={[styles.tableCol, { width: "13%" }]}>
-                    <Text style={[styles.tableCellTh]}>Mahasiswa</Text>
+                  <View style={[styles.tableCol, { width: "69%" }]}>
+                    <Text style={styles.tableCellTh}>Nama Mahasiswa</Text>
                   </View>
                 </View>
-                {items.courses.map((course: any, index: number) => (
-                  <View key={course.id || index} style={styles.tableRow} wrap={false}>
-                    <View style={[styles.tableCol, { width: "5%" }]}>
+                {items?.students.length > 0 ? items?.students.map((student: any, index: number) => (
+                  <View key={student.id || index} style={styles.tableRow} wrap={false}>
+                    <View style={[styles.tableCol, { width: "6%" }]}>
                       <Text style={styles.tableCellTd}>{index + 1}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "14%" }]}>
-                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{course?.course?.code}</Text>
+                    <View style={[styles.tableCol, { width: "25%" }]}>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.nim}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "48%" }]}>
-                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{course?.course?.name}</Text>
-                    </View>
-                    <View style={[styles.tableCol, { width: "8%" }]}>
-                      <Text style={[styles.tableCellTd]}>{course?.course?.sks}</Text>
-                    </View>
-                    <View style={[styles.tableCol, { width: "12%" }]}>
-                      <Text style={[styles.tableCellTd]}>{course?.semester}</Text>
-                    </View>
-                    <View style={[styles.tableCol, { width: "13%" }]}>
-                      <Text style={[styles.tableCellTd]}>{course?.studentCount}</Text>
+                    <View style={[styles.tableCol, { width: "69%" }]}>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.name}</Text>
                     </View>
                   </View>
-                ))}
+                )) : (
+                  <View style={styles.tableRow} wrap={false}>
+                    <View style={[styles.tableCol, { width: "6%" }]}>
+                      <Text style={styles.tableCellTd}></Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "25%" }]}>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "69%" }]}>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
+                    </View>
+                  </View>
+                )}
               </View>
             </View>
           </View>
@@ -172,4 +166,4 @@ const CourseKrsPdf = ({ data, img }: GeneratePdfProps) => {
   )
 }
 
-export default CourseKrsPdf;
+export default StudentUnregisteredKrsPdf;

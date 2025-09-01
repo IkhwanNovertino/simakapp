@@ -1,5 +1,8 @@
 import { exportCourseTaken } from "@/lib/excel/exportCourseTaken";
 import { exportStudentRegisteredKrs } from "@/lib/excel/exportStudentRegisteredKrs";
+import { exportStudentTakingIntership } from "@/lib/excel/exportStudentTakingIntership";
+import { exportStudentTakingThesis } from "@/lib/excel/exportStudentTakingThesis";
+import { exportStudentUnregisteredKrs } from "@/lib/excel/exportStudentUnregisteredKrs";
 import { prisma } from "@/lib/prisma";
 import { error } from "console";
 import { format } from "date-fns";
@@ -171,7 +174,7 @@ export async function GET(req: NextRequest) {
           return {major: major, students: studentsUnregisteredkrs}
         })
         
-        bufferFile = await exportStudentRegisteredKrs({
+        bufferFile = await exportStudentUnregisteredKrs({
           data: {
             dataPeriod: dataPeriod,
             dataStudentByMajor: dataStudentUnregisteredKrs,
@@ -213,7 +216,7 @@ export async function GET(req: NextRequest) {
           return {major: major, students: studentsTakingthesis}
         })
         
-        bufferFile = await exportStudentRegisteredKrs({
+        bufferFile = await exportStudentTakingThesis({
           data: {
             dataPeriod: dataPeriod,
             dataStudentByMajor: dataStudentsTakingThesis,
@@ -298,7 +301,7 @@ export async function GET(req: NextRequest) {
           return {major: major, students: studentsTakinginternship}
         })
         
-        bufferFile = await exportStudentRegisteredKrs({
+        bufferFile = await exportStudentTakingIntership({
           data: {
             dataPeriod: dataPeriod,
             dataStudentByMajor: dataStudentsTakingInternship,
@@ -307,7 +310,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferFile, {
           headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA PERPANJANGAN TA (${dataPeriod?.name}).xlsx"`,
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA MENGAMBIL PKL (${dataPeriod?.name}).xlsx"`,
           },
         });
       default:

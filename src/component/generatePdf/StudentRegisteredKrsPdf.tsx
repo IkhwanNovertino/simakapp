@@ -108,7 +108,7 @@ const StudentRegisteredKrsPdf = ({ data, img }: GeneratePdfProps) => {
   return (
     <Document>
       {data?.dataStudentRegisteredKrs?.map((items: any) => (
-        <Page size={"A4"} style={styles.page} wrap={false} key={items?.major?.id}>
+        <Page size={"A4"} style={styles.page} key={items?.major?.id}>
           <View>
             <View style={styles.header}>
               <Image style={styles.logo} src={imgLogo} />
