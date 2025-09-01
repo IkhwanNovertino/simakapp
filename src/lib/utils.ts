@@ -16,12 +16,14 @@ export const calculatingSKSLimits = async (ipk: number) : Promise<number>  => {
   }
 };
 
-interface LecturerName {
+export const lecturerName = async (
+  { 
+    frontTitle, name, backTitle 
+  }: {
   frontTitle?: string | null | undefined,
   name: string | null | undefined,
   backTitle?: string | null | undefined,
-}
-export const lecturerName = async ({ frontTitle, name, backTitle }: LecturerName) => {
+}) => {
   return `${frontTitle ? frontTitle + " " : ""}${name}${backTitle ? ", " + backTitle : ""}`
 }
 

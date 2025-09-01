@@ -84,7 +84,6 @@ export const canRoleViewData = async (pathname: string) => {
   
   return viewPermission.includes(pathname);
 };
-
 export const canRoleUpdateData = async (pathname: string) => {
   const getSessionData = await getSession();
   if (!getSessionData) return null;
@@ -123,7 +122,6 @@ export const canRoleDeleteData = async (pathname: string) => {
   
   return deletePermission.includes(pathname);
 };
-
 export const redirectDashboardByRole = async () => {
   const getSessionData = await getSession();
   if (!getSessionData) return null;
