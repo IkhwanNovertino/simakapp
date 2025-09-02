@@ -1,9 +1,11 @@
 import { exportCourseTaken } from "@/lib/excel/exportCourseTaken";
+import { exportStudentActiveInactive } from "@/lib/excel/exportStudentActiveInactive";
 import { exportStudentRegisteredKrs } from "@/lib/excel/exportStudentRegisteredKrs";
 import { exportStudentTakingIntership } from "@/lib/excel/exportStudentTakingIntership";
 import { exportStudentTakingThesis } from "@/lib/excel/exportStudentTakingThesis";
 import { exportStudentUnregisteredKrs } from "@/lib/excel/exportStudentUnregisteredKrs";
 import { prisma } from "@/lib/prisma";
+import { previousPeriod } from "@/lib/utils";
 import { error } from "console";
 import { format } from "date-fns";
 import { id as indonesianLocale } from "date-fns/locale";
@@ -225,12 +227,12 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferFile, {
           headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA MENGAMBIL TA (${dataPeriod?.name}).xlsx"`,
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA PROGRAM TA (${dataPeriod?.name}).xlsx"`,
           },
         });
       case "studentsExtendingThesis":
-        // BELUM DIEDIT SAMA SEPERTI STUDENTTAKINGTHESIS
-        const studentsExtendingThesis = await prisma.krs.findMany({
+        const getPrevPeriod = await previousPeriod({ semesterType: dataPeriod.semesterType, year: dataPeriod.year });
+        const studentsTakingThesisCurrentPeriod = await prisma.krs.findMany({
           where: {
             reregister: {
               periodId: uid,
@@ -244,6 +246,7 @@ export async function GET(req: NextRequest) {
             },
           },
           select: {
+            studentId: true,
             student: {
               select: {
                 nim: true,
@@ -253,6 +256,30 @@ export async function GET(req: NextRequest) {
             }
           },
         });
+        const studentsTakingThesisPreviosPeriod = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              period: {
+                semesterType: getPrevPeriod.semesterType,
+                year: getPrevPeriod.year,
+              },
+            },
+            krsDetail: {
+              some: {
+                course: {
+                  isSkripsi: true,
+                },
+              },
+            },
+          },
+          select: {
+            studentId: true,
+          },
+        });
+        const studentsExtendingThesis = studentsTakingThesisCurrentPeriod
+          .filter((student: any) => new Set(studentsTakingThesisPreviosPeriod
+            .map((items: any) => items.studentId))
+            .has(student.studentId));
 
         const dataStudentsExtendingThesis = dataMajor.map((major: any) => {
           const studentsExtendingthesis = studentsExtendingThesis.filter((student: any) => student?.student?.major?.id === major?.id)
@@ -310,7 +337,43 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferFile, {
           headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA MENGAMBIL PKL (${dataPeriod?.name}).xlsx"`,
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA PROGRAM PKL (${dataPeriod?.name}).xlsx"`,
+          },
+        });
+      case "studentActiveInactive":
+        const studentsActiveInactive = await await prisma.reregisterDetail.findMany({
+                where: {
+                  reregister: {
+                    periodId: uid,
+                  },
+                },
+                select: {
+                  student: {
+                    select: {
+                      nim: true,
+                      name: true,
+                      major: true,
+                    }
+                  },
+                  semesterStatus: true,
+                },
+              });
+
+        const dataStudentsActiveInactive = dataMajor.map((major: any) => {
+          const studentsActiveinactive = studentsActiveInactive.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsActiveinactive}
+        })
+        
+        bufferFile = await exportStudentActiveInactive({
+          data: {
+            dataPeriod: dataPeriod,
+            dataStudentByMajor: dataStudentsActiveInactive,
+          }
+        })
+        return new NextResponse(bufferFile, {
+          headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA AKTIF-NONAKTIF (${dataPeriod?.name}).xlsx"`,
           },
         });
       default:

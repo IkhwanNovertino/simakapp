@@ -1,3 +1,4 @@
+import { Period } from "@prisma/client";
 
 export const calculatingSKSLimits = async (ipk: number) : Promise<number>  => {
 
@@ -53,6 +54,24 @@ export const getFinalScore = (grade?: any[] ): {finalScore: number, gradeLetter:
   };
 };
 
+export const previousPeriod = async (data: {semesterType: string, year: number}): Promise<{ semesterType: string, year: number }> => {
+
+  const currentPeriodSemester = data.semesterType;
+  const currentPeriodYear = data.year;
+  const lastPeriodSemester = currentPeriodSemester === "GANJIL" ? "GENAP" : "GANJIL";
+  const lastPeriodYear = currentPeriodSemester === "GANJIL" ? currentPeriodYear : currentPeriodYear - 1;
+  return {
+    semesterType: lastPeriodSemester,
+    year: lastPeriodYear,
+  }
+}
+
+
+// const currentPeriodSemester = createReregisterDetail.reregister.period.semesterType;
+// const currentPeriodYear = createReregisterDetail.reregister.period.year;
+// const lastPeriodSemester = currentPeriodSemester === "GANJIL" ? "GENAP" : "GANJIL";
+// const lastPeriodYear = currentPeriodSemester === "GANJIL" ? currentPeriodYear : currentPeriodYear - 1;
+
 // const getLatestMonday = (): Date => {
 //   const today = new Date();
 //   const dayOfWeek = today.getDay();
@@ -94,3 +113,4 @@ export const getFinalScore = (grade?: any[] ): {finalScore: number, gradeLetter:
 //     };
 //   });
 // };
+

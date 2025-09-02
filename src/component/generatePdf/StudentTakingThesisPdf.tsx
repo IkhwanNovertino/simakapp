@@ -118,7 +118,8 @@ const StudentTakingThesisPdf = ({ data, img }: GeneratePdfProps) => {
             </View>
             <View style={styles.bottomLine}></View>
             <View style={styles.body}>
-              <Text style={[styles.textHeading1, { marginTop: "14px" }]}>DAFTAR MAHASISWA YANG MENGAMBIL TA PROGRAM STUDI {items?.major?.name}</Text>
+              <Text style={[styles.textHeading1, { marginTop: "14px" }]}>DAFTAR MAHASISWA PROGRAM TA</Text>
+              <Text style={styles.textHeading1}>PROGRAM STUDI {items?.major?.name}</Text>
               <Text style={styles.textHeading1}>{data?.dataPeriod?.name}</Text>
               <View style={[styles.table, { marginTop: "18px" }]}>
                 <View style={styles.tableRow}>

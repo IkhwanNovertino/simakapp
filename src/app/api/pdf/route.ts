@@ -2,7 +2,7 @@
 import logger from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
 import renderPdf from "@/lib/renderPdf";
-import { lecturerName } from "@/lib/utils";
+import { lecturerName, previousPeriod } from "@/lib/utils";
 import { SemesterType } from "@prisma/client";
 import { error } from "console";
 import { format } from "date-fns";
@@ -606,12 +606,12 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA MENGAMBIL TA (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA PROGRAM TA (${dataPeriod?.name}).pdf`,
           },
         });
       case "studentsExtendingThesis":
-        // BELUM DIEDIT SAMA SEPERTI STUDENTTAKINGTHESIS
-        const studentsExtendingThesis = await prisma.krs.findMany({
+        const getPrevPeriod = await previousPeriod({ semesterType: dataPeriod.semesterType, year: dataPeriod.year });
+        const studentsTakingThesisCurrentPeriod = await prisma.krs.findMany({
           where: {
             reregister: {
               periodId: uid,
@@ -625,6 +625,7 @@ export async function GET(req: NextRequest) {
             },
           },
           select: {
+            studentId: true,
             student: {
               select: {
                 nim: true,
@@ -634,6 +635,30 @@ export async function GET(req: NextRequest) {
             }
           },
         });
+        const studentsTakingThesisPreviosPeriod = await prisma.krs.findMany({
+          where: {
+            reregister: {
+              period: {
+                semesterType: getPrevPeriod.semesterType,
+                year: getPrevPeriod.year,
+              },
+            },
+            krsDetail: {
+              some: {
+                course: {
+                  isSkripsi: true,
+                },
+              },
+            },
+          },
+          select: {
+            studentId: true,
+          },
+        });
+        const studentsExtendingThesis = studentsTakingThesisCurrentPeriod
+          .filter((student: any) => new Set(studentsTakingThesisPreviosPeriod
+            .map((items: any) => items.studentId))
+            .has(student.studentId));
 
         const dataStudentsExtendingThesis = dataMajor.map((major: any) => {
           const studentsExtendingthesis = studentsExtendingThesis.filter((student: any) => student?.student?.major?.id === major?.id)
@@ -655,7 +680,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA PERPANJANGAN TA (${dataPeriod?.name}).pdf`,
           },
         });
       case "studentsTakingInternship":
@@ -703,7 +728,52 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA MENGAMBIL PKL (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA PROGRAM PKL (${dataPeriod?.name}).pdf`,
+          },
+        });
+      case "studentActiveInactive":
+        const studentsActiveInactive = await await prisma.reregisterDetail.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            },
+            semesterStatus: true,
+          },
+          orderBy: [
+          { semesterStatus: "asc" }
+        ],
+        });
+
+        const dataStudentsActiveInactive = dataMajor.map((major: any) => {
+          const studentsActiveinactive = studentsActiveInactive.filter((student: any) => student?.student?.major?.id === major?.id)
+          return {major: major, students: studentsActiveinactive}
+        })
+
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            dataPeriod,
+            dataStudentsActiveInactive,
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA AKTIF-NONAKTIF (${dataPeriod?.name}).pdf`,
           },
         });
       default:

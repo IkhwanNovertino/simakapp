@@ -1,16 +1,15 @@
+import { menuItems } from "@/lib/data";
 import { RecapitulationCardType } from "@/lib/datatype";
 import { prisma } from "@/lib/prisma";
+import { previousPeriod } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
-import { NextRequest } from "next/server";
 
 interface RecapitulationCardProptypes {
   periodId: string
   type: RecapitulationCardType,
   label: string,
 };
-
-
 
 const RecapitulationCard = async ({ periodId, type, label }: RecapitulationCardProptypes) => {
   const period = await prisma.period.findUnique({
@@ -73,8 +72,47 @@ const RecapitulationCard = async ({ periodId, type, label }: RecapitulationCardP
       });
       break;
     case "studentsExtendingThesis":
-      // Belum diedit
-      totalStudents = studentsKrs.filter((student: any) => student.krsDetail.length < 1).length;
+
+      const getPrevPeriod = await previousPeriod({ semesterType: period?.semesterType, year: period?.year });
+      const getStudentTakingThesis = await prisma.krs.findMany({
+        where: {
+          reregister: {
+            periodId: periodId,
+          },
+          krsDetail: {
+            some: {
+              course: {
+                isSkripsi: true,
+              }
+            }
+          }
+        },
+        select: {
+          studentId: true,
+        }
+      })
+      const getStudentTakingThesisPrevPeriod = await prisma.krs.findMany({
+        where: {
+          reregister: {
+            period: {
+              semesterType: getPrevPeriod.semesterType,
+              year: getPrevPeriod.year,
+            },
+          },
+          krsDetail: {
+            some: {
+              course: {
+                isSkripsi: true,
+              },
+            },
+          },
+        },
+        select: {
+          studentId: true,
+        }
+      });
+
+      totalStudents = getStudentTakingThesis.filter((student: any) => new Set(getStudentTakingThesisPrevPeriod.map((item: any) => item.studentId)).has(student.studentId)).length;
       break;
     case "studentsTakingInternship":
       totalStudents = await prisma.krs.count({

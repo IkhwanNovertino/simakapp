@@ -22,7 +22,7 @@ export async function exportStudentTakingThesis({ data }: { data: any }) {
     // === [1] Baris Judul Besar (Merged)
     worksheet.mergeCells("A2:C2")
     const titleCell = worksheet.getCell('A2')
-    titleCell.value = `DAFTAR MAHASISWA MENGAMBIL TA`
+    titleCell.value = `DAFTAR MAHASISWA PROGRAM TA`
     titleCell.font = { size: 14, bold: true }
     titleCell.alignment = { vertical: 'middle', horizontal: 'center' }
     

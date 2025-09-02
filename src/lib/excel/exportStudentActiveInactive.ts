@@ -1,7 +1,7 @@
 import ExcelJS from 'exceljs';
 import { prisma } from '../prisma';
 
-export async function exportStudentTakingIntership({ data }: { data: any }) {
+export async function exportStudentActiveInactive({ data }: { data: any }) {
   
   const workbook = new ExcelJS.Workbook();
   // Iterasi data 
@@ -15,6 +15,7 @@ export async function exportStudentTakingIntership({ data }: { data: any }) {
       'No',
       'NIM',
       'NAMA MAHASISWA',
+      'STATUS',
     ];
   
     // <!-------------------Menambahkan DATA MAHASISWA SI---------------------------->
@@ -22,7 +23,7 @@ export async function exportStudentTakingIntership({ data }: { data: any }) {
     // === [1] Baris Judul Besar (Merged)
     worksheet.mergeCells("A2:C2")
     const titleCell = worksheet.getCell('A2')
-    titleCell.value = `DAFTAR MAHASISWA PROGRAM PKL`
+    titleCell.value = `DAFTAR MAHASISWA AKTIF DAN NONAKTIF`
     titleCell.font = { size: 14, bold: true }
     titleCell.alignment = { vertical: 'middle', horizontal: 'center' }
     
@@ -37,7 +38,10 @@ export async function exportStudentTakingIntership({ data }: { data: any }) {
     subTitleCellA4.value = `${data?.dataPeriod?.name}`
     subTitleCellA4.font = { size: 12, bold: true }
     subTitleCellA4.alignment = { vertical: 'middle', horizontal: 'center' }
-    
+
+    const studentActive = dataStudent?.students.filter((student: any) => student.semesterStatus === 'AKTIF');
+    const studentInactive = dataStudent?.students.filter((student: any) => student.semesterStatus !== 'AKTIF');
+    const students = [...studentActive, ...studentInactive];
     worksheet.addRow([])
     const headerSI = worksheet.addRow(headerTable);
   
@@ -59,16 +63,17 @@ export async function exportStudentTakingIntership({ data }: { data: any }) {
     });
     
     // Ukuran lebar column
-    const colWidths = [4, 25, 55];
+    const colWidths = [5, 25, 55, 15];
     colWidths.forEach((w, i) => {
       worksheet.getColumn(i + 1).width = w
     });
-    
-    dataStudent?.students.forEach((items: any, i: number) => {
+
+    students.forEach((items: any, i: number) => {
       const rowdata: any = [
         i + 1,
         items?.student?.nim,
         items?.student?.name,
+        items?.semesterStatus,
       ];
 
       const addRow = worksheet.addRow(rowdata);
@@ -84,9 +89,9 @@ export async function exportStudentTakingIntership({ data }: { data: any }) {
       });
       addRow.height = 30;
     })
+    
   }
-  
-  
+
     const buffer = await workbook.xlsx.writeBuffer();
     return buffer;
 }

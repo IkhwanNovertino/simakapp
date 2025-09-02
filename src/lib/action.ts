@@ -1836,7 +1836,6 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
         }
       }
     });
-    console.log('CREATE KRS', reregisterDetail);
 
     const currentPeriodSemester = reregisterDetail.reregister.period.semesterType;
     const currentPeriodYear = reregisterDetail.reregister.period.year;
@@ -1859,7 +1858,6 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
         semester: reregisterDetail?.semester,
       }
     });
-    console.log('KRS RULES', krsRules);
 
     const FormDataKrs = {
       reregisterId: reregisterId,
@@ -1903,8 +1901,6 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
           },
         });
 
-        console.log('READ COURSES', courses[0].course.assessment.assessmentDetail);
-        
         if (!courses) {
           throw new AppError("mata kuliah tidak ditemukan", 404);
         }
