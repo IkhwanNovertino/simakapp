@@ -18,16 +18,15 @@ const AdminPage = async () => {
       <div className="w-full lg:w-2/3 flex flex-col gap-8">
         {/* USER CARD */}
         <div className="flex justify-between flex-wrap gap-4">
-          <UserCard type="Students" />
-          <UserCard type="Teachers" />
-          <UserCard type="Parents" />
-          <UserCard type="Staff" />
+          <UserCard type="mahasiswa" />
+          <UserCard type="dosen" />
+          <UserCard type="staff" />
         </div>
         {/* MIDDLE CHART */}
         <div className="flex flex-col lg:flex-row gap-4">
           {/* COUNT CHART */}
           <div className="w-full lg:w-1/2 h-[450px]">
-            <CountChartContainer type="students" title="Mahasiswa/i" />
+            <CountChartContainer type="studentsByGender" title="Mahasiswa/i" />
           </div>
           <div className="w-full lg:w-1/2 h-[450px]">
             <CountChartContainer type="studentsBymajors" title="Program Studi" />
