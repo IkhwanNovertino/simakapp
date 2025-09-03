@@ -1,4 +1,7 @@
+import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
+import { lecturerName } from "@/lib/utils";
+import Image from "next/image";
 import { redirect } from "next/navigation";
 
 export default async function ReregistrationLayout({
@@ -14,5 +17,10 @@ export default async function ReregistrationLayout({
   }
 
   const role = getSessionFunc.roleType;
-  return <>{(role === "OPERATOR" && operator) || (role === "STUDENT" && student) || advisor}</>;
+  return (
+    <div>
+      {(role === "OPERATOR" && operator) || (role === "STUDENT" && student) || advisor}
+    </div>
+    
+  );
 }

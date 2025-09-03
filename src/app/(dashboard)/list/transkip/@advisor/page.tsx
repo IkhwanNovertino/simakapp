@@ -21,7 +21,7 @@ const TranskipAdvisorPage = async (
 ) => {
 
   const getSessionFunc = await getSession();
-  if (!getSessionFunc || getSessionFunc.roleType !== "OPERATOR") {
+  if (!getSessionFunc || getSessionFunc.roleType !== "ADVISOR") {
     redirect("/");
   }
 
@@ -53,7 +53,12 @@ const TranskipAdvisorPage = async (
 
   const [data, count] = await prisma.$transaction([
     prisma.student.findMany({
-      where: query,
+      where: {
+        ...query,
+        lecturer: {
+          userId: getSessionFunc.userId
+        },
+      },
       select: {
         id: true,
         name: true,
@@ -70,7 +75,14 @@ const TranskipAdvisorPage = async (
         { nim: "desc" }
       ],
     }),
-    prisma.student.count({ where: query }),
+    prisma.student.count({
+      where: {
+        ...query,
+        lecturer: {
+          userId: getSessionFunc.userId
+        },
+      }
+    }),
   ]);
 
   const columns = [

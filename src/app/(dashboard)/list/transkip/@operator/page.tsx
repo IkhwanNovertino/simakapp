@@ -120,12 +120,12 @@ const TranskipOperatorPage = async (
             <p className="text-xs font-medium text-gray-500">{item?.nim || ""}</p>
             <p className="text-xs text-gray-500">Angkatan: {item.year}</p>
             <div className="flex gap-1 mt-1">
-              <p className="text-[9px] font-bold">
+              <p className="text-[10px] font-bold">
                 <span className={status.join(" ")}>
                   {item.studentStatus}
                 </span>
               </p>
-              <p className="text-[9px] font-bold">
+              <p className="text-[10px] font-bold">
                 <span className={item?.statusRegister ? "p-1 rounded-lg bg-cyan-100 text-cyan-700" : "p-1 rounded-lg bg-indigo-100 text-indigo-700"}>
                   {item?.statusRegister ?? "-"}
                 </span>
@@ -175,7 +175,7 @@ const TranskipOperatorPage = async (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
       <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">Transkip Nilai</h1>
+        <h1 className="hidden md:block text-lg font-semibold">Daftar Mahasiswa</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
         </div>

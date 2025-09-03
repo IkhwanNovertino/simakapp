@@ -7,12 +7,13 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Period, Prisma, Reregister } from "@prisma/client";
+import { lecturerName } from "@/lib/utils";
+import { Course, Khs, KhsDetail, Period, Prisma, Reregister } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-type ReregisterDataType = Reregister & { period: Period };
+type KhsDetailDataType = KhsDetail & { khs: Khs } & { course: Course };
 
 const TranskipStudentPage = async (
   { searchParams }: { searchParams: { [key: string]: string | undefined } }
@@ -48,28 +49,73 @@ const TranskipStudentPage = async (
     }
   };
 
-  const [data, count] = await prisma.$transaction([
-    prisma.reregister.findMany({
-      where: query,
-      include: {
-        period: true
+  const [data, studentDetail] = await prisma.$transaction([
+    prisma.khsDetail.findMany({
+      where: {
+        khs: {
+          student: {
+            userId: getSessionFunc?.userId,
+          }
+        },
+        isLatest: true,
       },
-      take: ITEM_PER_PAGE,
-      skip: ITEM_PER_PAGE * (p - 1),
+      select: {
+        id: true,
+        khs: {
+          select: {
+            semester: true,
+          }
+        },
+        course: {
+          select: {
+            code: true,
+            name: true,
+            sks: true,
+            isPKL: true,
+            isSkripsi: true,
+          }
+        },
+        weight: true,
+        gradeLetter: true,
+        status: true,
+      },
       orderBy: [
         {
-          period: {
-            year: "desc",
+          khs: {
+            semester: "asc"
           }
         },
         {
-          period: {
-            semesterType: "asc"
+          course: {
+            sks: "asc"
           }
         }
       ]
     }),
-    prisma.reregister.count({ where: query }),
+    prisma.student.findUnique({
+      where: {
+        userId: getSessionFunc?.userId,
+      },
+      select: {
+        name: true,
+        nim: true,
+        photo: true,
+        year: true,
+        statusRegister: true,
+        major: {
+          select: {
+            name: true,
+          },
+        },
+        lecturer: {
+          select: {
+            name: true,
+            frontTitle: true,
+            backTitle: true,
+          }
+        },
+      },
+    })
   ]);
 
   const columns = [
@@ -79,99 +125,118 @@ const TranskipStudentPage = async (
       className: "px-2 md:px-4"
     },
     {
-      header: "Periode Akademik",
-      accessor: "periode akademik",
+      header: "Semester",
+      accessor: "semester",
       className: "hidden md:table-cell",
     },
     {
-      header: "Tahun",
-      accessor: "tahun",
+      header: "SKS",
+      accessor: "sks",
       className: "hidden md:table-cell",
     },
     {
-      header: "isActivated",
-      accessor: "isActivated",
+      header: "Nilai",
+      accessor: "Nilai",
       className: "hidden md:table-cell",
     },
     {
-      header: "Actions",
-      accessor: "action",
+      header: "SKSxNilai",
+      accessor: "sksxnilai",
       className: "hidden md:table-cell",
     },
   ];
 
-  const renderRow = (item: ReregisterDataType) => (
-    <tr
-      key={item.id}
-      className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
-    >
-      <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
-        <div className="flex flex-col col-span-5 items-start">
-          <h3 className="font-semibold">{item?.name || ""}</h3>
-          <p className="flex md:hidden">{item.period?.year || ""}</p>
-          <div className="flex md:hidden text-[9px] font-bold">
-            <span className={item.isReregisterActive ? "text-lime-500 bg-lime-100 p-1 rounded-lg" : "text-red-700 bg-red-100 p-1 rounded-lg"}>
-              {item.isReregisterActive ? "AKTIF" : "NONAKTIF"}
-            </span>
-          </div>
-        </div>
-        <div className="flex items-center justify-end gap-2 md:hidden ">
-          <ModalAction>
-            <div className="flex items-center gap-3">
-              {canViewData && (
-                <Link href={`/list/reregistrations/${item.id}`}>
-                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                  </button>
-                </Link>
-              )}
-              {canUpdateData && (<FormContainer table="reregistration" type="update" data={item} />)}
-              {canDeleteData && (<FormContainer table="reregistration" type="delete" id={item.id} />)}
+  const renderRow = (item: KhsDetailDataType) => {
+    return (
+      <tr
+        key={item.id}
+        className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
+      >
+        <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
+          <div className="flex flex-col col-span-5 items-start">
+            <h3 className="font-semibold">{item?.course?.name || ""}</h3>
+            <p className="text-xs font-medium text-gray-500">{item?.course?.code || ""}</p>
+            <div className="flex gap-1 mt-1">
             </div>
-          </ModalAction>
-        </div>
-      </td>
-      <td className="hidden md:table-cell">{item.period?.name || "-"}</td>
-      <td className="hidden md:table-cell">{item.period?.year || "-"}</td>
-      <td className="hidden md:table-cell text-[10px] font-bold">
-        <span className={item.isReregisterActive ? "text-lime-500 bg-lime-100 p-1 rounded-lg" : "text-red-700 bg-red-100 p-1 rounded-lg"}>
-          {item.isReregisterActive ? "AKTIF" : "NONAKTIF"}
-        </span>
-      </td>
-      <td>
-        <div className="flex items-center gap-2">
-          <div className="hidden md:flex items-center gap-2">
-            {canViewData && (
-              <Link href={`/list/reregistrations/${item.id}`}>
-                <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                  <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                </button>
-              </Link>
-            )}
-            {canUpdateData && (<FormContainer table="reregistration" type="update" data={item} />)}
-            {canDeleteData && (<FormContainer table="reregistration" type="delete" id={item.id} />)}
           </div>
-        </div>
-      </td>
-    </tr >
-  );
+          <div className="flex items-center justify-end gap-2 md:hidden ">
+          </div>
+        </td>
+        <td className="hidden md:table-cell">{item?.khs?.semester || "-"}</td>
+        <td className="hidden md:table-cell">{item?.course?.sks || "-"}</td>
+        <td className="hidden md:table-cell">{item?.gradeLetter || "-"}</td>
+        <td className="hidden md:table-cell">
+          {(Number(item?.course?.sks) * Number(item.weight))}
+        </td>
+      </tr >
+    )
+  };
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
+    <div className="flex-1 p-4 flex flex-col gap-4">
       {/* TOP */}
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">Daftar Herregistrasi</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-          <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            {canCreateData && (<FormContainer table="reregistration" type="create" />)}
+      <div className="flex flex-col lg:flex-row gap-4">
+        {/* USER INFO CARD */}
+        <div className="bg-primary py-6 px-4 rounded-md flex-1 flex gap-4 w-full lg:w-3/4">
+          <div className="hidden md:inline md:w-1/4">
+            <Image
+              src={studentDetail?.photo ? `/api/avatar?file=${studentDetail?.photo}` : '/avatar.png'}
+              alt=""
+              width={144}
+              height={144}
+              className="w-36 h-36 rounded-full object-cover"
+            />
+          </div>
+          <div className="w-full md:w-3/4 flex flex-col justify-between gap-4">
+            <header>
+              <h1 className="text-xl font-semibold">{studentDetail?.name || ""}</h1>
+              <div className="h-0.5 w-full bg-gray-300" />
+              <p className="text-sm text-slate-600 font-medium mt-1">
+                {studentDetail.nim} | S1-{studentDetail.major.name}
+              </p>
+            </header>
+            <div className="flex flex-col items-center justify-between gap-2 flex-wrap text-xs font-medium">
+              <div className="w-full 2xl:w-1/3 md:gap-2 flex flex-col md:flex-row items-center">
+                <span className="w-full font-semibold md:w-1/3">Dosen Wali</span>
+                <span className="hidden md:flex">:</span>
+                <span className="w-full font-bold text-gray-700">
+                  {lecturerName(
+                    {
+                      frontTitle: studentDetail?.lecturer?.frontTitle,
+                      name: studentDetail?.lecturer?.name,
+                      backTitle: studentDetail.lecturer.backTitle,
+                    }
+                  )}
+                </span>
+              </div>
+              <div className="w-full 2xl:w-1/3 md:gap-2 flex flex-col md:flex-row items-center">
+                <span className="w-full font-semibold md:w-1/3">Thn. Masuk</span>
+                <span className="hidden md:flex">:</span>
+                <span className="w-full font-bold text-gray-700">{studentDetail.year}</span>
+              </div>
+              <div className="w-full 2xl:w-1/3 md:gap-2 flex flex-col md:flex-row items-center">
+                <span className="w-full font-semibold md:w-1/3">Status Registrasi</span>
+                <span className="hidden md:flex">:</span>
+                <span className="w-full font-bold text-gray-700">{studentDetail.statusRegister}</span>
+              </div>
+            </div>
           </div>
         </div>
+        <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md"></div>
       </div>
       {/* BOTTOM */}
-      {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={data} />
-      {/* PAGINATION */}
-      <Pagination page={p} count={count} />
+      <div className="bg-white p-4 rounded-md flex-1 mt-0">
+        {/* TOP */}
+        <div className="flex items-center justify-between">
+          <h1 className="hidden md:block text-lg font-semibold">Transkip Nilai Sementara</h1>
+          <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
+            <TableSearch />
+          </div>
+        </div>
+        {/* BOTTOM */}
+        {/* LIST */}
+        <Table columns={columns} renderRow={renderRow} data={data} />
+        {/* PAGINATION */}
+      </div>
     </div>
   )
 }

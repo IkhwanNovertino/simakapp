@@ -16,7 +16,7 @@ import { redirect } from "next/navigation";
 
 type KhsDetailDataType = KhsDetail & { khs: Khs } & { course: Course };
 
-const TranskipOperatorDetailPage = async (
+const TranskipAdvisorDetailPage = async (
   {
     searchParams, params,
   }: {
@@ -26,7 +26,7 @@ const TranskipOperatorDetailPage = async (
 ) => {
 
   const getSessionFunc = await getSession();
-  if (!getSessionFunc || getSessionFunc.roleType !== "OPERATOR") {
+  if (!getSessionFunc || getSessionFunc.roleType !== "ADVISOR") {
     redirect("/");
   }
 
@@ -247,4 +247,4 @@ const TranskipOperatorDetailPage = async (
   )
 }
 
-export default TranskipOperatorDetailPage;
+export default TranskipAdvisorDetailPage;
