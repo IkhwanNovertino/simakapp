@@ -8,7 +8,11 @@ import { calendarEvents } from "@/lib/data";
 
 const localizer = momentLocalizer(moment);
 
-const BigCalendar = () => {
+const BigCalendar = ({
+  data,
+}: {
+  data: { title: string; start: Date; end: Date }[];
+}) => {
   const [view, setView] = useState<View>(Views.WEEK);
 
   const handleOnChangeView = (selectedView: View) => {
