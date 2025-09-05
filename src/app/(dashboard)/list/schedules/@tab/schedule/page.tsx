@@ -91,7 +91,7 @@ const ScheduleListPage = async (
         <div className="flex items-center justify-end gap-2 md:hidden ">
           <ModalAction>
             <div className="flex items-center gap-3">
-              <Link href={`/list/schedules/schedule/${item.id}`}>
+              <Link href={`/list/schedules/schedule/${item.id}?filter=SENIN`}>
                 <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
                   <Image src="/icon/view.svg" alt="" width={20} height={20} />
                 </button>
@@ -105,7 +105,7 @@ const ScheduleListPage = async (
       <td className="hidden md:table-cell">{item.period?.name || "0000/0000"}</td>
       <td>
         <div className="hidden md:flex items-center gap-2">
-          <Link href={`/list/schedules/schedule/${item.id}`}>
+          <Link href={`/list/schedules/schedule/${item.id}?filter=SENIN`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
               <Image src="/icon/view.svg" alt="" width={20} height={20} />
             </button>

@@ -1,3 +1,4 @@
+import FilterSearch from "@/component/FilterSearch";
 import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
 import Table from "@/component/Table";
@@ -50,12 +51,16 @@ const ScheduleDetailPage = async (
       where: {
         id: id,
       },
-      include: {
-        period: true
+      select: {
+        id: true,
+        periodId: true
       },
     }),
     prisma.scheduleDetail.findMany({
-      where: query,
+      where: {
+        scheduleId: id,
+        ...query,
+      },
       include: {
         time: true,
         academicClass: {
@@ -70,6 +75,13 @@ const ScheduleDetailPage = async (
           },
         },
       },
+      orderBy: [
+        {
+          time: {
+            timeStart: "asc"
+          }
+        }
+      ]
     }),
   ]);
 
@@ -162,10 +174,12 @@ const ScheduleDetailPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            <TableFilter data={dataFilter} />
             <FormContainer table="scheduleDetail" type="create" data={dataSchedule} />
           </div>
         </div>
+      </div>
+      <div className="flex flex-row flex-wrap gap-4">
+        <FilterSearch data={dataFilter} />
       </div>
       <Table columns={columns} renderRow={renderRow} data={dataDetail} />
     </div>

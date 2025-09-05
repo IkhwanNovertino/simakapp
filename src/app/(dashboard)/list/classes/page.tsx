@@ -42,6 +42,7 @@ const ClassListPage = async (
               { lecturer: { name: { contains: value, mode: "insensitive" } } },
               { course: { name: { contains: value, mode: "insensitive" } } },
               { course: { code: { contains: value, mode: "insensitive" } } },
+              { room: { name: { contains: value, mode: "insensitive" } } },
             ]
             break;
           case "filter":

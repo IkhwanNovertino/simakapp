@@ -348,15 +348,10 @@ const FormContainer = async (
         break;
       case "scheduleDetail":
         const periodScheduleDetail = await prisma.period.findMany({
+          where: {
+            isActive: true,
+          },
           select: { id: true, name: true },
-          orderBy: [
-            {
-              year: "desc"
-            },
-            {
-              semesterType: "asc"
-            }
-          ]
         });
         const time = await prisma.time.findMany({
           orderBy: [
@@ -375,6 +370,11 @@ const FormContainer = async (
                 major: true
               }
             }
+          }
+        })
+        const classHaveSchedule = await prisma.scheduleDetail.findMany({
+          where: {
+            scheduleId: data.id,
           }
         })
 

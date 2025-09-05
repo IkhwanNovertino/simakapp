@@ -531,7 +531,7 @@ async function main() {
     },
     { code: "SB-ISO-006", name:"Pemrograman Aplikasi Bergerak", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISPB1-003", name:"Startup Digital (PBMB)", 
       isPKL:false, isSkripsi: false, courseType: "PILIHAN",	sks:3, smt:5, 
@@ -543,7 +543,7 @@ async function main() {
     },
     { code: "SB-ISI-009", name:"Proyek Perangkat lunak", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISI-012", name:"Tata Kelola Teknologi Informasi", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:5, 
@@ -599,18 +599,18 @@ async function main() {
     },
     { code: "SB-ISO-106", name:"Machine Learning", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ISO-108", name:"E-Marketing", 
       isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:6, 
       assessment: "REGULER", predecessor: ""
     },
     { code: "SB-ISI-025", name:"Praktek Kerja Lapangan", 
-      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:7, 
+      isPKL:true, isSkripsi: false, courseType: "WAJIB",	sks:3, smt:7, 
       assessment: "PRAKTIKUM", predecessor: ""
     },
     { code: "SB-ISI-024", name:"Tugas Akhir", 
-      isPKL:false, isSkripsi: false, courseType: "WAJIB",	sks:6, smt:8, 
+      isPKL:false, isSkripsi: true, courseType: "WAJIB",	sks:6, smt:8, 
       assessment: "TUGAS AKHIR", predecessor: ""
     },
   ];
@@ -697,12 +697,12 @@ async function main() {
       assessment: "REGULER", predecessor: ""
     },
     { code: "SB-ITJN-006",name: "Komunikasi Data (Konsentrasi JN)", 
-      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      isPKL:false, isSkripsi:false, courseType: "PILIHAN",	
       sks:3,	smt:3, 
       assessment: "REGULER", predecessor: ""
     },
     { code: "SB-ITSC-001",name: "Computer Vision (Konsentrasi SC)", 
-      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      isPKL:false, isSkripsi:false, courseType: "PILIHAN",	
       sks:3,	smt:3, 
       assessment: "REGULER", predecessor: ""
     },
@@ -742,14 +742,14 @@ async function main() {
       assessment: "REGULER", predecessor: ""
     },
     { code: "SB-ITSC-002",name: "Expert System (Konsentrasi SC)", 
-      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      isPKL:false, isSkripsi:false, courseType: "PILIHAN",	
       sks:3,	smt:4, 
       assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITI-013", name: "Pemrograman Berorientasi Objek", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:4, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITO-001", name: "Mikrokontroller", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
@@ -767,7 +767,7 @@ async function main() {
       assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITSC-005",name: "Sistem Penunjang Keputusan (Konsentrasi SC)", 
-      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      isPKL:false, isSkripsi:false, courseType: "PILIHAN",	
       sks:3,	smt:4, 
       assessment: "REGULER", predecessor: ""
     },
@@ -807,9 +807,9 @@ async function main() {
       assessment: "REGULER", predecessor: ""
     },
     { code: "SB-ITSC-004",name: "Data Mining (Konsentrasi SC)", 
-      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      isPKL:false, isSkripsi:false, courseType: "PILIHAN",	
       sks:3,	smt:5, 
-      assessment: "REGULER", predecessor: ""
+      assessment: "CASE METHOD", predecessor: ""
     },
     { code: "SB-ITI-008", name: "Analisis dan Desain Perangkat Lunak", 
       isPKL:false, isSkripsi:false, courseType: "WAJIB",	
@@ -867,12 +867,12 @@ async function main() {
       assessment: "REGULER", predecessor: "SKB-T027"
     },
     { code: "SB-ITI-028", name: "Praktek Kerja Lapangan", 
-      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      isPKL:true, isSkripsi:false, courseType: "WAJIB",	
       sks:3,	smt:7, 
       assessment: "PRAKTIKUM", predecessor: ""
     },
     { code: "SB-ITI-030", name: "Tugas Akhir", 
-      isPKL:false, isSkripsi:false, courseType: "WAJIB",	
+      isPKL:false, isSkripsi:true, courseType: "WAJIB",	
       sks:6,	smt:8, 
       assessment: "TUGAS AKHIR", predecessor: ""
     },
@@ -1112,10 +1112,10 @@ async function main() {
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
       majorId: 1,
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 === 0 ? lecturerSI[3].id : lecturerSI[4].id), 
+      lecturerId: (i % 2 === 0 ? lecturerSI[0].id : lecturerSI[1].id), 
     })
   };
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 9; i++) {
     students.push({
       nim: `31012301230${i}`,
       name: `Student Surname 23${i}`,
@@ -1124,10 +1124,10 @@ async function main() {
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
       majorId: 1,
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i === 1  && lecturerSI[0].id) || (i === 2 && lecturerSI[1].id) || (i === 3 && lecturerSI[2].id) || lecturerSI[3].id,
+      lecturerId: (i % 2 === 0 ? lecturerSI[2].id : lecturerSI[3].id), 
     })
   };
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 8; i++) {
     students.push({
       nim: `31012201220${i}`,
       name: `Student Surname 22${i}`,
@@ -1136,7 +1136,19 @@ async function main() {
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
       majorId: 1,
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i === 1  && lecturerSI[0].id) || (i === 2 && lecturerSI[1].id) || (i === 3 && lecturerSI[2].id) || lecturerSI[3].id,
+      lecturerId: (i % 2 === 0 ? lecturerSI[4].id : lecturerSI[0].id), 
+    })
+  };
+  for (let i = 1; i <= 8; i++) {
+    students.push({
+      nim: `31012201210${i}`,
+      name: `Student Surname 21${i}`,
+      year: 2021,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 1,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerSI[1].id : lecturerSI[2].id), 
     })
   };
   // Student TI
@@ -1149,10 +1161,10 @@ async function main() {
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
       majorId: 2,
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 === 0 ? lecturerTI[3].id : lecturerTI[4].id), 
+      lecturerId: (i % 2 === 0 ? lecturerTI[0].id : lecturerTI[1].id), 
     })
   };
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 8; i++) {
     students.push({
       nim: `31012302230${i}`,
       name: `Student TSurname 23${i}`,
@@ -1161,10 +1173,10 @@ async function main() {
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
       majorId: 2,
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i === 1  && lecturerTI[0].id) || (i === 2 && lecturerTI[1].id) || (i === 3 && lecturerTI[2].id) || lecturerTI[3].id,
+      lecturerId: (i % 2 === 0 ? lecturerTI[2].id : lecturerTI[3].id), 
     })
   };
-  for (let i = 1; i <= 6; i++) {
+  for (let i = 1; i <= 8; i++) {
     students.push({
       nim: `31012202220${i}`,
       name: `Student TSurname 22${i}`,
@@ -1173,7 +1185,19 @@ async function main() {
       gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
       majorId: 2,
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i === 1  && lecturerTI[0].id) || (i === 2 && lecturerTI[1].id) || (i === 3 && lecturerTI[2].id) || lecturerTI[3].id,
+      lecturerId: (i % 2 === 0 ? lecturerTI[4].id : lecturerTI[0].id), 
+    })
+  };
+  for (let i = 1; i <= 6; i++) {
+    students.push({
+      nim: `31012202210${i}`,
+      name: `Student TSurname 21${i}`,
+      year: 2021,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 2,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerTI[1].id : lecturerTI[2].id), 
     })
   };
   const student = await prisma.student.createMany({
