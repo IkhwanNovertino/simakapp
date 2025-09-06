@@ -178,13 +178,17 @@ const RecapitulationDetailByPeriodPage = async ({
           <h1 className="text-lg font-semibold">REKAPITULASI/LAPORAN PERIODE {periodForQuery?.name}</h1>
         </div>
         {/* MIDDLE CHART */}
-        <div className="flex flex-col lg:flex-row gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 2xl:grid-cols-3 gap-4">
           {/* COUNT CHART */}
+          <div className="w-full  h-[380px]">
+            <RecapitulationCountChartContainer type="studentsRegularSore" periodId={id} title={"Data Mahasiswa"} />
+          </div>
           {dataMajor.map((items: any) => (
-            <div key={items.id} className="w-full lg:w-1/2 h-[320px]">
-              <RecapitulationCountChartContainer periodId={id} title={items.name} />
+            <div key={items.id} className="w-full h-[380px]">
+              <RecapitulationCountChartContainer type="studentActiveInactive" periodId={id} title={items.name} />
             </div>
           ))}
+
         </div>
         <div className="bg-white p-4 rounded-md flex-1 mt-0">
           <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2">

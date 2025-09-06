@@ -7,10 +7,10 @@ import { RecapitulationCardType } from "@/lib/datatype";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { previousPeriod } from "@/lib/utils";
-import { Krs, Major, Prisma, ReregisterDetail, SemesterStatus, SemesterType, Student } from "@prisma/client";
+import { CampusType, Krs, Major, Prisma, ReregisterDetail, SemesterStatus, SemesterType, Student } from "@prisma/client";
 import { notFound } from "next/navigation";
 
-type RenderRowDataType = Krs & { student: Student & { major: Major } } | ReregisterDetail & { student: Student & { major: Major } } & { semesterStatus: SemesterStatus };
+// type RenderRowDataType = Krs & { student: Student & { major: Major } } | ReregisterDetail & { student: Student & { major: Major } } & { semesterStatus: SemesterStatus } & { campusType: CampusType };
 
 async function dataTable({
   queryType, type, queryParams, periodId, p
@@ -233,23 +233,7 @@ async function dataTable({
       });
 
       data = studentThesis.filter((student: any) => new Set(studentPrevPeriod.map((items: any) => items.studentId)).has(student.studentId));
-      console.log(data);
       count = data.length;
-      // count = await tx.krs.count({
-      //   where: {
-      //     reregister: {
-      //       periodId: periodId,
-      //     },
-      //     krsDetail: {
-      //       some: {
-      //         course: {
-      //           isSkripsi: true,
-      //         },
-      //       },
-      //     },
-      //     ...queryType,
-      //   },
-      // });
     }
     if (type === "studentsTakingInternship") {
       data = await tx.krs.findMany({
@@ -321,7 +305,41 @@ async function dataTable({
           { student: { nim: "desc" } }
         ],
       });
-      count = await tx.krs.count({
+      count = await tx.reregisterDetail.count({
+        where: {
+          reregister: {
+            periodId: periodId,
+          },
+          ...queryType,
+        },
+      });
+    }
+    if (type === "studentsRegularSore") {
+      data = await tx.reregisterDetail.findMany({
+        where: {
+          reregister: {
+            periodId: periodId,
+          },
+          ...queryType,
+        },
+        select: {
+          student: {
+            select: {
+              nim: true,
+              name: true,
+              major: true,
+            }
+          },
+          campusType: true,
+        },
+        take: ITEM_PER_PAGE,
+        skip: ITEM_PER_PAGE * (p - 1),
+        orderBy: [
+          { campusType: "desc" },
+          { student: { nim: "desc" } },
+        ],
+      });
+      count = await tx.reregisterDetail.count({
         where: {
           reregister: {
             periodId: periodId,
@@ -356,6 +374,7 @@ const RecapitulationDetailByCardPage = async (
     studentsExtendingThesis: "Daftar Mahasiswa Perpanjangan TA",
     studentsTakingInternship: "Daftar Mahasiswa Program PKL",
     studentActiveInactive: "Daftar Mahasiswa Aktif/non-aktif",
+    studentsRegularSore: "Daftar Mahasiswa Reg.Pagi/Sore",
   }
 
   let data: any[] = [];
@@ -413,9 +432,19 @@ const RecapitulationDetailByCardPage = async (
       })
       break;
     case "studentActiveInactive":
-      const queryStudentActiveInactive: Prisma.KrsWhereInput = {};
+      const queryStudentActiveInactive: Prisma.ReregisterDetailWhereInput = {};
       [data, count] = await dataTable({
         queryType: queryStudentActiveInactive,
+        type: type,
+        queryParams,
+        periodId: id,
+        p,
+      })
+      break;
+    case "studentsRegularSore":
+      const queryStudentRegularSore: Prisma.ReregisterDetailWhereInput = {};
+      [data, count] = await dataTable({
+        queryType: queryStudentRegularSore,
         type: type,
         queryParams,
         periodId: id,
@@ -458,11 +487,20 @@ const RecapitulationDetailByCardPage = async (
           className: "hidden md:table-cell",
         }
       ] : []
+    ),
+    ...(type === "studentsRegularSore" ?
+      [
+        {
+          header: "Perkuliahan",
+          accessor: "perkuliahan",
+          className: "hidden md:table-cell",
+        }
+      ] : []
     )
   ];
 
 
-  const renderRow = (item: RenderRowDataType) => {
+  const renderRow = (item: any) => {
 
     const semesterStyle = ["p-1 rounded-lg"];
     if (type === "studentActiveInactive") {
@@ -491,8 +529,13 @@ const RecapitulationDetailByCardPage = async (
         {type === "studentActiveInactive" && (
           <td className="hidden md:table-cell text-[10px] font-bold">
             <span className={semesterStyle.join(" ")}>
-              {(item as ReregisterDetail & { semesterStatus: SemesterStatus }).semesterStatus || "-"}
+              {item.semesterStatus || "-"}
             </span>
+          </td>
+        )}
+        {type === "studentsRegularSore" && (
+          <td className="hidden md:table-cell">
+            {(item.campusType === "BJM" && "BANJARMASIN") || (item.campusType === "BJB" && "BANJARBARU") || item.campusType}
           </td>
         )}
       </tr>

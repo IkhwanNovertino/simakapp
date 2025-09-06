@@ -1,11 +1,13 @@
 import { exportCourseTaken } from "@/lib/excel/exportCourseTaken";
 import { exportStudentActiveInactive } from "@/lib/excel/exportStudentActiveInactive";
 import { exportStudentRegisteredKrs } from "@/lib/excel/exportStudentRegisteredKrs";
+import { exportStudentRegularSore } from "@/lib/excel/exportStudentRegularSore";
 import { exportStudentTakingIntership } from "@/lib/excel/exportStudentTakingIntership";
 import { exportStudentTakingThesis } from "@/lib/excel/exportStudentTakingThesis";
 import { exportStudentUnregisteredKrs } from "@/lib/excel/exportStudentUnregisteredKrs";
 import { prisma } from "@/lib/prisma";
 import { previousPeriod } from "@/lib/utils";
+import { CampusType } from "@prisma/client";
 import { error } from "console";
 import { format } from "date-fns";
 import { id as indonesianLocale } from "date-fns/locale";
@@ -374,6 +376,73 @@ export async function GET(req: NextRequest) {
           headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
             'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA AKTIF-NONAKTIF (${dataPeriod?.name}).xlsx"`,
+          },
+        });
+      case "studentsRegularSore":
+        const studentsRegularSore = await await prisma.reregisterDetail.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            campusType: "SORE"
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            },
+            campusType: true,
+          },
+          orderBy: [
+            { student: { nim: "desc" } },
+          ]
+        });
+        const studentsRegularPagi = await await prisma.reregisterDetail.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            campusType: {in: ["BJM", "BJB", "ONLINE"]}
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            },
+            campusType: true,
+          },
+          orderBy: [
+            { student: { nim: "desc" } },
+          ]
+        });
+
+        const dataStudents = [
+          {
+            campusType: "SORE",
+            students: studentsRegularSore,
+          },
+          {
+            campusType: "PAGI",
+            students: studentsRegularPagi,
+          },
+        ];
+        
+        bufferFile = await exportStudentRegularSore({
+          data: {
+            dataPeriod: dataPeriod,
+            dataStudents: dataStudents,
+          }
+        })
+        return new NextResponse(bufferFile, {
+          headers: {
+            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA Reg.Pagi-Sore (${dataPeriod?.name}).xlsx"`,
           },
         });
       default:

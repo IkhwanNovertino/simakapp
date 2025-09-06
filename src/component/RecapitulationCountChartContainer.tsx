@@ -2,48 +2,74 @@ import Image from "next/image";
 import CountChart from "./CountChart";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { RecapitulationCardType } from "@/lib/datatype";
 
 interface RecapitulationCountChartContainerProps {
   periodId: string,
   title: string;
+  type: RecapitulationCardType;
 };
 
-const RecapitulationCountChartContainer = async ({ periodId, title }: RecapitulationCountChartContainerProps) => {
-  const data = await prisma.reregisterDetail.findMany({
-    where: {
-      reregister: {
-        periodId: periodId,
-      },
-      student: {
-        major: {
-          name: title,
-        },
-      },
-    },
-    select: {
-      student: {
-        select: {
-          major: true,
-        },
-      },
-      semesterStatus: true,
-    },
-  });
+const RecapitulationCountChartContainer = async ({ periodId, title, type }: RecapitulationCountChartContainerProps) => {
 
-  // dac = dataActiveCount && dic = dataInactiveCount
-  const dac = data.filter((d: any) => d.semesterStatus === "AKTIF").length;
-  const dic = data.filter((d: any) => d.semesterStatus !== "AKTIF").length;
-  const type = 'studentActiveInactive'
+  const legendTitle: { [key: string]: string[] } = {
+    studentActiveInactive: ["Active", "Inactive"],
+    studentsRegularSore: ["Reg.Pagi", "Reg.Sore"],
+  }
+  let data;
+  let valA;
+  let valB;
+  if (type === "studentActiveInactive") {
+    data = await prisma.reregisterDetail.findMany({
+      where: {
+        reregister: {
+          periodId: periodId,
+        },
+        student: {
+          major: {
+            name: title,
+          },
+        },
+      },
+      select: {
+        student: {
+          select: {
+            major: true,
+          },
+        },
+        semesterStatus: true,
+      },
+    });
+
+    // dac = dataActiveCount && dic = dataInactiveCount
+    valA = data.filter((d: any) => d.semesterStatus === "AKTIF").length;
+    valB = data.filter((d: any) => d.semesterStatus !== "AKTIF").length;
+  } else if (type === "studentsRegularSore") {
+    data = await prisma.reregisterDetail.findMany({
+      where: {
+        reregister: {
+          periodId: periodId,
+        },
+      },
+      select: {
+        campusType: true,
+      },
+    });
+
+    valA = data.filter((d: any) => d.campusType !== 'SORE').length;
+    valB = data.filter((d: any) => d.campusType === 'SORE').length;
+  }
+
   return (
     <Link
       href={`/list/recapitulations/${periodId}/${type}`}
       className="relative w-full h-full group"
     >
       <div className="hidden group-hover:flex bottom-0 justify-center items-center pr-4 absolute z-10 rounded-br-xl rounded-bl-xl bg-linear-to-b from-stone-950/0 to-stone-950/95 w-full h-[40%]">
-        <span className="text-white font-semibold">Detail</span>
+        <span className="text-white font-semibold transition duration-700 delay-100 ease-in-out hover:-translate-x-2">Detail</span>
         <span>
           <svg
-            className="w-6 h-6 fill-white transition duration-700 delay-100 ease-in-out hover:translate-x-2 hover:w-8 hover:h-8"
+            className="w-6 h-6 fill-white"
             // width="24" height="24"
             viewBox="0 0 24 24"
             fill="none"
@@ -62,18 +88,18 @@ const RecapitulationCountChartContainer = async ({ periodId, title }: Recapitula
           <Image src={"/moreDark.png"} alt="more-icon" width={20} height={20} className="" />
         </div>
         {/* CHART */}
-        <CountChart valueA={dac} valueB={dic} />
+        <CountChart valueA={valA} valueB={valB} />
         {/* BOTTOM */}
         <div className="flex justify-center gap-16 -mt-1">
           <div className="flex flex-col gap-0.5">
             <div className="bg-ternary rounded-full w-3.5 h-3.5" />
-            <h1 className="font-bold text-sm">{dac}</h1>
-            <h2 className="text-xs text-gray-400">{"Active"} ({Math.round((dac / (dac + dic)) * 100)}%)</h2>
+            <h1 className="font-bold text-sm">{valA}</h1>
+            <h2 className="text-xs text-gray-400">{legendTitle[type][0]} ({Math.round((valA / (valA + valB)) * 100)}%)</h2>
           </div>
           <div className="flex flex-col gap-0.5">
             <div className="bg-secondary rounded-full w-3.5 h-3.5" />
-            <h1 className="font-bold text-sm">{dic}</h1>
-            <h2 className="text-xs text-gray-400">{"Inactive"} ({Math.round((dic / (dac + dic)) * 100)}%)</h2>
+            <h1 className="font-bold text-sm">{valB}</h1>
+            <h2 className="text-xs text-gray-400">{legendTitle[type][1]} ({Math.round((valB / (valA + valB)) * 100)}%)</h2>
           </div>
         </div>
       </div>

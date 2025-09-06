@@ -776,6 +776,79 @@ export async function GET(req: NextRequest) {
             'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA AKTIF-NONAKTIF (${dataPeriod?.name}).pdf`,
           },
         });
+      case "studentsRegularSore":
+        const studentsRegularSore = await await prisma.reregisterDetail.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            campusType: "SORE"
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            },
+            campusType: true,
+          },
+          orderBy: [
+            { student: { nim: "desc" } },
+          ]
+        });
+        const studentsRegularPagi = await await prisma.reregisterDetail.findMany({
+          where: {
+            reregister: {
+              periodId: uid,
+            },
+            campusType: {in: ["BJM", "BJB", "ONLINE"]}
+          },
+          select: {
+            student: {
+              select: {
+                nim: true,
+                name: true,
+                major: true,
+              }
+            },
+            campusType: true,
+          },
+          orderBy: [
+            { student: { nim: "desc" } },
+          ]
+        });
+
+        const dataStudents = [
+          {
+            campusType: "SORE",
+            students: studentsRegularSore,
+          },
+          {
+            campusType: "PAGI",
+            students: studentsRegularPagi,
+          },
+        ];
+
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            dataPeriod,
+            dataStudents,
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA Reg.Pagi-Sore (${dataPeriod?.name}).pdf`,
+          },
+        });
       default:
         break;
     }
