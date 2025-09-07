@@ -54,7 +54,9 @@ SESSION_SECRET=
 NEXT_ENV="development"
 AVATAR_FOLDER="uploads/avatar"
 PAYMENT_FOLDER="uploads/payment"
+NEXT_PUBLIC_SITE_URL="http://localhost:3000"
 ```
+
 Check out our
 [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying)
 for more details.
