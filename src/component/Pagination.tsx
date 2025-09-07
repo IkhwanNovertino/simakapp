@@ -3,11 +3,11 @@
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { useRouter } from "next/navigation";
 
-const Pagination = ({ page, count }: { page: number, count: number }) => {
+const Pagination = ({ page, count, itemPerPage }: { page: number, count: number, itemPerPage?: number }) => {
   const router = useRouter();
-  const totalPage = Math.ceil(count / ITEM_PER_PAGE);
-  const hasPrev = ITEM_PER_PAGE * (page - 1) > 0;
-  const hasNext = ITEM_PER_PAGE * (page - 1) + ITEM_PER_PAGE < count;
+  const totalPage = Math.ceil(count / (itemPerPage ?? ITEM_PER_PAGE));
+  const hasPrev = (itemPerPage ?? ITEM_PER_PAGE) * (page - 1) > 0;
+  const hasNext = (itemPerPage ?? ITEM_PER_PAGE) * (page - 1) + (itemPerPage ?? ITEM_PER_PAGE) < count;
 
   const changePage = (newPage: number) => {
     const params = new URLSearchParams(window.location.search);

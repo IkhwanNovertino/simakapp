@@ -71,7 +71,7 @@ export const dayName = [
   "SELASA", 
   "RABU", 
   "KAMIS", 
-  "JUM'AT", 
+  "JUMAT", 
   "SABTU", 
   "MINGGU"
 ];

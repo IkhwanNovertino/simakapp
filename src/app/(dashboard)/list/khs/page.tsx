@@ -176,7 +176,7 @@ const KHSListPage = async (
       </div>
       {/* BOTTOM */}
       <Table columns={columns} renderRow={renderRow} data={data} />
-      <Pagination page={p} count={count} />
+      <Pagination page={p} count={count} itemPerPage={14} />
     </div>
   )
 }

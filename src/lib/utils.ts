@@ -1,4 +1,5 @@
-import { Period } from "@prisma/client";
+import { Day, Period } from "@prisma/client";
+import { dayName } from "./setting";
 
 export const calculatingSKSLimits = async (ipk: number) : Promise<number>  => {
 
@@ -82,13 +83,23 @@ const getLatestMonday = (): Date => {
 };
 
 export const adjustScheduleToCurrentWeek = (
-  lessons: { title: string; start: Date; end: Date }[]
+  lessons: { title: string; start: Date; end: Date, dayName: string }[]
 ): { title: string; start: Date; end: Date }[] => {
   const latestMonday = getLatestMonday();
+  const dayNumber: {[key: string]: number} = {
+    MINGGU: 0,
+    SENIN: 1, 
+    SELASA: 2, 
+    RABU: 3, 
+    KAMIS: 4, 
+    JUMAT: 5, 
+    SABTU: 6, 
+  }
 
   return lessons.map((lesson) => {
-    const lessonDayOfWeek = lesson.start.getDay();
-
+    const lessonDayOfWeek = dayNumber[lesson.dayName];
+    console.log("lessonDayOfWeek", lessonDayOfWeek);
+    
     const daysFromMonday = lessonDayOfWeek === 0 ? 6 : lessonDayOfWeek - 1;
 
     const adjustedStartDate = new Date(latestMonday);

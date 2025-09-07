@@ -15,15 +15,15 @@ const LecturerPage = async () => {
   return (
     <div className="p-4 flex flex-col md:flex-row gap-4">
       {/* LEFT */}
-      <div className="w-full lg:w-2/3 flex flex-col gap-8">
-        <div className="mt-4 bg-white rounded-md p-4 h-[800px]">
+      <div className="w-full lg:w-3/4 flex flex-col gap-8">
+        <div className="mt-4 bg-white rounded-md p-4 min-h-fit">
           <h1>Jadwal Dosen</h1>
           <BigCalendarContainer type="lecturerId" id={getSessionfunc?.userId} />
         </div>
       </div>
 
       {/* RIGHT */}
-      <div className="w-full lg:w-1/3 flex flex-col gap-8">
+      <div className="w-full lg:w-1/4 flex flex-col gap-8">
         <EventCalender />
         <Announcements />
       </div>

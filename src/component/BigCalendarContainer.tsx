@@ -37,20 +37,39 @@ const BigCalendarContainer = async ({
   }
   const dataRes = await prisma.scheduleDetail.findMany({
     where: query,
+    select: {
+      academicClass: {
+        select: {
+          name: true,
+          course: {
+            select: {
+              name: true,
+              code: true,
+            },
+          },
+          room: true,
+        }
+      },
+      time: true,
+      dayName: true,
+    }
   });
 
   console.log('BIGCALENDARCONTAINER', dataRes);
 
   const data = dataRes.map((lesson: any) => ({
-    title: lesson.name,
-    start: lesson.startTime,
-    end: lesson.endTime,
+    title: `Kelas ${lesson.academicClass.name} | (${lesson.academicClass.course.code}) ${lesson.academicClass.course.name}`,
+    start: lesson.time.timeStart,
+    end: lesson.time.timeFinish,
+    dayName: lesson.dayName,
   }));
 
   const schedule = adjustScheduleToCurrentWeek(data);
+  console.log('schedule', schedule);
+
 
   return (
-    <div className="">
+    <div className="h-[800px]">
       <BigCalendar data={schedule} />
     </div>
   );

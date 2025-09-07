@@ -80,6 +80,11 @@ const ScheduleDetailPage = async (
           time: {
             timeStart: "asc"
           }
+        },
+        {
+          academicClass: {
+            name: "asc"
+          }
         }
       ]
     }),

@@ -370,15 +370,27 @@ const FormContainer = async (
                 major: true
               }
             }
-          }
+          },
+          orderBy: [
+            {
+              name: 'asc',
+            },
+            {
+              course: {
+                code: "asc"
+              }
+            }
+          ]
         })
         const classHaveSchedule = await prisma.scheduleDetail.findMany({
           where: {
             scheduleId: data.id,
-          }
+          },
         })
+        const classHaveScheduleId = new Set(classHaveSchedule.map((item: any) => item.academicClassId));
+        const classPassToForm = classSchedule.filter((item: any) => !classHaveScheduleId.has(item.id));
 
-        relatedData = { period: periodScheduleDetail, time: time, academicClass: classSchedule };
+        relatedData = { period: periodScheduleDetail, time: time, academicClass: classPassToForm };
         break;
       case "rpl":
         const curriculum = await prisma.curriculumDetail.findMany({

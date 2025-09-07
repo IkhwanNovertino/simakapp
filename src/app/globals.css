@@ -94,22 +94,28 @@
 }
 
 .rbc-time-gutter.rbc-time-column .rbc-timeslot-group {
-  padding: 0px 20px !important;
+  padding: 0px 10px !important;
 }
 
 .rbc-timeslot-group {
   background-color: #f7fdff !important;
+  height: 200px !important;
+
 }
 
 .rbc-day-slot {
-  font-size: 14px !important;
+  font-size: 10px !important;
+}
+
+.rbc-day-slot.rbc-time-column {
+  height: 70% !important;
 }
 
 .rbc-event {
   border: none !important;
   color: black !important;
   padding: 10px !important;
-  margin: 10px !important;
+  margin: 5px !important;
   width: 99% !important;
 }
 
@@ -141,4 +147,8 @@
 .rbc-event-label{
   color: gray !important;
   margin-bottom: 5px;
+}
+
+.rbc-event-content {
+  font-size: 11px !important;
 }
