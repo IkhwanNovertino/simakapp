@@ -24,10 +24,6 @@ const TranskipOperatorPage = async (
   if (!getSessionFunc || getSessionFunc.roleType !== "OPERATOR") {
     redirect("/");
   }
-
-  const canCreateData = await canRoleCreateData("transkip");
-  const canUpdateData = await canRoleUpdateData("transkip");
-  const canDeleteData = await canRoleDeleteData("transkip");
   const canViewData = await canRoleViewData("transkip");
 
   const { page, ...queryParams } = await searchParams;
@@ -43,6 +39,9 @@ const TranskipOperatorPage = async (
               { name: { contains: value, mode: "insensitive" } },
               { nim: { contains: value, mode: "insensitive" } },
             ]
+            break;
+          case "studentId":
+            query.id = { equals: value };
             break;
           default:
             break;

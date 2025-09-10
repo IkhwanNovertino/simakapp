@@ -39,7 +39,9 @@ const KHSListPage = async (
               }
             ]
             break;
-
+          case "studentId":
+            query.studentId = { equals: value };
+            break;
           default:
             break;
         }

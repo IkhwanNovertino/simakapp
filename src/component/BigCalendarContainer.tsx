@@ -15,18 +15,14 @@ const BigCalendarContainer = async ({
   switch (type) {
     case "lecturerId":
       query.academicClass = {
-        lecturer: {
-          userId: id,
-        },
+        lecturerId: id
       };
       break;
     case "studentId":
       query.academicClass = {
         academicClassDetail: {
           some: {
-            student: {
-              userId: id,
-            },
+            studentId: id,
           },
         },
       };
@@ -52,10 +48,16 @@ const BigCalendarContainer = async ({
       },
       time: true,
       dayName: true,
-    }
+    },
+    orderBy: [
+      {
+        time: {
+          timeStart: "asc",
+        },
+      },
+    ]
   });
 
-  console.log('BIGCALENDARCONTAINER', dataRes);
 
   const data = dataRes.map((lesson: any) => ({
     title: `Kelas ${lesson.academicClass.name} | (${lesson.academicClass.course.code}) ${lesson.academicClass.course.name}`,
@@ -65,11 +67,9 @@ const BigCalendarContainer = async ({
   }));
 
   const schedule = adjustScheduleToCurrentWeek(data);
-  console.log('schedule', schedule);
-
 
   return (
-    <div className="h-[800px]">
+    <div className="h-[1000px]">
       <BigCalendar data={schedule} />
     </div>
   );

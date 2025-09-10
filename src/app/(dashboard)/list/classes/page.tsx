@@ -50,6 +50,9 @@ const ClassListPage = async (
               { course: { majorId: parseInt(value) } }
             ]
             break;
+          case "lecturerId":
+            query.lecturerId = { equals: value }
+            break;
           default:
             break;
         }

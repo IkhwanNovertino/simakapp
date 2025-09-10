@@ -48,6 +48,9 @@ const StudentListPage = async (
           case "filter":
             query.majorId = parseInt(value)
             break;
+          case "lecturerId":
+            query.lecturerId = { equals: value }
+            break;
           default:
             break;
         }

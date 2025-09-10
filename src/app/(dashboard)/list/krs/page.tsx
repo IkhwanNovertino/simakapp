@@ -18,7 +18,6 @@ const KRSListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
 ) => {
   const user = await getSession();
-  const canDeleteData = await canRoleDeleteData("krs");
   const canViewData = await canRoleViewData("krs");
 
   if (!canViewData) {
@@ -47,7 +46,9 @@ const KRSListPage = async (
               },
             ]
             break;
-
+          case "studentId":
+            query.studentId = { equals: value }
+            break;
           default:
             break;
         }
