@@ -4,7 +4,6 @@ import FormContainer from "@/component/FormContainer";
 import FormCourseKrs from "@/component/FormCourseKrs";
 import ModalAction from "@/component/ModalAction";
 import Table from "@/component/Table";
-import { krsOverride } from "@/lib/formValidationSchema";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { lecturerName } from "@/lib/utils";

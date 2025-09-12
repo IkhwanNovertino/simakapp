@@ -1,8 +1,5 @@
 import { GeneratePdfProps } from "@/lib/datatype";
-import { lecturerName } from "@/lib/utils";
-import { Period, Reregister, ReregisterDetail, Student } from "@prisma/client";
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { format } from "date-fns";
 
 const styles = StyleSheet.create({
   page: {
@@ -102,7 +99,7 @@ const styles = StyleSheet.create({
 })
 
 
-const AssessmentPdf = ({ data, img }: GeneratePdfProps) => {
+const AssessmentPdf = ({ data }: GeneratePdfProps) => {
   const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
 
   return (

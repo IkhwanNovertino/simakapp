@@ -7,10 +7,7 @@ import { exportStudentTakingThesis } from "@/lib/excel/exportStudentTakingThesis
 import { exportStudentUnregisteredKrs } from "@/lib/excel/exportStudentUnregisteredKrs";
 import { prisma } from "@/lib/prisma";
 import { previousPeriod } from "@/lib/utils";
-import { CampusType } from "@prisma/client";
 import { error } from "console";
-import { format } from "date-fns";
-import { id as indonesianLocale } from "date-fns/locale";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
@@ -27,8 +24,6 @@ export async function GET(req: NextRequest) {
     };
 
     let bufferFile;
-    let bufferUint8Array;
-    const date = format(new Date(), 'dd MMMM yyyy', { locale: indonesianLocale });
 
     const dataPeriod = await prisma.period.findUnique({
       where: {

@@ -5,7 +5,7 @@ import { startTransition, useActionState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { ScheduleDetailInputs, scheduleDetailSchema } from "@/lib/formValidationSchema";
-import { createScheduleDetail, updateScheduleDetail } from "@/lib/action";
+import { createScheduleDetail } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
@@ -25,9 +25,7 @@ const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => 
   })
 
   const { time, academicClass } = relatedData;
-
-  const action = type === "create" ? createScheduleDetail : updateScheduleDetail;
-  const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
+  const [state, formAction] = useActionState(createScheduleDetail, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
     startTransition(() => formAction(data))

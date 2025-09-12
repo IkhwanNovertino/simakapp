@@ -1,4 +1,3 @@
-import { menuItems } from "@/lib/data";
 import { RecapitulationCardType } from "@/lib/datatype";
 import { prisma } from "@/lib/prisma";
 import { previousPeriod } from "@/lib/utils";
@@ -17,16 +16,6 @@ const RecapitulationCard = async ({ periodId, type, label }: RecapitulationCardP
       id: periodId,
     }
   });
-  const studentsKrs = await prisma.krs.findMany({
-    where: {
-      reregister: {
-        periodId: periodId,
-      },
-    },
-    include: {
-      krsDetail: true,
-    }
-  })
   const yearOfPeriod = period?.name.split(" ")[1];
   let totalStudents: number = 0;
 

@@ -1,5 +1,4 @@
 import ExcelJS from 'exceljs';
-import { prisma } from '../prisma';
 
 export async function exportStudentRegularSore({ data }: { data: any }) {
   

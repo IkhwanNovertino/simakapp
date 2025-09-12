@@ -1,5 +1,4 @@
 import Announcements from "@/component/Announcements";
-import CountChart from "@/component/CountChart";
 import CountChartContainer from "@/component/CountChartContainer";
 import EventCalender from "@/component/EventCalender";
 import UserCard from "@/component/UserCard";

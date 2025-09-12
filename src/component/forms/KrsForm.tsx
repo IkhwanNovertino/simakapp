@@ -4,12 +4,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
-import { CourseInKrsInputs, CourseInKrsSchema, krsOverride, KrsOverrideInputs } from "@/lib/formValidationSchema";
-import { createKrsDetail, createKrsOverride } from "@/lib/action";
+import { krsOverride, KrsOverrideInputs } from "@/lib/formValidationSchema";
+import { createKrsOverride } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FormProps } from "@/lib/datatype";
-import { KrsOverride } from "@prisma/client";
 import { calculatingSKSLimits } from "@/lib/utils";
 
 const KrsForm = ({ setOpen, type, data }: FormProps) => {

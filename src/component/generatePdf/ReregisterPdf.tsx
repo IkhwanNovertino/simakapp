@@ -1,5 +1,4 @@
 import { GeneratePdfProps } from "@/lib/datatype";
-import { Period, Reregister, ReregisterDetail, Student } from "@prisma/client";
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
 })
 
 
-const ReregisterPdf = ({ data, img }: GeneratePdfProps) => {
+const ReregisterPdf = ({ data }: GeneratePdfProps) => {
   const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
   return (
     <Document>

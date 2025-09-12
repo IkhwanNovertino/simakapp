@@ -1,6 +1,3 @@
-import { Day, Period } from "@prisma/client";
-import { dayName } from "./setting";
-
 export const calculatingSKSLimits = async (ipk: number) : Promise<number>  => {
 
   if (ipk < 1.5) {
@@ -66,12 +63,6 @@ export const previousPeriod = async (data: {semesterType: string, year: number})
     year: lastPeriodYear,
   }
 }
-
-
-// const currentPeriodSemester = createReregisterDetail.reregister.period.semesterType;
-// const currentPeriodYear = createReregisterDetail.reregister.period.year;
-// const lastPeriodSemester = currentPeriodSemester === "GANJIL" ? "GENAP" : "GANJIL";
-// const lastPeriodYear = currentPeriodSemester === "GANJIL" ? currentPeriodYear : currentPeriodYear - 1;
 
 const getLatestMonday = (): Date => {
   const today = new Date();

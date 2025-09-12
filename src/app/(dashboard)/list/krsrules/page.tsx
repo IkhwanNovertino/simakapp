@@ -6,9 +6,7 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { KrsRule, Major, Prisma } from "@prisma/client";
-import Image from "next/image";
-import Link from "next/link";
+import { KrsRule, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
 
 type KrsRuleDataType = KrsRule;

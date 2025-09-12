@@ -1,17 +1,10 @@
-import FormContainer from "@/component/FormContainer";
-import ModalAction from "@/component/ModalAction";
-import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { Course, Khs, KhsDetail, Lecturer, Major, Period, Prisma, Reregister, Student } from "@prisma/client";
-import { tr } from "date-fns/locale";
+import { Course, Khs, KhsDetail, Prisma } from "@prisma/client";
 import Image from "next/image";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 
 type KhsDetailDataType = KhsDetail & { khs: Khs } & { course: Course };
@@ -30,14 +23,8 @@ const TranskipOperatorDetailPage = async (
     redirect("/");
   }
 
-  const canCreateData = await canRoleCreateData("transkip");
-  const canUpdateData = await canRoleUpdateData("transkip");
-  const canDeleteData = await canRoleDeleteData("transkip");
-  const canViewData = await canRoleViewData("transkip");
-
   const { id } = await params;
-  const { page, ...queryParams } = await searchParams;
-  const p = page ? parseInt(page) : 1;
+  const { ...queryParams } = await searchParams;
 
   const query: Prisma.StudentWhereInput = {}
   if (queryParams) {

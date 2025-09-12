@@ -2,7 +2,6 @@ import FilterSearch from "@/component/FilterSearch";
 import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
 import Table from "@/component/Table";
-import TableFilter from "@/component/TableFilter";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { AcademicClass, Course, Day, Lecturer, Major, Prisma, Room, ScheduleDetail, Time } from "@prisma/client";
@@ -26,7 +25,6 @@ const ScheduleDetailPage = async (
 ) => {
 
   const { ...queryParams } = await searchParams;
-  // const p = page ? parseInt(page) : 1;
   const { id } = await params;
 
   const query: Prisma.ScheduleDetailWhereInput = {}

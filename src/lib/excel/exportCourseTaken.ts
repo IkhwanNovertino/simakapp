@@ -1,5 +1,4 @@
 import ExcelJS from 'exceljs';
-import { prisma } from '../prisma';
 
 export async function exportCourseTaken({ data }: { data: any }) {
   
@@ -71,18 +70,19 @@ export async function exportCourseTaken({ data }: { data: any }) {
         items?.studentCount,
       ];
 
-      const addRow = worksheet.addRow(rowdata);
-      addRow.eachCell((cell) => {
-        cell.border = {
-          top: { style: 'thin' },
-          left: { style: 'thin' },
-          bottom: { style: 'thin' },
-          right: { style: 'thin' },
-        },
-        cell.font = {size: 12},
-        cell.alignment = { vertical: 'middle' }
-      });
+      const addRow = worksheet.addRow(rowdata)
       addRow.height = 30;
+      addRow.eachCell((cell) => {
+      cell.border = {
+        top: { style: 'thin' },
+        left: { style: 'thin' },
+        bottom: { style: 'thin' },
+        right: { style: 'thin' },
+      },
+      cell.font = {size: 12},
+      cell.alignment = { vertical: 'middle' }
+      })
+        
     })
   }
   

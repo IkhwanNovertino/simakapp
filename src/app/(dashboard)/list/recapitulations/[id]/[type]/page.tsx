@@ -7,7 +7,7 @@ import { RecapitulationCardType } from "@/lib/datatype";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { previousPeriod } from "@/lib/utils";
-import { CampusType, Krs, Major, Prisma, ReregisterDetail, SemesterStatus, SemesterType, Student } from "@prisma/client";
+import { Prisma, ReregisterDetail, SemesterStatus } from "@prisma/client";
 import { notFound } from "next/navigation";
 
 // type RenderRowDataType = Krs & { student: Student & { major: Major } } | ReregisterDetail & { student: Student & { major: Major } } & { semesterStatus: SemesterStatus } & { campusType: CampusType };
@@ -455,7 +455,7 @@ const RecapitulationDetailByCardPage = async (
       notFound();
   }
 
-  let dataFilter = await prisma.major.findMany({ select: { id: true, name: true, } });
+  const dataFilter = await prisma.major.findMany({ select: { id: true, name: true, } });
   dataFilter.unshift({ id: "all", name: "semua" })
 
   const columns = [

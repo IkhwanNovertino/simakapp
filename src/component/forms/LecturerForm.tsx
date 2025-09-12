@@ -8,7 +8,7 @@ import { LecturerInputs, lecturerSchema } from "@/lib/formValidationSchema";
 import { createLecturer, updateLecturer } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { degree, gender, religion } from "@/lib/setting";
+import { degree, religion } from "@/lib/setting";
 import Image from "next/image";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";

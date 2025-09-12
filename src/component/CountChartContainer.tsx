@@ -27,13 +27,15 @@ const CountChartContainer = async ({ type, title }: CountChartContainerProps) =>
       valueB = queryStudents.find((d: any) => d.gender === "WANITA")?._count || 0;
       break;
     case "studentsBymajors":
-      const queryStudentByMajor = await prisma.student.groupBy({
-        by: ["majorId"],
-        _count: true,
+      const major = await prisma.major.findMany({
+        include: {
+          _count: {
+            select: { student: true },
+          }
+        }
       });
-      const major = await prisma.major.findMany({ select: { id: true } });
-      valueA = queryStudentByMajor.find((d: any) => d.majorId === 1)?._count || 0;
-      valueB = queryStudentByMajor.find((d: any) => d.majorId === 2)?._count || 0;
+      valueA = major[0]?._count?.student || 0;
+      valueB = major[1]?._count?.student || 0;
       break;
     default:
       break;

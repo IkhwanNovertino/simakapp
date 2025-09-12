@@ -1,8 +1,5 @@
 import { GeneratePdfProps } from "@/lib/datatype";
-import { lecturerName } from "@/lib/utils";
-import { Period, Reregister, ReregisterDetail, Student } from "@prisma/client";
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { format } from "date-fns";
 
 const styles = StyleSheet.create({
   page: {
@@ -104,7 +101,7 @@ const styles = StyleSheet.create({
 })
 
 
-const KrsPdf = ({ data, img }: GeneratePdfProps) => {
+const KrsPdf = ({ data }: GeneratePdfProps) => {
   const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
   const totalSKS = data?.krsStudent?.krsDetail
     .map((item: any) => item.course.sks)
@@ -170,7 +167,7 @@ const KrsPdf = ({ data, img }: GeneratePdfProps) => {
               </View>
             </View>
             {data?.krsStudent?.krsDetail?.map((item: any, index: number) => (
-              <View style={styles.tableRow}>
+              <View key={item.course.code} style={styles.tableRow}>
                 <View style={[styles.tableCol, { width: "6%" }]}>
                   <Text style={styles.tableCellTd}>{index + 1}</Text>
                 </View>

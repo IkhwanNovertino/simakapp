@@ -1,8 +1,5 @@
 import { GeneratePdfProps } from "@/lib/datatype";
-import { lecturerName } from "@/lib/utils";
-import { Period, Reregister, ReregisterDetail, Student } from "@prisma/client";
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
-import { format } from "date-fns";
 
 const styles = StyleSheet.create({
   page: {
@@ -102,79 +99,78 @@ const styles = StyleSheet.create({
 })
 
 
-const StudentActiveInactivePdf
-  = ({ data, img }: GeneratePdfProps) => {
-    const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
+const StudentActiveInactivePdf = ({ data }: GeneratePdfProps) => {
+  const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
 
-    return (
-      <Document>
-        {data?.dataStudentsActiveInactive?.map((items: any) => (
-          <Page size={"A4"} style={styles.page} key={items?.major?.id}>
-            <View>
-              <View style={styles.header}>
-                <Image style={styles.logo} src={imgLogo} />
-                <Text style={styles.textHeader}>Sekolah Tinggi Manajemen Informatika dan Komputer (STMIK) Banjarbaru</Text>
-                <Text style={styles.textAddress}>Jl. Sultan Adam No. 12 Telp. (0511) 3306839 Banjarmasin</Text>
-                <Text style={styles.textAddress}>Jl. Ahmad Yani Km. 33,3 No. 38 Loktabat Telp. (0511) 4782881 Banjarbaru</Text>
-              </View>
-              <View style={styles.bottomLine}></View>
-              <View style={styles.body}>
-                <Text style={[styles.textHeading1, { marginTop: "14px" }]}>DAFTAR MAHASISWA AKTIF DAN NONAKTIF</Text>
-                <Text style={styles.textHeading1}>PROGRAM STUDI {items?.major?.name}</Text>
-                <Text style={styles.textHeading1}>{data?.dataPeriod?.name}</Text>
-                <View style={[styles.table, { marginTop: "18px" }]}>
-                  <View style={styles.tableRow}>
+  return (
+    <Document>
+      {data?.dataStudentsActiveInactive?.map((items: any) => (
+        <Page size={"A4"} style={styles.page} key={items?.major?.id}>
+          <View>
+            <View style={styles.header}>
+              <Image style={styles.logo} src={imgLogo} />
+              <Text style={styles.textHeader}>Sekolah Tinggi Manajemen Informatika dan Komputer (STMIK) Banjarbaru</Text>
+              <Text style={styles.textAddress}>Jl. Sultan Adam No. 12 Telp. (0511) 3306839 Banjarmasin</Text>
+              <Text style={styles.textAddress}>Jl. Ahmad Yani Km. 33,3 No. 38 Loktabat Telp. (0511) 4782881 Banjarbaru</Text>
+            </View>
+            <View style={styles.bottomLine}></View>
+            <View style={styles.body}>
+              <Text style={[styles.textHeading1, { marginTop: "14px" }]}>DAFTAR MAHASISWA AKTIF DAN NONAKTIF</Text>
+              <Text style={styles.textHeading1}>PROGRAM STUDI {items?.major?.name}</Text>
+              <Text style={styles.textHeading1}>{data?.dataPeriod?.name}</Text>
+              <View style={[styles.table, { marginTop: "18px" }]}>
+                <View style={styles.tableRow}>
+                  <View style={[styles.tableCol, { width: "6%" }]}>
+                    <Text style={styles.tableCellTh}>No</Text>
+                  </View>
+                  <View style={[styles.tableCol, { width: "25%" }]}>
+                    <Text style={styles.tableCellTh}>NIM</Text>
+                  </View>
+                  <View style={[styles.tableCol, { width: "55%" }]}>
+                    <Text style={styles.tableCellTh}>Nama Mahasiswa</Text>
+                  </View>
+                  <View style={[styles.tableCol, { width: "14%" }]}>
+                    <Text style={styles.tableCellTh}>STATUS</Text>
+                  </View>
+                </View>
+                {items?.students.length > 0 ? items?.students.map((student: any, index: number) => (
+                  <View key={student.id || index} style={styles.tableRow} wrap={false}>
                     <View style={[styles.tableCol, { width: "6%" }]}>
-                      <Text style={styles.tableCellTh}>No</Text>
+                      <Text style={styles.tableCellTd}>{index + 1}</Text>
                     </View>
                     <View style={[styles.tableCol, { width: "25%" }]}>
-                      <Text style={styles.tableCellTh}>NIM</Text>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.nim}</Text>
                     </View>
                     <View style={[styles.tableCol, { width: "55%" }]}>
-                      <Text style={styles.tableCellTh}>Nama Mahasiswa</Text>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.name}</Text>
                     </View>
                     <View style={[styles.tableCol, { width: "14%" }]}>
-                      <Text style={styles.tableCellTh}>STATUS</Text>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.semesterStatus}</Text>
                     </View>
                   </View>
-                  {items?.students.length > 0 ? items?.students.map((student: any, index: number) => (
-                    <View key={student.id || index} style={styles.tableRow} wrap={false}>
-                      <View style={[styles.tableCol, { width: "6%" }]}>
-                        <Text style={styles.tableCellTd}>{index + 1}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: "25%" }]}>
-                        <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.nim}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: "55%" }]}>
-                        <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.name}</Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: "14%" }]}>
-                        <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.semesterStatus}</Text>
-                      </View>
+                )) : (
+                  <View style={styles.tableRow} wrap={false}>
+                    <View style={[styles.tableCol, { width: "6%" }]}>
+                      <Text style={styles.tableCellTd}></Text>
                     </View>
-                  )) : (
-                    <View style={styles.tableRow} wrap={false}>
-                      <View style={[styles.tableCol, { width: "6%" }]}>
-                        <Text style={styles.tableCellTd}></Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: "25%" }]}>
-                        <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: "69%" }]}>
-                        <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
-                      </View>
-                      <View style={[styles.tableCol, { width: "14%" }]}>
-                        <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
-                      </View>
+                    <View style={[styles.tableCol, { width: "25%" }]}>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
                     </View>
-                  )}
-                </View>
+                    <View style={[styles.tableCol, { width: "69%" }]}>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "14%" }]}>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
+                    </View>
+                  </View>
+                )}
               </View>
             </View>
-          </Page>
-        ))}
-      </Document>
-    )
-  }
+          </View>
+        </Page>
+      ))}
+    </Document>
+  )
+}
 
 export default StudentActiveInactivePdf;

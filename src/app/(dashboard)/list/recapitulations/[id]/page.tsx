@@ -1,5 +1,4 @@
 import ButtonPdfDownload from "@/component/ButtonPdfDownload";
-import CountChartContainer from "@/component/CountChartContainer";
 import FilterSearch from "@/component/FilterSearch";
 import Pagination from "@/component/Pagination";
 import RecapitulationCard from "@/component/RecapitulationCard";
@@ -117,7 +116,7 @@ const RecapitulationDetailByPeriodPage = async ({
       };
     });
 
-    let dataFilter = await tx.major.findMany({ select: { id: true, name: true } });
+    const dataFilter = await tx.major.findMany({ select: { id: true, name: true } });
     dataFilter.unshift({ id: "all", name: "Semua" })
     const dataMajor = await tx.major.findMany({ select: { id: true, name: true } });
 

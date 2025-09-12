@@ -9,7 +9,6 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { AcademicClassDetail, AnnouncementKhs, Prisma } from "@prisma/client";
-import Image from "next/image";
 
 const ClassSingleTabAssessmentPage = async (
   {

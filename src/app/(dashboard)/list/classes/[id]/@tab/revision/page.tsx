@@ -1,13 +1,11 @@
 
 import FormContainer from "@/component/FormContainer";
-import KhsGradeAnnounceForm from "@/component/forms/KhsGradeAnnounceForm";
-import ImportForm from "@/component/ImportForm";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { AcademicClassDetail, AnnouncementKhs, Prisma } from "@prisma/client";
+import { AcademicClassDetail, Prisma } from "@prisma/client";
 
 const ClassSingleTabAssessmentPage = async (
   {
@@ -40,7 +38,7 @@ const ClassSingleTabAssessmentPage = async (
       }
     }
   };
-  const [students, assessmentDetails, count, dataKhsAnnouncement] = await prisma.$transaction(async (prisma: any) => {
+  const [students, assessmentDetails, count] = await prisma.$transaction(async (prisma: any) => {
     const academicClass = await prisma.academicClass.findFirst({
       where: {
         id: id,
@@ -169,15 +167,7 @@ const ClassSingleTabAssessmentPage = async (
       );
     };
 
-    const dataKhsAnnouncement = {
-      course: {
-        id: academicClass.course.id,
-        name: academicClass.course.name,
-        code: academicClass.course.code,
-      },
-      khsDetailId: dataTransformed.map((items: any) => items.id),
-    }
-    return [dataTransformed, assessmentDetails, count, dataKhsAnnouncement];
+    return [dataTransformed, assessmentDetails, count];
   });
 
   const columnPreGrade = assessmentDetails.map((item: any) => (
@@ -232,11 +222,6 @@ const ClassSingleTabAssessmentPage = async (
         },
       ]
       : []),
-    // {
-    //   header: 'Actions',
-    //   accessor: 'actions',
-    //   className: "hidden md:table-cell text-xs"
-    // },
   ];
 
   const renderRow = (item: any) => {

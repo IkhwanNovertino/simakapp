@@ -1962,7 +1962,7 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
           }
         });
 
-        const createkhs = await prisma.khs.create({
+        await prisma.khs.create({
           data: {
             krsId: createkrs.id,
             studentId: studentId,
@@ -1983,7 +1983,7 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
           }
         });
 
-        const createkhs = await prisma.khs.create({
+        await prisma.khs.create({
           data: {
             krsId: createkrs.id,
             studentId: studentId,
@@ -2362,55 +2362,9 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
           studentStatus: validation.data?.semesterStatus as StudentStatus,
         }
       });
-      let ips: number = 0;
-      let maxSKS: number = 0;
 
       if (dataReregisterDetail.semesterStatus === "AKTIF") {
-        // mulai krsRule
-        // periksa semester dan statusRegister
         await createKrs({studentId: validation.data.studentId, reregisterId: validation?.data?.reregisterId})
-        
-        // if (dataReregisterDetail.semester === 1) {
-        //   ips = 0;
-        //   maxSKS = 22;
-        // } else {
-        //   const currentPeriodSemester = dataReregisterDetail.reregister.period.semesterType;
-        //   const currentPeriodYear = dataReregisterDetail.reregister.period.year;
-        //   const lastPeriodSemester = currentPeriodSemester === "GANJIL" ? "GENAP" : "GANJIL";
-        //   const lastPeriodYear = currentPeriodSemester === "GANJIL" ? currentPeriodYear : currentPeriodYear - 1;
-
-        //   const dataKHS = await prisma.khs.findFirst({
-        //     where: {
-        //       studentId: validation.data.studentId,
-        //       period: {
-        //         semesterType: lastPeriodSemester,
-        //         year: lastPeriodYear,
-        //       },
-        //     }
-        //   });
-        //   console.log('dataKHS', dataKHS);
-          
-        //   ips = Number(dataKHS?.ips) || 0;
-        //   maxSKS = dataKHS?.maxSks || 22;
-        // }
-        // const createkrs = await tx.krs.create({
-        //   data: {
-        //     reregisterId: validation?.data?.reregisterId,
-        //     studentId: validation?.data?.studentId,
-        //     ips: ips,
-        //     maxSks: maxSKS,
-        //     lecturerId: validation.data.lecturerId,
-        //   }
-        // });
-        // // createKHS
-        // await tx.khs.create({
-        //   data: {
-        //     krsId: createkrs.id,
-        //     studentId: validation?.data?.studentId,
-        //     periodId: dataReregisterDetail.reregister.period.id,
-        //     semester: dataReregisterDetail.semester
-        //   }
-        // })
       }
     })
     return { success: true, error: false, message: "Data berhasil diubah" };
@@ -3037,45 +2991,6 @@ export const createScheduleDetail = async (state: stateType, data: ScheduleDetai
     }
   }
 }
-export const updateScheduleDetail = async (state: stateType, data: ScheduleDetailInputs) => {
-  try {
-    console.log("updateSchedule called", data);
-
-    // if (data.isActive) {
-    //   await prisma.schedule.updateMany({
-    //     where: {
-    //       isActive: true,
-    //     },
-    //     data: {
-    //       isActive: false,
-    //     }
-    //   });
-    // }
-
-    // await prisma.schedule.update({
-    //   where: {
-    //     id: data.id,
-    //   },
-    //   data: {
-    //     name: data.name,
-    //     periodId: data.periodId,
-    //     isActive: data.isActive,
-    //   },
-    // });
-
-    return { success: true, error: false, message: "Jadwal telah diubah" };
-  } catch (err: any) {
-    try {
-      handlePrismaError(err)
-    } catch (error: any) {
-      if (error instanceof AppError) {
-        return { success: false, error: true, message: error.message };
-      } else {
-        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
-      }
-    }
-  }
-}
 export const deleteScheduleDetail = async (state: stateType, data: FormData) => {
   try {
     console.log("deleteSchedule called");
@@ -3311,7 +3226,6 @@ export const updatePresenceStatus = async (state: stateType, data: { id: string,
 }
 export const updateManyPresenceStatus = async (state: stateType, data: PresenceAllInputs) => {
   try {
-    console.log('DATA DARI UPDATE MANY PRESENCE STATUS', data);
 
     await prisma.PresenceDetail.updateMany({
       where: {
@@ -3390,7 +3304,6 @@ export async function deactivateExpiredPresences() {
 
 export const updateKhsGrade = async (state: stateType, data: KhsGradeInputs) => {
   try {
-    console.log('DATA UPDATE KRS GRADE', data);
 
     await prisma.khsDetail.update({
       where: {
@@ -3431,7 +3344,6 @@ export const updateKhsGradeAnnouncement = async (state: stateType, data: FormDat
   try {
     const khsDetailId = data.get("khsDetailId") as string;
     const arrKhsDetailId = khsDetailId.split(",");
-    console.log(arrKhsDetailId);
 
     await prisma.$transaction(async (prisma: any) => {
       for (const items of arrKhsDetailId) {
@@ -3443,7 +3355,6 @@ export const updateKhsGradeAnnouncement = async (state: stateType, data: FormDat
             status: AnnouncementKhs.ANNOUNCEMENT,
           },
         });
-        // console.log('finish update status Annnouncement');
         
         // dapatkan data KHS untuk menghitung jumlah SKS, jumlah SKSxNAB dan IPS
         const khsDetailByKhsId = await prisma.khsDetail.findMany({
@@ -3455,7 +3366,6 @@ export const updateKhsGradeAnnouncement = async (state: stateType, data: FormDat
             course: true
           },
         });
-        // console.log(`get data khsDetail By khsId`);
         
         const totalSKS = khsDetailByKhsId
           .map((item: any) => item.course.sks)
@@ -3497,11 +3407,10 @@ export const updateKhsGradeSubmitted = async (state: stateType, data: FormData) 
   try {
     const khsDetailId = data.get("khsDetailId") as string;
     const arrKhsDetailId = khsDetailId.split(",");
-    console.log(arrKhsDetailId);
 
     await prisma.$transaction(async (prisma: any) => {
       for (const items of arrKhsDetailId) {
-        const dataUpdate = await prisma.khsDetail.update({
+        await prisma.khsDetail.update({
           where: {
             id: items
           },
@@ -3509,7 +3418,6 @@ export const updateKhsGradeSubmitted = async (state: stateType, data: FormData) 
             status: AnnouncementKhs.SUBMITTED,
           },
         });
-        // console.log('finish update status Annnouncement');
       }
     })
     
@@ -3530,11 +3438,10 @@ export const updateKhsGradeUnsubmitted = async (state: stateType, data: FormData
   try {
     const khsDetailId = data.get("khsDetailId") as string;
     const arrKhsDetailId = khsDetailId.split(",");
-    console.log(arrKhsDetailId);
 
     await prisma.$transaction(async (prisma: any) => {
       for (const items of arrKhsDetailId) {
-        const dataUpdate = await prisma.khsDetail.update({
+        await prisma.khsDetail.update({
           where: {
             id: items
           },
@@ -3542,7 +3449,6 @@ export const updateKhsGradeUnsubmitted = async (state: stateType, data: FormData
             status: AnnouncementKhs.DRAFT,
           },
         });
-        // console.log('finish update status Annnouncement');
       }
     })
     

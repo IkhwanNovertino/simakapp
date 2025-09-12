@@ -1,15 +1,13 @@
-import FormContainer from "@/component/FormContainer";
 import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
+import { canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { Lecturer, Major, Period, Prisma, Reregister, Student } from "@prisma/client";
-import { tr } from "date-fns/locale";
+import { Lecturer, Major, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";

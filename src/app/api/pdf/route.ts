@@ -1,12 +1,9 @@
-
-import logger from "@/lib/logger";
 import { prisma } from "@/lib/prisma";
 import renderPdf from "@/lib/renderPdf";
 import { lecturerName, previousPeriod } from "@/lib/utils";
-import { SemesterType } from "@prisma/client";
 import { error } from "console";
 import { format } from "date-fns";
-import { id, id as indonesianLocale, is } from "date-fns/locale";
+import { id as indonesianLocale, } from "date-fns/locale";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
