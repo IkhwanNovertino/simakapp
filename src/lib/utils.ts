@@ -89,10 +89,7 @@ export const adjustScheduleToCurrentWeek = (
 
   return lessons.map((lesson) => {
     const lessonDayOfWeek = dayNumber[lesson.dayName];
-    console.log("lessonDayOfWeek", lessonDayOfWeek);
-    
     const daysFromMonday = lessonDayOfWeek === 0 ? 6 : lessonDayOfWeek - 1;
-
     const adjustedStartDate = new Date(latestMonday);
 
     adjustedStartDate.setDate(latestMonday.getDate() + daysFromMonday);

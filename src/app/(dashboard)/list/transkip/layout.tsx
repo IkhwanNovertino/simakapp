@@ -1,7 +1,7 @@
 import { getSession } from "@/lib/session";
 import { redirect } from "next/navigation";
 
-export default async function ReregistrationLayout({
+export default async function TranskipLayout({
   student, operator, advisor
 }: Readonly<{
   student: React.ReactNode;
@@ -18,6 +18,6 @@ export default async function ReregistrationLayout({
     <div>
       {(role === "OPERATOR" && operator) || (role === "STUDENT" && student) || advisor}
     </div>
-    
+
   );
 }

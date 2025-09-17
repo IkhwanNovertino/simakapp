@@ -11,7 +11,7 @@ const StudentPage = async () => {
     return redirect("/" + dashboardByRole);
   }
   const getSessionfunc = await getSession();
-  const id = await prisma.student.findUnique({
+  const data = await prisma.student.findUnique({
     where: {
       userId: getSessionfunc?.userId,
     },
@@ -20,12 +20,12 @@ const StudentPage = async () => {
     }
   })
   return (
-    <div className="p-4 flex flex-col md:flex-row gap-4">
+    <div className="p-4 flex flex-col lg:flex-row gap-4">
       {/* LEFT */}
       <div className="w-full lg:w-3/4 flex flex-col gap-8">
         <div className="mt-4 bg-white rounded-md p-4 min-h-fit">
           <h1>Jadwal Perkuliahan</h1>
-          <BigCalendarContainer type="studentId" id={id} />
+          <BigCalendarContainer type="studentId" id={data?.id} />
         </div>
       </div>
       {/* RIGHT */}

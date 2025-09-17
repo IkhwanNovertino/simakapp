@@ -12,7 +12,7 @@ const LecturerPage = async () => {
     return redirect("/" + dashboardByRole);
   };
   const getSessionfunc = await getSession();
-  const id = await prisma.lecturer.findunique({
+  const data = await prisma.lecturer.findUnique({
     where: {
       userId: getSessionfunc?.userId,
     },
@@ -21,12 +21,12 @@ const LecturerPage = async () => {
     },
   });
   return (
-    <div className="p-4 flex flex-col md:flex-row gap-4">
+    <div className="p-4 flex flex-col lg:flex-row gap-4">
       {/* LEFT */}
       <div className="w-full lg:w-3/4 flex flex-col gap-8">
         <div className="mt-4 bg-white rounded-md p-4 min-h-fit">
           <h1>Jadwal Dosen</h1>
-          <BigCalendarContainer type="lecturerId" id={id} />
+          <BigCalendarContainer type="lecturerId" id={data?.id} />
         </div>
       </div>
 

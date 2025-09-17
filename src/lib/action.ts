@@ -1073,7 +1073,7 @@ export const createLecturer = async (state: stateType, data: FormData) => {
       address: data.get('address')?.toString(),
       majorId: parseInt(data.get('majorId') as string),
       gender: data.get('gender')?.toString(),
-      hp: data.get('phone')?.toString(),
+      hp: data.get('hp')?.toString(),
       email: data.get('email')?.toString(),
       religion: data.get('religion')?.toString(),
     }
@@ -1117,7 +1117,7 @@ export const createLecturer = async (state: stateType, data: FormData) => {
         address: validation.data.address,
         majorId: validation.data.majorId,
         gender: validation.data.gender,
-        hp: validation.data.phone,
+        hp: validation.data.hp,
         email: validation.data.email,
         religion: validation.data.religion as Religion,
         photo: fileUrl ?? '',
@@ -1151,7 +1151,7 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
       address: data.get('address')?.toString(),
       majorId: parseInt(data.get('majorId') as string),
       gender: data.get('gender')?.toString(),
-      hp: data.get('phone')?.toString(),
+      hp: data.get('hp')?.toString(),
       email: data.get('email')?.toString(),
       religion: data.get('religion')?.toString(),
     }
@@ -1204,7 +1204,7 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
         address: parsed.data.address,
         majorId: parsed.data.majorId,
         gender: parsed.data.gender,
-        hp: parsed.data.phone,
+        hp: parsed.data.hp,
         email: parsed.data.email,
         religion: parsed.data.religion as Religion,
         photo: fileUrl,
@@ -3618,12 +3618,8 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
       throw new AppError("File tidak ditemukan", 400);
     }
     
-
     const buffer = Buffer.from(await file.arrayBuffer());
     const result = await importAssessment(buffer)
-
-    // IF import Success
-    console.log('RESULT', result);
     
     const khsDetailIdFromRowsData = result.map((items: any) => items.uids);
 
@@ -3674,10 +3670,9 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
 
         for (const items of khsGradeByKhsDetailId) {
           const gradeName = items.assessmentDetail.grade.name ?? "";
-          
           const newScore = value[gradeName];
 
-          if (newScore !== undefined && newScore !== '') {
+          if (newScore !== undefined && newScore !== '' && newScore <= 100) {
             await prisma.khsGrade.update({
               where: {
                 id: items.id,
@@ -3686,6 +3681,9 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
                 score: Number(newScore),
               },
             });
+          } else {
+            throw new AppError("Nilai tidak boleh lebih dari 100", 400);
+            break;
           };
         };
       }

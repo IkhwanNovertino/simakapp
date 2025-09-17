@@ -86,7 +86,7 @@ export const lecturerSchema = z.object({
   religion: z.enum(["ISLAM", "KATOLIK", "PROTESTAN", "BUDDHA", "HINDU", "KONGHUCU", "DLL"], {message: "Pilih agama"}),
   majorId: z.coerce.number().min(1, { message: "Pilih program studi " }),
   email: z.string().email({ message: "email tidak valid" }).optional().or(z.literal("")),
-  phone: z.string().optional(),
+  hp: z.string().optional(),
   photo: z.string().optional().or(z.literal("")),
 })
 

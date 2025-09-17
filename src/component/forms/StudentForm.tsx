@@ -86,6 +86,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             label="NIM"
             name="nim"
             defaultValue={data?.nim}
+            inputProps={{ readOnly: type === "revision", inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
             register={register}
             error={errors?.nim}
             required={true}
@@ -106,12 +107,13 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             label="Tahun Mendaftar"
             name="year"
             defaultValue={data?.year}
+            inputProps={{ readOnly: type === "revision", inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
             register={register}
             error={errors?.year}
             required={true}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className={type === "revision" ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
           <InputSelect
             control={control}
             label="Program Studi"
@@ -126,12 +128,13 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             }))}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className={type === "revision" ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
           <InputSelect
             label="Dosen Wali"
             name="lecturerId"
             control={control}
             error={errors?.lecturerId}
+            placeholder="-- Pilih dosen wali"
             defaultValue={data?.lecturerId}
             required={true}
             options={lecturer.map((item: any) => ({
@@ -140,13 +143,13 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             }))}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className={type === "revision" ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
           <InputSelect
             label="Status Registrasi"
             name="statusRegister"
+            control={control}
             defaultValue={data?.statusRegister}
             error={errors?.statusRegister}
-            control={control}
             placeholder="-- Pilih status.."
             required={true}
             options={StatusRegister.map((item: string) => ({
@@ -196,7 +199,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        <div className={type === "revision" ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
           <InputSelect
             label="Status Mahasiswa"
             name="studentStatus"
@@ -229,9 +232,21 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
           <InputField
             label="Personal Email"
             name="email"
+            type="email"
             defaultValue={data?.email}
             register={register}
             error={errors?.email}
+          />
+        </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/4">
+          <InputField
+            label="No. Handphone"
+            name="phone"
+            type="tel"
+            inputProps={{ inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+            defaultValue={data?.hp}
+            register={register}
+            error={errors?.phone}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
@@ -248,21 +263,11 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             label="Tanggal lahir"
             name="birthday"
             type="date"
-            defaultValue={moment(data?.birthday).format("YYYY-MM-DD")}
+            defaultValue={moment(data?.birthday).format("yyyy-MM-dd")}
             register={register}
             error={errors?.birthday}
           />
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <InputField
-            label="No. Handphone"
-            name="phone"
-            defaultValue={data?.hp}
-            register={register}
-            error={errors?.phone}
-          />
-        </div>
-
         <div className="flex flex-col gap-2 w-full md:w-11/12">
           <label className="text-xs text-gray-500">Alamat Asal/Domisili</label>
           <textarea

@@ -55,17 +55,17 @@ const Sidebar = ({ menuItems }: { menuItems: MenuItem[] }) => {
         <span className="md:hidden lg:block text-gray-400 font-light my-4">LAINNYA</span>
         <Link
           className={`flex items-center justify-start md:justify-center lg:justify-start  gap-4 w-full text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === "/profile" ? "md:bg-primary-light" : ""}`}
-          href={"/profile"}
+          href={"/list/profile"}
         >
           <Image src={"/icon/profile.svg"} width={20} height={20} alt={"Profile"} />
           <span className={`md:hidden lg:block ${pathname === "/profile" ? "text-black font-semibold" : ""}`}>{"Profile"}</span>
         </Link>
         <Link
           className={`flex items-center justify-start md:justify-center lg:justify-start  gap-4 w-full text-gray-400 py-2 md:px-2 rounded-md hover:bg-primary-light/50 ${pathname === "/settings" ? "md:bg-primary-light" : ""}`}
-          href={"/settings"}
+          href={"/list/settings"}
         >
           <Image src={"/icon/setting.svg"} width={20} height={20} alt={"Settings"} />
-          <span className={`md:hidden lg:block ${pathname === "/settings" ? "text-black font-semibold" : ""}`}>{"Settings"}</span>
+          <span className={`md:hidden lg:block ${pathname === "/settings" ? "text-black font-semibold" : ""}`}>{"Setting"}</span>
         </Link>
         <form
           action={logout}

@@ -45,13 +45,16 @@ const SingleRolePage = async (
     prisma.role.findFirst({
       where: { id: parseInt(id) }
     }),
+
     prisma.permission.findMany({
       where: query,
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
+    
     prisma.permission.count({ where: query }),
   ]);
+
   const renderRow = (item: PermissionDataType) => (
     <tr
       key={item.id}

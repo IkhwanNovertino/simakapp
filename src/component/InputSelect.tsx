@@ -14,8 +14,8 @@ interface InputSelectProps {
   control: any;
   error?: FieldError;
   required?: boolean;
-  isMulti?: boolean;
   placeholder?: string;
+  isMulti?: boolean;
 }
 
 const InputSelect = (

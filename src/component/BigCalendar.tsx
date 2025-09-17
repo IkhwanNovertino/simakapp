@@ -17,7 +17,7 @@ const BigCalendar = ({
   const handleOnChangeView = (selectedView: View) => {
     setView(selectedView);
   };
-  const maxDate = data[data.length - 1].end;
+  const maxDate = data[data.length - 1]?.end ?? new Date(2025, 1, 0, 15, 30, 0);
 
   return (
     <Calendar

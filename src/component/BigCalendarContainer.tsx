@@ -15,7 +15,7 @@ const BigCalendarContainer = async ({
   switch (type) {
     case "lecturerId":
       query.academicClass = {
-        lecturerId: id
+        lecturerId: id.toString(),
       };
       break;
     case "studentId":
@@ -44,6 +44,8 @@ const BigCalendarContainer = async ({
             },
           },
           room: true,
+          lecturerId: true,
+          lecturer: true,
         }
       },
       time: true,

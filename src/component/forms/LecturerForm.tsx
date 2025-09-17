@@ -245,10 +245,10 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: FormProps) => {
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputField
             label="No. Handphone"
-            name="phone"
-            defaultValue={data?.phone}
+            name="hp"
+            defaultValue={data?.hp}
             register={register}
-            error={errors?.phone}
+            error={errors?.hp}
           />
         </div>
 
