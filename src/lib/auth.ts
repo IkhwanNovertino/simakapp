@@ -1,10 +1,12 @@
 'use server';
 
 import bcrypt from "bcryptjs";
-import { LoginInputs } from "./formValidationSchema";
+import { ChangePasswordInputs, LoginInputs } from "./formValidationSchema";
 import { prisma } from "./prisma";
 import { createSession, deleteSession } from "./session";
 import { redirect } from "next/navigation";
+import { handlePrismaError } from "./errors/prismaError";
+import { AppError } from "./errors/appErrors";
 
 export const login = async (state: { success: boolean, error: boolean, message: string }, data: LoginInputs) => {
   const user = await prisma.user.findUnique({
@@ -26,4 +28,39 @@ export const login = async (state: { success: boolean, error: boolean, message: 
 export const logout = async () => {
   await deleteSession();
   redirect('/')
+}
+
+export const changePassword = async (state: { success: boolean, error: boolean, message: string }, data: ChangePasswordInputs) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: data.email,
+      },
+    });
+    if (!user) throw new AppError("User tidak ditemukan");
+
+    const isPasswordValid = await bcrypt.compare(data.oldPassword, user.password);
+    if (!isPasswordValid) throw new AppError("Password lama tidak sesuai");
+    if (data.newPassword !== data.confirmPassword) throw new AppError("Password baru dan konfirmasi password tidak sesuai");
+    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+    await prisma.user.update({
+      where: {
+        email: data.email,
+      },
+      data: {
+        password: hashedPassword,
+      }
+    })
+    return { success: true, error: false, message: "berhasil ganti password" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
 }

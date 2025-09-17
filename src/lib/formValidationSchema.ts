@@ -138,6 +138,15 @@ export const loginSchema = z.object({
 
 export type LoginInputs = z.infer<typeof loginSchema>;
 
+export const changePasswordSchema = z.object({
+  email: z.string().min(1, { message: "email harus diisi" }),
+  oldPassword: z.string().min(1, { message: "password lama harus diisi" }),
+  newPassword: z.string().min(5, { message: "password minimal 5 karakter" }),
+  confirmPassword: z.string().min(5, { message: "password minimal 5 karakter" }),
+})
+
+export type ChangePasswordInputs = z.infer<typeof changePasswordSchema>;
+
 export const periodSchema = z.object({
   id: z.string().optional(),
   year: z.string().min(1, { message: "tahun akademik harus diisi" }),

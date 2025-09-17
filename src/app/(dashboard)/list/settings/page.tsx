@@ -1,12 +1,17 @@
-const SettingPage = () => {
+import ChangePasswordForm from "@/component/forms/ChangePasswordForm";
+import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
+
+const SettingPage = async () => {
+  const session = await getSession();
+  const user = await prisma.user.findUnique({
+    where: {
+      id: session?.userId,
+    }
+  });
   return (
-    <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
-      {/* TOP */}
-      <div className="flex items-center justify-between">
-        <h1 className="hidden md:block text-lg font-semibold">Pengaturan</h1>
-        <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-        </div>
-      </div>
+    <div className="flex items-center justify-center mt-4">
+      <ChangePasswordForm data={user} />
     </div>
   )
 }
