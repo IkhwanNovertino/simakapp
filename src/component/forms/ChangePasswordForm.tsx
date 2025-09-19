@@ -1,8 +1,7 @@
 'use client';
 
-import { changePassword, login } from "@/lib/auth";
-import { redirectDashboardByRole } from "@/lib/dal";
-import { ChangePasswordInputs, changePasswordSchema, LoginInputs, loginSchema } from "@/lib/formValidationSchema";
+import { changePassword } from "@/lib/auth";
+import { ChangePasswordInputs, changePasswordSchema } from "@/lib/formValidationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { startTransition, useActionState, useEffect } from "react";

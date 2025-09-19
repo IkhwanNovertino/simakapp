@@ -1,7 +1,7 @@
 import FormContainer from "@/component/FormContainer";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { format, formatDate } from "date-fns";
+import { format } from "date-fns";
 import { id } from "date-fns/locale";
 import Image from "next/image";
 
