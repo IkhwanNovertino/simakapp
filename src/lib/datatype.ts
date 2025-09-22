@@ -69,7 +69,8 @@ export type PdfType = "reregister"
   | "studentsExtendingThesis"
   | "studentsTakingInternship";
 
-export type RecapitulationCardType = "studentsRegisteredKrs" 
+export type RecapitulationCardType = "studentsRegisteredKrs"
+  | "coursekrs"  
   | "studentsRegularSore"
   | "studentActiveInactive"
   | "studentsUnregisteredKrs" 

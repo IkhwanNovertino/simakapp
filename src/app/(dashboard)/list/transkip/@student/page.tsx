@@ -69,13 +69,8 @@ const TranskipStudentPage = async (
       },
       orderBy: [
         {
-          khs: {
-            semester: "asc"
-          }
-        },
-        {
           course: {
-            sks: "asc"
+            name: "asc"
           }
         }
       ]

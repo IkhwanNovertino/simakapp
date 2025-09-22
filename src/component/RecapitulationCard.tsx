@@ -119,6 +119,19 @@ const RecapitulationCard = async ({ periodId, type, label }: RecapitulationCardP
         }
       })
       break;
+    case "coursekrs":
+      const dataCourse = await prisma.krsDetail.findMany({
+        where: {
+          krs: {
+            reregister: {
+              periodId: periodId,
+            }
+          },
+        },
+        distinct: ['courseId'],
+      })
+      totalStudents = dataCourse.length;
+      break;
 
     default:
       break;
