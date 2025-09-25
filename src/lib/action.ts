@@ -1715,7 +1715,6 @@ export const deletePeriod = async (state: stateType, data: FormData) => {
 
 export const createKrsRules = async (state: stateType, data: KrsRulesInputs) => {
   try {
-    console.log('CREATE KRS RULES', data);
 
     await prisma.krsRule.create({
       data: {
@@ -1723,7 +1722,7 @@ export const createKrsRules = async (state: stateType, data: KrsRulesInputs) => 
         semester: data?.semester,
         maxSks: data?.maxSks,
         autoPackage: data?.autoPackage,
-        allowManualSelection: data?.allowManualSelection,
+        allowManualSelection: !data?.autoPackage,
         isActive: data?.isActive,
       }
     })
@@ -1743,8 +1742,6 @@ export const createKrsRules = async (state: stateType, data: KrsRulesInputs) => 
 }
 export const updateKrsRules = async (state: stateType, data: KrsRulesInputs) => {
   try {
-    console.log('UPDATE KRS RULES', data);
-
     await prisma.krsRule.update({
       where: {
         id: data?.id,
@@ -1754,7 +1751,7 @@ export const updateKrsRules = async (state: stateType, data: KrsRulesInputs) => 
         semester: data?.semester,
         maxSks: data?.maxSks,
         autoPackage: data?.autoPackage,
-        allowManualSelection: data?.allowManualSelection,
+        allowManualSelection: !data?.autoPackage,
         isActive: data?.isActive,
       }
     })
@@ -1774,7 +1771,6 @@ export const updateKrsRules = async (state: stateType, data: KrsRulesInputs) => 
 }
 export const deleteKrsRules = async (state: stateType, data: FormData) => {
   try {
-    console.log('DELETE KRS RULES', data);
     const id = data.get("id") as string;
     await prisma.krsRule.delete({
       where: {

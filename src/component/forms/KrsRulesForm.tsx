@@ -115,28 +115,6 @@ const KrsRulesForm = ({ setOpen, type, data }: FormProps) => {
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
-          <label className="text-xs text-gray-500">Pilih Manual Mata Kuliah</label>
-          <Controller
-            name="allowManualSelection"
-            control={control}
-            defaultValue={!!data?.allowManualSelection}
-            render={({ field }) => (
-              <div className="flex items-center gap-2">
-                <input
-                  id="allowManualSelection"
-                  type="checkbox"
-                  checked={field.value}
-                  onChange={(e) => field.onChange(e.target.checked)}
-                  className="w-4 h-4 has-checked:text-indigo-900"
-                />
-                <label htmlFor="allowManualSelection" className="text-sm text-gray-600">
-                  {field.value ? "Pilih manual aktif" : "Pilih manual non-aktif"}
-                </label>
-              </div>
-            )}
-          />
-        </div>
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Status Aturan KRS</label>
           <Controller
             name="isActive"

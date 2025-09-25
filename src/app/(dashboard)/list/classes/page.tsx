@@ -28,8 +28,6 @@ const ClassListPage = async (
   const canUpdateData = await canRoleUpdateData("classes");
   const canDeleteData = await canRoleDeleteData("classes")
 
-
-
   const query: Prisma.AcademicClassWhereInput = {}
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
