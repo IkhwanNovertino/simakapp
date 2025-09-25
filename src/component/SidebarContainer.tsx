@@ -125,7 +125,7 @@ const menuItems = [
       {
         icon: "/icon/transkip.svg",
         label: "Transkip",
-        href: "/list/transkip",
+        href: "/list/transcripts",
       },
     ],
   },

@@ -231,7 +231,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=${krsStudent?.student?.nim} (${type}-${krsStudent?.reregister?.period?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=${krsStudent?.student?.nim}(KRS-${krsStudent?.reregister?.period?.name}).pdf`,
           },
         });
       case "khs":
@@ -315,9 +315,11 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=${khsStudent?.student?.nim} (${type}-${khsStudent?.period?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=${khsStudent?.student?.nim}(KHS-${khsStudent?.period?.name}).pdf`,
           },
         });
+      case "transcript":
+        return new NextResponse('Terjadi Kesalahan...', { status: 400 });
       case "reregister":
         const [reregisterId, studentId] = uid.split(':');
         const reregister = await prisma.reregisterDetail.findUnique({
@@ -386,7 +388,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=${reregister?.student?.nim}(${type}-${reregister?.reregister?.period?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=${reregister?.student?.nim}(HERREGISTRASI-${reregister?.reregister?.period?.name}).pdf`,
           },
         });
       case "coursekrs":

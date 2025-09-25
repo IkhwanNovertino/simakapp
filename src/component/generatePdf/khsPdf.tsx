@@ -184,17 +184,17 @@ const KhsPdf = ({ data }: GeneratePdfProps) => {
                 <Text style={styles.tableCellTd}>{`Jumlah SKS : ${data?.totalSKS}   Jumlah SKSxNAB : ${data?.totalSKSxNAB}`}</Text>
               </View>
               <View style={[styles.tableCol, { width: "30%" }]}>
-                <Text style={styles.tableCellTd}>{`IPK : ${data?.khsStudent?.ips}`}</Text>
+                <Text style={styles.tableCellTd}>{`IPK : ${data?.khsStudent?.ips || 0}`}</Text>
               </View>
             </View>
           </View>
         </View>
         <View style={styles.footer}>
           <View style={styles.contentFooter}>
-            <Text style={{ marginBottom: "20px" }}>Jumlah SKS yang boleh diambil: {`${data?.khsStudent?.maxSks - 1} - ${data?.khsStudent?.maxSks}`}</Text>
+            <Text style={{ marginBottom: "20px" }}>Jumlah SKS yang boleh diambil: {`${(data?.khsStudent?.maxSks || 1) - 1} - ${data?.khsStudent?.maxSks || 0}`}</Text>
             <Text>Banjarmasin/Banjarbaru, {data?.date}</Text>
             <Text>Ketua Program Studi</Text>
-            <Text style={{ marginTop: 24, fontWeight: "bold", fontSize: "10pt" }}>{data?.position?.personName}</Text>
+            <Text style={{ marginTop: 24, fontWeight: "bold", fontSize: "10pt" }}>{data?.position?.personName || "................."}</Text>
           </View>
         </View>
       </Page>

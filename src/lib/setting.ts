@@ -20,7 +20,7 @@ export const resourceData = [
   { pathname: "classes", name: "class", nama: "kelas" },
   { pathname: "khs", name: "khs", nama: "khs" },
   { pathname: "attendances", name: "attendance", nama: "presensi" },
-  { pathname: "transkip", name: "transkip", nama: "transkip" },
+  { pathname: "transcripts", name: "transcript", nama: "transkip" },
   { pathname: "events", name: "event", nama: "event" },
   { pathname: "recapitulations", name: "recapitulation", nama: "rekapitulasi" },
 ];
