@@ -46,13 +46,52 @@ const SingleStudentPage = async (
       },
       isLatest: true,
     },
-    include: {
+    select: {
       course: {
         select: { code: true, name: true }
       },
     },
     take: 5,
   })
+  const dataRpl = await prisma.khs.findFirst({
+    where: {
+      studentId: id,
+      isRPL: true,
+    },
+    select: {
+      id: true,
+      student: {
+        select: {
+          id: true,
+          name: true,
+          nim: true,
+          major: {
+            select: {
+              name: true,
+            },
+          },
+        },
+      },
+      period: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+      khsDetail: {
+        select: {
+          courseId: true,
+          gradeLetter: true,
+          weight: true,
+        }
+      },
+    }
+  });
+  dataRpl?.khsDetail.forEach((element: any) => {
+    element.id = element.courseId;
+    element.gradeLetter = element.gradeLetter;
+    element.weight = parseFloat(element.weight);
+  });
 
   if (!data) {
     notFound()
@@ -115,37 +154,6 @@ const SingleStudentPage = async (
               </div>
             </div>
           </div>
-          {/* SMALL CARDS */}
-          <div className="flex-1 flex gap-4 justify-between flex-wrap">
-            {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] lg:w-full">
-              <Image
-                src="/singleLesson.png"
-                alt=""
-                width={24}
-                height={24}
-                className="w-6 h-6"
-              />
-              <div className="">
-                <h1 className="text-xl font-semibold">18</h1>
-                <span className="text-sm text-gray-400">Lessons</span>
-              </div>
-            </div>
-            {/* CARD */}
-            <div className="bg-white p-4 rounded-md flex gap-4 w-full md:w-[48%] lg:w-full">
-              <Image
-                src="/Transcript.png"
-                alt=""
-                width={24}
-                height={24}
-                className="w-6 h-6"
-              />
-              <div className="">
-                <h1 className="text-xl font-semibold">{data?.statusRegister}</h1>
-                <span className="text-sm text-gray-400">Status Register</span>
-              </div>
-            </div>
-          </div>
         </div>
         {/* BOTTOM */}
         <div className="mt-4 bg-white rounded-md p-4 min-h-fit">
@@ -155,6 +163,19 @@ const SingleStudentPage = async (
       </div>
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-4">
+        <div className="bg-white p-4 rounded-md flex gap-2 w-full md:w-[48%] lg:w-full ">
+          <Image
+            src="/Transcript.png"
+            alt=""
+            width={24}
+            height={24}
+            className="w-6 h-6"
+          />
+          <div className="">
+            <h1 className="text-base font-semibold">{data?.statusRegister}</h1>
+            <span className="text-sm text-gray-400">Status Register</span>
+          </div>
+        </div>
         <div className="bg-white p-4 rounded-md">
           <h1 className="text-xl font-semibold">Shortcuts</h1>
           <div className="mt-4 flex gap-4 flex-wrap text-xs text-gray-500">
@@ -182,24 +203,26 @@ const SingleStudentPage = async (
             </ul>
           </div>
         </div>
-        <div className="bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">Mata Kuliah RPL</h1>
+        {data?.statusRegister !== "BARU" && (
+          <div className="bg-white p-4 rounded-md">
+            <h1 className="text-xl font-semibold">Mata Kuliah RPL</h1>
 
-          <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start xl:justify-end">
-            <div className="flex items-center gap-4 self-end">
-              {data?.statusRegister !== "BARU" && (<FormContainer table="rpl" type="create" data={data} />)}
+            <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start xl:justify-end">
+              <div className="flex items-center gap-4 self-end">
+                {dataRpl ? (<FormContainer table="rpl" type="update" data={dataRpl} />) : (<FormContainer table="rpl" type="create" data={data} />)}
+              </div>
+            </div>
+            <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start ">
+              <ul className="flex flex-col  mt-4">
+                {courseRPL && courseRPL.map((items: any) => (
+                  <li className="p-4 text-sm border-b border-gray-200" key={items.course.code}>
+                    {items.course.name}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
-          <div className="flex flex-row items-center gap-4 w-full md:w-auto justify-start ">
-            <ul className="flex flex-col  mt-4">
-              {courseRPL && courseRPL.map((items: any) => (
-                <li className="p-4 text-sm border-b border-gray-200" key={items.course.code}>
-                  {items.course.name}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        )}
         {/* <Performance /> */}
         <Announcements />
       </div>

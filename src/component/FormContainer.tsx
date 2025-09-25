@@ -418,6 +418,7 @@ const FormContainer = async (
             isActive: true,
           }
         })
+
         relatedData = { period: periodAcademic, courses: curriculum }
         break;
       case "khsRevision":

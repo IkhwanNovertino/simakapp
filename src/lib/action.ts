@@ -3706,32 +3706,63 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
 
 export const createRplTranscript = async (state: stateType, data: RplInputs) => {
   try {
-    console.log('DATA CREATE RPL TRANSCRIPT', data);
-
-    await prisma.$transaction(async (prisma: any) => {
-      const dataKhs = await prisma.khs.create({
-        data: {
-          studentId: data.id,
-          periodId: data.periodId,
-          semester: 0,
-          isRPL: true,
-        }
-      });
-
-      for (const items of data.khsDetail) {
-        // createKHSDetail
-        await prisma.khsDetail.create({
-          data: {
-            khsId: dataKhs.id,
+    await prisma.khs.create({
+      data: {
+        studentId: data?.id,
+        periodId: data?.periodId,
+        semester: 0,
+        isRPL: true,
+        khsDetail: {
+          create: data.khsDetail.map((items) => ({
             courseId: items.id,
             gradeLetter: items.gradeLetter,
             weight: items.weight,
-          }
-        });
+            status: AnnouncementKhs.ANNOUNCEMENT,
+          }))
+        }
       }
     })
-    
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
+  } catch (err) {
+    try {
+      handlePrismaError(err)
+    } catch (error: any) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
+    }
+  }
+}
+export const updateRplTranscript = async (state: stateType, data: RplInputs) => {
+  try {
+    await prisma.$transaction(async (prisma: any) => {
+      // delete data khsDetail yang lama
+      await prisma.khsDetail.deleteMany({
+        where: {
+          khsId: data?.id,
+        },
+      });
+      // update data khsDetail baru
+      await prisma.khs.update({
+        where: {
+          id: data?.id,
+        },
+        data: {
+          khsDetail: {
+            create: data.khsDetail.map((items) => ({
+              courseId: items.id,
+              gradeLetter: items.gradeLetter,
+              weight: items.weight,
+              status: AnnouncementKhs.ANNOUNCEMENT,
+            }))
+          }
+        }
+      })
+    })
+    
+    return { success: true, error: false, message: "Data berhasil diubah" };
   } catch (err) {
     try {
       handlePrismaError(err)
