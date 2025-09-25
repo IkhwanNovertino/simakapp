@@ -175,22 +175,22 @@ const KHSDetailPage = async (
             </div>
           </div>
         </div>
-        <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md"></div>
+        <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md">
+          {totalSKS > 0 && (
+            <ButtonPdfDownload id={id} type="khs">
+              <div className={`w-full py-4 gap-2 flex items-center justify-center rounded-md bg-primary-dark hover:bg-primary-dark/90`}>
+                <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={28} height={28} />
+                <span className="text-white font-medium text-sm">CETAK KHS</span>
+              </div>
+            </ButtonPdfDownload>
+          )}
+        </div>
       </div>
       {/* BOTTOM */}
       <div className="bg-white p-4 rounded-md flex-1 mt-0">
         <div className="flex">
           <div className="flex flex-col md:flex-row items-center gap-4 w-full md:justify-between">
             <h1 className="text-lg font-semibold">Kartu Hasil Studi</h1>
-            <div className="flex items-center gap-4 self-end">
-              {totalSKS > 0 && (
-                <ButtonPdfDownload id={id} type="khs">
-                  <div className={`w-8 h-8 flex items-center justify-center rounded-full bg-primary-dark`}>
-                    <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} />
-                  </div>
-                </ButtonPdfDownload>
-              )}
-            </div>
           </div>
         </div>
         <Table columns={columns} renderRow={renderRow} data={khsDetail} />
