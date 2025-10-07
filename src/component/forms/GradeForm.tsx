@@ -61,6 +61,15 @@ const GradeForm = ({ setOpen, type, data }: FormProps) => {
             error={errors?.name}
           />
         </div>
+        <div className="flex flex-col gap-2 w-full md:w-1/3">
+          <InputField
+            label="Komponen Nilai"
+            name="acronym"
+            defaultValue={data?.acronym}
+            register={register}
+            error={errors?.acronym}
+          />
+        </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
       <button className="bg-blue-400 text-white p-2 rounded-md">

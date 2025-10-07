@@ -528,6 +528,7 @@ export const createGrade = async (state: stateType, data: GradeInputs) => {
     await prisma.gradeComponent.create({
       data: {
         name: data.name,
+        acronym: data.acronym,
       }
     })
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
@@ -551,6 +552,7 @@ export const updateGrade = async (state: stateType, data: GradeInputs) => {
       },
       data: {
         name: data.name,
+        acronym: data.acronym,
       }
     })
     return { success: true, error: false, message: "Data berhasil diubah" };
@@ -3386,7 +3388,7 @@ export const updateKhsGradeAnnouncement = async (state: stateType, data: FormDat
       }
     })
     
-    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+    return { success: true, error: false, message: "Data nilai diumumkan" };
   } catch (err) {
     try {
       handlePrismaError(err)
@@ -3417,7 +3419,7 @@ export const updateKhsGradeSubmitted = async (state: stateType, data: FormData) 
       }
     })
     
-    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+    return { success: true, error: false, message: "Data diserahkan ke prodi" };
   } catch (err) {
     try {
       handlePrismaError(err)
@@ -3448,7 +3450,7 @@ export const updateKhsGradeUnsubmitted = async (state: stateType, data: FormData
       }
     })
     
-    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+    return { success: true, error: false, message: "Data diserahkan ke dosen" };
   } catch (err) {
     try {
       handlePrismaError(err)
@@ -3498,42 +3500,8 @@ export const updateKhsGradeRevision = async (state: stateType, data: KhsGradeRev
           }
         })
       };
-
-      // update IPS dan SKS
-      // dapatkan data KHS untuk menghitung jumlah SKS, jumlah SKSxNAB dan IPS
-      // const khsDetailByKhsId = await prisma.khsDetail.findMany({
-      //   where: {
-      //     khsId: data.khsId,
-      //     isLatest: true,
-      //   },
-      //   include: {
-      //     course: true
-      //   },
-      // });
-      
-      // const totalSKS = khsDetailByKhsId
-      //   .map((item: any) => item.course.sks)
-      //   .reduce((acc: any, init: any) => acc + init, 0);
-      // const totalSKSxNAB = khsDetailByKhsId
-      //   .map((items: any) => items.course.sks * items.weight)
-      //   .reduce((acc: any, init: any) => acc + init, 0);
-      
-      // const IPK = Number(totalSKSxNAB / totalSKS).toFixed(2) 
-      // const maxSKS = await calculatingSKSLimits(parseFloat(IPK))
-      
-      // updateIPK dan mxSKS di KHS
-      // await prisma.khs.update({
-      //   where: {
-      //     id: data.khsId,
-      //   },
-      //   data: {
-      //     ips: parseFloat(IPK),
-      //     maxSks: maxSKS,
-      //   }
-      // })
     })
-    console.log('DATA UPDATE KRH GRADE REVISION', data);
-    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+    return { success: true, error: false, message: "Data berhasil direvisi" };
   } catch (err) {
     try {
       handlePrismaError(err)
@@ -3592,8 +3560,7 @@ export const updateKhsGradeRevAnnouncement = async (state: stateType, data: KhsG
           }
         })
     })
-    console.log('DATA UPDATE KRH GRADE REVISION', data);
-    return { success: true, error: false, message: "Data berhasil ditambahkan" };
+    return { success: true, error: false, message: "Data revisi diumumkan" };
   } catch (err) {
     try {
       handlePrismaError(err)

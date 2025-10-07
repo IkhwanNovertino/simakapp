@@ -114,11 +114,6 @@ const TranskipOperatorDetailPage = async (
       className: "px-2 md:px-4"
     },
     {
-      header: "Semester",
-      accessor: "semester",
-      className: "hidden md:table-cell",
-    },
-    {
       header: "SKS",
       accessor: "sks",
       className: "hidden md:table-cell",
@@ -151,7 +146,6 @@ const TranskipOperatorDetailPage = async (
           <div className="flex items-center justify-end gap-2 md:hidden ">
           </div>
         </td>
-        <td className="hidden md:table-cell">{item?.khs?.semester || "-"}</td>
         <td className="hidden md:table-cell">{item?.course?.sks || "-"}</td>
         <td className="hidden md:table-cell">{item?.gradeLetter || "-"}</td>
         <td className="hidden md:table-cell">
@@ -211,7 +205,7 @@ const TranskipOperatorDetailPage = async (
           </div>
         </div>
         <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md">
-          <ButtonPdfDownload id={id} type="krs">
+          <ButtonPdfDownload id={id} type="transcript">
             <div className={`w-full py-4 gap-2 flex items-center justify-center rounded-md bg-primary-dark hover:bg-primary-dark/90`}>
               <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={28} height={28} />
               <span className="text-white font-medium text-sm">Cetak Transkip</span>

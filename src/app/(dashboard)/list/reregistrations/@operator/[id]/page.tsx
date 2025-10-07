@@ -5,8 +5,9 @@ import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData } from "@/lib/dal";
+import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
+import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@prisma/client";
 import Image from "next/image";
@@ -22,13 +23,10 @@ const ReregisterSinglePage = async (
   }
 ) => {
 
-  const canCreateData = await canRoleCreateData("reregistrations");
-  const canUpdateData = await canRoleUpdateData("reregistrations");
-  const canDeleteData = await canRoleDeleteData("reregistrations");
-
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
   const { id } = await params;
+  const session = await getSession();
 
   const query: Prisma.ReregisterDetailWhereInput = {}
   if (queryParams) {
@@ -175,8 +173,8 @@ const ReregisterSinglePage = async (
           <div className="flex items-center justify-end gap-2 md:hidden ">
             <ModalAction>
               <div className="flex items-center gap-3">
-                {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}
-                {canDeleteData && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
+                <FormContainer table="reregistrationDetail" type="update" data={item} />
+                {session?.roleName === "admin" && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
               </div>
             </ModalAction>
           </div>
@@ -201,15 +199,15 @@ const ReregisterSinglePage = async (
         <td>
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-2">
-              {item.isStatusForm && (
+              {(session?.roleName === "admin" && item.isStatusForm) && (
                 <ButtonPdfDownload type="reregister" id={`${item.reregisterId}:${item.studentId}`}>
                   <div className={`w-7 h-7 flex items-center justify-center rounded-full bg-primary-dark`}>
                     <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} />
                   </div>
                 </ButtonPdfDownload>
               )}
-              {canUpdateData && (<FormContainer table="reregistrationDetail" type="update" data={item} />)}
-              {canDeleteData && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
+              <FormContainer table="reregistrationDetail" type="update" data={item} />
+              {session?.roleName === "admin" && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
             </div>
           </div>
         </td>
@@ -224,7 +222,7 @@ const ReregisterSinglePage = async (
         <h1 className="hidden md:block text-lg font-semibold"> {dataCreate?.name}</h1>
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
-          {canCreateData && (
+          {session?.roleName === "admin" && (
             <div className="flex items-center gap-4 self-end">
               <FormContainer table="reregistrationCreateAll" type="createMany" data={dataCreate} />
               <FormContainer table="reregistrationDetail" type="create" data={dataCreate} />

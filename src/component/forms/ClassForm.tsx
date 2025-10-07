@@ -45,7 +45,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   return (
     <>
       {
-        type === "create" && data.periodId ? (
+        data.periodId ? (
           <form onSubmit={onSubmit} className="flex flex-col gap-8">
             <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data kelas baru" : "Ubah data kelas"}</h1>
             <div className="flex justify-between flex-wrap gap-4">
@@ -214,8 +214,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
               {type === "create" ? "Tambah" : "Ubah"}
             </button>
           </form >
-        ) :
-          null
+        ) : (null)
       }
     </>
   )

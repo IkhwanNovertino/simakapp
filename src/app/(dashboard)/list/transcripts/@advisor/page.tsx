@@ -22,7 +22,7 @@ const TranskipAdvisorPage = async (
   if (!getSessionFunc || getSessionFunc.roleType !== "ADVISOR") {
     redirect("/");
   }
-  const canViewData = await canRoleViewData("transkip");
+  const canViewData = await canRoleViewData("transcripts");
 
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;

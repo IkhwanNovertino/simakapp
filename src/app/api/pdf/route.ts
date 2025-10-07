@@ -319,7 +319,87 @@ export async function GET(req: NextRequest) {
           },
         });
       case "transcript":
-        return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        const allCourses = await prisma.curriculumDetail.findMany({
+          where: {
+            curriculum: {
+              isActive: true,
+            },
+          },
+          orderBy: [
+            {
+              course: {
+                name: 'asc',
+              },
+            },
+          ],
+        });
+        const courseTaken = await prisma.khsDetail.findMany({
+          where: {
+            khs: {
+              student: {
+                id: uid,
+              }
+            },
+            isLatest: true,
+          },
+          select: {
+            id: true,
+            khs: {
+              select: {
+                semester: true,
+              }
+            },
+            course: {
+              select: {
+                code: true,
+                name: true,
+                sks: true,
+                isPKL: true,
+                isSkripsi: true,
+              }
+            },
+            weight: true,
+            gradeLetter: true,
+            status: true,
+          },
+          orderBy: [
+            {
+              course: {
+                name: "asc"
+              }
+            }
+          ]
+        });
+        courseTaken.forEach((item: any, index: number) => {
+          item.weight = Number(item.weight);
+        });
+        const totalSKSTranscript = courseTaken.map((item: any) => item.course.sks)
+          .reduce((acc: any, init: any) => acc + init, 0);
+        const totalBobotTranscript = courseTaken.map((item: any) => item.course.sks * item.weight)
+          .reduce((acc: any, init: any) => acc + init, 0);
+        const ipkTranscript = (totalBobotTranscript / totalSKSTranscript).toFixed(2);
+        
+        bufferFile = await renderPdf({
+          type: type,
+          data: {
+            allCourses,
+            courseTaken,
+            totalSKSTranscript,
+            totalBobotTranscript,
+            ipkTranscript,
+            date,
+          }
+        })
+        if (!bufferFile) {
+          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+        }
+        bufferUint8Array = new Uint8Array(bufferFile);
+        return new NextResponse(bufferUint8Array, {
+          headers: {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `attachment; filename=${"3101"}(TRANSCRIPT).pdf`,
+          },
+        });
       case "reregister":
         const [reregisterId, studentId] = uid.split(':');
         const reregister = await prisma.reregisterDetail.findUnique({

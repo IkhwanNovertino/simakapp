@@ -45,6 +45,11 @@ const GradeListPage = async (
       className: "px-2 md:px-4",
     },
     {
+      header: "Akronim",
+      accessor: "acronym",
+      className: "hidden md:table-cell",
+    },
+    {
       header: "Actions",
       accessor: "action",
       className: "hidden md:table-cell",
@@ -70,6 +75,7 @@ const GradeListPage = async (
             </ModalAction>
           </div>
         </td>
+        <td className="hidden md:table-cell capitalize">{item.acronym}</td>
         <td>
           <div className="hidden md:flex items-center gap-2">
             <FormContainer table="grade" type="update" data={item} />

@@ -114,11 +114,6 @@ const TranskipAdvisorDetailPage = async (
       className: "px-2 md:px-4"
     },
     {
-      header: "Semester",
-      accessor: "semester",
-      className: "hidden md:table-cell",
-    },
-    {
       header: "SKS",
       accessor: "sks",
       className: "hidden md:table-cell",
@@ -151,7 +146,6 @@ const TranskipAdvisorDetailPage = async (
           <div className="flex items-center justify-end gap-2 md:hidden ">
           </div>
         </td>
-        <td className="hidden md:table-cell">{item?.khs?.semester || "-"}</td>
         <td className="hidden md:table-cell">{item?.course?.sks || "-"}</td>
         <td className="hidden md:table-cell">{item?.gradeLetter || "-"}</td>
         <td className="hidden md:table-cell">

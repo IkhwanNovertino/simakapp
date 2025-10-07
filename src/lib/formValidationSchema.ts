@@ -252,6 +252,7 @@ export type CurriculumDetailInputs = z.infer<typeof curriculumDetailSchema>;
 export const gradeSchema = z.object({
   id: z.string().optional(),
   name: z.string().min(1, { message: "Nama komponen nilai harus diisi" }),
+  acronym: z.string().min(1, { message: "Akronim komponen nilai harus diisi" }),
 })
 
 export type GradeInputs = z.infer<typeof gradeSchema>;
