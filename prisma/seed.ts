@@ -1031,126 +1031,126 @@ async function main() {
     })
   }
 
-  // const lecturerSI = await prisma.lecturer.findMany({
-  //   where: {
-  //     user: {
-  //       roleId: 3,
-  //     },
-  //     majorId: 1,
-  //   }
-  // });
-  // const lecturerTI = await prisma.lecturer.findMany({
-  //   where: {
-  //     user: {
-  //       roleId: 3,
-  //     },
-  //     majorId: 2,
-  //   }
-  // });
+  const lecturerSI = await prisma.lecturer.findMany({
+    where: {
+      user: {
+        roleId: 3,
+      },
+      majorId: 1,
+    }
+  });
+  const lecturerTI = await prisma.lecturer.findMany({
+    where: {
+      user: {
+        roleId: 3,
+      },
+      majorId: 2,
+    }
+  });
   
   
-  // const students = []
-  // for (let i = 0; i <= 9; i++) {
-  //   students.push({
-  //     nim: `31012401240${i}`,
-  //     name: `Student Surname 24${i}`,
-  //     year: 2024,
-  //     religion: Religion.ISLAM,
-  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-  //     majorId: 1,
-  //     statusRegister: StatusRegister.BARU,
-  //     lecturerId: (i % 2 === 0 ? lecturerSI[0].id : lecturerSI[1].id), 
-  //   })
-  // };
-  // for (let i = 1; i <= 9; i++) {
-  //   students.push({
-  //     nim: `31012301230${i}`,
-  //     name: `Student Surname 23${i}`,
-  //     year: 2023,
-  //     religion: Religion.ISLAM,
-  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-  //     majorId: 1,
-  //     statusRegister: StatusRegister.BARU,
-  //     lecturerId: (i % 2 === 0 ? lecturerSI[2].id : lecturerSI[3].id), 
-  //   })
-  // };
-  // for (let i = 1; i <= 8; i++) {
-  //   students.push({
-  //     nim: `31012201220${i}`,
-  //     name: `Student Surname 22${i}`,
-  //     year: 2022,
-  //     religion: Religion.ISLAM,
-  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-  //     majorId: 1,
-  //     statusRegister: StatusRegister.BARU,
-  //     lecturerId: (i % 2 === 0 ? lecturerSI[4].id : lecturerSI[0].id), 
-  //   })
-  // };
-  // for (let i = 1; i <= 8; i++) {
-  //   students.push({
-  //     nim: `31012201210${i}`,
-  //     name: `Student Surname 21${i}`,
-  //     year: 2021,
-  //     religion: Religion.ISLAM,
-  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-  //     majorId: 1,
-  //     statusRegister: StatusRegister.BARU,
-  //     lecturerId: (i % 2 === 0 ? lecturerSI[1].id : lecturerSI[2].id), 
-  //   })
-  // };
+  const students = []
+  for (let i = 0; i <= 9; i++) {
+    students.push({
+      nim: `31012401240${i}`,
+      name: `Student Surname 24${i}`,
+      year: 2024,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 1,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerSI[0].id : lecturerSI[1].id), 
+    })
+  };
+  for (let i = 1; i <= 9; i++) {
+    students.push({
+      nim: `31012301230${i}`,
+      name: `Student Surname 23${i}`,
+      year: 2023,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 1,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerSI[2].id : lecturerSI[3].id), 
+    })
+  };
+  for (let i = 1; i <= 8; i++) {
+    students.push({
+      nim: `31012201220${i}`,
+      name: `Student Surname 22${i}`,
+      year: 2022,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 1,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerSI[4].id : lecturerSI[0].id), 
+    })
+  };
+  for (let i = 1; i <= 8; i++) {
+    students.push({
+      nim: `31012201210${i}`,
+      name: `Student Surname 21${i}`,
+      year: 2021,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 1,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerSI[1].id : lecturerSI[2].id), 
+    })
+  };
 
   
-  // for (let i = 0; i <= 9; i++) {
-  //   students.push({
-  //     nim: `31012402240${i}`,
-  //     name: `Student TSurname 24${i}`,
-  //     year: 2024,
-  //     religion: Religion.ISLAM,
-  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-  //     majorId: 2,
-  //     statusRegister: StatusRegister.BARU,
-  //     lecturerId: (i % 2 === 0 ? lecturerTI[0].id : lecturerTI[1].id), 
-  //   })
-  // };
-  // for (let i = 1; i <= 8; i++) {
-  //   students.push({
-  //     nim: `31012302230${i}`,
-  //     name: `Student TSurname 23${i}`,
-  //     year: 2023,
-  //     religion: Religion.ISLAM,
-  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-  //     majorId: 2,
-  //     statusRegister: StatusRegister.BARU,
-  //     lecturerId: (i % 2 === 0 ? lecturerTI[2].id : lecturerTI[3].id), 
-  //   })
-  // };
-  // for (let i = 1; i <= 8; i++) {
-  //   students.push({
-  //     nim: `31012202220${i}`,
-  //     name: `Student TSurname 22${i}`,
-  //     year: 2022,
-  //     religion: Religion.ISLAM,
-  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-  //     majorId: 2,
-  //     statusRegister: StatusRegister.BARU,
-  //     lecturerId: (i % 2 === 0 ? lecturerTI[4].id : lecturerTI[0].id), 
-  //   })
-  // };
-  // for (let i = 1; i <= 6; i++) {
-  //   students.push({
-  //     nim: `31012202210${i}`,
-  //     name: `Student TSurname 21${i}`,
-  //     year: 2021,
-  //     religion: Religion.ISLAM,
-  //     gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-  //     majorId: 2,
-  //     statusRegister: StatusRegister.BARU,
-  //     lecturerId: (i % 2 === 0 ? lecturerTI[1].id : lecturerTI[2].id), 
-  //   })
-  // };
-  // const student = await prisma.student.createMany({
-  //   data: students,
-  // })
+  for (let i = 0; i <= 9; i++) {
+    students.push({
+      nim: `31012402240${i}`,
+      name: `Student TSurname 24${i}`,
+      year: 2024,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 2,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerTI[0].id : lecturerTI[1].id), 
+    })
+  };
+  for (let i = 1; i <= 8; i++) {
+    students.push({
+      nim: `31012302230${i}`,
+      name: `Student TSurname 23${i}`,
+      year: 2023,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 2,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerTI[2].id : lecturerTI[3].id), 
+    })
+  };
+  for (let i = 1; i <= 8; i++) {
+    students.push({
+      nim: `31012202220${i}`,
+      name: `Student TSurname 22${i}`,
+      year: 2022,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 2,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerTI[4].id : lecturerTI[0].id), 
+    })
+  };
+  for (let i = 1; i <= 6; i++) {
+    students.push({
+      nim: `31012202210${i}`,
+      name: `Student TSurname 21${i}`,
+      year: 2021,
+      religion: Religion.ISLAM,
+      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
+      majorId: 2,
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 === 0 ? lecturerTI[1].id : lecturerTI[2].id), 
+    })
+  };
+  const student = await prisma.student.createMany({
+    data: students,
+  })
 };
 
 main()

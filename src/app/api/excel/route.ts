@@ -7,6 +7,7 @@ import { exportStudentTakingThesis } from "@/lib/excel/exportStudentTakingThesis
 import { exportStudentUnregisteredKrs } from "@/lib/excel/exportStudentUnregisteredKrs";
 import { prisma } from "@/lib/prisma";
 import { previousPeriod } from "@/lib/utils";
+import { CampusType } from "@prisma/client";
 import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -55,6 +56,37 @@ export async function GET(req: NextRequest) {
             { semester: "asc" },
           ],
         });
+        console.log(coursesInCurriculumDetail);
+        
+
+        const coursesInStudyPlan = await prisma.krsDetail.findMany({
+          where: {
+            krs: {
+              reregister: {
+                periodId: uid,
+              }
+            }
+          },
+          select: {
+            courseId: true,
+            krs: {
+              select: {
+                student: {
+                  select: {
+                    year: true,
+                  }
+                },
+                reregisterDetail: {
+                  select: {
+                    campusType: true,
+                  }
+                }
+              }
+            }
+          }
+        });
+        console.log(coursesInStudyPlan);
+        
       
         const countCourseInKrsDetail = await prisma.krsDetail.count({
           where: {
@@ -126,9 +158,33 @@ export async function GET(req: NextRequest) {
                 name: true,
                 major: true,
               }
+            },
+            maxSks: true,
+            ips: true,
+            lecturer: {
+              select: {
+                name: true,
+              }
+            },
+            isStatusForm: true,
+            reregisterDetail: {
+              select: {
+                semester: true,
+              }
             }
           },
+          orderBy: [
+            {
+              student: {
+                nim: "desc"
+              },
+            },
+          ],
         });
+        studentRegisteredKrs.forEach((element: any) => {
+          element.ips = Number(element.ips).toFixed(2);
+        });
+        
 
         const dataStudentRegisteredKrs = dataMajor.map((major: any) => {
           const studentsRegisteredkrs = studentRegisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
@@ -144,7 +200,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferFile, {
           headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).xlsx"`,
+            'Content-Disposition': `attachment; filename="REKAP MAHASISWA SUDAH KRS (${dataPeriod?.name}).xlsx"`,
           },
         });
       case "studentsUnregisteredKrs":
@@ -164,8 +220,29 @@ export async function GET(req: NextRequest) {
                 name: true,
                 major: true,
               }
+            },
+            ips: true,
+            lecturer: {
+              select: {
+                name: true,
+              }
+            },
+            reregisterDetail: {
+              select: {
+                semester: true,
+              }
             }
           },
+          orderBy: [
+            {
+              student: {
+                nim: "desc"
+              },
+            },
+          ],
+        });
+        studentUnregisteredKrs.forEach((element: any) => {
+          element.ips = Number(element.ips).toFixed(2);
         });
 
         const dataStudentUnregisteredKrs = dataMajor.map((major: any) => {
@@ -182,7 +259,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferFile, {
           headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA BELUM KRS (${dataPeriod?.name}).xlsx"`,
+            'Content-Disposition': `attachment; filename="REKAP MAHASISWA BELUM KRS (${dataPeriod?.name}).xlsx"`,
           },
         });
       case "studentsTakingThesis":

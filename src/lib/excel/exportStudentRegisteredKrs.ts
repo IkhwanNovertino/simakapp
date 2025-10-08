@@ -13,25 +13,31 @@ export async function exportStudentRegisteredKrs({ data }: { data: any }) {
     const headerTable = [
       'No',
       'NIM',
-      'NAMA MAHASISWA',
+      'Nama Mahasiswa',
+      'Prodi',
+      'Dosen Penasehat/Wali Akademik',
+      'Semester',
+      'IP Semester',
+      'Jumlah SKS',
+      'Status KRS',
     ];
   
     // <!-------------------Menambahkan DATA MAHASISWA SI---------------------------->
   
     // === [1] Baris Judul Besar (Merged)
-    worksheet.mergeCells("A2:C2")
+    worksheet.mergeCells("A2:I2")
     const titleCell = worksheet.getCell('A2')
-    titleCell.value = `DAFTAR MAHASISWA YANG SUDAH KRS `
+    titleCell.value = `REKAP MAHASISWA SUDAH KRS `
     titleCell.font = { size: 14, bold: true }
     titleCell.alignment = { vertical: 'middle', horizontal: 'center' }
     
-    worksheet.mergeCells("A3:C3")
+    worksheet.mergeCells("A3:I3")
     const subTitleCellA3 = worksheet.getCell('A3')
     subTitleCellA3.value = `PROGRAM STUDI ${dataStudent?.major?.name.toUpperCase()}`
     subTitleCellA3.font = { size: 12, bold: true }
     subTitleCellA3.alignment = { vertical: 'middle', horizontal: 'center' }
 
-    worksheet.mergeCells("A4:C4")
+    worksheet.mergeCells("A4:I4")
     const subTitleCellA4 = worksheet.getCell('A4')
     subTitleCellA4.value = `${data?.dataPeriod?.name}`
     subTitleCellA4.font = { size: 12, bold: true }
@@ -58,7 +64,7 @@ export async function exportStudentRegisteredKrs({ data }: { data: any }) {
     });
     
     // Ukuran lebar column
-    const colWidths = [4, 25, 55];
+    const colWidths = [4, 14, 35, 6, 35, 10, 12, 12, 12];
     colWidths.forEach((w, i) => {
       worksheet.getColumn(i + 1).width = w
     });
@@ -68,6 +74,12 @@ export async function exportStudentRegisteredKrs({ data }: { data: any }) {
         i + 1,
         items?.student?.nim,
         items?.student?.name,
+        items?.student?.major?.stringCode,
+        items?.lecturer?.name,
+        items?.reregisterDetail?.semester,
+        items?.ips,
+        items?.maxSks,
+        items?.isStatusForm === "APPROVED" ? "ACC" : "Belum ACC"
       ];
 
       const addRow = worksheet.addRow(rowdata);

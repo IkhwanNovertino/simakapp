@@ -37,7 +37,10 @@ const KRSDetailPage = async (
       krsDetail: {
         include: {
           course: true,
-        }
+        },
+        orderBy: [
+          { course: { name: 'asc' } }
+        ]
       },
       // krsOverride: true,
     },

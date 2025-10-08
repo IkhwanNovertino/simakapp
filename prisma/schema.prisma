@@ -292,25 +292,27 @@ model ReregisterDetail {
 
   // untuk memeriksa apakah student sudah mengisi data
   isStatusForm Boolean @default(false)
+  Krs          Krs?
 
   @@id([reregisterId, studentId])
   @@map("sb25_reregister_details")
 }
 
 model Krs {
-  id           String          @id @default(uuid())
-  reregisterId String
-  reregister   Reregister      @relation(fields: [reregisterId], references: [id], onDelete: Restrict)
-  studentId    String
-  student      Student         @relation(fields: [studentId], references: [id], onDelete: Restrict)
-  maxSks       Int?
-  ips          Decimal         @default(0) @db.Decimal(3, 2)
-  lecturerId   String?
-  lecturer     Lecturer?       @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
-  isStatusForm StudyPlanStatus @default(DRAFT)
-  krsDetail    KrsDetail[]
-  khs          Khs?
-  KrsOverride  KrsOverride?
+  id               String           @id @default(uuid())
+  reregisterId     String
+  reregister       Reregister       @relation(fields: [reregisterId], references: [id], onDelete: Restrict)
+  studentId        String
+  student          Student          @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  reregisterDetail ReregisterDetail @relation(fields: [reregisterId, studentId], references: [reregisterId, studentId], onDelete: Cascade)
+  maxSks           Int?
+  ips              Decimal          @default(0) @db.Decimal(3, 2)
+  lecturerId       String?
+  lecturer         Lecturer?        @relation(fields: [lecturerId], references: [id], onDelete: Restrict)
+  isStatusForm     StudyPlanStatus  @default(DRAFT)
+  krsDetail        KrsDetail[]
+  khs              Khs?
+  KrsOverride      KrsOverride?
 
   @@unique([reregisterId, studentId])
   @@map("sb25_krs")

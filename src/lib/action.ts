@@ -2569,15 +2569,36 @@ export const updateKrsDetail = async (state: stateType, data: FormData) => {
         },
       });
 
-      // update krs status
-      await prisma.krs.update({
+      const krsCheck = await prisma.krsDetail.count({
         where: {
-          id: krsDetailUpdate.krsId,
-        },
-        data: {
-          isStatusForm: StudyPlanStatus.APPROVED,
+          krsId: krsDetailUpdate.krsId,
+          isAcc: false,
         }
       });
+
+      if (krsCheck === 0) {
+        // update krs status
+        await prisma.krs.update({
+          where: {
+            id: krsDetailUpdate.krsId,
+          },
+          data: {
+            isStatusForm: StudyPlanStatus.APPROVED,
+          }
+        });
+      } else {
+        // update krs status
+        await prisma.krs.update({
+          where: {
+            id: krsDetailUpdate.krsId,
+          },
+          data: {
+            isStatusForm: StudyPlanStatus.NEED_REVISION,
+          }
+        });
+
+      }
+
     });
     
     return { success: true, error: false, message: "Status mata kuliah telah diubah" };
