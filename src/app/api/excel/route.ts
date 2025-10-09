@@ -40,25 +40,39 @@ export async function GET(req: NextRequest) {
       case "coursekrs":
 
         const semesterQuery = dataPeriod?.semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
-        const coursesInCurriculumDetail = await prisma.curriculumDetail.findMany({
+        // NEW
+        const years = new Set();
+        const report = await prisma.curriculumDetail.findMany({
           where: {
             semester: { in: semesterQuery },
             curriculum: {
               isActive: true,
             },
           },
-          include: {
-            course: true,
-            curriculum: true,
+          select: {
+            course: {
+              select: {
+                id: true,
+                code: true,
+                name: true,
+                majorId: true,
+              },
+            },
+            semester: true,
           },
           orderBy: [
-            { curriculum: { major: { name: "asc" } } },
+            { course: { majorId: "asc" } },
             { semester: "asc" },
           ],
         });
-        console.log(coursesInCurriculumDetail);
-        
-
+        report.forEach((element: any) => {
+          element.BJB = 0;
+          element.BJM = 0;
+          element.ONLINE = 0;
+          element.SORE = 0;
+          element.angkatan = {};
+          element.totalStudents = 0;
+        });
         const coursesInStudyPlan = await prisma.krsDetail.findMany({
           where: {
             krs: {
@@ -85,47 +99,47 @@ export async function GET(req: NextRequest) {
             }
           }
         });
-        console.log(coursesInStudyPlan);
-        
-      
-        const countCourseInKrsDetail = await prisma.krsDetail.count({
-          where: {
-            krs: {
-              reregister: {
-                period: {
-                  id: uid,
-                }
-              }
+
+        coursesInStudyPlan.forEach((course: any) => {
+          const currentCourse = report.find((item: any) => item.course.id === course.courseId);
+
+          if (course?.krs?.reregisterDetail?.campusType === "BJB") currentCourse.BJB++;
+          if (course?.krs?.reregisterDetail?.campusType === "BJM") currentCourse.BJM++;
+          if (course?.krs?.reregisterDetail?.campusType === "ONLINE") currentCourse.ONLINE++;
+          if (course?.krs?.reregisterDetail?.campusType === "SORE") currentCourse.SORE++;
+          if (course?.krs?.student?.year) {
+            years.add(course?.krs?.student?.year);
+            if (!currentCourse.angkatan[course?.krs?.student?.year]) {
+              currentCourse.angkatan[course?.krs?.student?.year] = 0;
             }
+            currentCourse.angkatan[course?.krs?.student?.year]++;
           }
+          currentCourse.totalStudents++;
         });
-        let countCourseTaken = [];
-        if (countCourseInKrsDetail >= 1) {
-          countCourseTaken = await prisma.krsDetail.groupBy({
-            by: ["courseId"],
-            where: {
-              krs: {
-                reregister: {
-                  period: {
-                    id: uid,
-                  },
-                },
-              },
-            },
-            _count: {
-              courseId: true,
-            },
-          });
-        };
-      
-        const dataFinal = coursesInCurriculumDetail.map((item: any) => {
-          return {
-            ...item,
-            studentCount: countCourseTaken.find((items: any) => item.courseId === items.courseId)?._count?.courseId || 0,
+  
+        const finalReport = report.map((items: any) => {
+          const yearArray = Array.from(years) as number[];
+          const yearCounts = yearArray.sort().reduce<Record<string, number>>((acc, year) => {
+            acc[year] = items.angkatan[year] || 0;
+            return acc;
+          }, {});
+          const row = {
+            "code": items.course.code,
+            "name": items.course.name,
+            "semester": items.semester,
+            "majorId": items.course.majorId,
+            "BJB": items.BJB,
+            "BJM": items.BJM,
+            "ONLINE": items.ONLINE,
+            "SORE": items.SORE,
+            ...yearCounts,
+            totalStudents: items.totalStudents,
           };
-        });
+          return row;
+        })
+
         const dataCoursesByMajor = dataMajor.map((major: any) => {
-          const course = dataFinal.filter((course: any) => course?.course?.majorId === major.id)
+          const course = finalReport.filter((course: any) => course?.majorId === major.id)
           return {major: major, courses: course}
         })
         
@@ -133,6 +147,7 @@ export async function GET(req: NextRequest) {
           data: {
             dataPeriod,
             dataCoursesByMajor: dataCoursesByMajor,
+            years: Array.from(years).sort(),
           }
         })
         return new NextResponse(bufferFile, {
