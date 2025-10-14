@@ -697,13 +697,6 @@ export const deleteAssessment = async (state: stateType, data: FormData) => {
 
 export const createCurriculum = async (state: stateType, data: CurriculumInputs) => {
   try {
-    // let dataCreate = {
-    //   name: data?.name,
-    //   majorId: data?.majorId,
-    //   startDate: new Date(data?.startDate || Date.now()),
-    //   endDate: new Date(data?.endDate || Date.now()),
-    //   isActive: data?.isActive,
-    // }
     if (data?.isActive) {
       await prisma.curriculum.updateMany({
         where: {
@@ -2081,9 +2074,7 @@ export const deleteReregistration = async (state: stateType, data: FormData) => 
 export const reregisterCreateAll = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    logger.info(id);
     
-    // const reregisterDetailCount = await prisma.reregisterDetail.count({});
     const currentReregister = await prisma.reregister.findUnique({
       where: {
         id: id,

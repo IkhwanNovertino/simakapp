@@ -474,7 +474,7 @@ model KhsDetail {
   khs         Khs             @relation(fields: [khsId], references: [id], onDelete: Cascade)
   courseId    String
   course      Course          @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  finalScore  Decimal         @default(0) @db.Decimal(4, 2)
+  finalScore  Decimal         @default(0) @db.Decimal(5, 2)
   weight      Decimal         @default(0) @db.Decimal(2, 1)
   gradeLetter String          @default("E")
   status      AnnouncementKhs @default(DRAFT)
