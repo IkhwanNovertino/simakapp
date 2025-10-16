@@ -1082,16 +1082,16 @@ async function main() {
   
   const students = []
 
-  for (let i = 1; i <= 8; i++) {
+  for (let i = 0; i <= 9; i++) {
     students.push({
-      nim: `3101250${i % 2 ? 1 : 2}250${i}`,
-      name: `Student Surname 25${i}`,
-      year: 2025,
+      nim: `3101260${i % 2 ? 1 : 2}260${i}`,
+      name: `Student Surname 26${i}`,
+      year: 2026,
       religion: Religion.ISLAM,
       gender: (i % 2 ? Gender.PRIA : Gender.WANITA),
       majorId: (i % 2 ? 1 : 2),
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 ? lecturerSI[0].id : lecturerTI[0].id), 
+      lecturerId: (i % 2 ? lecturerSI[1].id : lecturerTI[1].id), 
     })
   };
   // for (let i = 0; i <= 9; i++) {

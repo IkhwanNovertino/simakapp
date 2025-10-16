@@ -35,6 +35,7 @@ export async function exportAssessmentGrade(academicClassId: string) {
         },
       },
       name: true,
+      periodId: true,
     },
   });
 

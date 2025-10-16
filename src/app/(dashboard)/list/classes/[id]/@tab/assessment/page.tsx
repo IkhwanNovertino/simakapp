@@ -47,6 +47,7 @@ const ClassSingleTabAssessmentPage = async (
         id: id,
       },
       select: {
+        periodId: true,
         academicClassDetail: {
           include: {
             student: {

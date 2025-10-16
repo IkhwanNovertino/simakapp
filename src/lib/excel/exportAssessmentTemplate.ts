@@ -35,6 +35,7 @@ export async function exportAssessmentTemplate(academicClassId: string) {
         },
       },
       name: true,
+      periodId: true,
     },
   });
 
@@ -75,11 +76,14 @@ export async function exportAssessmentTemplate(academicClassId: string) {
       {khs: {student: {nim: 'asc'}}}
     ]
   });
+  console.log('ACADEMIC CLASS', academicClass);
+  console.log('KHS DETAILS', khsDetails);
+  
 
   const assessmentDetails = academicClass?.course.assessment?.assessmentDetail || [];
 
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet(`${academicClass?.course.code}-${academicClass?.course?.name}`);
+  const worksheet = workbook.addWorksheet(`${academicClass?.course.code}-${academicClass?.course?.name.replace(/[*?:\\/\[\]]/g, ' ')}`);
   worksheet.properties.defaultRowHeight = 25;
   // SET HEADERS
   const headersRow1 = [
