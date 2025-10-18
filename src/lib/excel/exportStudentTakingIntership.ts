@@ -13,7 +13,12 @@ export async function exportStudentTakingIntership({ data }: { data: any }) {
     const headerTable = [
       'No',
       'NIM',
-      'NAMA MAHASISWA',
+      'Nama Mahasiswa',
+      'Prodi',
+      'Dosen Penasehat/Wali Akademik',
+      'Semester',
+      'Jumlah SKS',
+      'IP Semester',
     ];
   
     // <!-------------------Menambahkan DATA MAHASISWA SI---------------------------->
@@ -21,7 +26,7 @@ export async function exportStudentTakingIntership({ data }: { data: any }) {
     // === [1] Baris Judul Besar (Merged)
     worksheet.mergeCells("A2:C2")
     const titleCell = worksheet.getCell('A2')
-    titleCell.value = `DAFTAR MAHASISWA PROGRAM PKL`
+    titleCell.value = `REKAP MAHASISWA PROGRAM PKL`
     titleCell.font = { size: 14, bold: true }
     titleCell.alignment = { vertical: 'middle', horizontal: 'center' }
     
@@ -58,7 +63,7 @@ export async function exportStudentTakingIntership({ data }: { data: any }) {
     });
     
     // Ukuran lebar column
-    const colWidths = [4, 25, 55];
+    const colWidths = [4, 14, 35, 6, 35, 10, 12, 12];
     colWidths.forEach((w, i) => {
       worksheet.getColumn(i + 1).width = w
     });
@@ -66,8 +71,13 @@ export async function exportStudentTakingIntership({ data }: { data: any }) {
     dataStudent?.students.forEach((items: any, i: number) => {
       const rowdata: any = [
         i + 1,
-        items?.student?.nim,
-        items?.student?.name,
+        items?.nim,
+        items?.name,
+        items?.major?.stringCode || "-",
+        items?.reregisterDetail?.lecturer?.name,
+        items?.reregisterDetail?.semester || "-",
+        items?.transcript?.totalSks || "-",
+        items?.transcript?.ipkTranscript || "-",
       ];
 
       const addRow = worksheet.addRow(rowdata);

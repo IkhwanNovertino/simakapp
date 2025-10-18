@@ -1,8 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Prisma } from "@prisma/client";
+import { AnnouncementKhs, Prisma, StudentStatus } from "@prisma/client";
 import Table from "../Table";
 import Pagination from "../Pagination";
+import { lecturerName, transcriptUtils } from "@/lib/utils";
 
 type recapType = {
   periodId: string,
@@ -37,70 +38,130 @@ const StudentsTakingInternship = async (
     }
   };
 
-  const [data, count] = await prisma.$transaction(async (tx: any) => {
-    const data = await tx.krs.findMany({
+  const [data, count] = await prisma.$transaction(async (prisma: any) => {
+    const data = await prisma.student.findMany({
       where: {
-        reregister: {
-          periodId: periodId,
-        },
-        krsDetail: {
+        krs: {
           some: {
-            course: {
-              isPKL: true,
-            },
+            krsDetail: {
+              some: {
+                course: {
+                  isPKL: true,
+                }
+              },
+            }
           },
         },
-        ...query,
+        studentStatus: StudentStatus.AKTIF,
       },
       select: {
-        student: {
+        name: true,
+        nim: true,
+        major: true,
+        reregisterDetail: {
+          where: {
+            reregister: {
+              periodId: periodId,
+            }
+          },
           select: {
-            nim: true,
-            name: true,
-            major: true,
+            lecturer: {
+              select: {
+                name: true,
+                frontTitle: true,
+                backTitle: true,
+              }
+            },
+            semester: true,
           }
-        }
+        },
+        khs: {
+          select: {
+            khsDetail: {
+              where: {
+                isLatest: true,
+                status: AnnouncementKhs.ANNOUNCEMENT,
+              },
+              select: {
+                course: {
+                  select: {
+                    id: true,
+                    code: true,
+                    name: true,
+                    sks: true,
+                    isPKL: true,
+                    isSkripsi: true,
+                  }
+                },
+                weight: true,
+                gradeLetter: true,
+                status: true,
+              },
+              orderBy: [
+                { course: { name: 'asc' } }
+              ]
+            },
+          }
+        },
       },
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (page - 1),
-      orderBy: [
-        { student: { nim: "desc" } }
-      ],
     });
-    const count = await tx.krs.count({
+
+    data.forEach(async (student: any) => {
+      student.reregisterDetail = { ...student?.reregisterDetail[0] };
+      student.transcript = await transcriptUtils(student?.khs);
+    });
+
+    const count = await prisma.student.count({
       where: {
-        reregister: {
-          periodId: periodId,
-        },
-        krsDetail: {
+        krs: {
           some: {
-            course: {
-              isPKL: true,
-            },
+            krsDetail: {
+              some: {
+                course: {
+                  isSkripsi: true,
+                }
+              },
+            }
           },
         },
-        ...query,
+        studentStatus: StudentStatus.AKTIF,
       },
     });
     return [data, count];
   })
 
+  console.log(data);
+
+
   const renderRow = (item: any) => {
     return (
       <tr
-        key={item.student.nim}
+        key={item.nim}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
-        <td className="grid grid-cols-6 md:hidden py-4 px-2">
+        <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
           <div className="flex flex-col col-span-5 items-start">
-            <h3 className="font-semibold">{item?.student?.name}</h3>
-            <p className="flex md:hidden text-xs text-gray-500">{item?.student?.nim ?? ""}</p>
-            <p className="flex md:hidden text-xs text-gray-500">Prodi: {item?.student?.major?.name ?? ""}</p>
+            <h3 className="font-semibold">{item?.name || ""}</h3>
+            <p className="text-xs font-medium text-gray-500">{item?.nim || ""}</p>
+            <div className="flex gap-1 mt-1">
+
+            </div>
+          </div>
+          <div className="flex items-center justify-end gap-2 md:hidden ">
           </div>
         </td>
-        <td className="hidden md:flex py-4 px-2 md:px-4">{item?.student?.nim || "-"}</td>
-        <td className="hidden md:table-cell">{item?.student?.name || "-"}</td>
-        <td className="hidden md:table-cell">{item?.student?.major?.name || "-"}</td>
+        <td className="hidden md:table-cell">{item?.major?.stringCode || "-"}</td>
+        <td className="hidden md:table-cell">
+          {lecturerName({
+            frontTitle: item?.reregisterDetail?.lecturer?.frontTitle,
+            name: item?.reregisterDetail?.lecturer?.name,
+            backTitle: item?.reregisterDetail?.lecturer?.backTitle,
+          }) ?? "-"}
+        </td>
+        <td className="hidden md:table-cell">{item?.transcript?.totalSks}</td>
+        <td className="hidden md:table-cell">{item?.transcript?.ipkTranscript}</td>
       </tr>
     );
   }
@@ -109,21 +170,26 @@ const StudentsTakingInternship = async (
     {
       header: "Info",
       accessor: "info",
-      className: "px-2 md:hidden"
+      className: "px-2 md:px-4"
     },
     {
-      header: "NIM",
-      accessor: "nim",
-      className: "hidden md:table-cell md:px-4 md:",
-    },
-    {
-      header: "Nama Mahasiswa",
-      accessor: "nama mahasiswa",
+      header: "Prodi",
+      accessor: "prodi",
       className: "hidden md:table-cell",
     },
     {
-      header: "Program Studi",
-      accessor: "program studi",
+      header: "Dosen Wali",
+      accessor: "dosen wali",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "Total SKS",
+      accessor: "sks",
+      className: "hidden md:table-cell",
+    },
+    {
+      header: "IPK",
+      accessor: "ipk",
       className: "hidden md:table-cell",
     },
   ];

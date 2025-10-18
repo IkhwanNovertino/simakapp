@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingVertical: 32,
     paddingHorizontal: 32,
-    fontSize: "11pt",
+    fontSize: "10pt",
   },
   header: {
     display: "flex",
@@ -76,12 +76,12 @@ const styles = StyleSheet.create({
   },
   tableCellTh: {
     margin: "auto",
-    fontSize: "10pt",
+    fontSize: "9pt",
     fontWeight: "bold",
   },
   tableCellTd: {
     margin: "auto",
-    fontSize: "10pt",
+    fontSize: "9pt",
   },
   footer: {
     width: "100%",

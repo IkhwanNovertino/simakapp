@@ -64,6 +64,39 @@ export const previousPeriod = async (data: {semesterType: string, year: number})
   }
 }
 
+export const transcriptUtils = async (data: any) => {
+  const courses: any = {};
+    for (const khs of data) {
+      khs?.khsDetail.forEach((detail: any) => {
+        const idMK = detail?.course?.id;
+        detail.weight = Number(detail.weight);
+        if (!courses[idMK]) {
+          courses[idMK] = detail;
+        }
+      });
+    };
+
+    const coursesFinal = Object.values(courses)
+      .sort((min: any, max: any) => {
+        let x = min.course.name.toLowerCase();
+        let y = max.course.name.toLowerCase();
+        if (x < y) return -1;
+        if (x > y) return 1;
+        return 0;
+      });
+
+    const totalSks = coursesFinal.map((item: any) => item.course.sks).reduce((acc: any, init: any) => acc + init, 0);
+    const totalBobot = coursesFinal.map((item: any) => item.course.sks * item.weight)
+      .reduce((acc: any, init: any) => acc + init, 0);
+    const ipkTranscript = (totalBobot / totalSks).toFixed(2);
+  return {
+    coursesFinal,
+    totalSks,
+    totalBobot,
+    ipkTranscript,
+  }
+}
+
 const getLatestMonday = (): Date => {
   const today = new Date();
   const dayOfWeek = today.getDay();

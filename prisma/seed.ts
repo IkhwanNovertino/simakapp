@@ -1084,14 +1084,14 @@ async function main() {
 
   for (let i = 0; i <= 9; i++) {
     students.push({
-      nim: `3101260${i % 2 ? 1 : 2}260${i}`,
-      name: `Student Surname 26${i}`,
-      year: 2026,
+      nim: `3101270${i % 2 ? 1 : 2}270${i}`,
+      name: `Student Surname 27${i}`,
+      year: 2027,
       religion: Religion.ISLAM,
       gender: (i % 2 ? Gender.PRIA : Gender.WANITA),
       majorId: (i % 2 ? 1 : 2),
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 ? lecturerSI[1].id : lecturerTI[1].id), 
+      lecturerId: (i % 2 ? lecturerSI[2].id : lecturerTI[2].id), 
     })
   };
   // for (let i = 0; i <= 9; i++) {

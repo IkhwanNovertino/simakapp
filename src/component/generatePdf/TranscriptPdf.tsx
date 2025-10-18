@@ -100,9 +100,9 @@ const TranscriptPdf = ({ data }: GeneratePdfProps) => {
           <Text style={styles.textHeading1}>TRANSKIP NILAI SEMENTARA</Text>
           <View style={[styles.classTableRow, { marginTop: "8px" }]}>
             <Text style={{ width: "10%", fontWeight: "bold", }}>NAMA</Text>
-            <Text style={{ width: "50%", marginRight: 2, fontWeight: "bold", }}>: MUHAMMAD IKHWAN</Text>
+            <Text style={{ width: "50%", marginRight: 2, fontWeight: "bold", }}>: {data?.dataStudent?.name}</Text>
             <Text style={{ width: "10%", fontWeight: "bold", }}>NIM</Text>
-            <Text style={{ width: "27%", fontWeight: "bold", }}>: 310118012620</Text>
+            <Text style={{ width: "27%", fontWeight: "bold", }}>: {data?.dataStudent?.nim}</Text>
           </View>
           <View style={styles.table}>
             <View style={styles.tableRow}>
@@ -125,7 +125,7 @@ const TranscriptPdf = ({ data }: GeneratePdfProps) => {
                 <Text style={[styles.tableCellTh]}>BOBOT</Text>
               </View>
             </View>
-            {data?.courseTaken.map((course: any, index: number) => (
+            {data?.coursesFinal.map((course: any, index: number) => (
               <View style={styles.tableRow} key={course.id}>
                 <View style={[styles.tableCol, { width: "5%" }]}>
                   <Text style={styles.tableCellTd}>{index + 1}</Text>
@@ -242,7 +242,7 @@ const TranscriptPdf = ({ data }: GeneratePdfProps) => {
                 <Text style={[styles.tableCellTd]}></Text>
               </View>
             </View>
-            <View style={styles.tableRow}>
+            {/* <View style={styles.tableRow}>
               <View style={[styles.tableCol, { width: "5%" }]}>
                 <Text style={styles.tableCellTd}>{1}</Text>
               </View>
@@ -264,7 +264,7 @@ const TranscriptPdf = ({ data }: GeneratePdfProps) => {
               <View style={[styles.tableCol, { width: "8%" }]}>
                 <Text style={[styles.tableCellTd]}>{ }</Text>
               </View>
-            </View>
+            </View> */}
             <View style={styles.tableRow}>
               <View style={[styles.tableCol, { width: "5%" }]}>
                 <Text style={styles.tableCellTd}>{"."}</Text>
@@ -299,7 +299,7 @@ const TranscriptPdf = ({ data }: GeneratePdfProps) => {
                 <Text style={styles.tableCellTd}>{"Jumlah SKS yang belum diambil"}</Text>
               </View>
               <View style={[styles.tableCol, { width: "7%" }]}>
-                <Text style={[styles.tableCellTd]}>{140}</Text>
+                <Text style={[styles.tableCellTd]}>{"-"}</Text>
               </View>
               <View style={[styles.tableCol, { width: "6%" }]}>
                 <Text style={[styles.tableCellTd]}></Text>
@@ -322,7 +322,7 @@ const TranscriptPdf = ({ data }: GeneratePdfProps) => {
                 <Text style={[styles.tableCellTd]}>{"TOTAL SKS"}</Text>
               </View>
               <View style={[styles.tableCol, { width: "7%" }]}>
-                <Text style={[styles.tableCellTd]}>{144}</Text>
+                <Text style={[styles.tableCellTd]}>{"-"}</Text>
               </View>
               <View style={[styles.tableCol, { width: "6%" }]}>
                 <Text style={[styles.tableCellTd]}></Text>

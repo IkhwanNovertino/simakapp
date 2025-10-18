@@ -333,49 +333,77 @@ export async function GET(req: NextRequest) {
             },
           ],
         });
-        const courseTaken = await prisma.khsDetail.findMany({
-          where: {
-            khs: {
-              student: {
-                id: uid,
+        const [dataStudent, coursesFinal] = await prisma.$transaction(async (prisma: any) => {
+          const data = await prisma.student.findUnique({
+            where: {
+              id: uid,
+            },
+            select: {
+              name: true,
+              nim: true,
+              khs: {
+                orderBy: [
+                  { semester: 'desc' }
+                ],
+                select: {
+                  semester: true,
+                  khsDetail: {
+                    where: {
+                      isLatest: true,
+                    },
+                    select: {
+                      course: {
+                        select: {
+                          id: true,
+                          code: true,
+                          name: true,
+                          sks: true,
+                          isPKL: true,
+                          isSkripsi: true,
+                        }
+                      },
+                      weight: true,
+                      gradeLetter: true,
+                      status: true,
+                    },
+                    orderBy: [
+                      { course: { name: 'asc' } }
+                    ]
+                  }
+                }
               }
             },
-            isLatest: true,
-          },
-          select: {
-            id: true,
-            khs: {
-              select: {
-                semester: true,
+          });
+        
+          const dataStudent = {
+            name: data?.name,
+            nim: data?.nim,
+          };
+          const courses: any = {};
+          for (const khs of data?.khs) {
+            khs?.khsDetail.forEach((detail: any) => {
+              const codeMK = detail?.course?.code;
+              detail.weight = Number(detail.weight);
+              if (!courses[codeMK]) {
+                courses[codeMK] = detail;
               }
-            },
-            course: {
-              select: {
-                code: true,
-                name: true,
-                sks: true,
-                isPKL: true,
-                isSkripsi: true,
-              }
-            },
-            weight: true,
-            gradeLetter: true,
-            status: true,
-          },
-          orderBy: [
-            {
-              course: {
-                name: "asc"
-              }
-            }
-          ]
-        });
-        courseTaken.forEach((item: any, index: number) => {
-          item.weight = Number(item.weight);
-        });
-        const totalSKSTranscript = courseTaken.map((item: any) => item.course.sks)
+            });
+          };
+        
+          const coursesFinal = Object.values(courses)
+            .sort((min: any, max: any) => {
+              let x = min.course.name.toLowerCase();
+              let y = max.course.name.toLowerCase();
+              if (x < y) return -1;
+              if (x > y) return 1;
+              return 0;
+            });
+          return [dataStudent, coursesFinal];
+        })
+
+        const totalSKSTranscript = coursesFinal.map((item: any) => item.course.sks)
           .reduce((acc: any, init: any) => acc + init, 0);
-        const totalBobotTranscript = courseTaken.map((item: any) => item.course.sks * item.weight)
+        const totalBobotTranscript = coursesFinal.map((item: any) => item.course.sks * item.weight)
           .reduce((acc: any, init: any) => acc + init, 0);
         const ipkTranscript = (totalBobotTranscript / totalSKSTranscript).toFixed(2);
         
@@ -383,7 +411,8 @@ export async function GET(req: NextRequest) {
           type: type,
           data: {
             allCourses,
-            courseTaken,
+            dataStudent,
+            coursesFinal,
             totalSKSTranscript,
             totalBobotTranscript,
             ipkTranscript,
@@ -397,7 +426,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=${"3101"}(TRANSCRIPT).pdf`,
+            'Content-Disposition': `attachment; filename=${dataStudent?.nim}(TRANSCRIPT).pdf`,
           },
         });
       case "reregister":
@@ -686,80 +715,6 @@ export async function GET(req: NextRequest) {
           headers: {
             'Content-Type': 'application/pdf',
             'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA PROGRAM TA (${dataPeriod?.name}).pdf`,
-          },
-        });
-      case "studentsExtendingThesis":
-        const getPrevPeriod = await previousPeriod({ semesterType: dataPeriod.semesterType, year: dataPeriod.year });
-        const studentsTakingThesisCurrentPeriod = await prisma.krs.findMany({
-          where: {
-            reregister: {
-              periodId: uid,
-            },
-            krsDetail: {
-              some: {
-                course: {
-                isSkripsi: true,
-                },
-              },
-            },
-          },
-          select: {
-            studentId: true,
-            student: {
-              select: {
-                nim: true,
-                name: true,
-                major: true,
-              }
-            }
-          },
-        });
-        const studentsTakingThesisPreviosPeriod = await prisma.krs.findMany({
-          where: {
-            reregister: {
-              period: {
-                semesterType: getPrevPeriod.semesterType,
-                year: getPrevPeriod.year,
-              },
-            },
-            krsDetail: {
-              some: {
-                course: {
-                  isSkripsi: true,
-                },
-              },
-            },
-          },
-          select: {
-            studentId: true,
-          },
-        });
-        const studentsExtendingThesis = studentsTakingThesisCurrentPeriod
-          .filter((student: any) => new Set(studentsTakingThesisPreviosPeriod
-            .map((items: any) => items.studentId))
-            .has(student.studentId));
-
-        const dataStudentsExtendingThesis = dataMajor.map((major: any) => {
-          const studentsExtendingthesis = studentsExtendingThesis.filter((student: any) => student?.student?.major?.id === major?.id)
-          return {major: major, students: studentsExtendingthesis}
-        })
-
-        bufferFile = await renderPdf({
-          type: type,
-          data: {
-            dataPeriod,
-            dataStudentsExtendingThesis,
-            date,
-          }
-        })
-        if (!bufferFile) {
-          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
-        }
-        bufferUint8Array = new Uint8Array(bufferFile);
-        return new NextResponse(bufferUint8Array, {
-          headers: {
-            'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA PERPANJANGAN TA (${dataPeriod?.name}).pdf`,
           },
         });
       case "studentsTakingInternship":

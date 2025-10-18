@@ -2,7 +2,6 @@ import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import FilterSearch from "@/component/FilterSearch";
 import CourseKrs from "@/component/recapType/CourseKrs";
 import StudentActiveInactive from "@/component/recapType/StudentActiveInactive";
-import StudentsExtendingThesis from "@/component/recapType/StudentsExtendingThesis";
 import StudentsRegisteredKrs from "@/component/recapType/StudentsRegisteredKrs";
 import StudentsRegularSore from "@/component/recapType/StudentsRegularSore";
 import StudentsTakingInternship from "@/component/recapType/StudentsTakingInternship";
@@ -31,7 +30,6 @@ const RecapitulationDetailByCardPage = async (
     studentsRegisteredKrs: "Daftar Mahasiswa yang Sudah KRS",
     studentsUnregisteredKrs: "Daftar Mahasiswa yang Belum KRS",
     studentsTakingThesis: "Daftar Mahasiswa Program TA",
-    studentsExtendingThesis: "Daftar Mahasiswa Perpanjangan TA",
     studentsTakingInternship: "Daftar Mahasiswa Program PKL",
     studentActiveInactive: "Daftar Mahasiswa Aktif/non-aktif",
     studentsRegularSore: "Daftar Mahasiswa Reg.Pagi/Sore",
@@ -44,7 +42,6 @@ const RecapitulationDetailByCardPage = async (
     studentsRegisteredKrs: <StudentsRegisteredKrs periodId={id} page={p} queryParams={queryParams} />,
     studentsUnregisteredKrs: <StudentsUnregisteredKrs periodId={id} page={p} queryParams={queryParams} />,
     studentsTakingThesis: <StudentsTakingThesis periodId={id} page={p} queryParams={queryParams} />,
-    studentsExtendingThesis: <StudentsExtendingThesis periodId={id} page={p} queryParams={queryParams} />,
     studentsTakingInternship: <StudentsTakingInternship periodId={id} page={p} queryParams={queryParams} />,
     studentActiveInactive: <StudentActiveInactive periodId={id} page={p} queryParams={queryParams} />,
     studentsRegularSore: <StudentsRegularSore periodId={id} page={p} queryParams={queryParams} />,

@@ -78,7 +78,7 @@ export async function exportStudentRegisteredKrs({ data }: { data: any }) {
         items?.lecturer?.name,
         items?.reregisterDetail?.semester,
         items?.ips,
-        items?.maxSks,
+        items?.totalSksTaken,
         items?.isStatusForm === "APPROVED" ? "ACC" : "Belum ACC"
       ];
 

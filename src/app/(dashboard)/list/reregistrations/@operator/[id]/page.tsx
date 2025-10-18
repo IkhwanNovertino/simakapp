@@ -109,6 +109,11 @@ const ReregisterSinglePage = async (
       className: "hidden md:table-cell",
     },
     {
+      header: "Kampus",
+      accessor: "kampus",
+      className: "hidden md:table-cell",
+    },
+    {
       header: "Pembayaran",
       accessor: "pembayaran",
       className: "hidden md:table-cell",
@@ -179,8 +184,9 @@ const ReregisterSinglePage = async (
             </ModalAction>
           </div>
         </td>
-        <td className="hidden lg:table-cell text-sm font-medium">{item.student.year || 2000}</td>
-        <td className="hidden md:table-cell text-sm font-medium">{item.student.major.name}</td>
+        <td className="hidden lg:table-cell text-sm font-medium">{item.student.year || ""}</td>
+        <td className="hidden md:table-cell text-sm font-medium">{item?.student?.major?.stringCode}</td>
+        <td className="hidden md:table-cell text-sm">{item?.campusType}</td>
         <td className={`hidden md:table-cell text-[10px] font-bold`}>
           <span className={paymentStyle.join(" ")}>
             {item.paymentStatus}

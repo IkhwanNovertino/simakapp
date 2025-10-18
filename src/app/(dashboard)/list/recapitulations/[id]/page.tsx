@@ -45,7 +45,6 @@ const RecapitulationDetailByPeriodPage = async ({
           <RecapitulationCard periodId={id} type={"studentsRegisteredKrs"} label="Mahasiswa Sudah KRS" />
           <RecapitulationCard periodId={id} type={"studentsUnregisteredKrs"} label="Mahasiswa Belum KRS" />
           <RecapitulationCard periodId={id} type={"studentsTakingThesis"} label="Mahasiswa Program TA" />
-          <RecapitulationCard periodId={id} type={"studentsExtendingThesis"} label="Mahasiswa Perpanjangan TA" />
           <RecapitulationCard periodId={id} type={"studentsTakingInternship"} label="Mahasiswa Program PKL" />
         </div>
       </div>
