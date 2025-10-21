@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import renderPdf from "@/lib/renderPdf";
 import { lecturerName, previousPeriod } from "@/lib/utils";
+import { Course, KrsDetail } from "@prisma/client";
 import { error } from "console";
 import { format } from "date-fns";
 import { id as indonesianLocale, } from "date-fns/locale";
@@ -595,8 +596,47 @@ export async function GET(req: NextRequest) {
                 name: true,
                 major: true,
               }
-            }
+            },
+            maxSks: true,
+            ips: true,
+            lecturer: {
+              select: {
+                name: true,
+              }
+            },
+            isStatusForm: true,
+            reregisterDetail: {
+              select: {
+                semester: true,
+                lecturer: {
+                  select: {
+                    name: true,
+                  }
+                }
+              }
+            },
+            krsDetail: {
+              select: {
+                course: {
+                  select: {
+                    sks: true,
+                  }
+                }
+              }
+            },
           },
+          orderBy: [
+            {
+              student: {
+                nim: "desc"
+              },
+            },
+          ],
+        });
+        studentRegisteredKrs.forEach((element: any) => {
+          element.ips = Number(element.ips).toFixed(2);
+          const totalSks = element.krsDetail.map((item: KrsDetail & { course: Course }) => item.course.sks).reduce((acc: number, init: number) => acc + init, 0);
+          element.totalSksTaken = totalSks;
         });
 
         const dataStudentRegisteredKrs = dataMajor.map((major: any) => {
@@ -619,7 +659,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA SUDAH KRS (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=REKAP MAHASISWA SUDAH KRS (${dataPeriod?.name}).pdf`,
           },
         });
       case "studentsUnregisteredKrs":
@@ -639,7 +679,18 @@ export async function GET(req: NextRequest) {
                 name: true,
                 major: true,
               }
-            }
+            },
+            ips: true,
+            reregisterDetail: {
+              select: {
+                semester: true,
+                lecturer: {
+                  select: {
+                    name: true,
+                  }
+                }
+              }
+            },
           },
         });
 
@@ -647,9 +698,6 @@ export async function GET(req: NextRequest) {
           const studentsUnregisteredkrs = studentsUnregisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
           return {major: major, students: studentsUnregisteredkrs}
         })
-
-        console.log('DATA STUDENTUNREGIST', dataStudentsUnregisteredKrs);
-        
 
         bufferFile = await renderPdf({
           type: type,
@@ -666,7 +714,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA BELUM KRS (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=REKAP MAHASISWA BELUM KRS (${dataPeriod?.name}).pdf`,
           },
         });
       case "studentsTakingThesis":
@@ -714,7 +762,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA PROGRAM TA (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=REKAP MAHASISWA PROGRAM TA (${dataPeriod?.name}).pdf`,
           },
         });
       case "studentsTakingInternship":
@@ -762,7 +810,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA PROGRAM PKL (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=REKAP MAHASISWA PROGRAM PKL (${dataPeriod?.name}).pdf`,
           },
         });
       case "studentActiveInactive":
@@ -807,7 +855,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA AKTIF-NONAKTIF (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=REKAP MAHASISWA AKTIF-NONAKTIF (${dataPeriod?.name}).pdf`,
           },
         });
       case "studentsRegularSore":
@@ -880,7 +928,7 @@ export async function GET(req: NextRequest) {
         return new NextResponse(bufferUint8Array, {
           headers: {
             'Content-Type': 'application/pdf',
-            'Content-Disposition': `attachment; filename=DAFTAR MAHASISWA Reg.Pagi-Sore (${dataPeriod?.name}).pdf`,
+            'Content-Disposition': `attachment; filename=REKAP MAHASISWA Reg.Pagi-Sore (${dataPeriod?.name}).pdf`,
           },
         });
       default:

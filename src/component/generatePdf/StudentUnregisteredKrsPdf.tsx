@@ -119,41 +119,47 @@ const StudentUnregisteredKrsPdf = ({ data }: GeneratePdfProps) => {
               <Text style={styles.textHeading1}>{data?.dataPeriod?.name}</Text>
               <View style={[styles.table, { marginTop: "18px" }]}>
                 <View style={styles.tableRow}>
-                  <View style={[styles.tableCol, { width: "6%" }]}>
+                  <View style={[styles.tableCol, { width: "5%" }]}>
                     <Text style={styles.tableCellTh}>No</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "25%" }]}>
+                  <View style={[styles.tableCol, { width: "15%" }]}>
                     <Text style={styles.tableCellTh}>NIM</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "69%" }]}>
+                  <View style={[styles.tableCol, { width: "36%" }]}>
                     <Text style={styles.tableCellTh}>Nama Mahasiswa</Text>
                   </View>
+                  <View style={[styles.tableCol, { width: "36%" }]}>
+                    <Text style={styles.tableCellTh}>Dosen Wali</Text>
+                  </View>
+                  <View style={[styles.tableCol, { width: "12%" }]}>
+                    <Text style={styles.tableCellTh}>Semester</Text>
+                  </View>
+                  <View style={[styles.tableCol, { width: "10%" }]}>
+                    <Text style={styles.tableCellTh}>IPS</Text>
+                  </View>
                 </View>
-                {items?.students.length > 0 ? items?.students.map((student: any, index: number) => (
+                {items.students.map((student: any, index: number) => (
                   <View key={student.id || index} style={styles.tableRow} wrap={false}>
-                    <View style={[styles.tableCol, { width: "6%" }]}>
+                    <View style={[styles.tableCol, { width: "5%" }]}>
                       <Text style={styles.tableCellTd}>{index + 1}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "25%" }]}>
+                    <View style={[styles.tableCol, { width: "15%" }]}>
                       <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.nim}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "69%" }]}>
+                    <View style={[styles.tableCol, { width: "36%" }]}>
                       <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.name}</Text>
                     </View>
-                  </View>
-                )) : (
-                  <View style={styles.tableRow} wrap={false}>
-                    <View style={[styles.tableCol, { width: "6%" }]}>
-                      <Text style={styles.tableCellTd}></Text>
+                    <View style={[styles.tableCol, { width: "36%" }]}>
+                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.name}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "25%" }]}>
-                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
+                    <View style={[styles.tableCol, { width: "12%" }]}>
+                      <Text style={styles.tableCellTd}>{student?.reregisterDetail?.semester}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "69%" }]}>
-                      <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}></Text>
+                    <View style={[styles.tableCol, { width: "10%" }]}>
+                      <Text style={styles.tableCellTd}>{student?.ips}</Text>
                     </View>
                   </View>
-                )}
+                ))}
               </View>
             </View>
           </View>

@@ -14,21 +14,21 @@ type recapType = {
 const StudentsTakingInternship = async (
   { periodId, page, queryParams }: recapType) => {
 
-  const query: Prisma.KrsWhereInput = {};
+  const query: Prisma.StudentWhereInput = {};
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {
         switch (key) {
           case "search":
             query.OR = [
-              { student: { name: { contains: value, mode: "insensitive" } } },
-              { student: { nim: { contains: value, mode: "insensitive" } } },
-              { student: { major: { name: { contains: value, mode: "insensitive" } } } },
+              { name: { contains: value, mode: "insensitive" } },
+              { nim: { contains: value, mode: "insensitive" } },
+              { major: { name: { contains: value, mode: "insensitive" } } },
             ]
             break;
           case "filter":
             query.OR = [
-              { student: { major: { id: parseInt(value) } } },
+              { major: { id: parseInt(value) } },
             ]
             break;
           default:
@@ -53,6 +53,7 @@ const StudentsTakingInternship = async (
           },
         },
         studentStatus: StudentStatus.AKTIF,
+        ...query,
       },
       select: {
         name: true,
@@ -127,6 +128,7 @@ const StudentsTakingInternship = async (
           },
         },
         studentStatus: StudentStatus.AKTIF,
+        ...query,
       },
     });
     return [data, count];

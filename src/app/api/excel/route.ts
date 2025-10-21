@@ -185,6 +185,11 @@ export async function GET(req: NextRequest) {
             reregisterDetail: {
               select: {
                 semester: true,
+                lecturer: {
+                  select: {
+                    name: true,
+                  }
+                }
               }
             },
             krsDetail: {
@@ -211,11 +216,6 @@ export async function GET(req: NextRequest) {
           element.totalSksTaken = totalSks;
         });
         
-
-        console.log(studentRegisteredKrs);
-        
-        
-
         const dataStudentRegisteredKrs = dataMajor.map((major: any) => {
           const studentsRegisteredkrs = studentRegisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
           return { major: major, students: studentsRegisteredkrs }

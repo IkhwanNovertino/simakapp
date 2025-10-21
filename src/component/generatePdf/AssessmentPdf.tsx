@@ -95,7 +95,6 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 1,
   }
-
 })
 
 

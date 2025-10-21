@@ -149,7 +149,6 @@ const TranskipOperatorDetailPage = async (
     const ipkTranscript = (totalBobot / totalSks).toFixed(2);
     return [data, dataStudent, coursesFinal, totalSks];
   })
-  console.log(coursesFinal);
 
 
   const columns = [

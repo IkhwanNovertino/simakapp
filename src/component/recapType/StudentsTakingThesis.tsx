@@ -53,6 +53,7 @@ const StudentsTakingThesis = async (
           },
         },
         studentStatus: StudentStatus.AKTIF,
+        ...query,
       },
       select: {
         name: true,
@@ -142,6 +143,7 @@ const StudentsTakingThesis = async (
           },
         },
         studentStatus: StudentStatus.AKTIF,
+        ...query,
       },
     });
 
@@ -178,7 +180,6 @@ const StudentsTakingThesis = async (
         <td className="hidden md:table-cell">{item?.transcript?.totalSks}</td>
         <td className="hidden md:table-cell">{item?.transcript?.ipkTranscript}</td>
         <td className="hidden md:table-cell">{item?._count?.krs > 1 ? 'Perpanjang' : "Baru"}</td>
-
       </tr>
     );
   }

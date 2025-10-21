@@ -7,7 +7,7 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     paddingBottom: 32,
     paddingHorizontal: 32,
-    fontSize: "11pt",
+    fontSize: "10pt",
   },
   header: {
     display: "flex",
@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   },
   tableCellTh: {
     margin: "auto",
-    fontSize: "11pt",
+    fontSize: "10pt",
     fontWeight: "bold",
   },
   tableCellTd: {
@@ -115,30 +115,55 @@ const StudentRegisteredKrsPdf = ({ data }: GeneratePdfProps) => {
             </View>
             <View style={styles.bottomLine}></View>
             <View style={styles.body}>
-              <Text style={[styles.textHeading1, { marginTop: "14px" }]}>DAFTAR MAHASISWA YANG SUDAH KRS PROGRAM STUDI {items?.major?.name}</Text>
+              <Text style={[styles.textHeading1, { marginTop: "14px" }]}>REKAPITULASI MAHASISWA SUDAH KRS</Text>
+              <Text style={styles.textHeading1}>PROGRAM STUDI {items?.major?.name}</Text>
               <Text style={styles.textHeading1}>{data?.dataPeriod?.name}</Text>
               <View style={[styles.table, { marginTop: "18px" }]}>
                 <View style={styles.tableRow}>
-                  <View style={[styles.tableCol, { width: "6%" }]}>
+                  <View style={[styles.tableCol, { width: "5%" }]}>
                     <Text style={styles.tableCellTh}>No</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "25%" }]}>
+                  <View style={[styles.tableCol, { width: "15%" }]}>
                     <Text style={styles.tableCellTh}>NIM</Text>
                   </View>
-                  <View style={[styles.tableCol, { width: "69%" }]}>
+                  <View style={[styles.tableCol, { width: "36%" }]}>
                     <Text style={styles.tableCellTh}>Nama Mahasiswa</Text>
+                  </View>
+                  <View style={[styles.tableCol, { width: "12%" }]}>
+                    <Text style={styles.tableCellTh}>Semester</Text>
+                  </View>
+                  <View style={[styles.tableCol, { width: "10%" }]}>
+                    <Text style={styles.tableCellTh}>SKS</Text>
+                  </View>
+                  <View style={[styles.tableCol, { width: "10%" }]}>
+                    <Text style={styles.tableCellTh}>IPS</Text>
+                  </View>
+                  <View style={[styles.tableCol, { width: "12%" }]}>
+                    <Text style={styles.tableCellTh}>Status</Text>
                   </View>
                 </View>
                 {items.students.map((student: any, index: number) => (
                   <View key={student.id || index} style={styles.tableRow} wrap={false}>
-                    <View style={[styles.tableCol, { width: "6%" }]}>
+                    <View style={[styles.tableCol, { width: "5%" }]}>
                       <Text style={styles.tableCellTd}>{index + 1}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "25%" }]}>
+                    <View style={[styles.tableCol, { width: "15%" }]}>
                       <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.nim}</Text>
                     </View>
-                    <View style={[styles.tableCol, { width: "69%" }]}>
+                    <View style={[styles.tableCol, { width: "36%" }]}>
                       <Text style={[styles.tableCellTd, { margin: 0, textAlign: "left" }]}>{student?.student?.name}</Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "12%" }]}>
+                      <Text style={styles.tableCellTd}>{student?.reregisterDetail?.semester}</Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "10%" }]}>
+                      <Text style={styles.tableCellTd}>{student?.totalSksTaken}</Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "10%" }]}>
+                      <Text style={styles.tableCellTd}>{student?.ips}</Text>
+                    </View>
+                    <View style={[styles.tableCol, { width: "12%" }]}>
+                      <Text style={styles.tableCellTd}>{student?.isStatusForm === 'APPROVED' ? 'ACC' : 'Belum ACC'}</Text>
                     </View>
                   </View>
                 ))}

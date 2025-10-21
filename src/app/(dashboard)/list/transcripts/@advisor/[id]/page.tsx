@@ -146,8 +146,6 @@ const TranskipAdvisorDetailPage = async (
 
     return [data, dataStudent, coursesFinal, totalSks];
   })
-  console.log(coursesFinal);
-
 
   const columns = [
     {
