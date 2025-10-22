@@ -4,7 +4,7 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { lecturerName } from "@/lib/utils";
-import { Course, Khs, KhsDetail, Prisma } from "@prisma/client";
+import { AnnouncementKhs, Course, Khs, KhsDetail, Prisma } from "@prisma/client";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -38,45 +38,73 @@ const TranskipStudentPage = async (
     }
   };
 
-  const [data, studentDetail] = await prisma.$transaction([
-    prisma.khsDetail.findMany({
-      where: {
-        khs: {
-          student: {
-            userId: getSessionFunc?.userId,
-          }
-        },
-        isLatest: true,
-      },
-      select: {
-        id: true,
-        khs: {
-          select: {
-            semester: true,
-          }
-        },
-        course: {
-          select: {
-            code: true,
-            name: true,
-            sks: true,
-            isPKL: true,
-            isSkripsi: true,
-          }
-        },
-        weight: true,
-        gradeLetter: true,
-        status: true,
-      },
-      orderBy: [
-        {
-          course: {
-            name: "asc"
-          }
-        }
-      ]
-    }),
-    prisma.student.findUnique({
+  // const [data, studentDetail] = await prisma.$transaction([
+  //   prisma.khsDetail.findMany({
+  //     where: {
+  //       khs: {
+  //         student: {
+  //           userId: getSessionFunc?.userId,
+  //         }
+  //       },
+  //       isLatest: true,
+  //     },
+  //     select: {
+  //       id: true,
+  //       khs: {
+  //         select: {
+  //           semester: true,
+  //         }
+  //       },
+  //       course: {
+  //         select: {
+  //           code: true,
+  //           name: true,
+  //           sks: true,
+  //           isPKL: true,
+  //           isSkripsi: true,
+  //         }
+  //       },
+  //       weight: true,
+  //       gradeLetter: true,
+  //       status: true,
+  //     },
+  //     orderBy: [
+  //       {
+  //         course: {
+  //           name: "asc"
+  //         }
+  //       }
+  //     ]
+  //   }),
+  //   prisma.student.findUnique({
+  //     where: {
+  //       userId: getSessionFunc?.userId,
+  //     },
+  //     select: {
+  //       id: true,
+  //       name: true,
+  //       nim: true,
+  //       photo: true,
+  //       year: true,
+  //       statusRegister: true,
+  //       major: {
+  //         select: {
+  //           name: true,
+  //         },
+  //       },
+  //       lecturer: {
+  //         select: {
+  //           name: true,
+  //           frontTitle: true,
+  //           backTitle: true,
+  //         }
+  //       },
+  //     },
+  //   })
+  // ]);
+
+  const [data, dataStudent, coursesFinal, totalSks] = await prisma.$transaction(async (prisma: any) => {
+    const data = await prisma.student.findUnique({
       where: {
         userId: getSessionFunc?.userId,
       },
@@ -92,16 +120,103 @@ const TranskipStudentPage = async (
             name: true,
           },
         },
-        lecturer: {
+        reregisterDetail: {
+          where: {
+            reregister: {
+              period: {
+                isActive: true,
+              }
+            }
+          },
           select: {
-            name: true,
-            frontTitle: true,
-            backTitle: true,
+            lecturer: {
+              select: {
+                name: true,
+                frontTitle: true,
+                backTitle: true,
+              }
+            }
           }
         },
+        khs: {
+          orderBy: [
+            { semester: 'desc' }
+          ],
+          select: {
+            semester: true,
+            khsDetail: {
+              where: {
+                isLatest: true,
+                course: {
+                  isSkripsi: false,
+                },
+                status: AnnouncementKhs.ANNOUNCEMENT,
+              },
+              select: {
+                course: {
+                  select: {
+                    id: true,
+                    code: true,
+                    name: true,
+                    sks: true,
+                    isPKL: true,
+                    isSkripsi: true,
+                  }
+                },
+                weight: true,
+                gradeLetter: true,
+                status: true,
+              },
+              orderBy: [
+                { course: { name: 'asc' } }
+              ]
+            }
+          }
+        }
       },
-    })
-  ]);
+    });
+
+    const dataStudent = {
+      id: data?.id,
+      name: data?.name,
+      nim: data?.nim,
+      year: data?.year,
+      statusRegister: data?.statusRegister,
+      major: data?.major?.name,
+      photo: data?.photo,
+      lecturer: { ...data?.reregisterDetail[0].lecturer },
+    };
+    const courses: any = {};
+    for (const khs of data?.khs) {
+      khs?.khsDetail.forEach((detail: any) => {
+        const idMK = detail?.course?.id;
+        detail.weight = Number(detail.weight);
+        if (!courses[idMK]) {
+          courses[idMK] = detail;
+        }
+      });
+    };
+
+    const coursesSorted = Object.values(courses)
+      .sort((min: any, max: any) => {
+        let x = min.course.name.toLowerCase();
+        let y = max.course.name.toLowerCase();
+        if (x < y) return -1;
+        if (x > y) return 1;
+        return 0;
+      });
+
+    const courseIsnPkl = coursesSorted.filter((item: any) => item.course.isPKL === false);
+    const courseIsPkl = coursesSorted.filter((item: any) => item.course.isPKL);
+
+    const coursesFinal = [...courseIsnPkl, ...courseIsPkl];
+
+    const totalSks = coursesFinal.map((item: any) => item.course.sks).reduce((acc: any, init: any) => acc + init, 0);
+    const totalBobot = coursesFinal.map((item: any) => item.course.sks * item.weight)
+      .reduce((acc: any, init: any) => acc + init, 0);
+    const ipkTranscript = (totalBobot / totalSks).toFixed(2);
+    return [data, dataStudent, coursesFinal, totalSks];
+  })
 
   const columns = [
     {
@@ -129,7 +244,7 @@ const TranskipStudentPage = async (
   const renderRow = (item: KhsDetailDataType) => {
     return (
       <tr
-        key={item.id}
+        key={item.course.id}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
@@ -158,7 +273,7 @@ const TranskipStudentPage = async (
         <div className="bg-primary py-6 px-4 rounded-md flex-1 flex gap-4 w-full lg:w-3/4">
           <div className="hidden md:inline md:w-1/4">
             <Image
-              src={studentDetail?.photo ? `/api/avatar?file=${studentDetail?.photo}` : '/avatar.png'}
+              src={dataStudent?.photo ? `/api/avatar?file=${dataStudent?.photo}` : '/avatar.png'}
               alt=""
               width={144}
               height={144}
@@ -167,10 +282,10 @@ const TranskipStudentPage = async (
           </div>
           <div className="w-full md:w-3/4 flex flex-col justify-between gap-4">
             <header>
-              <h1 className="text-xl font-semibold">{studentDetail?.name || ""}</h1>
+              <h1 className="text-xl font-semibold">{dataStudent?.name || ""}</h1>
               <div className="h-0.5 w-full bg-gray-300" />
               <p className="text-sm text-slate-600 font-medium mt-1">
-                {studentDetail.nim} | S1-{studentDetail.major.name}
+                {dataStudent.nim} | S1-{dataStudent.major}
               </p>
             </header>
             <div className="flex flex-col items-center justify-between gap-2 flex-wrap text-xs font-medium">
@@ -180,9 +295,9 @@ const TranskipStudentPage = async (
                 <span className="w-full font-bold text-gray-700">
                   {lecturerName(
                     {
-                      frontTitle: studentDetail?.lecturer?.frontTitle,
-                      name: studentDetail?.lecturer?.name,
-                      backTitle: studentDetail.lecturer.backTitle,
+                      frontTitle: dataStudent?.lecturer?.frontTitle,
+                      name: dataStudent?.lecturer?.name,
+                      backTitle: dataStudent.lecturer.backTitle,
                     }
                   )}
                 </span>
@@ -190,18 +305,23 @@ const TranskipStudentPage = async (
               <div className="w-full 2xl:w-1/3 md:gap-2 flex flex-col md:flex-row items-center">
                 <span className="w-full font-semibold md:w-1/3">Thn. Masuk</span>
                 <span className="hidden md:flex">:</span>
-                <span className="w-full font-bold text-gray-700">{studentDetail.year}</span>
+                <span className="w-full font-bold text-gray-700">{dataStudent.year}</span>
               </div>
               <div className="w-full 2xl:w-1/3 md:gap-2 flex flex-col md:flex-row items-center">
                 <span className="w-full font-semibold md:w-1/3">Status Registrasi</span>
                 <span className="hidden md:flex">:</span>
-                <span className="w-full font-bold text-gray-700">{studentDetail.statusRegister}</span>
+                <span className="w-full font-bold text-gray-700">{dataStudent.statusRegister}</span>
+              </div>
+              <div className="w-full 2xl:w-1/3 md:gap-2 flex flex-col md:flex-row items-center">
+                <span className="w-full font-semibold md:w-1/3">Total SKS</span>
+                <span className="hidden md:flex">:</span>
+                <span className="w-full font-bold text-gray-700">{totalSks}</span>
               </div>
             </div>
           </div>
         </div>
         <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md">
-          <ButtonPdfDownload id={studentDetail.id} type="krs">
+          <ButtonPdfDownload id={dataStudent.id} type="transcript">
             <div className={`sm:w-8 md:w-full sm:h-16 md:h-18 gap-2 flex items-center justify-center rounded-md bg-primary-dark hover:bg-primary-dark/90`}>
               <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={28} height={28} />
               <span className="text-white font-medium text-sm">Cetak Transkip</span>
@@ -220,7 +340,7 @@ const TranskipStudentPage = async (
         </div>
         {/* BOTTOM */}
         {/* LIST */}
-        <Table columns={columns} renderRow={renderRow} data={data} />
+        <Table columns={columns} renderRow={renderRow} data={coursesFinal} />
         {/* PAGINATION */}
       </div>
     </div>

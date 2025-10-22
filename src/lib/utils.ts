@@ -97,6 +97,31 @@ export const transcriptUtils = async (data: any) => {
   }
 }
 
+export const courseSorting = async (data: any) => {
+  return Object.values(data)
+    .sort((min: any, max: any) => {
+      let x = min.course.name.toLowerCase();
+      let y = max.course.name.toLowerCase();
+      if (x < y) return -1;
+      if (x > y) return 1;
+      return 0;
+    });
+}
+
+export const totalSks = async (data: any): Promise<number> => {
+  return data.map((item: any) => item.course.sks)
+    .reduce((acc: any, init: any) => acc + init, 0);
+}
+
+export const totalBobot = async (data: any): Promise<number> => {
+  return data.map((item: any) => item.course.sks * item.weight)
+    .reduce((acc: any, init: any) => acc + init, 0);
+}
+
+export const gpaCalculation = async (data: any): Promise<number> => {
+  return (await totalBobot(data) / await totalSks(data)).toFixed(2) as unknown as number;
+}
+
 const getLatestMonday = (): Date => {
   const today = new Date();
   const dayOfWeek = today.getDay();

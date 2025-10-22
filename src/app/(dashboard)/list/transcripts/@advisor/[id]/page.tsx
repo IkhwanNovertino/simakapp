@@ -4,7 +4,7 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { lecturerName } from "@/lib/utils";
-import { Course, Khs, KhsDetail, Prisma } from "@prisma/client";
+import { AnnouncementKhs, Course, Khs, KhsDetail, Prisma } from "@prisma/client";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
@@ -20,7 +20,7 @@ const TranskipAdvisorDetailPage = async (
 ) => {
 
   const getSessionFunc = await getSession();
-  if (!getSessionFunc || getSessionFunc.roleType !== "OPERATOR") {
+  if (!getSessionFunc || getSessionFunc.roleType !== "ADVISOR") {
     redirect("/");
   }
 
@@ -88,6 +88,10 @@ const TranskipAdvisorDetailPage = async (
             khsDetail: {
               where: {
                 isLatest: true,
+                course: {
+                  isSkripsi: false,
+                },
+                status: AnnouncementKhs.ANNOUNCEMENT,
               },
               select: {
                 course: {
@@ -125,15 +129,15 @@ const TranskipAdvisorDetailPage = async (
     const courses: any = {};
     for (const khs of data?.khs) {
       khs?.khsDetail.forEach((detail: any) => {
-        const codeMK = detail?.course?.code;
+        const idMK = detail?.course?.id;
         detail.weight = Number(detail.weight);
-        if (!courses[codeMK]) {
-          courses[codeMK] = detail;
+        if (!courses[idMK]) {
+          courses[idMK] = detail;
         }
       });
     };
 
-    const coursesFinal = Object.values(courses)
+    const coursesSorted = Object.values(courses)
       .sort((min: any, max: any) => {
         let x = min.course.name.toLowerCase();
         let y = max.course.name.toLowerCase();
@@ -142,8 +146,15 @@ const TranskipAdvisorDetailPage = async (
         return 0;
       });
 
-    const totalSks = coursesFinal.map((item: any) => item.course.sks).reduce((acc: any, init: any) => acc + init, 0);
+    const courseIsnPkl = coursesSorted.filter((item: any) => item.course.isPKL === false);
+    const courseIsPkl = coursesSorted.filter((item: any) => item.course.isPKL);
 
+    const coursesFinal = [...courseIsnPkl, ...courseIsPkl];
+
+    const totalSks = coursesFinal.map((item: any) => item.course.sks).reduce((acc: any, init: any) => acc + init, 0);
+    const totalBobot = coursesFinal.map((item: any) => item.course.sks * item.weight)
+      .reduce((acc: any, init: any) => acc + init, 0);
+    const ipkTranscript = (totalBobot / totalSks).toFixed(2);
     return [data, dataStudent, coursesFinal, totalSks];
   })
 
@@ -250,12 +261,12 @@ const TranskipAdvisorDetailPage = async (
           </div>
         </div>
         <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md">
-          {/* <ButtonPdfDownload id={id} type="transcript"> */}
+          <ButtonPdfDownload id={id} type="transcript">
           <div className={`w-full py-4 gap-2 flex items-center justify-center rounded-md bg-primary-dark hover:bg-primary-dark/90`}>
             <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={28} height={28} />
             <span className="text-white font-medium text-sm">Cetak Transkip</span>
           </div>
-          {/* </ButtonPdfDownload> */}
+          </ButtonPdfDownload>
         </div>
       </div>
       {/* BOTTOM */}

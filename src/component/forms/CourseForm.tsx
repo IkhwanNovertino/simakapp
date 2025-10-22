@@ -156,33 +156,20 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-3/12">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Kategori Matkul</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full overflow-hidden"
-            {...register("courseType")}
-            size={3}
+        <div className="flex flex-col gap-2 w-full md:w-6/12">
+          <InputSelect
+            label="Kategori Matkul"
+            name="courseType"
             defaultValue={data?.courseType}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih kategori
-            </option>
-            {courseType.map((item: string) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-              >
-                {item}
-              </option>
-            ))}
-
-          </select>
-          {errors.courseType?.message && (
-            <p className="text-xs text-red-400">
-              {errors.courseType.message.toString()}
-            </p>
-          )}
+            control={control}
+            error={errors?.courseType}
+            placeholder="-- pilih kategori matkul"
+            required={true}
+            options={courseType.map((item: string) => ({
+              value: item,
+              label: item,
+            }))}
+          />
         </div>
         <div className="flex flex-col items-start gap-2 w-full md:w-5/12">
           <label className="text-xs text-gray-500">Mata Kuliah PKL atau Skripsi</label>

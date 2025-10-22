@@ -165,7 +165,7 @@ const TranskipAdvisorPage = async (
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-2">
               {canViewData && (
-                <Link href={`/list/transkip/${item.id}`}>
+                <Link href={`/list/transcripts/${item.id}`}>
                   <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
                     <Image src="/icon/view.svg" alt="" width={20} height={20} />
                   </button>

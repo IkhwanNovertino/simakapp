@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import renderPdf from "@/lib/renderPdf";
-import { lecturerName, previousPeriod } from "@/lib/utils";
-import { Course, KrsDetail } from "@prisma/client";
+import { semester } from "@/lib/setting";
+import { courseSorting, lecturerName, previousPeriod, totalBobot, totalSks } from "@/lib/utils";
+import { AnnouncementKhs, Course, KrsDetail } from "@prisma/client";
 import { error } from "console";
 import { format } from "date-fns";
 import { id as indonesianLocale, } from "date-fns/locale";
@@ -320,21 +321,7 @@ export async function GET(req: NextRequest) {
           },
         });
       case "transcript":
-        const allCourses = await prisma.curriculumDetail.findMany({
-          where: {
-            curriculum: {
-              isActive: true,
-            },
-          },
-          orderBy: [
-            {
-              course: {
-                name: 'asc',
-              },
-            },
-          ],
-        });
-        const [dataStudent, coursesFinal] = await prisma.$transaction(async (prisma: any) => {
+        const [dataStudent, coursesFinal, coursesUnfinishSorted, totalSKSTranscript, totalSKSUnfinish, totalBobotTranscript, gpaCalculationTranscript] = await prisma.$transaction(async (prisma: any) => {
           const data = await prisma.student.findUnique({
             where: {
               id: uid,
@@ -351,6 +338,10 @@ export async function GET(req: NextRequest) {
                   khsDetail: {
                     where: {
                       isLatest: true,
+                      course: {
+                        isSkripsi: false,
+                      },
+                      status: AnnouncementKhs.ANNOUNCEMENT,
                     },
                     select: {
                       course: {
@@ -359,6 +350,7 @@ export async function GET(req: NextRequest) {
                           code: true,
                           name: true,
                           sks: true,
+                          courseType: true,
                           isPKL: true,
                           isSkripsi: true,
                         }
@@ -375,48 +367,134 @@ export async function GET(req: NextRequest) {
               }
             },
           });
+
+          // get course from curriculum detail
+          const courseCurriculum = await prisma.curriculum.findFirst({
+            where: {
+              curriculumDetail: {
+                some: {
+                  courseId: {
+                    in: data?.khs?.flatMap((khsItem: any) => khsItem.khsDetail.map((detail: any) => detail.course.id)) || [],
+                  }
+                }
+              }
+            },
+            select: {
+              name: true,
+              major: true,
+              curriculumDetail: {
+                select: {
+                  semester: true,
+                  courseId: true,
+                  course: {
+                    select: {
+                      id: true,
+                      code: true,
+                      name: true,
+                      sks: true,
+                      courseType: true,
+                      isPKL: true,
+                      isSkripsi: true,
+                      predecessor: {
+                        select: {
+                          id: true,
+                          name: true,
+                          code: true,
+                          sks: true,
+                        }
+                      },
+                      successor: {
+                        select: {
+                          id: true,
+                          name: true,
+                          code: true,
+                          sks: true,
+                        }
+                      },
+                    },
+                  },
+                },
+                distinct: ['courseId'],
+              },
+
+            }
+          });
         
           const dataStudent = {
             name: data?.name,
             nim: data?.nim,
           };
-          const courses: any = {};
+          
+          const coursesFinish: any = {};
+          let coursekonsentrasi: number = 0;
           for (const khs of data?.khs) {
             khs?.khsDetail.forEach((detail: any) => {
-              const codeMK = detail?.course?.code;
-              detail.weight = Number(detail.weight);
-              if (!courses[codeMK]) {
-                courses[codeMK] = detail;
+              const courseInCurriculum = courseCurriculum?.curriculumDetail
+                .find((courseDetail: any) => courseDetail.courseId === detail.course.id || courseDetail?.course?.predecessor?.id === detail.course.id || courseDetail?.course?.successor?.id === detail.course.id);
+              if (courseInCurriculum) {
+                courseInCurriculum.course?.courseType === "PILIHAN_KONSENTRASI" ? coursekonsentrasi += courseInCurriculum.course?.sks : null;
+                const idMK = courseInCurriculum?.course?.id;
+                detail.weight = Number(detail.weight);
+                if (!coursesFinish[idMK]) {
+                  coursesFinish[idMK] = {
+                    course: courseInCurriculum.course,
+                    weight: detail.weight,
+                    gradeLetter: detail.gradeLetter,
+                  };
+                }
+                // deleteCourseInCurriculum =
+                courseCurriculum?.curriculumDetail.splice(courseCurriculum?.curriculumDetail.indexOf(courseInCurriculum), 1);
               }
             });
           };
+
+          // Menghitung course pilihan konsentrasi
+          // 1. delete CourseCurriculum that courseType is PILIHAN_KONSENTRASI
+          const coursesUnfinish = courseCurriculum?.curriculumDetail.filter((courseDetail: any) => courseDetail.course?.courseType !== "PILIHAN_KONSENTRASI");
+          
+          // 2. tambahkan jika coursekonsentrasi kurang dari 9 sks
+          const count: number = (coursekonsentrasi / 3 === 0 && 3) || (coursekonsentrasi / 3 === 1 && 2) || (coursekonsentrasi / 3 === 2 && 1) || 0;
+          for (let i = 0; i < count; i++) {
+            coursesUnfinish.push({
+              semester: null,
+              courseId: `${i}`,
+              course: {
+                id: `${i}`,
+                code: "",
+                name: "PILIHAN",
+                sks: 3,
+              },
+            })
+          }
         
-          const coursesFinal = Object.values(courses)
-            .sort((min: any, max: any) => {
-              let x = min.course.name.toLowerCase();
-              let y = max.course.name.toLowerCase();
-              if (x < y) return -1;
-              if (x > y) return 1;
-              return 0;
-            });
-          return [dataStudent, coursesFinal];
+          const coursesFinishSorted = await courseSorting(coursesFinish);
+          const coursesUnfinishSorted = await courseSorting(coursesUnfinish);
+          
+          const courseIsnPkl = coursesFinishSorted.filter((item: any) => item.course.isPKL === false);
+          const courseIsPkl = coursesFinishSorted.filter((item: any) => item.course.isPKL);
+          
+          const coursesFinal = [...courseIsnPkl, ...courseIsPkl];
+
+          const totalSKSTranscript = await totalSks(coursesFinishSorted);
+          const totalSKSUnfinish = await totalSks(coursesUnfinishSorted);
+          const totalBobotTranscript = await totalBobot(coursesFinishSorted);
+
+          const gpaCalculationTranscript = (totalBobotTranscript / totalSKSTranscript).toFixed(2);
+          
+          return [dataStudent, coursesFinal, coursesUnfinishSorted, totalSKSTranscript,totalSKSUnfinish, totalBobotTranscript, gpaCalculationTranscript];
         })
 
-        const totalSKSTranscript = coursesFinal.map((item: any) => item.course.sks)
-          .reduce((acc: any, init: any) => acc + init, 0);
-        const totalBobotTranscript = coursesFinal.map((item: any) => item.course.sks * item.weight)
-          .reduce((acc: any, init: any) => acc + init, 0);
-        const ipkTranscript = (totalBobotTranscript / totalSKSTranscript).toFixed(2);
         
         bufferFile = await renderPdf({
           type: type,
           data: {
-            allCourses,
             dataStudent,
             coursesFinal,
+            coursesUnfinishSorted,
             totalSKSTranscript,
+            totalSKSUnfinish,
             totalBobotTranscript,
-            ipkTranscript,
+            gpaCalculationTranscript,
             date,
           }
         })

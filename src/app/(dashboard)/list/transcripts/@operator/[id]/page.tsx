@@ -4,7 +4,7 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { lecturerName } from "@/lib/utils";
-import { Course, Khs, KhsDetail, Prisma } from "@prisma/client";
+import { AnnouncementKhs, Course, Khs, KhsDetail, Prisma } from "@prisma/client";
 import { is } from "date-fns/locale";
 import Image from "next/image";
 import { redirect } from "next/navigation";
@@ -89,6 +89,10 @@ const TranskipOperatorDetailPage = async (
             khsDetail: {
               where: {
                 isLatest: true,
+                course: {
+                  isSkripsi: false,
+                },
+                status: AnnouncementKhs.ANNOUNCEMENT,
               },
               select: {
                 course: {
@@ -134,7 +138,7 @@ const TranskipOperatorDetailPage = async (
       });
     };
 
-    const coursesFinal = Object.values(courses)
+    const coursesSorted = Object.values(courses)
       .sort((min: any, max: any) => {
         let x = min.course.name.toLowerCase();
         let y = max.course.name.toLowerCase();
@@ -142,6 +146,11 @@ const TranskipOperatorDetailPage = async (
         if (x > y) return 1;
         return 0;
       });
+
+    const courseIsnPkl = coursesSorted.filter((item: any) => item.course.isPKL === false);
+    const courseIsPkl = coursesSorted.filter((item: any) => item.course.isPKL);
+
+    const coursesFinal = [...courseIsnPkl, ...courseIsPkl];
 
     const totalSks = coursesFinal.map((item: any) => item.course.sks).reduce((acc: any, init: any) => acc + init, 0);
     const totalBobot = coursesFinal.map((item: any) => item.course.sks * item.weight)
@@ -268,7 +277,6 @@ const TranskipOperatorDetailPage = async (
         <div className="flex items-center justify-between">
           <h1 className="hidden md:block text-lg font-semibold">Transkip Nilai Sementara</h1>
           <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-            <TableSearch />
           </div>
         </div>
         {/* BOTTOM */}

@@ -60,7 +60,8 @@ export const status = [
 ];
 export const courseType = [
   "WAJIB", 
-  "PILIHAN"
+  "PILIHAN",
+  "PILIHAN_KONSENTRASI",
 ];
 export const semester = [
   "GANJIL", 
