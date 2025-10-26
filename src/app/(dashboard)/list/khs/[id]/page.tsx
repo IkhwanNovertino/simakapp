@@ -2,7 +2,7 @@
 import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
-import { AnnouncementKhs, Course, KhsDetail } from "@prisma/client";
+import { Course, KhsDetail } from "@prisma/client";
 import Image from "next/image";
 
 type KhsDetailDataType = KhsDetail & { course: Course };
@@ -12,70 +12,7 @@ const KHSDetailPage = async (
 ) => {
   const { id } = await params;
 
-  // const [student, khs, khsDetail, totalSKS, totalSKSxNAB, limitSKS] = await prisma.$transaction(async (prisma: any) => {
-  //   let khs = await prisma.khs.findUnique({
-  //     where: {
-  //       id: id,
-  //     },
-  //     select: {
-  //       student: {
-  //         include: {
-  //           major: true,
-  //         }
-  //       },
-  //       semester: true,
-  //       period: true,
-  //       ips: true,
-  //       maxSks: true,
-  //       isRPL: true,
-  //     }
-  //   });
-  //   khs = {
-  //     ...khs,
-  //     ips: Number(khs.ips)
-  //   }
-  //   const student = khs?.student;
-
-  //   const khsDetailRaw = await prisma.khsDetail.findMany({
-  //     where: {
-  //       khsId: id,
-  //       isLatest: true,
-  //     },
-  //     include: {
-  //       course: true,
-  //     }
-  //   })
-  //   let khsDetail;
-  //   let totalSKS = 0;
-  //   let totalSKSxNAB = 0;
-  //   let limitSKS = `0`;
-  //   if (khsDetailRaw.filter((el: any) => (el.status === AnnouncementKhs.DRAFT || el.status === AnnouncementKhs.SUBMITTED)).length === 0) {
-  //     khsDetail = khsDetailRaw.map((items: any) => ({
-  //       ...items,
-  //       finalScore: Number(items.finalScore),
-  //       weight: Number(items.weight),
-  //     }))
-  //     totalSKS = khsDetailRaw
-  //       .map((item: any) => item.course.sks)
-  //       .reduce((acc: any, init: any) => acc + init, 0);
-  //     totalSKSxNAB = khsDetailRaw
-  //       .map((item: any) => item.course.sks * item.weight)
-  //       .reduce((acc: any, init: any) => acc + init, 0);
-  //     limitSKS = `${khs.maxSks - 1} - ${khs.maxSks}`;
-  //   } else {
-  //     khsDetail = khsDetailRaw.map((items: any) => ({
-  //       ...items,
-  //       finalScore: 0,
-  //       weight: 0,
-  //       gradeLetter: "E",
-  //     }))
-  //     khs.ips = 0
-  //   }
-
-  //   return [student, khs, khsDetail, totalSKS, totalSKSxNAB, limitSKS]
-  // })
-
-  const [data, dataStudent, dataKhs, dataKhsDetail] = await prisma.$transaction(async (prisma: any) => {
+  const [dataStudent, dataKhs, dataKhsDetail] = await prisma.$transaction(async (prisma: any) => {
     const data = await prisma.khs.findUnique({
       where: {
         id: id,
@@ -151,7 +88,7 @@ const KHSDetailPage = async (
     }
     const dataKhsDetail = data?.khsDetail;
 
-    return [data, dataStudent, dataKhs, dataKhsDetail]
+    return [dataStudent, dataKhs, dataKhsDetail]
   })
 
   const columns = [

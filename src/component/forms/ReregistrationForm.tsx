@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
+import { Period } from "@prisma/client";
 
 const ReregistrationForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 
@@ -73,7 +74,7 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: FormProps) => 
             defaultValue={data?.periodId}
             error={errors?.periodId}
             required={true}
-            options={period.map((item: any) => ({
+            options={period.map((item: Period) => ({
               value: item.id,
               label: item.name
             }))}

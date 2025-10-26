@@ -55,7 +55,7 @@ export const changePassword = async (state: { success: boolean, error: boolean, 
   } catch (err) {
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {

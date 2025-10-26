@@ -9,7 +9,6 @@ import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Course, Major, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
-import { string } from "zod";
 
 type CourseDataType = Course & { major: Major };
 

@@ -11,7 +11,6 @@ import { getFinalScore, getGradeLetter } from "@/lib/utils";
 import { KhsGradeRevisionInputs, khsGradeRevisionSchema } from "@/lib/formValidationSchema";
 import { updateKhsGradeRevAnnouncement, updateKhsGradeRevision } from "@/lib/action";
 
-
 const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
   const {
     register,
@@ -113,7 +112,7 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
             <InputField
               type="number"
               label={`${items.assessmentDetail?.grade?.name} (${items.percentage}%)`}
-              name={items.assessmentDetail?.grade?.name}
+              name={items?.assessmentDetail?.grade?.name}
               register={register}
               defaultValue={items.score}
               inputProps={{ disabled: true }}
@@ -131,18 +130,6 @@ const KrsGradeRevisionForm = ({ setOpen, type, data }: FormProps) => {
             />
           </div>
         ))}
-        {/* {data?.khsGrade.map((items: any) => (
-          <div key={items.id} className="flex flex-col gap-2 w-full md:w-2/7">
-            <InputField
-              type="number"
-              label={`${items.assessmentDetail?.grade?.name} (${items.percentage}%)`}
-              name={items.assessmentDetail?.grade?.name}
-              register={register}
-              defaultValue={items.score}
-              inputProps={{ disabled: true }}
-            />
-          </div>
-        ))} */}
         <div className="flex flex-col gap-2 w-full md:w-2/7">
           <InputField
             label="Nilai Akhir | Abs"

@@ -12,6 +12,7 @@ import Select from "react-select";
 import { courseType } from "@/lib/setting";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
+import { Assessment, Course } from "@prisma/client";
 
 
 const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
@@ -99,7 +100,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             control={control}
             defaultValue={data?.assessmentId}
             error={errors?.assessmentId}
-            options={assessmentType.map((item: any) => ({
+            options={assessmentType.map((item: Assessment) => ({
               value: item.id,
               label: item.name,
             }))}
@@ -130,7 +131,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             render={({ field }) => (
               <Select
                 {...field}
-                options={courses.map((course: any) => ({
+                options={courses.map((course: Course) => ({
                   value: course.id,
                   label: course.name,
                 }))}
@@ -141,7 +142,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                 onChange={(selected: any) => field.onChange(selected ? selected.value : "")}
                 value={
                   courses
-                    .map((course: any) => ({
+                    .map((course: Course) => ({
                       value: course.id,
                       label: course.name,
                     }))

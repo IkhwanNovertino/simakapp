@@ -227,7 +227,7 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             error={errors?.religion}
             defaultValue={data?.religion}
             required={true}
-            options={religion.map((item: any) => ({
+            options={religion.map((item: string) => ({
               value: item,
               label: item
             }))}

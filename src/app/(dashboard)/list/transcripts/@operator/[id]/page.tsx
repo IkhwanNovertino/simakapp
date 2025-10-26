@@ -1,21 +1,18 @@
 import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import Table from "@/component/Table";
-import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { lecturerName } from "@/lib/utils";
-import { AnnouncementKhs, Course, Khs, KhsDetail, Prisma } from "@prisma/client";
-import { is } from "date-fns/locale";
+import { coursesClearing, courseSorting, lecturerName, totalSks } from "@/lib/utils";
+import { AnnouncementKhs, Course, KhsDetail } from "@prisma/client";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
-type KhsDetailDataType = KhsDetail & { khs: Khs } & { course: Course };
+type KhsDetailDataType = KhsDetail & { course: Course };
 
-const TranskipOperatorDetailPage = async (
+const TranscriptOperatorDetailPage = async (
   {
-    searchParams, params,
+    params,
   }: {
-    searchParams: { [key: string]: string | undefined },
     params: Promise<{ id: string }>,
   }
 ) => {
@@ -26,27 +23,8 @@ const TranskipOperatorDetailPage = async (
   }
 
   const { id } = await params;
-  const { ...queryParams } = await searchParams;
 
-  const query: Prisma.StudentWhereInput = {}
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "search":
-            query.OR = [
-              { name: { contains: value, mode: "insensitive" } },
-              { nim: { contains: value, mode: "insensitive" } },
-            ]
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  };
-
-  const [data, dataStudent, coursesFinal, totalSks] = await prisma.$transaction(async (prisma: any) => {
+  const [dataStudent, coursesFinal, totalSksTranscript] = await prisma.$transaction(async (prisma: any) => {
     const data = await prisma.student.findUnique({
       where: {
         id: id,
@@ -127,38 +105,17 @@ const TranskipOperatorDetailPage = async (
       photo: data?.photo,
       lecturer: { ...data?.reregisterDetail[0].lecturer },
     };
-    const courses: any = {};
-    for (const khs of data?.khs) {
-      khs?.khsDetail.forEach((detail: any) => {
-        const idMK = detail?.course?.id;
-        detail.weight = Number(detail.weight);
-        if (!courses[idMK]) {
-          courses[idMK] = detail;
-        }
-      });
-    };
-
-    const coursesSorted = Object.values(courses)
-      .sort((min: any, max: any) => {
-        let x = min.course.name.toLowerCase();
-        let y = max.course.name.toLowerCase();
-        if (x < y) return -1;
-        if (x > y) return 1;
-        return 0;
-      });
+    const courses = await coursesClearing(data?.khs);
+    const coursesSorted = await courseSorting(courses);
 
     const courseIsnPkl = coursesSorted.filter((item: any) => item.course.isPKL === false);
     const courseIsPkl = coursesSorted.filter((item: any) => item.course.isPKL);
 
     const coursesFinal = [...courseIsnPkl, ...courseIsPkl];
 
-    const totalSks = coursesFinal.map((item: any) => item.course.sks).reduce((acc: any, init: any) => acc + init, 0);
-    const totalBobot = coursesFinal.map((item: any) => item.course.sks * item.weight)
-      .reduce((acc: any, init: any) => acc + init, 0);
-    const ipkTranscript = (totalBobot / totalSks).toFixed(2);
-    return [data, dataStudent, coursesFinal, totalSks];
+    const totalSksTranscript = await totalSks(coursesFinal);
+    return [dataStudent, coursesFinal, totalSksTranscript];
   })
-
 
   const columns = [
     {
@@ -239,7 +196,7 @@ const TranskipOperatorDetailPage = async (
                     {
                       frontTitle: dataStudent?.lecturer?.frontTitle,
                       name: dataStudent?.lecturer?.name,
-                      backTitle: dataStudent.lecturer.backTitle,
+                      backTitle: dataStudent?.lecturer?.backTitle,
                     }
                   )}
                 </span>
@@ -257,7 +214,7 @@ const TranskipOperatorDetailPage = async (
               <div className="w-full 2xl:w-1/3 md:gap-2 flex flex-col md:flex-row items-center">
                 <span className="w-full font-semibold md:w-1/3">Total SKS</span>
                 <span className="hidden md:flex">:</span>
-                <span className="w-full font-bold text-gray-700">{totalSks}</span>
+                <span className="w-full font-bold text-gray-700">{totalSksTranscript}</span>
               </div>
             </div>
           </div>
@@ -288,4 +245,4 @@ const TranskipOperatorDetailPage = async (
   )
 }
 
-export default TranskipOperatorDetailPage;
+export default TranscriptOperatorDetailPage;

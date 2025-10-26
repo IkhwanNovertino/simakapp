@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
+import { Permission } from "@prisma/client";
 
 const RoleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { permissions } = relatedData;
@@ -100,7 +101,7 @@ const RoleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             placeholder="-- pilih hak akses"
             required={true}
             isMulti={true}
-            options={permissions.map((item: any) => ({
+            options={permissions.map((item: Permission) => ({
               value: item.id,
               label: item.name
             }))}

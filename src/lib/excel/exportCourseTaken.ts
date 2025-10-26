@@ -1,6 +1,16 @@
+import { Period } from '@prisma/client';
 import ExcelJS from 'exceljs';
 
-export async function exportCourseTaken({ data }: { data: any }) {
+interface ExportCourseTakenProps{
+  dataPeriod: Period;
+  years: number[];
+  dataCoursesByMajor: {
+    major: {name: string; stringCode: string};
+    courses: Record<string, string | number>[];
+  }[]
+}
+
+export async function exportCourseTaken({ data }: { data: ExportCourseTakenProps }) {
   
   const workbook = new ExcelJS.Workbook();
   // Iterasi data 
@@ -14,7 +24,7 @@ export async function exportCourseTaken({ data }: { data: any }) {
     // === [1] Baris Judul Besar (Merged)
     worksheet.mergeCells('A2:P2');
     const titleCell = worksheet.getCell('A2')
-    titleCell.value = `REKAPITULASI MATA KULIAH PROGRAM STUDI ${dataCourses?.major?.name.toUpperCase()}`
+    titleCell.value = `REKAPITULASI MATA KULIAH PROGRAM STUDI ${dataCourses?.major?.name?.toUpperCase()}`
     titleCell.font = { size: 14, bold: true }
     titleCell.alignment = { vertical: 'middle', horizontal: 'center' }
     
@@ -72,8 +82,8 @@ export async function exportCourseTaken({ data }: { data: any }) {
       }
     }
 
-    dataCourses?.courses.forEach((items: any, i: number) => {
-      const rowdata: any = [
+    dataCourses?.courses.forEach((items: Record<string, string | number>, i: number) => {
+      const rowdata: (string | number)[] = [
         i + 1,
         items?.code,
         items?.name,

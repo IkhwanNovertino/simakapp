@@ -3,7 +3,7 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import { AnnouncementKhs, Prisma, StudentStatus } from "@prisma/client";
 import Table from "../Table";
 import Pagination from "../Pagination";
-import { lecturerName, transcriptUtils } from "@/lib/utils";
+import { coursesClearing, lecturerName, totalBobot, totalSks } from "@/lib/utils";
 
 type recapType = {
   periodId: string,
@@ -126,7 +126,15 @@ const StudentsTakingThesis = async (
 
     data.forEach(async (student: any) => {
       student.reregisterDetail = { ...student?.reregisterDetail[0] };
-      student.transcript = await transcriptUtils(student?.khs);
+      const courses = await coursesClearing(student?.khs);
+      const totalSksThesis: number = await totalSks(courses);
+      const totalBobotThesis: number = await totalBobot(courses);
+      const gpaCalculationThesis = (totalBobotThesis / totalSksThesis).toFixed(2);
+
+      student.transcript = {
+        totalSks: totalSksThesis,
+        ipkTranscript: gpaCalculationThesis,
+      };
     });
 
     const count = await prisma.student.count({

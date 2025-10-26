@@ -13,7 +13,7 @@ import moment from "moment";
 import { status } from "@/lib/setting";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { CampusType } from "@prisma/client";
+import { CampusType, Lecturer, Student } from "@prisma/client";
 
 
 const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps) => {
@@ -88,7 +88,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
             render={({ field }) => (
               <Select
                 {...field}
-                options={students.map((student: any) => ({
+                options={students.map((student: Student) => ({
                   value: student.id,
                   label: `${student.nim} - ${student.name}`,
                 }))}
@@ -98,7 +98,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
                 classNamePrefix="react-select"
                 className="text-sm rounded-md"
                 onChange={(selected: any) => {
-                  const selectedStudent = students.find((s: any) => s.id === selected?.value);
+                  const selectedStudent = students.find((s: Student) => s.id === selected?.value);
                   field.onChange(selected ? selected.value : "");
                   if (selectedStudent) {
                     const studentYear: number = selectedStudent?.year;
@@ -130,7 +130,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
                 }}
                 value={
                   students
-                    .map((student: any) => ({
+                    .map((student: Student) => ({
                       value: student.id,
                       label: `${student.nim} - ${student.name}`,
                     }))
@@ -182,7 +182,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
             defaultValue={data?.student?.lecturerId}
             control={control}
             error={errors?.lecturerId}
-            options={lecturers.map((lecturer: any) => ({
+            options={lecturers.map((lecturer: Lecturer) => ({
               value: lecturer.id,
               label: `${lecturer.name}`,
             }))}
@@ -196,7 +196,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
             control={control}
             placeholder="--pilih Status"
             error={errors.semesterStatus}
-            options={status.map((status: any) => ({
+            options={status.map((status: string) => ({
               value: status,
               label: status,
             }))}

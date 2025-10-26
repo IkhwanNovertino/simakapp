@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import Select from "react-select";
 import { FormProps } from "@/lib/datatype";
+import { Lecturer, Room } from "@prisma/client";
 
 
 const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
@@ -40,7 +41,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
       router.refresh();
       setOpen(false);
     }
-  }, [state, router, setOpen, type])
+  }, [state, router, setOpen, type, data])
 
   return (
     <>
@@ -92,7 +93,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                   render={({ field }) => (
                     <Select
                       {...field}
-                      options={courses.map((course: any) => ({
+                      options={courses.map((course: { [key: string]: string | number }) => ({
                         value: course.id,
                         label: `${course.code} | ${course.name}`,
                       }))}
@@ -151,7 +152,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                   label="Peserta Matkul"
                   name="participants"
                   inputProps={{ readOnly: true }}
-                  defaultValue={courses.find((course: any) => course.id === data?.courseId)?.participants || 0}
+                  defaultValue={courses.find((course: { [key: string]: string | number }) => course.id === data?.courseId)?.participants || 0}
                   register={register}
                   error={errors?.participants}
                 />
@@ -187,7 +188,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                   defaultValue={data?.lecturerId}
                   error={errors?.lecturerId}
                   required={true}
-                  options={lecturers.map((item: any) => ({
+                  options={lecturers.map((item: Lecturer) => ({
                     value: item.id,
                     label: `${item.frontTitle ? item.frontTitle + " " : ""}${item.name} ${item.backTitle ? item.backTitle : ""}`,
                   }))}
@@ -202,7 +203,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                   defaultValue={data?.roomId}
                   error={errors?.roomId}
                   required={true}
-                  options={rooms.map((item: any) => ({
+                  options={rooms.map((item: Room) => ({
                     value: item.id,
                     label: item.name,
                   }))}

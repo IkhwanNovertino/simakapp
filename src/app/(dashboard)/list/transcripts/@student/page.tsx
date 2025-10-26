@@ -1,109 +1,22 @@
 import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import Table from "@/component/Table";
-import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { lecturerName } from "@/lib/utils";
-import { AnnouncementKhs, Course, Khs, KhsDetail, Prisma } from "@prisma/client";
+import { coursesClearing, courseSorting, lecturerName, totalSks } from "@/lib/utils";
+import { AnnouncementKhs, Course, Khs, KhsDetail } from "@prisma/client";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
 type KhsDetailDataType = KhsDetail & { khs: Khs } & { course: Course };
 
-const TranskipStudentPage = async (
-  { searchParams }: { searchParams: { [key: string]: string | undefined } }
-) => {
+const TranscriptStudentPage = async () => {
 
   const getSessionFunc = await getSession();
   if (!getSessionFunc || getSessionFunc.roleType !== "STUDENT") {
     redirect("/");
   }
 
-  const { ...queryParams } = await searchParams;
-
-  const query: Prisma.ReregisterWhereInput = {}
-  if (queryParams) {
-    for (const [key, value] of Object.entries(queryParams)) {
-      if (value !== undefined) {
-        switch (key) {
-          case "search":
-            query.OR = [
-              { name: { contains: value, mode: "insensitive" } },
-            ]
-            break;
-          default:
-            break;
-        }
-      }
-    }
-  };
-
-  // const [data, studentDetail] = await prisma.$transaction([
-  //   prisma.khsDetail.findMany({
-  //     where: {
-  //       khs: {
-  //         student: {
-  //           userId: getSessionFunc?.userId,
-  //         }
-  //       },
-  //       isLatest: true,
-  //     },
-  //     select: {
-  //       id: true,
-  //       khs: {
-  //         select: {
-  //           semester: true,
-  //         }
-  //       },
-  //       course: {
-  //         select: {
-  //           code: true,
-  //           name: true,
-  //           sks: true,
-  //           isPKL: true,
-  //           isSkripsi: true,
-  //         }
-  //       },
-  //       weight: true,
-  //       gradeLetter: true,
-  //       status: true,
-  //     },
-  //     orderBy: [
-  //       {
-  //         course: {
-  //           name: "asc"
-  //         }
-  //       }
-  //     ]
-  //   }),
-  //   prisma.student.findUnique({
-  //     where: {
-  //       userId: getSessionFunc?.userId,
-  //     },
-  //     select: {
-  //       id: true,
-  //       name: true,
-  //       nim: true,
-  //       photo: true,
-  //       year: true,
-  //       statusRegister: true,
-  //       major: {
-  //         select: {
-  //           name: true,
-  //         },
-  //       },
-  //       lecturer: {
-  //         select: {
-  //           name: true,
-  //           frontTitle: true,
-  //           backTitle: true,
-  //         }
-  //       },
-  //     },
-  //   })
-  // ]);
-
-  const [data, dataStudent, coursesFinal, totalSks] = await prisma.$transaction(async (prisma: any) => {
+  const [dataStudent, coursesFinal, totalSksTranscript] = await prisma.$transaction(async (prisma: any) => {
     const data = await prisma.student.findUnique({
       where: {
         userId: getSessionFunc?.userId,
@@ -186,36 +99,16 @@ const TranskipStudentPage = async (
       photo: data?.photo,
       lecturer: { ...data?.reregisterDetail[0].lecturer },
     };
-    const courses: any = {};
-    for (const khs of data?.khs) {
-      khs?.khsDetail.forEach((detail: any) => {
-        const idMK = detail?.course?.id;
-        detail.weight = Number(detail.weight);
-        if (!courses[idMK]) {
-          courses[idMK] = detail;
-        }
-      });
-    };
-
-    const coursesSorted = Object.values(courses)
-      .sort((min: any, max: any) => {
-        let x = min.course.name.toLowerCase();
-        let y = max.course.name.toLowerCase();
-        if (x < y) return -1;
-        if (x > y) return 1;
-        return 0;
-      });
+    const courses = await coursesClearing(data?.khs);
+    const coursesSorted = await courseSorting(courses);
 
     const courseIsnPkl = coursesSorted.filter((item: any) => item.course.isPKL === false);
     const courseIsPkl = coursesSorted.filter((item: any) => item.course.isPKL);
 
     const coursesFinal = [...courseIsnPkl, ...courseIsPkl];
 
-    const totalSks = coursesFinal.map((item: any) => item.course.sks).reduce((acc: any, init: any) => acc + init, 0);
-    const totalBobot = coursesFinal.map((item: any) => item.course.sks * item.weight)
-      .reduce((acc: any, init: any) => acc + init, 0);
-    const ipkTranscript = (totalBobot / totalSks).toFixed(2);
-    return [data, dataStudent, coursesFinal, totalSks];
+    const totalSksTranscript = await totalSks(coursesFinal);
+    return [dataStudent, coursesFinal, totalSksTranscript];
   })
 
   const columns = [
@@ -315,7 +208,7 @@ const TranskipStudentPage = async (
               <div className="w-full 2xl:w-1/3 md:gap-2 flex flex-col md:flex-row items-center">
                 <span className="w-full font-semibold md:w-1/3">Total SKS</span>
                 <span className="hidden md:flex">:</span>
-                <span className="w-full font-bold text-gray-700">{totalSks}</span>
+                <span className="w-full font-bold text-gray-700">{totalSksTranscript}</span>
               </div>
             </div>
           </div>
@@ -335,7 +228,6 @@ const TranskipStudentPage = async (
         <div className="flex items-center justify-between">
           <h1 className="hidden md:block text-lg font-semibold">Transkip Nilai Sementara</h1>
           <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
-            <TableSearch />
           </div>
         </div>
         {/* BOTTOM */}
@@ -347,4 +239,4 @@ const TranskipStudentPage = async (
   )
 }
 
-export default TranskipStudentPage;
+export default TranscriptStudentPage;

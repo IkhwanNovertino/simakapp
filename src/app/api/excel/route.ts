@@ -6,8 +6,8 @@ import { exportStudentTakingIntership } from "@/lib/excel/exportStudentTakingInt
 import { exportStudentTakingThesis } from "@/lib/excel/exportStudentTakingThesis";
 import { exportStudentUnregisteredKrs } from "@/lib/excel/exportStudentUnregisteredKrs";
 import { prisma } from "@/lib/prisma";
-import { previousPeriod, transcriptUtils } from "@/lib/utils";
-import { AnnouncementKhs, CampusType, Course, KrsDetail, StudentStatus } from "@prisma/client";
+import { coursesClearing, totalBobot, totalSks } from "@/lib/utils";
+import { AnnouncementKhs, Course, KrsDetail, StudentStatus } from "@prisma/client";
 import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -147,7 +147,7 @@ export async function GET(req: NextRequest) {
           data: {
             dataPeriod,
             dataCoursesByMajor: dataCoursesByMajor,
-            years: Array.from(years).sort(),
+            years: Array.from(years).sort() as number[],
           }
         })
         return new NextResponse(bufferFile, {
@@ -260,6 +260,11 @@ export async function GET(req: NextRequest) {
             reregisterDetail: {
               select: {
                 semester: true,
+                lecturer: {
+                  select: {
+                    name: true,
+                  }
+                }
               }
             }
           },
@@ -377,7 +382,15 @@ export async function GET(req: NextRequest) {
           });
           studentsTakingThesis.forEach(async (student: any) => {
             student.reregisterDetail = { ...student?.reregisterDetail[0] };
-            student.transcript = await transcriptUtils(student?.khs);
+            const coursesThesis = await coursesClearing(student?.khs);
+            const totalSksThesis: number = await totalSks(coursesThesis);
+            const totalBobotThesis: number = await totalBobot(coursesThesis);
+            const gpaCalculationThesis = (totalBobotThesis / totalSksThesis).toFixed(2);
+
+            student.transcript = {
+              totalSks: totalSksThesis,
+              ipkTranscript: gpaCalculationThesis,
+            };
           });
           
           return [studentsTakingThesis];
@@ -413,60 +426,68 @@ export async function GET(req: NextRequest) {
               studentStatus: StudentStatus.AKTIF,
             },
             select: {
-                  name: true,
-                  nim: true,
-                  major: true,
-                  reregisterDetail: {
+              name: true,
+              nim: true,
+              major: true,
+              reregisterDetail: {
+                where: {
+                  reregister: {
+                    periodId: uid,
+                  }
+                },
+                select: {
+                  lecturer: {
+                    select: {
+                      name: true,
+                      frontTitle: true,
+                      backTitle: true,
+                    }
+                  },
+                  semester: true,
+                }
+              },
+              khs: {
+                select: {
+                  khsDetail: {
                     where: {
-                      reregister: {
-                        periodId: uid,
-                      }
+                      isLatest: true,
+                      status: AnnouncementKhs.ANNOUNCEMENT,
                     },
                     select: {
-                      lecturer: {
+                      course: {
                         select: {
+                          id: true,
+                          code: true,
                           name: true,
-                          frontTitle: true,
-                          backTitle: true,
+                          sks: true,
+                          isPKL: true,
+                          isSkripsi: true,
                         }
                       },
-                      semester: true,
-                    }
+                      weight: true,
+                      gradeLetter: true,
+                      status: true,
+                    },
+                    orderBy: [
+                      { course: { name: 'asc' } }
+                    ]
                   },
-                  khs: {
-                    select: {
-                      khsDetail: {
-                        where: {
-                          isLatest: true,
-                          status: AnnouncementKhs.ANNOUNCEMENT,
-                        },
-                        select: {
-                          course: {
-                            select: {
-                              id: true,
-                              code: true,
-                              name: true,
-                              sks: true,
-                              isPKL: true,
-                              isSkripsi: true,
-                            }
-                          },
-                          weight: true,
-                          gradeLetter: true,
-                          status: true,
-                        },
-                        orderBy: [
-                          { course: { name: 'asc' } }
-                        ]
-                      },
-                    }
-                  },
+                }
+              },
             },
           });
       
           studentsTakingInternship.forEach(async (student: any) => {
             student.reregisterDetail = { ...student?.reregisterDetail[0] };
-            student.transcript = await transcriptUtils(student?.khs);
+            const courses = await coursesClearing(student?.khs);
+            const totalSksIntern: number = await totalSks(courses);
+            const totalBobotIntern: number = await totalBobot(courses);
+            const gpaCalculationIntern = (totalBobotIntern / totalSksIntern).toFixed(2);
+
+            student.transcript = {
+              totalSks: totalSksIntern,
+              ipkTranscript: gpaCalculationIntern,
+            };
           });
 
           return [studentsTakingInternship];

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Krs, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import Table from "../Table";
 import Pagination from "../Pagination";
 import { lecturerName } from "@/lib/utils";

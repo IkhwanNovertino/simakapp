@@ -16,24 +16,85 @@ export async function GET(req: NextRequest) {
     const academicClass = await prisma.academicClass.findUnique({
       where: { id: academicClassId },
       select: {
-        id: true,
-        name: true,
         course: {
+          include: {
+            assessment: {
+              include: {
+                assessmentDetail: {
+                  include: {
+                    grade: true,
+                  },
+                  orderBy: {
+                    seq_number: 'desc',
+                  }
+                },
+              },
+            },
+            major: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        academicClassDetail: true,
+        lecturer: {
           select: {
             id: true,
             name: true,
-            code: true,
           },
         },
+        name: true,
+        periodId: true,
         period: {
           select: {
             name: true,
           }
+        }
+      },
+    });
+    
+    const khsDetails = await prisma.khsDetail.findMany({
+      where: {
+        courseId: academicClass?.course?.id,
+        khs: {
+          student: {
+            id: {
+              in: academicClass?.academicClassDetail.map((detail: any) => detail.studentId) || [],
+            }
+          },
+          periodId: academicClass?.periodId,
         },
       },
-    })
+      include: {
+        khs: {
+          include: {
+            student: {
+              select: { id: true, name: true, nim: true }
+            },
+          }
+        },
+        khsGrade: {
+          include: {
+            assessmentDetail: {
+              include: {
+                grade: true,
+              },
+            },
+          },
+          orderBy: {
+            assessmentDetail: { seq_number: 'desc' }
+          },
+        },
+      },
+      orderBy: [
+        {khs: {student: {nim: 'asc'}}}
+      ]
+    });
 
-    const bufferFile = template ? await exportAssessmentTemplate(academicClassId) : await exportAssessmentGrade(academicClassId)
+    const data = { academicClass, khsDetails };
+    const bufferFile = template ? await exportAssessmentTemplate(data) : await exportAssessmentGrade(data);
     return new NextResponse(bufferFile, {
       headers: {
         'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',

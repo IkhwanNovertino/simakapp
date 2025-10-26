@@ -305,15 +305,15 @@ export const assessmentSchema = z.object({
 export type AssessmentInputs = z.infer<typeof assessmentSchema>;
 
 export const CourseInKrsSchema = z.object({
-  id: z.string().optional(),
+  id: z.string(),
   maxSks: z.coerce.number().optional(),
   course: z.array(
     z.object({
-      id: z.string().optional(),
-      code: z.string().optional(),
-      name: z.string().optional(),
-      sks: z.coerce.number().optional(),
-      semester: z.coerce.number().optional(),
+      id: z.string(),
+      code: z.string(),
+      name: z.string(),
+      sks: z.coerce.number(),
+      semester: z.coerce.number(),
     })
   )
 })
@@ -447,13 +447,13 @@ export const khsGradeSchema = z.object({
 export type KhsGradeInputs = z.infer<typeof khsGradeSchema>;
 
 export const RplSchema = z.object({
-  id: z.string().optional(),
-  studentId: z.string().optional(),
-  periodId: z.string().optional(),
+  id: z.string(),
+  studentId: z.string(),
+  periodId: z.string(),
   khsDetail: z.array(
     z.object({
       id: z.string().min(1, { message: "komponen nilai harus diisi" }),
-      gradeLetter: z.string().optional(),
+      gradeLetter: z.string(),
       weight: z.coerce.number().min(0, { message: "Nilai harus diisi" }),
     })
   ).min(1, "Pilih minimal satu mata kuliah")
@@ -484,7 +484,7 @@ export type RplInputs = z.infer<typeof RplSchema>
 
 export const krsOverride = z.object({
   id: z.string().optional(),
-  krsId: z.string().optional(),
+  krsId: z.string().min(1, { message: "KRS ID tidak ditemukan" }),
   ips_allowed: z.coerce.number().min(0, { message: "IP yang diizinkan harus diisi" }),
   sks_allowed: z.coerce.number().min(0, { message: "IP yang diizinkan harus diisi" }),
 })
@@ -492,25 +492,25 @@ export type KrsOverrideInputs = z.infer<typeof krsOverride>
 
 export const khsGradeRevisionSchema = z.object({
   id: z.string().optional(),
-  khsId: z.string().optional(),
-  courseId: z.string().optional(),
-  studentName: z.string().optional(),
-  studentNIM: z.string().optional(),
-  finalScore: z.coerce.number().optional(),
-  gradeLetter: z.string().optional(),
-  weight: z.coerce.number().optional(),
+  khsId: z.string(),
+  courseId: z.string(),
+  studentName: z.string(),
+  studentNIM: z.string(),
+  finalScore: z.coerce.number(),
+  gradeLetter: z.string(),
+  weight: z.coerce.number(),
   khsGrade: z.array(
     z.object({
-      assessmentDetailId: z.string().optional(),
+      assessmentDetailId: z.string(),
       assessmentDetail: z.object({
-        id: z.string().optional(),
+        id: z.string(),
         grade: z.object({
-          id: z.string().optional(),
-          name: z.string().optional(),
+          id: z.string(),
+          name: z.string(),
         }),
       }),
-      percentage: z.coerce.number().optional(),
-      score: z.coerce.number().optional(),
+      percentage: z.coerce.number(),
+      score: z.coerce.number(),
     })
   )
 })

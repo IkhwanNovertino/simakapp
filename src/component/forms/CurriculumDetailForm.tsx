@@ -10,12 +10,13 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
+import { Course } from "@prisma/client";
 
 
 const CurriculumDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { courses, semesterInt } = relatedData;
 
-  const courseFilter = courses.filter((course: any) => course.majorId === data?.majorId);
+  const courseFilter = courses.filter((course: Course) => course.majorId === data?.majorId);
   const {
     register,
     handleSubmit,

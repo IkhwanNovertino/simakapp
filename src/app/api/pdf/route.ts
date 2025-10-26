@@ -1,7 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import renderPdf from "@/lib/renderPdf";
-import { semester } from "@/lib/setting";
-import { courseSorting, lecturerName, previousPeriod, totalBobot, totalSks } from "@/lib/utils";
+import { courseSorting, lecturerName, totalBobot, totalSks } from "@/lib/utils";
 import { AnnouncementKhs, Course, KrsDetail } from "@prisma/client";
 import { error } from "console";
 import { format } from "date-fns";

@@ -1,7 +1,21 @@
 import ExcelJS from 'exceljs';
-import { lecturerName } from '../utils';
+import { Period } from '@prisma/client';
 
-export async function exportStudentTakingThesis({ data }: { data: any }) {
+interface Students {
+  nim: string;
+  name: string;
+  major: { stringCode: string };
+  reregisterDetail: { semester: number, lecturer: { name: string } };
+  transcript: { totalSks: number, ipkTranscript: number };
+  _count: { krs: number };
+}
+
+interface ExportStudentTakingThesisProps {
+  dataPeriod: Period;
+  dataStudent: Students[];
+}
+
+export async function exportStudentTakingThesis({ data }: { data: ExportStudentTakingThesisProps }) {
   
   const workbook = new ExcelJS.Workbook();
   const worksheet = workbook.addWorksheet(`Daftar Mahasiswa`);
@@ -62,8 +76,8 @@ export async function exportStudentTakingThesis({ data }: { data: any }) {
     worksheet.getColumn(i + 1).width = w
   });
   
-  data?.dataStudent.forEach((items: any, i: number) => {
-    const rowdata: any = [
+  data?.dataStudent.forEach((items: Students, i: number) => {
+    const rowdata: (string | number)[] = [
       i + 1,
       items?.nim,
       items?.name,

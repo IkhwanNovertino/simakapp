@@ -1,4 +1,20 @@
-export const calculatingSKSLimits = async (ipk: number) : Promise<number>  => {
+interface CourseDetail {
+  id: string;
+  name: string;
+  code: string;
+  sks: number;
+  isPKL: boolean;
+  isSkripsi: boolean;
+}
+
+interface khsDetail {
+  course: CourseDetail;
+  weight: number;
+  gradeLetter: string;
+  status: string;
+}
+
+export const calculatingSKSLimits = async (ipk: number): Promise<number> => {
 
   if (ipk < 1.5) {
     return 12
@@ -36,7 +52,7 @@ export const getGradeLetter = (finalScore: number): [string, number] => {
   return ["E", 0]
 }
 
-export const getFinalScore = (grade?: any[] ): {finalScore: number, gradeLetter: string, gradeWeight: number} => {
+export const getFinalScore = (grade?: {score: number, percentage: number}[] ): {finalScore: number, gradeLetter: string, gradeWeight: number} => {
 
   if (!grade || grade.length === 0) return {finalScore: 0, gradeLetter: "E", gradeWeight: 0};
   const totalScore = grade.reduce((acc, curr) => {
@@ -64,61 +80,41 @@ export const previousPeriod = async (data: {semesterType: string, year: number})
   }
 }
 
-export const transcriptUtils = async (data: any) => {
-  const courses: any = {};
-    for (const khs of data) {
-      khs?.khsDetail.forEach((detail: any) => {
-        const idMK = detail?.course?.id;
-        detail.weight = Number(detail.weight);
-        if (!courses[idMK]) {
-          courses[idMK] = detail;
-        }
-      });
-    };
-
-    const coursesFinal = Object.values(courses)
-      .sort((min: any, max: any) => {
-        let x = min.course.name.toLowerCase();
-        let y = max.course.name.toLowerCase();
-        if (x < y) return -1;
-        if (x > y) return 1;
-        return 0;
-      });
-
-    const totalSks = coursesFinal.map((item: any) => item.course.sks).reduce((acc: any, init: any) => acc + init, 0);
-    const totalBobot = coursesFinal.map((item: any) => item.course.sks * item.weight)
-      .reduce((acc: any, init: any) => acc + init, 0);
-    const ipkTranscript = (totalBobot / totalSks).toFixed(2);
-  return {
-    coursesFinal,
-    totalSks,
-    totalBobot,
-    ipkTranscript,
-  }
+export const coursesClearing = async (data: {khsDetail: khsDetail[]}[]): Promise<khsDetail[]> => {
+  const courses: {[key: string]: khsDetail} = {};
+  for (const khs of data) {
+    khs?.khsDetail.forEach((detail: khsDetail) => {
+      const idMK = detail?.course?.id;
+      detail.weight = Number(detail.weight);
+      if (!courses[idMK]) {
+        courses[idMK] = detail;
+      }
+    });
+  };
+  return Object.values(courses);
 }
 
-export const courseSorting = async (data: any) => {
-  return Object.values(data)
-    .sort((min: any, max: any) => {
-      let x = min.course.name.toLowerCase();
-      let y = max.course.name.toLowerCase();
+export const courseSorting = async (data: khsDetail[]): Promise<khsDetail[]> => {
+  return data.sort((min: khsDetail, max: khsDetail) => {
+      const x = min.course.name.toLowerCase();
+      const y = max.course.name.toLowerCase();
       if (x < y) return -1;
       if (x > y) return 1;
       return 0;
     });
 }
 
-export const totalSks = async (data: any): Promise<number> => {
-  return data.map((item: any) => item.course.sks)
-    .reduce((acc: any, init: any) => acc + init, 0);
+export const totalSks = async (data: khsDetail[]): Promise<number> => {
+  return data.map((item: khsDetail) => item.course.sks)
+    .reduce((acc: number, init: number) => acc + init, 0);
 }
 
-export const totalBobot = async (data: any): Promise<number> => {
-  return data.map((item: any) => item.course.sks * item.weight)
-    .reduce((acc: any, init: any) => acc + init, 0);
+export const totalBobot = async (data: khsDetail[]): Promise<number> => {
+  return data.map((item: khsDetail) => item.course.sks * item.weight)
+    .reduce((acc: number, init: number) => acc + init, 0);
 }
 
-export const gpaCalculation = async (data: any): Promise<number> => {
+export const gpaCalculation = async (data: khsDetail[]): Promise<number> => {
   return (await totalBobot(data) / await totalSks(data)).toFixed(2) as unknown as number;
 }
 

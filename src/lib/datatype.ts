@@ -40,7 +40,7 @@ export interface FormModalProps {
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon" | "revision";
   label?: string,
   data?: any;
-  id?: any;
+  id?: string | number;
 }
 
 export interface FormProps {

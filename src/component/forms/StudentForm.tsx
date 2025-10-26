@@ -13,7 +13,7 @@ import Image from "next/image";
 import moment from "moment";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Gender } from "@prisma/client";
+import { Gender, Lecturer } from "@prisma/client";
 
 const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors, lecturer } = relatedData;
@@ -86,7 +86,13 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             label="NIM"
             name="nim"
             defaultValue={data?.nim}
-            inputProps={{ readOnly: type === "revision", inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+            inputProps={
+              {
+                readOnly: type === "revision",
+                inputMode: "numeric",
+                onInput: (e: React.FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+              }
+            }
             register={register}
             error={errors?.nim}
             required={true}
@@ -107,7 +113,13 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             label="Tahun Mendaftar"
             name="year"
             defaultValue={data?.year}
-            inputProps={{ readOnly: type === "revision", inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+            inputProps={
+              {
+                readOnly: type === "revision",
+                inputMode: "numeric",
+                onInput: (e: React.FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+              }
+            }
             register={register}
             error={errors?.year}
             required={true}
@@ -137,7 +149,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             placeholder="-- Pilih dosen wali"
             defaultValue={data?.lecturerId}
             required={true}
-            options={lecturer.map((item: any) => ({
+            options={lecturer.map((item: Lecturer) => ({
               value: item.id,
               label: item.name
             }))}
@@ -222,7 +234,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             error={errors?.religion}
             defaultValue={data?.religion}
             required={true}
-            options={religion.map((item: any) => ({
+            options={religion.map((item: string) => ({
               value: item,
               label: item
             }))}
@@ -243,7 +255,12 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             label="No. Handphone"
             name="phone"
             type="tel"
-            inputProps={{ inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+            inputProps={
+              {
+                inputMode: "numeric",
+                onInput: (e: React.FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+              }
+            }
             defaultValue={data?.hp}
             register={register}
             error={errors?.phone}

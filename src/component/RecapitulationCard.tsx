@@ -1,6 +1,5 @@
 import { RecapitulationCardType } from "@/lib/datatype";
 import { prisma } from "@/lib/prisma";
-import { previousPeriod } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,7 +15,7 @@ const RecapitulationCard = async ({ periodId, type, label }: RecapitulationCardP
       id: periodId,
     }
   });
-  const yearOfPeriod = period?.name.split(" ")[1];
+  const yearOfPeriod = period?.name?.split(" ")[1];
   let totalStudents: number = 0;
 
   switch (type) {

@@ -15,7 +15,7 @@ const PresenceStatus = ({ role, data }: PresenceStatusProps) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  data.presence.isActive = role === "STUDENT" ? data.presence.isActive : true;
+  data.presence.isActive = role === "STUDENT" ? data?.presence.isActive : true;
 
   const style = ['w-10 h-7 px-2 rounded-md flex justify-start items-center text-xs font-bold border-b-4 gap-1 cursor-pointer']
   if (data.presence.isActive) {
