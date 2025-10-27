@@ -3259,9 +3259,7 @@ export async function deactivateExpiredPresences() {
         logger.info(`[✔] Presensi dinonaktifkan: ${presence.id}`);
       }
     }
-
     logger.info("Scheduler selesai dijalankan pada", now.toISOString());
-    
   } catch (err) {
     try {
       handlePrismaError(err)

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { startTransition, useActionState, useEffect } from "react";
+import { FormEvent, startTransition, useActionState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { CourseInputs, courseSchema } from "@/lib/formValidationSchema";
@@ -14,10 +14,8 @@ import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
 import { Assessment, Course } from "@prisma/client";
 
-
 const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors, courses, assessmentType } = relatedData;
-
   const {
     register,
     handleSubmit,
@@ -77,7 +75,10 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             register={register}
             error={errors?.sks}
             required={true}
-            inputProps={{ pattern: "[0-9]*", inputMode: "numeric" }}
+            inputProps={{
+              inputMode: "numeric",
+              onInput: (e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+            }}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">

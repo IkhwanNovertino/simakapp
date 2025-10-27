@@ -8,6 +8,7 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Course, Major, Prisma } from "@prisma/client";
+import { Console } from "console";
 import { redirect } from "next/navigation";
 
 type CourseDataType = Course & { major: Major };
@@ -59,6 +60,8 @@ const CourseListPage = async (
         name: true,
         sks: true,
         courseType: true,
+        majorId: true,
+        assessmentId: true,
         major: {
           select: {
             stringCode: true,

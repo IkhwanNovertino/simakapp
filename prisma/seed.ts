@@ -7,82 +7,82 @@ const prisma = new PrismaClient();
 
 async function main() {
   // Permission
-  // const permissionData = [
-  //   { pathname: "periods", name: "period", nama: "periode" },
-  //   { pathname: "permissions", name: "permission", nama: "hak akses" },
-  //   { pathname: "roles", name: "role", nama: "role" },
-  //   { pathname: "krsrules", name: "krsrule", nama: "pengaturan krs" },
-  //   { pathname: "users", name: "user", nama: "pengguna" },
-  //   { pathname: "lecturers", name: "lecturer", nama: "dosen" },
-  //   { pathname: "students", name: "student", nama: "mahasiswa" },
-  //   { pathname: "operators", name: "operator", nama: "operator" },
-  //   { pathname: "positions", name: "position", nama: "jabatan" },
-  //   { pathname: "majors", name: "major", nama: "program studi" },
-  //   { pathname: "reregistrations", name: "reregistration", nama: "herregistrasi" },
-  //   { pathname: "curriculums", name: "curruculum", nama: "kurikulum" },
-  //   { pathname: "courses", name: "course", nama: "mata kuliah" },
-  //   { pathname: "rooms", name: "room", nama: "ruangan" },
-  //   { pathname: "krs", name: "krs", nama: "krs" },
-  //   { pathname: "schedules", name: "schedule", nama: "jadwal" },
-  //   { pathname: "classes", name: "class", nama: "kelas" },
-  //   { pathname: "khs", name: "khs", nama: "khs" },
-  //   { pathname: "presences", name: "presence", nama: "presensi" },
-  //   { pathname: "transcripts", name: "transcript", nama: "transkip" },
-  //   { pathname: "events", name: "event", nama: "event" },
-  //   { pathname: "announcements", name: "announcements", nama: "pengumuman" },
-  //   { pathname: "recapitulations", name: "recapitulation", nama: "rekapitulasi" },
-  // ];
-  // const action = ["view", "create", "edit", "delete"];
-  // for (const resource of permissionData) {
-  //   for (const act of action) {
-  //     await prisma.permission.create({
-  //       data: {
-  //         name: `${act}:${resource.pathname}`,
-  //         description: `${act}:${resource.nama}`
-  //       }
-  //     })
-  //   }
-  // }
+  const permissionData = [
+    { pathname: "periods", name: "period", nama: "periode" },
+    { pathname: "permissions", name: "permission", nama: "hak akses" },
+    { pathname: "roles", name: "role", nama: "role" },
+    { pathname: "krsrules", name: "krsrule", nama: "pengaturan krs" },
+    { pathname: "users", name: "user", nama: "pengguna" },
+    { pathname: "lecturers", name: "lecturer", nama: "dosen" },
+    { pathname: "students", name: "student", nama: "mahasiswa" },
+    { pathname: "operators", name: "operator", nama: "operator" },
+    { pathname: "positions", name: "position", nama: "jabatan" },
+    { pathname: "majors", name: "major", nama: "program studi" },
+    { pathname: "reregistrations", name: "reregistration", nama: "herregistrasi" },
+    { pathname: "curriculums", name: "curruculum", nama: "kurikulum" },
+    { pathname: "courses", name: "course", nama: "mata kuliah" },
+    { pathname: "rooms", name: "room", nama: "ruangan" },
+    { pathname: "krs", name: "krs", nama: "krs" },
+    { pathname: "schedules", name: "schedule", nama: "jadwal" },
+    { pathname: "classes", name: "class", nama: "kelas" },
+    { pathname: "khs", name: "khs", nama: "khs" },
+    { pathname: "presences", name: "presence", nama: "presensi" },
+    { pathname: "transcripts", name: "transcript", nama: "transkip" },
+    { pathname: "events", name: "event", nama: "event" },
+    { pathname: "announcements", name: "announcements", nama: "pengumuman" },
+    { pathname: "recapitulations", name: "recapitulation", nama: "rekapitulasi" },
+  ];
+  const action = ["view", "create", "edit", "delete"];
+  for (const resource of permissionData) {
+    for (const act of action) {
+      await prisma.permission.create({
+        data: {
+          name: `${act}:${resource.pathname}`,
+          description: `${act}:${resource.nama}`
+        }
+      })
+    }
+  }
   
-  // const roleName = ["admin", "dosen", "perwalian akademik", "finance", "akademik", "mahasiswa"]
+  const roleName = ["admin", "dosen", "perwalian akademik", "finance", "akademik", "mahasiswa"]
 
-  // for (const element of roleName) {
-  //   await prisma.role.create({
-  //     data: {
-  //       name: element,
-  //       description: element,
-  //       roleType: (element === "dosen" && "LECTURER") || (element === "mahasiswa" && "STUDENT") ||
-  //         (element === "perwalian akademik" && "ADVISOR") || (element === "admin" && "OPERATOR") ||
-  //         (element === "finance" && "OPERATOR") || (element === "akademik" && "OPERATOR") as RoleType,
-  //     }
-  //   })
-  // }
+  for (const element of roleName) {
+    await prisma.role.create({
+      data: {
+        name: element,
+        description: element,
+        roleType: (element === "dosen" && "LECTURER") || (element === "mahasiswa" && "STUDENT") ||
+          (element === "perwalian akademik" && "ADVISOR") || (element === "admin" && "OPERATOR") ||
+          (element === "finance" && "OPERATOR") || (element === "akademik" && "OPERATOR") as RoleType,
+      }
+    })
+  }
 
-  // const permissions = await prisma.permission.count();
+  const permissions = await prisma.permission.count();
 
-  // for (let i = 1; i <= permissions; i++) {
-  //   await prisma.rolePermission.create({
-  //     data: {
-  //       roleId: 1,
-  //       permissionId: i,
-  //     }
-  //   })
-  // };
+  for (let i = 1; i <= permissions; i++) {
+    await prisma.rolePermission.create({
+      data: {
+        roleId: 1,
+        permissionId: i,
+      }
+    })
+  };
 
-  // await prisma.operator.create({
-  //   data: {
-  //     name: "super admin",
-  //     department: "admin",
-  //     user: {
-  //       create: {
-  //         email: "admin1@stmik.com",
-  //         password: bcrypt.hashSync("admin", 10),
-  //         roleId: 1,
-  //         isStatus: true,
-  //       }
-  //     }
-  //   }
-  // })
+  await prisma.operator.create({
+    data: {
+      name: "super admin",
+      department: "admin",
+      user: {
+        create: {
+          email: "admin1@stmik.com",
+          password: bcrypt.hashSync("admin", 10),
+          roleId: 1,
+          isStatus: true,
+        }
+      }
+    }
+  })
 
   // await prisma.major.createMany({
   //   data: [
@@ -98,7 +98,6 @@ async function main() {
   //     },
   //   ]
   // })
-
 
   // await prisma.gradeComponent.createMany({
   //   data: [
@@ -1062,38 +1061,38 @@ async function main() {
   //   })
   // }
 
-  const lecturerSI = await prisma.lecturer.findMany({
-    where: {
-      user: {
-        roleId: 3,
-      },
-      majorId: 1,
-    }
-  });
-  const lecturerTI = await prisma.lecturer.findMany({
-    where: {
-      user: {
-        roleId: 3,
-      },
-      majorId: 2,
-    }
-  });
+  // const lecturerSI = await prisma.lecturer.findMany({
+  //   where: {
+  //     user: {
+  //       roleId: 3,
+  //     },
+  //     majorId: 1,
+  //   }
+  // });
+  // const lecturerTI = await prisma.lecturer.findMany({
+  //   where: {
+  //     user: {
+  //       roleId: 3,
+  //     },
+  //     majorId: 2,
+  //   }
+  // });
   
   
-  const students = []
+  // const students = []
 
-  for (let i = 0; i <= 9; i++) {
-    students.push({
-      nim: `3101270${i % 2 ? 1 : 2}270${i}`,
-      name: `Student Surname 27${i}`,
-      year: 2027,
-      religion: Religion.ISLAM,
-      gender: (i % 2 ? Gender.PRIA : Gender.WANITA),
-      majorId: (i % 2 ? 1 : 2),
-      statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 ? lecturerSI[2].id : lecturerTI[2].id), 
-    })
-  };
+  // for (let i = 0; i <= 9; i++) {
+  //   students.push({
+  //     nim: `3101270${i % 2 ? 1 : 2}270${i}`,
+  //     name: `Student Surname 27${i}`,
+  //     year: 2027,
+  //     religion: Religion.ISLAM,
+  //     gender: (i % 2 ? Gender.PRIA : Gender.WANITA),
+  //     majorId: (i % 2 ? 1 : 2),
+  //     statusRegister: StatusRegister.BARU,
+  //     lecturerId: (i % 2 ? lecturerSI[2].id : lecturerTI[2].id), 
+  //   })
+  // };
   // for (let i = 0; i <= 9; i++) {
   //   students.push({
   //     nim: `31012301230${i}`,
@@ -1180,9 +1179,9 @@ async function main() {
   //     lecturerId: (i % 2 === 0 ? lecturerTI[1].id : lecturerTI[2].id), 
   //   })
   // };
-  const student = await prisma.student.createMany({
-    data: students,
-  })
+  // const student = await prisma.student.createMany({
+  //   data: students,
+  // })
 };
 
 main()

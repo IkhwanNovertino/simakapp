@@ -88,6 +88,7 @@ const StudentListPage = async (
       select: { id: true, name: true }
     })
   ]);
+  dataFilter.unshift({ id: "all", name: "Semua" })
 
   const columns = [
     {

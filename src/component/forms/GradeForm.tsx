@@ -63,7 +63,7 @@ const GradeForm = ({ setOpen, type, data }: FormProps) => {
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/3">
           <InputField
-            label="Komponen Nilai"
+            label="Akronim"
             name="acronym"
             defaultValue={data?.acronym}
             register={register}
