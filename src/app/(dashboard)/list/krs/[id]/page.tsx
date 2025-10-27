@@ -7,8 +7,8 @@ import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { lecturerName } from "@/lib/utils";
-import { Course, KrsDetail, } from "@prisma/client";
 import Image from "next/image";
+import { Course, KrsDetail } from "@/generated/prisma/client";
 
 type KrsDetailDataType = KrsDetail & { course: Course };
 

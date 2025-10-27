@@ -6,8 +6,8 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { KrsRule, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { KrsRule, Prisma } from "@/generated/prisma/client";
 
 type KrsRuleDataType = KrsRule;
 
@@ -26,7 +26,7 @@ const KRSRuleListPage = async (
   const { page, ...queryParams } = await searchParams;
   const p = page ? parseInt(page) : 1;
 
-  const query: Prisma.KrsRuleWhereInput = {}
+  const query: Prisma.KrsRuleWhereInput = {};
   if (queryParams) {
     for (const [key, value] of Object.entries(queryParams)) {
       if (value !== undefined) {

@@ -1,5 +1,5 @@
-import { Major, Period } from '@prisma/client';
 import ExcelJS from 'exceljs';
+import { Major, Period } from '@/generated/prisma/client';
 
 interface Students {
   student: {

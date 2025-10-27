@@ -1,5 +1,5 @@
 import ExcelJS from 'exceljs';
-import { Period } from '@prisma/client';
+import { Period } from '@/generated/prisma/client';
 
 interface Students {
   nim: string;

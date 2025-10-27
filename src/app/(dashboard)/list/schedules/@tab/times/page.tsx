@@ -4,7 +4,7 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 
 interface TimeDataType {
   id: string;

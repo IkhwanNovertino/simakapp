@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Period } from "@prisma/client";
+import { Period } from "@/generated/prisma/client";
 
 const ScheduleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 

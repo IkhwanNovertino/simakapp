@@ -9,9 +9,9 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { AcademicClass, AcademicClassDetail, Course, Lecturer, Major, Period, Prisma, Room } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { AcademicClass, AcademicClassDetail, Course, Lecturer, Major, Period, Prisma, Room } from "@/generated/prisma/client";
 
 type AcademicClassDataType = AcademicClass & { course: Course & { major: Major } } & { lecturer: Lecturer } & { room: Room } & { period: Period } & { academicClassDetail: AcademicClassDetail[] };
 

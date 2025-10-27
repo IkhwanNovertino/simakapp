@@ -6,8 +6,8 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Course, CurriculumDetail, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { Course, CurriculumDetail, Prisma } from "@/generated/prisma/client";
 
 type CurriculumDetailDataType = CurriculumDetail & { course: Course };
 

@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Course } from "@prisma/client";
+import { Course } from "@/generated/prisma/client";
 
 
 const CurriculumDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {

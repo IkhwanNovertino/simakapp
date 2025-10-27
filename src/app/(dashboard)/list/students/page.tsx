@@ -9,10 +9,10 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { Lecturer, Major, Prisma, Student, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Lecturer, Major, Prisma, Student, User } from "@/generated/prisma/client";
 
 type StudentDataType = Student & { major: Major } & { user: User } & { lecturer: Lecturer };
 

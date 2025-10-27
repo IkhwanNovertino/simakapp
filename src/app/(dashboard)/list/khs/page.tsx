@@ -5,10 +5,10 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { Khs, KhsDetail, Period, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Khs, KhsDetail, Period, Prisma, Student } from "@/generated/prisma/client";
 
 type KhsDataType = Khs & { student: Student } & { period: Period } & { khsDetail: KhsDetail[] };
 

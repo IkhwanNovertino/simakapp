@@ -5,9 +5,9 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Period, Prisma, Schedule } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
+import { Period, Prisma, Schedule } from "@/generated/prisma/client";
 
 type ScheduleDataType = Schedule & { period: Period };
 

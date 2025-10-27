@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FormProps } from "@/lib/datatype";
 import InputSelect from "../InputSelect";
-import { Presence } from "@prisma/client";
+import { Presence } from "@/generated/prisma/client";
 
 
 const PresenceAllForm = ({ setOpen, type, data }: FormProps) => {

@@ -5,7 +5,7 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { AcademicClass, Course, Lecturer, Presence, Student, } from "@prisma/client";
+import { AcademicClass, Course, Lecturer, Presence, Student } from "@/generated/prisma/client";
 
 type PresenceDataType = Presence
   & {

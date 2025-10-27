@@ -7,10 +7,10 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Curriculum, Major, Prisma } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Curriculum, Major, Prisma } from "@/generated/prisma/client";
 
 type CurriculumDataType = Curriculum & { major: Major };
 

@@ -6,10 +6,10 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Permission, Prisma, Role } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Permission, Prisma, Role } from "@/generated/prisma/client";
 
 type RoleDataType = Role & {
   rolePermission: {

@@ -5,7 +5,7 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { AcademicClassDetail, Prisma } from "@prisma/client";
+import { AcademicClassDetail, Prisma } from "@/generated/prisma/client";
 
 const ClassSingleTabAssessmentPage = async (
   {

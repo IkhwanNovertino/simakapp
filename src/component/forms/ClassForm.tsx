@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import Select from "react-select";
 import { FormProps } from "@/lib/datatype";
-import { Lecturer, Room } from "@prisma/client";
+import { Lecturer, Room } from "@/generated/prisma/client";
 
 
 const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {

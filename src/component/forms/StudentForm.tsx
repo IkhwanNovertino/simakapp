@@ -13,7 +13,7 @@ import Image from "next/image";
 import moment from "moment";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Gender, Lecturer } from "@prisma/client";
+import { Gender, Lecturer } from "@/generated/prisma/client";
 
 const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors, lecturer } = relatedData;

@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import renderPdf from "@/lib/renderPdf";
 import { courseSorting, lecturerName, totalBobot, totalSks } from "@/lib/utils";
-import { AnnouncementKhs, Course, KrsDetail } from "@prisma/client";
 import { error } from "console";
 import { format } from "date-fns";
 import { id as indonesianLocale, } from "date-fns/locale";
 import { NextRequest, NextResponse } from "next/server";
+import { AnnouncementKhs } from "@/generated/prisma/enums";
+import { Course, KrsDetail } from "@/generated/prisma/client";
 
 export async function GET(req: NextRequest) {
   try {

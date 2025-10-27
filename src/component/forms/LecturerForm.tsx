@@ -12,7 +12,7 @@ import { degree, religion } from "@/lib/setting";
 import Image from "next/image";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Gender } from "@prisma/client";
+import { Gender } from "@/generated/prisma/enums";
 
 const LecturerForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors } = relatedData;

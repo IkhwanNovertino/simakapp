@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Major } from "@prisma/client";
+import { Major } from "@/generated/prisma/client";
 
 const CurriculumForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors } = relatedData;

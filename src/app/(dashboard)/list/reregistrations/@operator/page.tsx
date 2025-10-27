@@ -7,10 +7,10 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Period, Prisma, Reregister } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Period, Prisma, Reregister } from "@/generated/prisma/client";
 
 type ReregisterDataType = Reregister & { period: Period };
 

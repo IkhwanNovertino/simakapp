@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { AppError } from "./appErrors";
 
 export function handlePrismaError(error: unknown): never {

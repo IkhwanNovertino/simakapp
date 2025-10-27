@@ -7,9 +7,9 @@ import { exportStudentTakingThesis } from "@/lib/excel/exportStudentTakingThesis
 import { exportStudentUnregisteredKrs } from "@/lib/excel/exportStudentUnregisteredKrs";
 import { prisma } from "@/lib/prisma";
 import { coursesClearing, totalBobot, totalSks } from "@/lib/utils";
-import { AnnouncementKhs, Course, KrsDetail, StudentStatus } from "@prisma/client";
 import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
+import { AnnouncementKhs, Course, KrsDetail, StudentStatus } from "@/generated/prisma/client";
 
 export async function GET(req: NextRequest) {
   try {

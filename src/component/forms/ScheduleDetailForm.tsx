@@ -12,7 +12,7 @@ import InputSelect from "../InputSelect";
 import { dayName } from "@/lib/setting";
 import Select from "react-select";
 import { FormProps } from "@/lib/datatype";
-import { AcademicClass, Course, Time } from "@prisma/client";
+import { AcademicClass, Course, Time } from "@/generated/prisma/client";
 
 const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 

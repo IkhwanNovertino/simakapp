@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Permission } from "@prisma/client";
+import { Permission } from "@/generated/prisma/client";
 
 const RoleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { permissions } = relatedData;

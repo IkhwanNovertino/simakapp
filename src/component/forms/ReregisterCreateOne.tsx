@@ -13,7 +13,7 @@ import moment from "moment";
 import { status } from "@/lib/setting";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { CampusType, Lecturer, Student } from "@prisma/client";
+import { CampusType, Lecturer, Student } from "@/generated/prisma/client";
 
 
 const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps) => {

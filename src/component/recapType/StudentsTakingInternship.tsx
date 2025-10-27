@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { AnnouncementKhs, Prisma, StudentStatus } from "@prisma/client";
 import Table from "../Table";
 import Pagination from "../Pagination";
 import { coursesClearing, lecturerName, totalBobot, totalSks } from "@/lib/utils";
+import { AnnouncementKhs, Prisma, StudentStatus } from "@/generated/prisma/client";
 
 type recapType = {
   periodId: string,

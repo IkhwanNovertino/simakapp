@@ -8,10 +8,10 @@ import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpd
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { Lecturer, Major, Prisma, Role, User } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Lecturer, Major, Prisma, Role, User } from "@/generated/prisma/client";
 
 type LecturerDataType = Lecturer & { user: User & { role: Role } } & { major: Major };
 
