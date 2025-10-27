@@ -16,7 +16,7 @@ const eslintConfig = [
       '@typescript-eslint/no-explicit-any': 'off',
       'jsx-a11y/alt-text': 'off',
       '@typescript-eslint/no-unused-expressions': 'off',
-    }
+    },
   })
 ];
 
