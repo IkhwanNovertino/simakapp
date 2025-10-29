@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { literal, z } from "zod";
 
 export const permissionSchema = z.object({
   id: z.coerce.number().optional(),
@@ -116,7 +116,6 @@ export const studentSchema = z.object({
   lecturerId: z.string().min(1, { message: "Perwalian akademik harus diisi" }),
   studentStatus: z.enum(["NONAKTIF", "AKTIF", "CUTI", "DO", "MENGUNDURKAN_DIRI", "LULUS"], {message: "Pilih status mahasiswa"}),
   statusRegister: z.string().min(1, {message: "Pilih status registrasi"}),
-  photo: z.string().optional().or(z.literal("")),
   guardianName: z.string().optional(),
   guardianNIK: z.string().optional(),
   guardianJob: z.string().optional(),
@@ -126,6 +125,7 @@ export const studentSchema = z.object({
   motherNIK: z.string().optional(),
   placeOfBirth: z.string().optional(),
   birthday: z.string().optional(),
+  photo: z.string().optional().or(literal("")),
   
 })
 

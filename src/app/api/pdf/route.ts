@@ -1,12 +1,15 @@
 import { prisma } from "@/lib/prisma";
 import renderPdf from "@/lib/renderPdf";
 import { courseSorting, lecturerName, totalBobot, totalSks } from "@/lib/utils";
-import { error } from "console";
 import { format } from "date-fns";
 import { id as indonesianLocale, } from "date-fns/locale";
 import { NextRequest, NextResponse } from "next/server";
 import { AnnouncementKhs } from "@/generated/prisma/enums";
 import { Course, KrsDetail } from "@/generated/prisma/client";
+import logger from "@/lib/logger";
+import path from "path";
+import { readFile } from "fs/promises";
+import { AppError } from "@/lib/errors/appErrors";
 
 export async function GET(req: NextRequest) {
   try {
@@ -33,6 +36,16 @@ export async function GET(req: NextRequest) {
     const dataMajor = await prisma.major.findMany({
       select: {id: true, name: true, stringCode: true}
     })
+    const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+    const logoFile = await readFile(logoPath)
+
+    if (!logoFile) {
+      throw new AppError("Gagal membaca file logo .png", 400);
+    }
+
+    const mimeType = 'image/png';
+    
+    const img: string = `data:${mimeType};base64,${logoFile.toString('base64')}`;
 
     switch (type) {
       case "assessment":
@@ -134,6 +147,7 @@ export async function GET(req: NextRequest) {
               ...academicClass,
               lecturername: lecturername,
             },
+            img: img,
             date,
           }
         })
@@ -214,6 +228,7 @@ export async function GET(req: NextRequest) {
           name: krsStudent?.lecturer?.name,
           backTitle: krsStudent?.lecturer?.backTitle,
         });
+
         bufferFile = await renderPdf({
           type: type,
           data: {
@@ -223,6 +238,7 @@ export async function GET(req: NextRequest) {
             },
             lecturerNameKrs,
             semester: reregistrasiStudent?.semester,
+            img: img,
             date,
           }
         })
@@ -307,6 +323,7 @@ export async function GET(req: NextRequest) {
             totalSKS,
             totalSKSxNAB,
             position,
+            img: img,
             date,
           }
         })
@@ -483,7 +500,6 @@ export async function GET(req: NextRequest) {
           
           return [dataStudent, coursesFinal, coursesUnfinishSorted, totalSKSTranscript,totalSKSUnfinish, totalBobotTranscript, gpaCalculationTranscript];
         })
-
         
         bufferFile = await renderPdf({
           type: type,
@@ -495,6 +511,7 @@ export async function GET(req: NextRequest) {
             totalSKSUnfinish,
             totalBobotTranscript,
             gpaCalculationTranscript,
+            img: img,
             date,
           }
         })
@@ -566,6 +583,7 @@ export async function GET(req: NextRequest) {
               },
               campusType: (reregister?.campusType === "BJB" && 'BANJARBARU') || (reregister?.campusType === "BJM" && 'BANJARMASIN') || reregister?.campusType,
             },
+            img: img,
             date,
           }
         })
@@ -645,6 +663,7 @@ export async function GET(req: NextRequest) {
             dataPeriod,
             dataCoursesByMajor,
             date,
+            img: img,
           }
         })
         if (!bufferFile) {
@@ -727,6 +746,7 @@ export async function GET(req: NextRequest) {
           data: {
             dataPeriod,
             dataStudentRegisteredKrs,
+            img: img,
             date,
           }
         })
@@ -782,6 +802,7 @@ export async function GET(req: NextRequest) {
           data: {
             dataPeriod,
             dataStudentsUnregisteredKrs,
+            img: img,
             date,
           }
         })
@@ -830,6 +851,7 @@ export async function GET(req: NextRequest) {
           data: {
             dataPeriod,
             dataStudentsTakingThesis,
+            img: img,
             date,
           }
         })
@@ -878,6 +900,7 @@ export async function GET(req: NextRequest) {
           data: {
             dataPeriod,
             dataStudentsTakingInternship,
+            img: img,
             date,
           }
         })
@@ -923,6 +946,7 @@ export async function GET(req: NextRequest) {
           data: {
             dataPeriod,
             dataStudentsActiveInactive,
+            img: img,
             date,
           }
         })
@@ -996,6 +1020,7 @@ export async function GET(req: NextRequest) {
           data: {
             dataPeriod,
             dataStudents,
+            img: img,
             date,
           }
         })
@@ -1013,7 +1038,7 @@ export async function GET(req: NextRequest) {
         break;
     }
   } catch (err) {
-    error(err);
+    logger.error(err)
     return new NextResponse('Someting wrong!', { status: 400 });
   }
   

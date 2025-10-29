@@ -188,8 +188,8 @@ model Operator {
   id         String  @id @default(uuid())
   name       String?
   department String?
-  userId String? @unique
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Restrict)
+  userId     String? @unique
+  user       User?   @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   @@map("sb25_operators")
 }

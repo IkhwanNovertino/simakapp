@@ -15,13 +15,13 @@ const prismaClientSingleton: any = globalForPrisma.prisma || new PrismaClient({
 
 prismaClientSingleton.$on('info' as never, (e: Prisma.LogEvent) => {
   logger.info(e);
-})
+});
 prismaClientSingleton.$on('warn' as never, (e: Prisma.LogEvent) => {
   logger.warn(e);
-})
+});
 prismaClientSingleton.$on('error' as never, (e: Prisma.LogEvent) => {
   logger.error(e);
-})
+});
 
 export const prisma = prismaClientSingleton;
 

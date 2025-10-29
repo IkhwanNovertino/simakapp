@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import moment from "moment";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Major } from "@/generated/prisma/client";
 
 const CurriculumForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors } = relatedData;
@@ -75,7 +74,7 @@ const CurriculumForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             error={errors?.majorId}
             placeholder="-- Pilih program studi"
             defaultValue={data?.majorId}
-            options={majors.map((item: Major) => ({
+            options={majors.map((item: Record<string, string | number>) => ({
               value: item.id,
               label: item.name,
             }))}

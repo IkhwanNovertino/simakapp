@@ -1299,6 +1299,8 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
 
 export const createStudent = async (state: {success: boolean, error: boolean}, data: FormData) => {
   try {
+    console.log(data);
+    
     const id=data.get('id')?.toString()
     const name = data.get('name')?.toString();
     const nim = data.get('nim')?.toString();

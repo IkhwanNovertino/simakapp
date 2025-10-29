@@ -103,13 +103,13 @@ const styles = StyleSheet.create({
 
 
 const ReregisterPdf = ({ data }: GeneratePdfProps) => {
-  const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
+  // const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
   return (
     <Document>
       <Page size={"LETTER"} style={styles.page}>
         <View style={styles.header}>
           <View style={styles.logo}>
-            <Image src={imgLogo} />
+            <Image src={data.img} />
           </View>
           <View style={styles.sectionTextHeader}>
             <Text style={styles.textHeader}>SEKOLAH TINGGI MANAJEMEN INFORMATIKA DAN KOMPUTER</Text>

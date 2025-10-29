@@ -105,8 +105,6 @@ const StudentsRegisteredKrs = async (
     });
     return [data, count];
   })
-  console.log(data);
-
 
   const renderRow = (item: any) => {
     return (

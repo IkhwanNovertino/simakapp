@@ -12,7 +12,6 @@ import Select from "react-select";
 import { courseType } from "@/lib/setting";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Assessment, Course } from "@/generated/prisma/client";
 
 const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors, courses, assessmentType } = relatedData;
@@ -101,7 +100,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             control={control}
             defaultValue={data?.assessmentId}
             error={errors?.assessmentId}
-            options={assessmentType.map((item: Assessment) => ({
+            options={assessmentType.map((item: Record<string, string | number>) => ({
               value: item.id,
               label: item.name,
             }))}
@@ -132,9 +131,9 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             render={({ field }) => (
               <Select
                 {...field}
-                options={courses.map((course: Course) => ({
+                options={courses.map((course: any) => ({
                   value: course.id,
-                  label: course.name,
+                  label: `(${course.code}) ${course.name}`,
                 }))}
                 isClearable
                 placeholder="-- Pilih mata kuliah terdahulu"
@@ -143,9 +142,9 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                 onChange={(selected: any) => field.onChange(selected ? selected.value : "")}
                 value={
                   courses
-                    .map((course: Course) => ({
+                    .map((course: any) => ({
                       value: course.id,
-                      label: course.name,
+                      label: `(${course.code})${course.name}`,
                     }))
                     .find((option: any) => option.value === field.value) || null
                 }

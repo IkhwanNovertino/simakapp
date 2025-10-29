@@ -60,7 +60,7 @@ const KHSDetailPage = async (
             status: true,
           },
           orderBy: [
-            { course: { name: 'asc' } }
+            { course: { code: 'asc' } }
           ]
         }
       }

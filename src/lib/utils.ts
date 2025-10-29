@@ -1,3 +1,5 @@
+import React from "react";
+
 interface CourseDetail {
   id: string;
   name: string;
@@ -13,6 +15,11 @@ interface khsDetail {
   gradeLetter: string;
   status: string;
 }
+
+export const handleNumericInput = (e: React.FormEvent<HTMLInputElement>) => {
+  const target = e.target as HTMLInputElement;
+  target.value = target.value.replace(/[^0-9]/g, '');
+};
 
 export const calculatingSKSLimits = async (ipk: number): Promise<number> => {
 
@@ -166,4 +173,25 @@ export const adjustScheduleToCurrentWeek = (
     };
   });
 };
+
+// export const convertLogotoBase64 = async () => {
+//   try {
+//     const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+//     const logoFile = await readFile(logoPath);
+
+//     if (!logoFile) {
+//       throw new AppError("Gagal membaca file logo .png", 400);
+//     }
+
+//     const mimeType = 'image/png';
+    
+//     const logoBase64: string = `data:${mimeType};base64,${logoFile.toString('base64')}`;
+//     return {
+//       success: true,
+//       data: logoBase64,
+//     }
+//   } catch (err) {
+//     throw new AppError("Gagal membaca file logo .png", 400);
+//   }
+// }
 

@@ -1,5 +1,3 @@
-import { role } from "@/lib/data";
-import { courseType } from "@/lib/setting";
 import bcrypt from "bcryptjs";
 import { DegreeStatus, Gender, Location, PrismaClient, Religion, RoleType, SemesterType, StatusRegister } from "@/generated/prisma/client";
 
@@ -996,7 +994,7 @@ async function main() {
     }
   })
 
-  const herregistrasi = await prisma.reregister.create({
+  await prisma.reregister.create({
     data: {
       name: "herregistrasi GANJIL 2024/2025",
       periodId: period.id,
@@ -1078,14 +1076,37 @@ async function main() {
     }
   });
   
-  
   const students = []
 
   for (let i = 0; i <= 9; i++) {
     students.push({
-      nim: `3101270${i % 2 ? 1 : 2}270${i}`,
-      name: `Student Surname 27${i}`,
-      year: 2027,
+      nim: `3101240${i % 2 ? 1 : 2}240${i}`,
+      name: `Student Surname 24${i}`,
+      year: 2024,
+      religion: Religion.ISLAM,
+      gender: (i % 2 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 ? 1 : 2),
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 ? lecturerSI[0].id : lecturerTI[0].id), 
+    })
+  };
+  for (let i = 0; i <= 9; i++) {
+    students.push({
+      nim: `3101230${i % 2 ? 1 : 2}230${i}`,
+      name: `Student Surname 23${i}`,
+      year: 2023,
+      religion: Religion.ISLAM,
+      gender: (i % 2 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 ? 1 : 2),
+      statusRegister: StatusRegister.BARU,
+      lecturerId: (i % 2 ? lecturerSI[1].id : lecturerTI[1].id), 
+    })
+  };
+  for (let i = 0; i <= 9; i++) {
+    students.push({
+      nim: `3101220${i % 2 ? 1 : 2}220${i}`,
+      name: `Student Surname 22${i}`,
+      year: 2022,
       religion: Religion.ISLAM,
       gender: (i % 2 ? Gender.PRIA : Gender.WANITA),
       majorId: (i % 2 ? 1 : 2),
@@ -1095,91 +1116,18 @@ async function main() {
   };
   for (let i = 0; i <= 9; i++) {
     students.push({
-      nim: `31012301230${i}`,
-      name: `Student Surname 23${i}`,
-      year: 2023,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: 1,
-      statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 === 0 ? lecturerSI[2].id : lecturerSI[3].id), 
-    })
-  };
-  for (let i = 1; i <= 8; i++) {
-    students.push({
-      nim: `31012201220${i}`,
-      name: `Student Surname 22${i}`,
-      year: 2022,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: 1,
-      statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 === 0 ? lecturerSI[4].id : lecturerSI[0].id), 
-    })
-  };
-  for (let i = 1; i <= 8; i++) {
-    students.push({
-      nim: `31012201210${i}`,
+      nim: `3101210${i % 2 ? 1 : 2}210${i}`,
       name: `Student Surname 21${i}`,
       year: 2021,
       religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: 1,
+      gender: (i % 2 ? Gender.PRIA : Gender.WANITA),
+      majorId: (i % 2 ? 1 : 2),
       statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 === 0 ? lecturerSI[1].id : lecturerSI[2].id), 
+      lecturerId: (i % 2 ? lecturerSI[3].id : lecturerTI[3].id), 
     })
   };
-
   
-  for (let i = 0; i <= 9; i++) {
-    students.push({
-      nim: `31012402240${i}`,
-      name: `Student TSurname 24${i}`,
-      year: 2024,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: 2,
-      statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 === 0 ? lecturerTI[0].id : lecturerTI[1].id), 
-    })
-  };
-  for (let i = 1; i <= 8; i++) {
-    students.push({
-      nim: `31012302230${i}`,
-      name: `Student TSurname 23${i}`,
-      year: 2023,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: 2,
-      statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 === 0 ? lecturerTI[2].id : lecturerTI[3].id), 
-    })
-  };
-  for (let i = 1; i <= 8; i++) {
-    students.push({
-      nim: `31012202220${i}`,
-      name: `Student TSurname 22${i}`,
-      year: 2022,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: 2,
-      statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 === 0 ? lecturerTI[4].id : lecturerTI[0].id), 
-    })
-  };
-  for (let i = 1; i <= 6; i++) {
-    students.push({
-      nim: `31012202210${i}`,
-      name: `Student TSurname 21${i}`,
-      year: 2021,
-      religion: Religion.ISLAM,
-      gender: (i % 2 === 0 ? Gender.PRIA : Gender.WANITA),
-      majorId: 2,
-      statusRegister: StatusRegister.BARU,
-      lecturerId: (i % 2 === 0 ? lecturerTI[1].id : lecturerTI[2].id), 
-    })
-  };
-  const student = await prisma.student.createMany({
+  await prisma.student.createMany({
     data: students,
   })
 };

@@ -61,6 +61,16 @@ const CourseListPage = async (
         courseType: true,
         majorId: true,
         assessmentId: true,
+        isPKL: true,
+        isSkripsi: true,
+        predecessorId: true,
+        predecessor: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+          }
+        },
         major: {
           select: {
             stringCode: true,
