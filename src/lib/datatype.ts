@@ -40,7 +40,7 @@ export interface FormModalProps {
   type: "create" | "update" | "delete" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon" | "revision";
   label?: string,
   data?: any;
-  id?: any;
+  id?: string | number;
 }
 
 export interface FormProps {
@@ -67,7 +67,6 @@ export type PdfType = "reregister"
   | "studentsRegisteredKrs"
   | "studentsUnregisteredKrs" 
   | "studentsTakingThesis" 
-  | "studentsExtendingThesis"
   | "studentsTakingInternship";
 
 export type RecapitulationCardType = "studentsRegisteredKrs"
@@ -75,8 +74,7 @@ export type RecapitulationCardType = "studentsRegisteredKrs"
   | "studentsRegularSore"
   | "studentActiveInactive"
   | "studentsUnregisteredKrs" 
-  | "studentsTakingThesis" 
-  | "studentsExtendingThesis"
+  | "studentsTakingThesis"
   | "studentsTakingInternship";
 
 export interface GeneratePdfProps {

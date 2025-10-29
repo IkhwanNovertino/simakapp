@@ -6,7 +6,7 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     paddingVertical: 32,
     paddingHorizontal: 32,
-    fontSize: "11pt",
+    fontSize: "10pt",
   },
   header: {
     display: "flex",
@@ -76,12 +76,12 @@ const styles = StyleSheet.create({
   },
   tableCellTh: {
     margin: "auto",
-    fontSize: "10pt",
+    fontSize: "9pt",
     fontWeight: "bold",
   },
   tableCellTd: {
     margin: "auto",
-    fontSize: "10pt",
+    fontSize: "9pt",
   },
   footer: {
     width: "100%",
@@ -95,18 +95,17 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     gap: 1,
   }
-
 })
 
 
 const AssessmentPdf = ({ data }: GeneratePdfProps) => {
-  const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
+  // const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
 
   return (
     <Document>
       <Page size={"A4"} style={styles.page}>
         <View style={styles.header}>
-          <Image style={styles.logo} src={imgLogo} />
+          <Image style={styles.logo} src={data.img} />
           <Text style={styles.textHeader}>Sekolah Tinggi Manajemen Informatika dan Komputer (STMIK) Banjarbaru</Text>
           <Text style={styles.textAddress}>Jl. Sultan Adam No. 12 Telp. (0511) 3306839 Banjarmasin</Text>
           <Text style={styles.textAddress}>Jl. Ahmad Yani Km. 33,3 No. 38 Loktabat Telp. (0511) 4782881 Banjarbaru</Text>
@@ -180,7 +179,6 @@ const AssessmentPdf = ({ data }: GeneratePdfProps) => {
                     <View key={assessment.id} style={[styles.tableCol, { width: "8%" }]}>
                       <Text style={styles.tableCellTd}>
                         {grade ? `${grade.score}` : "-"}
-                        {/* {khsDetail ? `${Number(khsDetail.score ?? 0).toFixed(2)}${khsDetail.gradeLetter ? ` (${khsDetail.gradeLetter})` : ''}` : '-'} */}
                       </Text>
                     </View>
                   );

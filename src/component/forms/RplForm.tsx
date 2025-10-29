@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { startTransition, useActionState, useEffect } from "react";
+import { FormEvent, startTransition, useActionState, useEffect } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { RplInputs, RplSchema } from "@/lib/formValidationSchema";
@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-
 
 const RplForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { courses, period } = relatedData;
@@ -48,7 +47,7 @@ const RplForm = ({ setOpen, type, data, relatedData }: FormProps) => {
       router.refresh();
       setOpen(false);
     }
-  }, [state, router, setOpen, type])
+  }, [state, router, setOpen, type, period])
 
   return (
     <>
@@ -130,7 +129,7 @@ const RplForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                     <InputSelect
                       label="Mata Kuliah"
                       name={`khsDetail.${index}.id`}
-                      options={courses.map((item: any) => ({
+                      options={courses.map((item: { course: any }) => ({
                         value: item.course.id,
                         label: `${item.course.code} | ${item.course.name} | ${item.course.sks} SKS`,
                       }))}
@@ -152,7 +151,11 @@ const RplForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                     <InputField
                       label="Bobot"
                       name={`khsDetail.${index}.weight`}
-                      inputProps={{ inputMode: "decimal", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+                      inputProps={
+                        {
+                          inputMode: "decimal",
+                          onInput: (e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+                        }}
                       register={register}
                       error={errors?.khsDetail?.[index]?.weight}
                       required

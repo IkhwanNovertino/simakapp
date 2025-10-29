@@ -74,7 +74,7 @@ const CurriculumForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             error={errors?.majorId}
             placeholder="-- Pilih program studi"
             defaultValue={data?.majorId}
-            options={majors.map((item: any) => ({
+            options={majors.map((item: Record<string, string | number>) => ({
               value: item.id,
               label: item.name,
             }))}

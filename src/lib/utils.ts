@@ -1,4 +1,27 @@
-export const calculatingSKSLimits = async (ipk: number) : Promise<number>  => {
+import React from "react";
+
+interface CourseDetail {
+  id: string;
+  name: string;
+  code: string;
+  sks: number;
+  isPKL: boolean;
+  isSkripsi: boolean;
+}
+
+interface khsDetail {
+  course: CourseDetail;
+  weight: number;
+  gradeLetter: string;
+  status: string;
+}
+
+export const handleNumericInput = (e: React.FormEvent<HTMLInputElement>) => {
+  const target = e.target as HTMLInputElement;
+  target.value = target.value.replace(/[^0-9]/g, '');
+};
+
+export const calculatingSKSLimits = async (ipk: number): Promise<number> => {
 
   if (ipk < 1.5) {
     return 12
@@ -36,7 +59,7 @@ export const getGradeLetter = (finalScore: number): [string, number] => {
   return ["E", 0]
 }
 
-export const getFinalScore = (grade?: any[] ): {finalScore: number, gradeLetter: string, gradeWeight: number} => {
+export const getFinalScore = (grade?: {score: number, percentage: number}[] ): {finalScore: number, gradeLetter: string, gradeWeight: number} => {
 
   if (!grade || grade.length === 0) return {finalScore: 0, gradeLetter: "E", gradeWeight: 0};
   const totalScore = grade.reduce((acc, curr) => {
@@ -62,6 +85,44 @@ export const previousPeriod = async (data: {semesterType: string, year: number})
     semesterType: lastPeriodSemester,
     year: lastPeriodYear,
   }
+}
+
+export const coursesClearing = async (data: {khsDetail: khsDetail[]}[]): Promise<khsDetail[]> => {
+  const courses: {[key: string]: khsDetail} = {};
+  for (const khs of data) {
+    khs?.khsDetail.forEach((detail: khsDetail) => {
+      const idMK = detail?.course?.id;
+      detail.weight = Number(detail.weight);
+      if (!courses[idMK]) {
+        courses[idMK] = detail;
+      }
+    });
+  };
+  return Object.values(courses);
+}
+
+export const courseSorting = async (data: khsDetail[]): Promise<khsDetail[]> => {
+  return data.sort((min: khsDetail, max: khsDetail) => {
+      const x = min.course.name.toLowerCase();
+      const y = max.course.name.toLowerCase();
+      if (x < y) return -1;
+      if (x > y) return 1;
+      return 0;
+    });
+}
+
+export const totalSks = async (data: khsDetail[]): Promise<number> => {
+  return data.map((item: khsDetail) => item.course.sks)
+    .reduce((acc: number, init: number) => acc + init, 0);
+}
+
+export const totalBobot = async (data: khsDetail[]): Promise<number> => {
+  return data.map((item: khsDetail) => item.course.sks * item.weight)
+    .reduce((acc: number, init: number) => acc + init, 0);
+}
+
+export const gpaCalculation = async (data: khsDetail[]): Promise<number> => {
+  return (await totalBobot(data) / await totalSks(data)).toFixed(2) as unknown as number;
 }
 
 const getLatestMonday = (): Date => {
@@ -112,4 +173,25 @@ export const adjustScheduleToCurrentWeek = (
     };
   });
 };
+
+// export const convertLogotoBase64 = async () => {
+//   try {
+//     const logoPath = path.join(process.cwd(), 'public', 'logo.png');
+//     const logoFile = await readFile(logoPath);
+
+//     if (!logoFile) {
+//       throw new AppError("Gagal membaca file logo .png", 400);
+//     }
+
+//     const mimeType = 'image/png';
+    
+//     const logoBase64: string = `data:${mimeType};base64,${logoFile.toString('base64')}`;
+//     return {
+//       success: true,
+//       data: logoBase64,
+//     }
+//   } catch (err) {
+//     throw new AppError("Gagal membaca file logo .png", 400);
+//   }
+// }
 

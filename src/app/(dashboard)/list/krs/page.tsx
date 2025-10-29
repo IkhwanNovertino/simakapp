@@ -6,10 +6,10 @@ import { canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Krs, Lecturer, Period, Prisma, Reregister, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Krs, Lecturer, Period, Prisma, Reregister, Student } from "@/generated/prisma/client";
 
 type KrsDataType = Krs & { student: Student } & { lecturer: Lecturer } & { reregister: Reregister & { period: Period } };
 

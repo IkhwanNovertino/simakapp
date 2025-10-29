@@ -1,6 +1,26 @@
 import ExcelJS from 'exceljs';
+import { Major, Period } from '@/generated/prisma/client';
 
-export async function exportStudentRegularSore({ data }: { data: any }) {
+interface Students {
+  student: {
+    name: string;
+    nim: string;
+    major: Major;
+  },
+  campusType: string;
+}
+
+interface DataStudent {
+  campusType: string;
+  students: Students[];
+}
+
+interface ExportStudentRegularSoreProps {
+  dataPeriod: Period;
+  dataStudents: DataStudent[];
+};
+
+export async function exportStudentRegularSore({ data }: { data: ExportStudentRegularSoreProps }) {
   
   const workbook = new ExcelJS.Workbook();
   // Iterasi data 
@@ -57,8 +77,8 @@ export async function exportStudentRegularSore({ data }: { data: any }) {
       worksheet.getColumn(i + 1).width = w
     });
     
-    dataStudent?.students.forEach((items: any, i: number) => {
-      const rowdata: any = [
+    dataStudent?.students.forEach((items: Students, i: number) => {
+      const rowdata: (string | number)[] = [
         i + 1,
         items?.student?.nim,
         items?.student?.name,

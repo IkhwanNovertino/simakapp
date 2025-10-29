@@ -6,8 +6,8 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Major, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { Major, Prisma } from "@/generated/prisma/client";
 
 type MajorDataType = Major;
 

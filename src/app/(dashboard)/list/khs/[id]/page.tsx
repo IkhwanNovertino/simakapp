@@ -2,8 +2,8 @@
 import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
-import { AnnouncementKhs, Course, KhsDetail } from "@prisma/client";
 import Image from "next/image";
+import { Course, KhsDetail } from "@/generated/prisma/client";
 
 type KhsDetailDataType = KhsDetail & { course: Course };
 
@@ -12,67 +12,83 @@ const KHSDetailPage = async (
 ) => {
   const { id } = await params;
 
-  const [student, khs, khsDetail, totalSKS, totalSKSxNAB, limitSKS] = await prisma.$transaction(async (prisma: any) => {
-    let khs = await prisma.khs.findUnique({
+  const [dataStudent, dataKhs, dataKhsDetail] = await prisma.$transaction(async (prisma: any) => {
+    const data = await prisma.khs.findUnique({
       where: {
         id: id,
       },
       select: {
         student: {
-          include: {
-            major: true,
+          select: {
+            name: true,
+            nim: true,
+            photo: true,
+            major: {
+              select: { name: true, }
+            },
           }
         },
         semester: true,
-        period: true,
+        period: {
+          select: {
+            name: true,
+          }
+        },
         ips: true,
         maxSks: true,
         isRPL: true,
-      }
-    });
-    khs = {
-      ...khs,
-      ips: Number(khs.ips)
-    }
-    const student = khs?.student;
-
-    const khsDetailRaw = await prisma.khsDetail.findMany({
-      where: {
-        khsId: id,
-        isLatest: true,
-      },
-      include: {
-        course: true,
+        khsDetail: {
+          where: {
+            isLatest: true,
+            course: {
+              isPKL: false
+            }
+          },
+          select: {
+            id: true,
+            course: {
+              select: {
+                name: true,
+                code: true,
+                sks: true,
+                isPKL: true,
+                isSkripsi: true,
+              },
+            },
+            weight: true,
+            gradeLetter: true,
+            status: true,
+          },
+          orderBy: [
+            { course: { code: 'asc' } }
+          ]
+        }
       }
     })
-    let khsDetail;
-    let totalSKS = 0;
-    let totalSKSxNAB = 0;
-    let limitSKS = `0`;
-    if (khsDetailRaw.filter((el: any) => (el.status === AnnouncementKhs.DRAFT || el.status === AnnouncementKhs.SUBMITTED)).length === 0) {
-      khsDetail = khsDetailRaw.map((items: any) => ({
-        ...items,
-        finalScore: Number(items.finalScore),
-        weight: Number(items.weight),
-      }))
-      totalSKS = khsDetailRaw
-        .map((item: any) => item.course.sks)
-        .reduce((acc: any, init: any) => acc + init, 0);
-      totalSKSxNAB = khsDetailRaw
-        .map((item: any) => item.course.sks * item.weight)
-        .reduce((acc: any, init: any) => acc + init, 0);
-      limitSKS = `${khs.maxSks - 1} - ${khs.maxSks}`;
-    } else {
-      khsDetail = khsDetailRaw.map((items: any) => ({
-        ...items,
-        finalScore: 0,
-        weight: 0,
-        gradeLetter: "E",
-      }))
-      khs.ips = 0
-    }
 
-    return [student, khs, khsDetail, totalSKS, totalSKSxNAB, limitSKS]
+    data.ips = Number(data?.ips);
+    data?.khsDetail.forEach((detail: any) => {
+      detail.weight = Number(detail?.weight)
+    });
+    const totalSks = data?.khsDetail.map((item: any) => item.course.sks)
+      .reduce((acc: any, init: any) => acc + init, 0);
+    const totalSksNab = data?.khsDetail
+      .map((item: any) => item.course.sks * item.weight)
+      .reduce((acc: any, init: any) => acc + init, 0);
+
+    const dataStudent = data?.student;
+    const dataKhs = {
+      semester: data?.semester,
+      ips: data?.ips,
+      maxSks: data?.maxSks,
+      period: data?.period?.name,
+      isRPL: data?.isRPL,
+      totalSks: totalSks,
+      totalSksNab: totalSksNab,
+    }
+    const dataKhsDetail = data?.khsDetail;
+
+    return [dataStudent, dataKhs, dataKhsDetail]
   })
 
   const columns = [
@@ -136,7 +152,7 @@ const KHSDetailPage = async (
         <div className="bg-primary py-6 px-4 rounded-md flex-1 flex gap-4 w-full lg:w-3/4">
           <div className="hidden md:inline md:w-1/4">
             <Image
-              src={student?.photo ? `/api/avatar?file=${student?.photo}` : '/avatar.png'}
+              src={dataStudent?.photo ? `/api/avatar?file=${dataStudent?.photo}` : '/avatar.png'}
               alt=""
               width={144}
               height={144}
@@ -145,45 +161,43 @@ const KHSDetailPage = async (
           </div>
           <div className="w-full md:w-3/4 flex flex-col justify-between gap-4">
             <header>
-              <h1 className="text-xl font-semibold">{student?.name || ""}</h1>
+              <h1 className="text-xl font-semibold">{dataStudent?.name || ""}</h1>
               <div className="h-0.5 w-full bg-gray-300" />
               <p className="text-sm text-slate-600 font-medium mt-1">
-                {student.nim} | S1-{student.major.name}
+                {dataStudent.nim} | S1-{dataStudent.major.name}
               </p>
             </header>
             <div className="flex items-center justify-between gap-2 flex-wrap text-xs font-medium">
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="basis-16">Semester</span>
                 <span>:</span>
-                <span>{khs.semester}</span>
+                <span>{dataKhs.semester}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="basis-16">Thn. Akad</span>
                 <span >:</span>
-                <span>{khs.period?.name}</span>
+                <span>{dataKhs.period}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="basis-16">IPK</span>
                 <span>:</span>
-                <span>{khs?.ips ?? 0}</span>
+                <span>{dataKhs?.ips ?? 0}</span>
               </div>
               <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="basis-16">Max SKS</span>
                 <span>:</span>
-                <span>{khs.maxSks ?? 0}</span>
+                <span>{dataKhs.maxSks ?? 0}</span>
               </div>
             </div>
           </div>
         </div>
         <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md">
-          {totalSKS > 0 && (
-            <ButtonPdfDownload id={id} type="khs">
-              <div className={`w-full py-4 gap-2 flex items-center justify-center rounded-md bg-primary-dark hover:bg-primary-dark/90`}>
-                <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={28} height={28} />
-                <span className="text-white font-medium text-sm">CETAK KHS</span>
-              </div>
-            </ButtonPdfDownload>
-          )}
+          <ButtonPdfDownload id={id} type="khs">
+            <div className={`w-full py-4 gap-2 flex items-center justify-center rounded-md bg-primary-dark hover:bg-primary-dark/90`}>
+              <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={28} height={28} />
+              <span className="text-white font-medium text-sm">CETAK KHS</span>
+            </div>
+          </ButtonPdfDownload>
         </div>
       </div>
       {/* BOTTOM */}
@@ -193,24 +207,20 @@ const KHSDetailPage = async (
             <h1 className="text-lg font-semibold">Kartu Hasil Studi</h1>
           </div>
         </div>
-        <Table columns={columns} renderRow={renderRow} data={khsDetail} />
-        {khs.isRPL === false && (
+        <Table columns={columns} renderRow={renderRow} data={dataKhsDetail} />
+        {dataKhs.isRPL === false && (
           <div className="mt-4">
             <div className="flex items-center p-2 mx-2 justify-start gap-8">
               <h1 className="text-sm font-bold md:w-40">Jumlah SKS</h1>
-              <h3 className="text-sm font-medium">{totalSKS}</h3>
+              <h3 className="text-sm font-medium">{dataKhs?.totalSks}</h3>
             </div>
             <div className="flex items-center p-2 mx-2 justify-start gap-8">
               <h1 className="text-sm font-bold md:w-40">Jumlah SKSxNAB</h1>
-              <h3 className="text-sm font-medium">{totalSKSxNAB}</h3>
+              <h3 className="text-sm font-medium">{dataKhs?.totalSksNab}</h3>
             </div>
             <div className="flex items-center p-2 mx-2 justify-start gap-8">
               <h1 className="text-sm font-bold md:w-40">IPK</h1>
-              <h3 className="text-sm font-medium">{khs.ips}</h3>
-            </div>
-            <div className="flex items-center p-2 mx-2 justify-start gap-8">
-              <h1 className="text-sm font-bold md:w-40">max. SKS</h1>
-              <h3 className="text-sm font-medium">{limitSKS}</h3>
+              <h3 className="text-sm font-medium">{dataKhs.ips}</h3>
             </div>
           </div>
         )}

@@ -5,7 +5,7 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 
 const GradeListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }

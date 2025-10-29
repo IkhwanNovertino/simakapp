@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useActionState, useEffect, useRef } from "react";
+import { useActionState, useCallback, useEffect, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { createReregisterDetail, updateReregisterDetail } from "@/lib/action";
@@ -13,8 +13,6 @@ import moment from "moment";
 import { status } from "@/lib/setting";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { CampusType } from "@prisma/client";
-
 
 const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { students, lecturers, role } = relatedData;
@@ -32,9 +30,9 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
   const action = type === "create" ? createReregisterDetail : updateReregisterDetail;
   const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
-  const onValid = () => {
+  const onValid = useCallback(() => {
     formRef.current?.requestSubmit()
-  }
+  }, [])
 
   const router = useRouter();
   useEffect(() => {
@@ -196,7 +194,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
             control={control}
             placeholder="--pilih Status"
             error={errors.semesterStatus}
-            options={status.map((status: any) => ({
+            options={status.map((status: string) => ({
               value: status,
               label: status,
             }))}
@@ -211,10 +209,10 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
             placeholder="--pilih Status"
             error={errors.campusType}
             options={[
-              { value: CampusType.BJB, label: "Banjarbaru" },
-              { value: CampusType.BJM, label: "Banjarmasin" },
-              { value: CampusType.ONLINE, label: "Online" },
-              { value: CampusType.SORE, label: "Sore" },
+              { value: "BJB", label: "Banjarbaru" },
+              { value: "BJM", label: "Banjarmasin" },
+              { value: "ONLINE", label: "Online" },
+              { value: "SORE", label: "Sore" },
             ]}
           />
         </div>

@@ -1,6 +1,28 @@
 import ExcelJS from 'exceljs';
+import { Period } from '@/generated/prisma/client';
 
-export async function exportStudentRegisteredKrs({ data }: { data: any }) {
+interface Students {
+  student: { nim: string; name: string; major: { stringCode: string } };
+  lecturer: { name: string };
+  reregisterDetail: { semester: number, lecturer: { name: string } };
+  ips: number;
+  totalSksTaken: number;
+  isStatusForm: string;
+}
+
+interface Major {
+  id: number, name: string, stringCode: string
+}
+  
+interface ExportStudentRegisteredKrsProps {
+  dataPeriod: Period;
+  dataStudentByMajor: {
+    major: Major;
+    students: Students[];
+  }[]
+}
+
+export async function exportStudentRegisteredKrs({ data }: { data: ExportStudentRegisteredKrsProps }) {
   
   const workbook = new ExcelJS.Workbook();
   // Iterasi data 
@@ -69,8 +91,8 @@ export async function exportStudentRegisteredKrs({ data }: { data: any }) {
       worksheet.getColumn(i + 1).width = w
     });
     
-    dataStudent?.students.forEach((items: any, i: number) => {
-      const rowdata: any = [
+    dataStudent?.students.forEach((items: Students, i: number) => {
+      const rowdata: (string | number )[] = [
         i + 1,
         items?.student?.nim,
         items?.student?.name,
@@ -78,7 +100,7 @@ export async function exportStudentRegisteredKrs({ data }: { data: any }) {
         items?.lecturer?.name,
         items?.reregisterDetail?.semester,
         items?.ips,
-        items?.maxSks,
+        items?.totalSksTaken,
         items?.isStatusForm === "APPROVED" ? "ACC" : "Belum ACC"
       ];
 

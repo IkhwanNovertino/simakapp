@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { startTransition, useActionState, useEffect } from "react";
+import { FormEvent, startTransition, useActionState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { krsOverride, KrsOverrideInputs } from "@/lib/formValidationSchema";
@@ -123,7 +123,7 @@ const KrsForm = ({ setOpen, type, data }: FormProps) => {
               {...register("ips_allowed")}
               inputMode="decimal"
               defaultValue={data?.ips_allowed}
-              onInput={(e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '')}
+              onInput={(e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')}
               onChange={async (e) => {
                 const value = e.target.value;
                 setValue("sks_allowed", await calculatingSKSLimits(Number(value)));
@@ -140,7 +140,13 @@ const KrsForm = ({ setOpen, type, data }: FormProps) => {
               name="sks_allowed"
               defaultValue={data?.sks_allowed}
               register={register}
-              inputProps={{ readOnly: true, inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+              inputProps={
+                {
+                  readOnly: true,
+                  inputMode: "numeric",
+                  onInput: (e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+                }
+              }
               required={true}
               error={errors?.sks_allowed}
             />

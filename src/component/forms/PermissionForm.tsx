@@ -64,7 +64,7 @@ const PermissionForm = ({ setOpen, type, data }: FormProps) => {
             control={control}
             error={errors?.action}
             required={true}
-            options={actionPermission.map((item: any) => ({
+            options={actionPermission.map((item: string) => ({
               value: item,
               label: item
             }))}
@@ -78,7 +78,7 @@ const PermissionForm = ({ setOpen, type, data }: FormProps) => {
             control={control}
             error={errors?.resource}
             required={true}
-            options={resourceData.map((item: any) => ({
+            options={resourceData.map((item: { [key: string]: string }) => ({
               value: item.pathname,
               label: item.nama
             }))}

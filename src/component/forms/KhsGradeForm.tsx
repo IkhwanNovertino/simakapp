@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { startTransition, useActionState, useEffect } from "react";
+import { FormEvent, startTransition, useActionState, useEffect } from "react";
 import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import InputField from "../InputField";
 import { useRouter } from "next/navigation";
@@ -112,7 +112,10 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
                   label={`Nilai ${field.assessmentDetail?.grade?.name || ""}`}
                   name={`khsGrade.${index}.score`}
                   register={register}
-                  inputProps={{ inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+                  inputProps={{
+                    inputMode: "numeric",
+                    onInput: (e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+                  }}
                   error={errors?.khsGrade?.[index]?.score}
                   required
                 />
@@ -137,20 +140,12 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
       </span>
       <div className="flex justify-between flex-wrap gap-4">
         <div className="w-4/12">
-          {/* <InputField
-            label="Nilai Angka"
-            name="finalScore"
-            register={register}
-            inputProps={{ inputMode: "decimal", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
-            error={errors?.finalScore}
-            required
-          /> */}
           <label className={"text-xs text-gray-500 after:content-['_(*)'] after:text-red-400"}>{"Nilai Akhir"}</label>
           <input
             type="text"
             {...register("finalScore")}
             inputMode="decimal"
-            onInput={(e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '')}
+            onInput={(e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')}
             onChange={(e) => {
               const value = e.target.value;
               const gradeLetter = getGradeLetter(Number(value));
@@ -178,7 +173,11 @@ const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {
             label="Bobot"
             name="weight"
             register={register}
-            inputProps={{ readOnly: true, inputMode: "decimal", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+            inputProps={{
+              readOnly: true,
+              inputMode: "decimal",
+              onInput: (e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+            }}
             error={errors?.weight}
             required
           />

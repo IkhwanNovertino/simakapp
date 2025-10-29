@@ -100,7 +100,7 @@ const RoleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             placeholder="-- pilih hak akses"
             required={true}
             isMulti={true}
-            options={permissions.map((item: any) => ({
+            options={permissions.map((item: Record<string, string | number>) => ({
               value: item.id,
               label: item.name
             }))}

@@ -102,13 +102,13 @@ const styles = StyleSheet.create({
 })
 
 const KhsPdf = ({ data }: GeneratePdfProps) => {
-  const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
+  // const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
 
   return (
     <Document>
       <Page size={"A4"} style={styles.page}>
         <View style={styles.header}>
-          <Image style={styles.logo} src={imgLogo} />
+          <Image style={styles.logo} src={data.img} />
           <View style={styles.sectionTextHeader}>
             <Text style={styles.textHeader}>Kartu Hasil Studi</Text>
             <Text style={[styles.textAddress, { fontWeight: "bold" }]}>Sekolah Tinggi Manajemen Informatika dan Komputer (STMIK) Banjarbaru</Text>

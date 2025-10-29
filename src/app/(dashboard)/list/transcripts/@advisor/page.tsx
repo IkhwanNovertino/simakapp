@@ -7,10 +7,10 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { Lecturer, Major, Prisma, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Lecturer, Major, Prisma, Student } from "@/generated/prisma/client";
 
 type StudentDataType = Student & { major: Major } & { lecturer: Lecturer };
 
@@ -165,7 +165,7 @@ const TranskipAdvisorPage = async (
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-2">
               {canViewData && (
-                <Link href={`/list/transkip/${item.id}`}>
+                <Link href={`/list/transcripts/${item.id}`}>
                   <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
                     <Image src="/icon/view.svg" alt="" width={20} height={20} />
                   </button>

@@ -92,9 +92,9 @@ const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => 
             placeholder="Pilih Waktu Pelajaran"
             required={true}
             error={errors?.time}
-            options={time.map((item: any) => ({
+            options={time.map((item: { id: string, timeStart: Date, timeFinish: Date }) => ({
               value: item.id,
-              label: `${new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeStart || Date.now())} - ${new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeFinish || Date.now())}`,
+              label: `${new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeStart)} - ${new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeFinish)}`,
             }))}
           />
         </div>
@@ -130,7 +130,7 @@ const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => 
                 placeholder="Pilih Kelas dan Mata Kuliah"
                 className="text-sm rounded-md react-select-container"
                 classNamePrefix="react-select"
-                onChange={(selected: any) => {
+                onChange={(selected) => {
                   field.onChange(selected ? selected.value : "");
                 }}
                 value={

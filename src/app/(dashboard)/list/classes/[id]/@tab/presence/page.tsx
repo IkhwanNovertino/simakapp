@@ -7,7 +7,7 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { AcademicClass, AcademicClassDetail, Presence, PresenceDetail, Prisma, Student, } from "@prisma/client";
+import { AcademicClass, AcademicClassDetail, Presence, PresenceDetail, Prisma, Student } from "@/generated/prisma/client";
 
 type PresenceDetailDataType = AcademicClassDetail
   & { academicClass: AcademicClass }

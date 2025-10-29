@@ -3,6 +3,7 @@ import CountChart from "./CountChart";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { RecapitulationCardType } from "@/lib/datatype";
+import { ReregisterDetail } from "@/generated/prisma/client";
 
 interface RecapitulationCountChartContainerProps {
   periodId: string,
@@ -42,8 +43,8 @@ const RecapitulationCountChartContainer = async ({ periodId, title, type }: Reca
     });
 
     // dac = dataActiveCount && dic = dataInactiveCount
-    valA = data.filter((d: any) => d.semesterStatus === "AKTIF").length;
-    valB = data.filter((d: any) => d.semesterStatus !== "AKTIF").length;
+    valA = data.filter((d: ReregisterDetail) => d.semesterStatus === "AKTIF").length;
+    valB = data.filter((d: ReregisterDetail) => d.semesterStatus !== "AKTIF").length;
   } else if (type === "studentsRegularSore") {
     data = await prisma.reregisterDetail.findMany({
       where: {
@@ -56,8 +57,8 @@ const RecapitulationCountChartContainer = async ({ periodId, title, type }: Reca
       },
     });
 
-    valA = data.filter((d: any) => d.campusType !== 'SORE').length;
-    valB = data.filter((d: any) => d.campusType === 'SORE').length;
+    valA = data.filter((d: ReregisterDetail) => d.campusType !== 'SORE').length;
+    valB = data.filter((d: ReregisterDetail) => d.campusType === 'SORE').length;
   }
 
   return (

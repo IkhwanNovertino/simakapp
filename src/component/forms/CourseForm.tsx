@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { startTransition, useActionState, useEffect } from "react";
+import { FormEvent, startTransition, useActionState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { CourseInputs, courseSchema } from "@/lib/formValidationSchema";
@@ -13,10 +13,8 @@ import { courseType } from "@/lib/setting";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
 
-
 const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors, courses, assessmentType } = relatedData;
-
   const {
     register,
     handleSubmit,
@@ -76,7 +74,10 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             register={register}
             error={errors?.sks}
             required={true}
-            inputProps={{ pattern: "[0-9]*", inputMode: "numeric" }}
+            inputProps={{
+              inputMode: "numeric",
+              onInput: (e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+            }}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
@@ -99,7 +100,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             control={control}
             defaultValue={data?.assessmentId}
             error={errors?.assessmentId}
-            options={assessmentType.map((item: any) => ({
+            options={assessmentType.map((item: Record<string, string | number>) => ({
               value: item.id,
               label: item.name,
             }))}
@@ -132,7 +133,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                 {...field}
                 options={courses.map((course: any) => ({
                   value: course.id,
-                  label: course.name,
+                  label: `(${course.code}) ${course.name}`,
                 }))}
                 isClearable
                 placeholder="-- Pilih mata kuliah terdahulu"
@@ -143,7 +144,7 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                   courses
                     .map((course: any) => ({
                       value: course.id,
-                      label: course.name,
+                      label: `(${course.code})${course.name}`,
                     }))
                     .find((option: any) => option.value === field.value) || null
                 }
@@ -156,33 +157,20 @@ const CourseForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             </p>
           )}
         </div>
-        <div className="flex flex-col gap-2 w-full md:w-3/12">
-          <label className="text-xs text-gray-500 after:content-['_(*)'] after:text-red-400">Kategori Matkul</label>
-          <select
-            className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full overflow-hidden"
-            {...register("courseType")}
-            size={3}
+        <div className="flex flex-col gap-2 w-full md:w-6/12">
+          <InputSelect
+            label="Kategori Matkul"
+            name="courseType"
             defaultValue={data?.courseType}
-          >
-            <option value="" className="text-sm py-0.5">
-              -- Pilih kategori
-            </option>
-            {courseType.map((item: string) => (
-              <option
-                value={item}
-                key={item}
-                className="text-sm py-0.5"
-              >
-                {item}
-              </option>
-            ))}
-
-          </select>
-          {errors.courseType?.message && (
-            <p className="text-xs text-red-400">
-              {errors.courseType.message.toString()}
-            </p>
-          )}
+            control={control}
+            error={errors?.courseType}
+            placeholder="-- pilih kategori matkul"
+            required={true}
+            options={courseType.map((item: string) => ({
+              value: item,
+              label: item,
+            }))}
+          />
         </div>
         <div className="flex flex-col items-start gap-2 w-full md:w-5/12">
           <label className="text-xs text-gray-500">Mata Kuliah PKL atau Skripsi</label>

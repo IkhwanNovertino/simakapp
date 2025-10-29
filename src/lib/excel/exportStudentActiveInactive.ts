@@ -1,6 +1,24 @@
 import ExcelJS from 'exceljs';
+import { Major, Period } from '@/generated/prisma/client';
 
-export async function exportStudentActiveInactive({ data }: { data: any }) {
+interface Students {
+  student: {
+    name: string;
+    nim: string;
+    major: Major;
+  },
+  semesterStatus: string;
+}
+
+interface ExportStudentActiveInactiveProps {
+  dataPeriod: Period;
+  dataStudentByMajor: {
+    major: Major;
+    students: Students[];
+  }[];
+}
+
+export async function exportStudentActiveInactive({ data }: { data: ExportStudentActiveInactiveProps }) {
   
   const workbook = new ExcelJS.Workbook();
   // Iterasi data 
@@ -28,7 +46,7 @@ export async function exportStudentActiveInactive({ data }: { data: any }) {
     
     worksheet.mergeCells("A3:C3")
     const subTitleCellA3 = worksheet.getCell('A3')
-    subTitleCellA3.value = `PROGRAM STUDI ${dataStudent?.major?.name.toUpperCase()}`
+    subTitleCellA3.value = `PROGRAM STUDI ${dataStudent?.major?.name?.toUpperCase()}`
     subTitleCellA3.font = { size: 12, bold: true }
     subTitleCellA3.alignment = { vertical: 'middle', horizontal: 'center' }
 
@@ -38,8 +56,8 @@ export async function exportStudentActiveInactive({ data }: { data: any }) {
     subTitleCellA4.font = { size: 12, bold: true }
     subTitleCellA4.alignment = { vertical: 'middle', horizontal: 'center' }
 
-    const studentActive = dataStudent?.students.filter((student: any) => student.semesterStatus === 'AKTIF');
-    const studentInactive = dataStudent?.students.filter((student: any) => student.semesterStatus !== 'AKTIF');
+    const studentActive = dataStudent?.students.filter((student: Students) => student.semesterStatus === 'AKTIF');
+    const studentInactive = dataStudent?.students.filter((student: Students) => student.semesterStatus !== 'AKTIF');
     const students = [...studentActive, ...studentInactive];
     worksheet.addRow([])
     const headerSI = worksheet.addRow(headerTable);
@@ -67,8 +85,8 @@ export async function exportStudentActiveInactive({ data }: { data: any }) {
       worksheet.getColumn(i + 1).width = w
     });
 
-    students.forEach((items: any, i: number) => {
-      const rowdata: any = [
+    students.forEach((items: Students, i: number) => {
+      const rowdata: (string | number)[] = [
         i + 1,
         items?.student?.nim,
         items?.student?.name,

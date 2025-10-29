@@ -1,92 +1,81 @@
-import { prisma } from "../prisma";
 import ExcelJS from "exceljs";
 
-export async function exportAssessmentTemplate(academicClassId: string) {
-  const academicClass = await prisma.academicClass.findUnique({
-    where: { id: academicClassId },
-    select: {
-      course: {
-        include: {
-          assessment: {
-            include: {
-              assessmentDetail: {
-                include: {
-                  grade: true,
-                },
-                orderBy: {
-                  seq_number: 'desc',
-                }
-              },
-            },
-          },
-          major: {
-            select: {
-              id: true,
-              name: true,
-            },
-          }
-        },
-      },
-      academicClassDetail: true,
-      lecturer: {
-        select: {
-          id: true,
-          name: true,
-        },
-      },
-      name: true,
-    },
-  });
+type Grade = {
+  id: string;
+  name: string;
+  acronym: string;
+};
 
-  const khsDetails = await prisma.khsDetail.findMany({
-    where: {
-      courseId: academicClass?.course?.id,
-      khs: {
-        student: {
-          id: {
-            in: academicClass?.academicClassDetail.map((detail: any) => detail.studentId) || [],
-          }
-        },
-        periodId: academicClass?.periodId,
-      },
-    },
-    include: {
-      khs: {
-        include: {
-          student: {
-            select: { id: true, name: true, nim: true }
-          },
-        }
-      },
-      khsGrade: {
-        include: {
-          assessmentDetail: {
-            include: {
-              grade: true,
-            },
-          },
-        },
-        orderBy: {
-          assessmentDetail: { seq_number: 'desc' }
-        },
-      },
-    },
-    orderBy: [
-      {khs: {student: {nim: 'asc'}}}
-    ]
-  });
+type AssessmentDetail = {
+  id: string;
+  percentage: number;
+  grade: Grade;
+}
 
-  const assessmentDetails = academicClass?.course.assessment?.assessmentDetail || [];
+type Course = {
+  id: string;
+  code: string;
+  name: string;
+  major: {
+    id: string;
+    name: string;
+  };
+  assessment: {
+    name: string;
+    assessmentDetail: AssessmentDetail[];
+  };
+}
+
+type KhsGrade = {
+  id: string;
+  assessmentDetailId: string;
+  assessmentDetail: AssessmentDetail;
+  score: number;
+  percentage: number;
+}
+
+interface AcademicClass {
+  id: string;
+  name: string;
+  course: Course;
+  lecturer: {
+    name: string;
+  };
+  assessment: {
+    assessmentDetail: AssessmentDetail[];
+  };
+  period: {
+    id: string;
+    name: string;
+  }
+}
+
+interface KhsDetail {
+  id: string;
+  finalScore: number;
+  gradeLetter: string;
+  khs: {
+    student: {
+      id: string;
+      name: string;
+      nim: string;
+    }
+  };
+  khsGrade: KhsGrade[];
+}
+
+export async function exportAssessmentTemplate(data: { academicClass: AcademicClass; khsDetails: KhsDetail[] }) {
+  const assessmentDetails = data?.academicClass?.course.assessment?.assessmentDetail || [];
 
   const workbook = new ExcelJS.Workbook();
-  const worksheet = workbook.addWorksheet(`${academicClass?.course.code}-${academicClass?.course?.name}`);
+  const worksheet = workbook.addWorksheet(`${data?.academicClass?.course.code}-${data?.academicClass?.course?.name.replace(/[*?:\\/\[\]]/g, ' ')}`);
   worksheet.properties.defaultRowHeight = 25;
   // SET HEADERS
   const headersRow1 = [
     { header: 'no', key: 'no' },
     { header: 'nim', key: 'nim' },
     { header: 'name', key: 'name' },
-    ...assessmentDetails.map((detail: any) => ({
+    ...assessmentDetails.map((detail: AssessmentDetail) => ({
       header: detail.grade.name ?? "Unknown",
       key: detail.grade.id,
     })),
@@ -101,7 +90,7 @@ export async function exportAssessmentTemplate(academicClassId: string) {
     'No',
     'NIM',
     "Nama Mahasiswa",
-    ...assessmentDetails.map((detail: any) => `${detail.grade?.name} (${detail?.percentage}%)` || "Unknown"),
+    ...assessmentDetails.map((detail: AssessmentDetail) => `${detail.grade?.name} (${detail?.percentage}%)` || "Unknown"),
     "Nilai Akhir",
     "Abs",
     "uids",
@@ -154,7 +143,7 @@ export async function exportAssessmentTemplate(academicClassId: string) {
   matkul.alignment = { vertical: 'middle' }
   
   const matkulField = worksheet.getCell('C6')
-  matkulField.value = `: ${academicClass?.course?.name.toUpperCase()}`
+  matkulField.value = `: ${data?.academicClass?.course?.name.toUpperCase()}`
   matkulField.font = { size: 11, }
   matkulField.alignment = { vertical: 'middle'}
   
@@ -167,7 +156,7 @@ export async function exportAssessmentTemplate(academicClassId: string) {
   
   worksheet.mergeCells("F6:K6")
   const lecturerField = worksheet.getCell('F6')
-  lecturerField.value = `: ${academicClass?.lecturer?.name.toUpperCase()}`
+  lecturerField.value = `: ${data?.academicClass?.lecturer?.name.toUpperCase()}`
   lecturerField.font = { size: 11, }
   lecturerField.alignment = { vertical: 'middle'}
   
@@ -179,7 +168,7 @@ export async function exportAssessmentTemplate(academicClassId: string) {
   prodi.alignment = { vertical: 'middle' }
   
   const prodiField = worksheet.getCell('C7')
-  prodiField.value = `: ${academicClass?.course?.major?.name.toUpperCase()}`
+  prodiField.value = `: ${data?.academicClass?.course?.major?.name.toUpperCase()}`
   prodiField.font = { size: 11, }
   prodiField.alignment = { vertical: 'middle'}
   
@@ -192,7 +181,7 @@ export async function exportAssessmentTemplate(academicClassId: string) {
   
   worksheet.mergeCells("F7:K7")
   const academicClassField = worksheet.getCell('F7')
-  academicClassField.value = `: ${academicClass?.name.toUpperCase()}`
+  academicClassField.value = `: ${data?.academicClass?.name.toUpperCase()}`
   academicClassField.font = { size: 11, }
   academicClassField.alignment = { vertical: 'middle' }
   
@@ -273,16 +262,16 @@ export async function exportAssessmentTemplate(academicClassId: string) {
   const uidsColumnsIndex = headers.indexOf('uids') + 1;
   const finalScoreColumnsIndex = headers.indexOf('Nilai Akhir') + 1;
   const absColumnsIndex = headers.indexOf('Abs') + 1;
-  const assessmentDetailIndex = assessmentDetails.map((_: any, i: number) => i + 3)
+  const assessmentDetailIndex = assessmentDetails.map((_, i: number) => i + 3)
   
 
-  khsDetails.forEach((items: any, i: number) => {
-    const rowdata: any = [
+  data?.khsDetails.forEach((items: KhsDetail, i: number) => {
+    const rowdata: (string | number)[] = [
       i + 1,
       items.khs.student.nim,
       items.khs.student.name.toUpperCase(),
-      ...assessmentDetails.map((assessmentDetail: any) => {
-        items.khsGrade.find((g: any) => g.assessmentDetailId === assessmentDetail.id);
+      ...assessmentDetails.map((assessmentDetail: AssessmentDetail) => {
+        items.khsGrade.find((g: KhsGrade) => g.assessmentDetailId === assessmentDetail.id);
         return 0;
       }),
       0,
@@ -314,7 +303,7 @@ export async function exportAssessmentTemplate(academicClassId: string) {
     });
 
     // finalScore & Abs formula
-    worksheet.eachRow((row, rowNumber) => {
+    worksheet.eachRow((_, rowNumber) => {
       if (rowNumber >= 12) {
         // finalScore
         const finalScoreColumns = `${strColumn[finalScoreColumnsIndex - 1]}${rowNumber}`;
@@ -351,7 +340,7 @@ export async function exportAssessmentTemplate(academicClassId: string) {
     })
   });
 
-  await worksheet.protect(`${academicClass?.course.code}`, {
+  await worksheet.protect(`${data?.academicClass?.course.code}`, {
     selectLockedCells: true,
     selectUnlockedCells: true,
     formatCells: false,

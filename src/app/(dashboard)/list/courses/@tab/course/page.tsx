@@ -7,8 +7,8 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Course, Major, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { Course, Major, Prisma } from "@/generated/prisma/client";
 
 type CourseDataType = Course & { major: Major };
 
@@ -53,11 +53,28 @@ const CourseListPage = async (
   const [data, count, dataFilter] = await prisma.$transaction([
     prisma.course.findMany({
       where: query,
-      include: {
-        major: {
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        sks: true,
+        courseType: true,
+        majorId: true,
+        assessmentId: true,
+        isPKL: true,
+        isSkripsi: true,
+        predecessorId: true,
+        predecessor: {
           select: {
             id: true,
-            name: true
+            code: true,
+            name: true,
+          }
+        },
+        major: {
+          select: {
+            stringCode: true,
+            name: true,
           },
         },
       },
@@ -81,18 +98,13 @@ const CourseListPage = async (
       className: "px-2 md:px-4",
     },
     {
-      header: "Kode",
-      accessor: "kode",
-      className: "hidden lg:table-cell",
+      header: "Prodi",
+      accessor: "prodi",
+      className: "hidden md:table-cell",
     },
     {
       header: "SKS",
       accessor: "sks",
-      className: "hidden md:table-cell",
-    },
-    {
-      header: "Program Studi",
-      accessor: "program studi",
       className: "hidden md:table-cell",
     },
     {
@@ -109,8 +121,8 @@ const CourseListPage = async (
     >
       <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
         <div className="flex flex-col col-span-5 items-start">
-          <p className="flex lg:hidden">{item.code}</p>
           <h3 className="font-semibold">{item.name}</h3>
+          <p className="font-medium text-xs text-gray-700">{item.code}</p>
           <p className="flex md:hidden">{item.sks} sks</p>
         </div>
         <div className="flex items-center justify-end gap-2 md:hidden ">
@@ -122,9 +134,8 @@ const CourseListPage = async (
           </ModalAction>
         </div>
       </td>
-      <td className="hidden lg:table-cell">{item.code}</td>
+      <td className="hidden md:table-cell capitalize">{item.major?.stringCode}</td>
       <td className="hidden md:table-cell">{item.sks}</td>
-      <td className="hidden md:table-cell capitalize">{item.major?.name}</td>
       <td>
         <div className="hidden md:flex items-center gap-2">
           {canUpdateData && <FormContainer table="course" type="update" data={item} />}

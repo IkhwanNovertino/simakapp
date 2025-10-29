@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -187,9 +188,8 @@ model Operator {
   id         String  @id @default(uuid())
   name       String?
   department String?
-
-  userId String? @unique
-  user   User?   @relation(fields: [userId], references: [id], onDelete: Restrict)
+  userId     String? @unique
+  user       User?   @relation(fields: [userId], references: [id], onDelete: Restrict)
 
   @@map("sb25_operators")
 }
@@ -379,8 +379,6 @@ model AcademicClassDetail {
   academicClass   AcademicClass?   @relation(fields: [academicClassId], references: [id], onDelete: Cascade)
   studentId       String?
   student         Student?         @relation(fields: [studentId], references: [id], onDelete: Restrict)
-  gradeLetter     String?
-  gradeNumber     Decimal?
   presenceDetail  PresenceDetail[]
 
   @@map("sb25_academic_class_detail")
@@ -474,7 +472,7 @@ model KhsDetail {
   khs         Khs             @relation(fields: [khsId], references: [id], onDelete: Cascade)
   courseId    String
   course      Course          @relation(fields: [courseId], references: [id], onDelete: Restrict, onUpdate: Restrict)
-  finalScore  Decimal         @default(0) @db.Decimal(4, 2)
+  finalScore  Decimal         @default(0) @db.Decimal(5, 2)
   weight      Decimal         @default(0) @db.Decimal(2, 1)
   gradeLetter String          @default("E")
   status      AnnouncementKhs @default(DRAFT)

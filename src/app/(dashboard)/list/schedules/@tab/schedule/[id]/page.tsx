@@ -4,7 +4,7 @@ import ModalAction from "@/component/ModalAction";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
-import { AcademicClass, Course, Day, Lecturer, Major, Prisma, Room, ScheduleDetail, Time } from "@prisma/client";
+import { AcademicClass, Course, Day, Lecturer, Major, Prisma, Room, ScheduleDetail, Time } from "@/generated/prisma/client";
 
 type ScheduleDetailDataType =
   ScheduleDetail & { time: Time }

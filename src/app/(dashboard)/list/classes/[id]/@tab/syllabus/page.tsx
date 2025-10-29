@@ -5,15 +5,19 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { AcademicClass, Course, Lecturer, Presence, Student, } from "@prisma/client";
 
-type PresenceDataType = Presence
-  & {
-    academicClass: AcademicClass
-    & { lecturer: Lecturer }
-    & { course: Course }
-  }
-  & { student: Student }
+type PresenceDataType = {
+  id: string,
+  academicClassId: string,
+  weekNumber: number,
+  date: Date,
+  learningMethod: string,
+  lesson: string,
+  lessonDetail: string,
+  duration: string,
+  isActive: boolean,
+  presenceDuration: string,
+}
 
 const ClassSingleTabStudentPage = async (
   {
@@ -128,7 +132,7 @@ const ClassSingleTabStudentPage = async (
       >
         <td className="grid grid-cols-6 lg:hidden py-4 px-2">
           <div className="flex flex-col col-span-5 items-start">
-            <p className="text-xs text-gray-600 mb-2">{item.weekNumber} | {new Intl.DateTimeFormat("id-ID").format(item.date || Date.now())}</p>
+            <p className="text-xs text-gray-600 mb-2">{item.weekNumber} | {new Intl.DateTimeFormat("id-ID").format(item.date)}</p>
             <h3 className="text-sm font-semibold tracking-wide">{item.lesson}</h3>
             <p className="text-sm font-light mb-2 tracking-wide">{item.lessonDetail}</p>
           </div>
@@ -143,7 +147,7 @@ const ClassSingleTabStudentPage = async (
           </div>
         </td>
         <td className="hidden lg:table-cell lg:px-2 lg:py-4">{item.weekNumber}</td>
-        <td className="hidden lg:table-cell">{new Intl.DateTimeFormat("id-ID").format(item.date || Date.now())}</td>
+        <td className="hidden lg:table-cell">{new Intl.DateTimeFormat("id-ID").format(item.date)}</td>
         <td className="hidden lg:flex lg:flex-col lg:py-4 lg:w-[376px]">
           <h5 className="text-sm font-semibold">Pokok bahasan :</h5>
           <p className="text-sm font-light mb-2 tracking-wide">{item.lesson}</p>
@@ -157,7 +161,7 @@ const ClassSingleTabStudentPage = async (
             ))}
           </ul>
         </td>
-        <td className="hidden lg:table-cell text-sm font-light">45 menit</td>
+        <td className="hidden lg:table-cell text-sm font-light">{item.presenceDuration}</td>
         <td>
           <div className="flex items-center gap-2">
             <div className="hidden lg:flex items-center gap-2">

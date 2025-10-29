@@ -8,7 +8,7 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { AcademicClassDetail, AnnouncementKhs, Prisma } from "@prisma/client";
+import { AcademicClassDetail, AnnouncementKhs, Prisma } from "@/generated/prisma/client";
 
 const ClassSingleTabAssessmentPage = async (
   {
@@ -47,6 +47,7 @@ const ClassSingleTabAssessmentPage = async (
         id: id,
       },
       select: {
+        periodId: true,
         academicClassDetail: {
           include: {
             student: {

@@ -12,17 +12,18 @@ import {
   RoomInputs, RplInputs, ScheduleDetailInputs, ScheduleInputs, studentSchema, TimeInputs, UserInputs
 } from "./formValidationSchema";
 import { prisma } from "./prisma";
-import { AnnouncementKhs, CampusType, Gender, PaymentStatus, Religion, SemesterStatus, StatusRegister, StudentStatus, StudyPlanStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { mkdir, unlink, writeFile } from "fs/promises";
 import { v4 } from "uuid";
 import logger from "./logger";
 import { handlePrismaError } from "./errors/prismaError";
 import { AppError } from "./errors/appErrors";
-import { calculatingSKSLimits, getGradeLetter } from "./utils";
+import { calculatingSKSLimits, getGradeLetter, previousPeriod } from "./utils";
 import { addMinutes, addHours, isAfter } from "date-fns";
 import { importAssessment } from "./excel/importAssessment";
 import { stateType } from "./datatype";
+import { AnnouncementKhs, CampusType, Day, Gender, PaymentStatus, PresenceStatus, Religion, SemesterStatus, SemesterType, StatusRegister, StudentStatus, StudyPlanStatus } from "@/generated/prisma/enums";
+import { AssessmentDetail, Course, KhsDetail, Student } from "@/generated/prisma/client";
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 const avatarFilePath = process.env.AVATAR_FOLDER as string;
@@ -38,10 +39,11 @@ export const createPermission = async (state: stateType, data: PermissionInputs)
       }
     });
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -62,10 +64,11 @@ export const updatePermission = async (state: stateType, data: PermissionInputs)
       }
     });
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -84,10 +87,11 @@ export const deletePermission = async (state: stateType, data: FormData) => {
     });
   
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -114,10 +118,11 @@ export const createRole = async (state: stateType, data: RoleInputs) => {
       },
     });
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -136,10 +141,11 @@ export const deleteRole = async (state: stateType, data: FormData) => {
       }
     });
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -159,10 +165,11 @@ export const createRolePermissions = async (id: string) => {
     })
 
     return { success: true, error: false, message: "Hak akses telah diaktifkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -182,10 +189,11 @@ export const deleteRolePermissions = async (id: string) => {
       }
     })
     return { success: true, error: false, messsage: "Hak akses telah dinonaktifkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -203,10 +211,11 @@ export const getRolePermission = async (id: string) => {
       }
     })
     return {success: (get ? true : false), error: false};
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -226,10 +235,11 @@ export const createMajor = async (state: stateType, data: MajorInputs) => {
       }
     });
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -251,10 +261,11 @@ export const updateMajor = async (state: stateType, data: MajorInputs) => {
       }
     });
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -272,10 +283,11 @@ export const deleteMajor = async (state: stateType, data: FormData) => {
       }
     });
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -295,10 +307,11 @@ export const createRoom = async (state: stateType, data: RoomInputs) => {
       }
     });
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -320,10 +333,11 @@ export const updateRoom = async (state: stateType, data: RoomInputs) => {
       }
     });
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -341,10 +355,11 @@ export const deleteRoom = async (state: stateType, data: FormData) => {
       }
     });
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -406,10 +421,11 @@ export const createCourse = async (state: stateType, data: CourseInputs) => {
       data: dataPayload,
     });
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -473,10 +489,11 @@ export const updateCourse = async (state: stateType, data: CourseInputs) => {
       data: dataPayload
     });
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -510,10 +527,11 @@ export const deleteCourse = async (state: stateType, data: FormData) => {
       })
     ])
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -532,10 +550,11 @@ export const createGrade = async (state: stateType, data: GradeInputs) => {
       }
     })
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -556,10 +575,11 @@ export const updateGrade = async (state: stateType, data: GradeInputs) => {
       }
     })
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -577,11 +597,11 @@ export const deleteGrade = async (state: stateType, data: FormData) => {
       }
     })
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
-    
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -593,7 +613,6 @@ export const deleteGrade = async (state: stateType, data: FormData) => {
 
 export const createAssessment = async (state: stateType, data: AssessmentInputs) => {
   try {
-    
     await prisma.assessment.create({
       data: {
         name: data.name,
@@ -611,10 +630,11 @@ export const createAssessment = async (state: stateType, data: AssessmentInputs)
     });
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -625,16 +645,16 @@ export const createAssessment = async (state: stateType, data: AssessmentInputs)
 }
 export const updateAssessment = async (state: stateType, data: AssessmentInputs) => {
   try {
-    await prisma.$transaction(async (tx: any) => {
+    await prisma.$transaction(async (prisma:any) => {
       // delete data assessmentDetail yang lama
-      await tx.assessmentDetail.deleteMany({
+      await prisma.assessmentDetail.deleteMany({
         where: {
           assessmentId: data.id,
         }
       })
 
       // create data assessment baru diinput
-      await tx.assessment.update({
+      await prisma.assessment.update({
         where: {
           id: data.id,
         },
@@ -654,10 +674,11 @@ export const updateAssessment = async (state: stateType, data: AssessmentInputs)
       });
     });
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -682,10 +703,11 @@ export const deleteAssessment = async (state: stateType, data: FormData) => {
       }),
     ]);
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -697,13 +719,6 @@ export const deleteAssessment = async (state: stateType, data: FormData) => {
 
 export const createCurriculum = async (state: stateType, data: CurriculumInputs) => {
   try {
-    // let dataCreate = {
-    //   name: data?.name,
-    //   majorId: data?.majorId,
-    //   startDate: new Date(data?.startDate || Date.now()),
-    //   endDate: new Date(data?.endDate || Date.now()),
-    //   isActive: data?.isActive,
-    // }
     if (data?.isActive) {
       await prisma.curriculum.updateMany({
         where: {
@@ -725,10 +740,11 @@ export const createCurriculum = async (state: stateType, data: CurriculumInputs)
     });
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -765,10 +781,11 @@ export const updateCurriculum = async (state: stateType, data: CurriculumInputs)
     });
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -788,10 +805,11 @@ export const deleteCurriculum = async (state: stateType, data: FormData) => {
     });
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -813,10 +831,11 @@ export const createCurriculumDetail = async (state: stateType, data: CurriculumD
       });
     }
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -836,10 +855,11 @@ export const deleteCurriculumDetail = async (state: stateType, data: FormData) =
     });
 
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -867,10 +887,11 @@ export const createUserLecturer = async (state: stateType, data: UserInputs) => 
     })
 
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -906,11 +927,12 @@ export const updateUserLecturer = async (state: stateType, data: UserInputs) => 
     })
 
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -937,10 +959,11 @@ export const createUserStudent = async (state: stateType, data: UserInputs) => {
     })
 
     return { success: true, error: false, message: "Data berhasil ditambah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -976,11 +999,12 @@ export const updateUserStudent = async (state: stateType, data: UserInputs) => {
     })
 
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1007,11 +1031,12 @@ export const createUserOperator = async (state: stateType, data: UserInputs) => 
     })
 
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1047,11 +1072,11 @@ export const updateUserOperator = async (state: stateType, data: UserInputs) => 
     })
 
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
-    
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1126,10 +1151,11 @@ export const createLecturer = async (state: stateType, data: FormData) => {
       }
     })
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1184,7 +1210,7 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
         const oldPath = path.join(process.cwd(), avatarFilePath, oldPhoto);
         try {
           await unlink(oldPath)
-        } catch (err: any) {
+        } catch (err) {
           logger.warn(err)
         }
       }
@@ -1213,10 +1239,11 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
       }
     })
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1228,15 +1255,15 @@ export const updateLecturer = async (state: stateType, data: FormData) => {
 export const deleteLecturer = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    const dataDelete = await prisma.$transaction(async (tx: any) => {
-      const data = await tx.lecturer.delete({
+    const dataDelete = await prisma.$transaction(async (prisma: any) => {
+      const data = await prisma.lecturer.delete({
         where: {
           id: id.split(":")[0]
         },
       });
 
       if (id.split(":")[1] !== "null") {
-        await tx.user.delete({
+        await prisma.user.delete({
           where: {
             id: id.split(":")[1]
           }
@@ -1250,17 +1277,17 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
       const filePath = path.join(process.cwd(), avatarFilePath, dataDelete.photo);
       try {
         await unlink(filePath)
-      } catch (err: any) {
+      } catch (err) {
         logger.warn(err)
       }
     }
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
-    
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1272,6 +1299,8 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
 
 export const createStudent = async (state: {success: boolean, error: boolean}, data: FormData) => {
   try {
+    console.log(data);
+    
     const id=data.get('id')?.toString()
     const name = data.get('name')?.toString();
     const nim = data.get('nim')?.toString();
@@ -1351,7 +1380,7 @@ export const createStudent = async (state: {success: boolean, error: boolean}, d
         nim: validation.data?.nim,
         majorId: validation.data?.majorId,
         lecturerId : validation.data?.lecturerId,
-        statusRegister : validation.data?.statusRegister,
+        statusRegister : validation.data?.statusRegister as StatusRegister,
         studentStatus : validation.data?.studentStatus,
         year: validation.data?.year,
         placeOfBirth: validation.data?.placeOfBirth,
@@ -1373,10 +1402,11 @@ export const createStudent = async (state: {success: boolean, error: boolean}, d
       },
     })
     return { success: true, error: false,  message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1443,7 +1473,7 @@ export const updateStudent = async (state: {success: boolean, error: boolean}, d
         const oldPath = path.join(process.cwd(), avatarFilePath, oldPhoto);
         try {
           await unlink(oldPath)
-        } catch (err: any) {
+        } catch (err) {
           logger.warn(err)
         }
       }
@@ -1458,7 +1488,7 @@ export const updateStudent = async (state: {success: boolean, error: boolean}, d
         nim: parsed.data?.nim,
         majorId: parsed.data?.majorId,
         lecturerId : parsed.data?.lecturerId,
-        statusRegister : parsed.data?.statusRegister,
+        statusRegister : parsed.data?.statusRegister as StatusRegister,
         studentStatus : parsed.data?.studentStatus,
         year: parsed.data?.year,
         placeOfBirth: parsed.data?.placeOfBirth,
@@ -1481,10 +1511,11 @@ export const updateStudent = async (state: {success: boolean, error: boolean}, d
     })
 
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1496,15 +1527,15 @@ export const updateStudent = async (state: {success: boolean, error: boolean}, d
 export const deleteStudent = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    const dataDelete = await prisma.$transaction(async (tx: any) => {
-      const data = await tx.student.delete({
+    const dataDelete = await prisma.$transaction(async (prisma:any) => {
+      const data = await prisma.student.delete({
         where: {
           id: id.split(":")[0]
         },
       });
 
       if (id.split(":")[1] !== "null") {
-        await tx.user.delete({
+        await prisma.user.delete({
           where: {
             id: id.split(":")[1]
           }
@@ -1518,17 +1549,17 @@ export const deleteStudent = async (state: stateType, data: FormData) => {
       const filePath = path.join(process.cwd(), avatarFilePath, dataDelete.photo);
       try {
         await unlink(filePath)
-      } catch (err: any) {
+      } catch (err) {
         logger.warn(err)
       }
     }
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
-    
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1547,10 +1578,11 @@ export const createOperator = async (state: stateType, data: OperatorInputs) => 
       }
   })
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1571,10 +1603,11 @@ export const updateOperator = async (state: stateType, data: OperatorInputs) => 
       }
     })
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1587,15 +1620,15 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
 
-    await prisma.$transaction(async (tx: any) => {
-      await tx.operator.delete({
+    await prisma.$transaction(async (prisma:any) => {
+      await prisma.operator.delete({
         where: {
           id: id.split(":")[0]
         },
       });
 
       if (id.split(":")[1] !== "null") {
-        await tx.user.delete({
+        await prisma.user.delete({
           where: {
             id: id.split(":")[1]
           }
@@ -1603,11 +1636,11 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
       }
     });
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
-    
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1644,10 +1677,11 @@ export const createPeriod = async (state: stateType, data: PeriodInputs) => {
       }
     })
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1681,10 +1715,11 @@ export const updatePeriod = async (state: stateType, data: PeriodInputs) => {
       }
     })
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1702,10 +1737,11 @@ export const deletePeriod = async (state: stateType, data: FormData) => {
       }
     })
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1731,9 +1767,10 @@ export const createKrsRules = async (state: stateType, data: KrsRulesInputs) => 
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1760,9 +1797,10 @@ export const updateKrsRules = async (state: stateType, data: KrsRulesInputs) => 
     
     return { success: true, error: false, message: "Data berhasil diubah" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1782,9 +1820,10 @@ export const deleteKrsRules = async (state: stateType, data: FormData) => {
 
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -1835,17 +1874,21 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
       }
     });
 
-    const currentPeriodSemester = reregisterDetail.reregister.period.semesterType;
-    const currentPeriodYear = reregisterDetail.reregister.period.year;
-    const lastPeriodSemester = currentPeriodSemester === "GANJIL" ? "GENAP" : "GANJIL";
-    const lastPeriodYear = currentPeriodSemester === "GANJIL" ? currentPeriodYear : currentPeriodYear - 1;
+    if (!reregisterDetail) {
+      throw new AppError("data reregister tidak ditemukan", 404);
+    }
+
+    const prevPeriod = await previousPeriod({
+      semesterType: reregisterDetail?.reregister?.period?.semesterType as string,
+      year: reregisterDetail?.reregister?.period?.year as number,
+    });
 
     const latestKhs = await prisma.khs.findFirst({
       where: {
         studentId: studentId,
         period: {
-          semesterType: lastPeriodSemester,
-          year: lastPeriodYear,
+          semesterType: prevPeriod.semesterType as SemesterType,
+          year: prevPeriod.year,
         },
       },
     });
@@ -1853,7 +1896,7 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
     const krsRules = await prisma.krsRule.findFirst({
       where: {
         statusRegister: reregisterDetail?.student?.statusRegister,
-        semester: reregisterDetail?.semester,
+        semester: reregisterDetail?.semester as number,
       }
     });
 
@@ -1923,7 +1966,7 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
           })
 
           for (const items of courses) {
-            const khsGradeComponent = items.course.assessment.assessmentDetail.map((item: any) => (
+            const khsGradeComponent = items?.course?.assessment?.assessmentDetail.map((item: AssessmentDetail) => (
               {
                 assessmentDetailId: item.id,
                 percentage: item.percentage,
@@ -1994,10 +2037,11 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
       return {success: true, error: false, message: "data berhasil ditambahkan"}
     }
 
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2009,7 +2053,6 @@ const createKrs = async ({studentId, reregisterId}: {studentId: string, reregist
 
 export const createReregistration = async (state: stateType, data: ReregistrationInputs) => {
   try {
-    logger.info(data)
     await prisma.reregister.create({
       data: {
         periodId: data.periodId,
@@ -2018,10 +2061,11 @@ export const createReregistration = async (state: stateType, data: Reregistratio
       }
     })
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2044,10 +2088,11 @@ export const updateReregistration = async (state: stateType, data: Reregistratio
       }
     })
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2065,10 +2110,11 @@ export const deleteReregistration = async (state: stateType, data: FormData) => 
       }
     })
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2081,9 +2127,7 @@ export const deleteReregistration = async (state: stateType, data: FormData) => 
 export const reregisterCreateAll = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
-    logger.info(id);
     
-    // const reregisterDetailCount = await prisma.reregisterDetail.count({});
     const currentReregister = await prisma.reregister.findUnique({
       where: {
         id: id,
@@ -2092,7 +2136,7 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
         period: true,
       },
     });
-    const currentReregisterYear = currentReregister?.period?.year;
+    const currentReregisterYear = currentReregister?.period?.year as number;
     const currentReregisterSemesterType = currentReregister?.period?.semesterType === "GANJIL" ? 1 : 0;
     
     const students = await prisma.student.findMany({
@@ -2106,23 +2150,24 @@ export const reregisterCreateAll = async (state: stateType, data: FormData) => {
       }
     });
     
-    const dataReregisterDetails = students.map((student: any) => ({
+    const dataReregisterDetails = students.map((student: Student) => ({
       reregisterId: id,
       studentId: student.id,
-      semester: (currentReregisterYear - student.year) * 2 + currentReregisterSemesterType,
-      lecturerId: student.lecturerId,
+      semester: (currentReregisterYear - (student?.year || currentReregisterYear)) * 2 + currentReregisterSemesterType,
+      lecturerId: student?.lecturerId,
     }));
 
-    const insertDataStudents = dataReregisterDetails.filter((student: any) => student.semester > 0)
+    const insertDataStudents = dataReregisterDetails.filter((student: Record<string, string | number>) => student.semester as number > 0)
     await prisma.reregisterDetail.createMany({
       data: insertDataStudents,
     });
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2177,17 +2222,17 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
       return { success: false, error: true, message: "Data gagal ditambahkan" }
     };
 
-    prisma.$transaction(async (tx: any) => {
-      const createReregisterDetail =  await tx.reregisterDetail.create({
+    prisma.$transaction(async (prisma: any) => {
+      const createReregisterDetail =  await prisma.reregisterDetail.create({
         data: {
           reregisterId: validation.data.reregisterId,
           studentId: validation.data.studentId,
           lecturerId: validation.data.lecturerId,
-          campusType: validation.data?.campusType || "BJB" as CampusType,
-          semesterStatus: validation.data?.semesterStatus || "NONAKTIF" as SemesterStatus,
+          campusType: validation.data?.campusType as CampusType || CampusType.BJB,
+          semesterStatus: validation.data?.semesterStatus as SemesterStatus || SemesterStatus.NONAKTIF,
           semester: parseInt(validation.data?.semester),
           nominal: validation.data.nominal,
-          paymentStatus: validation.data?.paymentStatus || "BELUM_LUNAS" as PaymentStatus,
+          paymentStatus: validation.data?.paymentStatus as PaymentStatus || PaymentStatus.BELUM_LUNAS,
           paymentReceiptFile: validation.data?.paymentReceiptFile,
           paymentDescription: validation.data?.paymentDescription,
         },
@@ -2199,67 +2244,25 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
           }
         }
       });
-      await tx.student.update({
+      await prisma.student.update({
         where: {
           id: validation.data.studentId,
         },
         data: {
-          studentStatus: validation.data?.semesterStatus || "NONAKTIF" as StudentStatus,
+          studentStatus: validation.data?.semesterStatus as StudentStatus || StudentStatus.NONAKTIF,
         }
       });
-      let ips: number = 0;
-      let maxSKS: number = 0;
       if (createReregisterDetail.semesterStatus === "AKTIF") {
-        if (createReregisterDetail.semester === 1) {
-          ips = 0;
-          maxSKS = 22;
-        } else {
-          const currentPeriodSemester = createReregisterDetail.reregister.period.semesterType;
-          const currentPeriodYear = createReregisterDetail.reregister.period.year;
-          const lastPeriodSemester = currentPeriodSemester === "GANJIL" ? "GENAP" : "GANJIL";
-          const lastPeriodYear = currentPeriodSemester === "GANJIL" ? currentPeriodYear : currentPeriodYear - 1;
-
-          const dataKHS = await prisma.khs.findFirst({
-            where: {
-              studentId: validation.data.studentId,
-              period: {
-                semesterType: lastPeriodSemester,
-                year: lastPeriodYear,
-              },
-            }
-          });
-
-          ips = Number(dataKHS?.ips) || 0;
-          maxSKS = dataKHS?.maxSks || 22;
-        }
-
-        const createkrs = await tx.krs.create({
-          data: {
-            reregisterId: validation?.data?.reregisterId,
-            studentId: validation?.data?.studentId,
-            ips: ips,
-            maxSks: maxSKS,
-            lecturerId: validation.data.lecturerId,
-          }
-        });
-
-        // createKHS
-        await tx.khs.create({
-          data: {
-            krsId: createkrs.id,
-            studentId: validation?.data?.studentId,
-            periodId: createReregisterDetail.reregister.period.id,
-            semester: createReregisterDetail.semester,
-          }
-        })
+        await createKrs({studentId: validation.data.studentId, reregisterId: validation.data.reregisterId})
       }
     });
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2307,11 +2310,12 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
       await mkdir(dirPath, { recursive: true });
       await writeFile(filePath, buffer)
 
-      if (oldPaymentFile.paymentReceiptFile) {
+      if (oldPaymentFile?.paymentReceiptFile) {
         const oldPath = path.join(process.cwd(), paymentFilePath, oldPaymentFile.paymentReceiptFile);
         try {
           await unlink(oldPath)
-        } catch (err: any) {
+        } catch (err) {
+          logger.error(err);
           logger.warn(err)
         }
       }
@@ -2326,8 +2330,8 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
       return { success: false, error: true, message: "Data gagal ditambahkan" }
     };
 
-    await prisma.$transaction(async (tx: any) => {
-      const dataReregisterDetail = await tx.reregisterDetail.update({
+    await prisma.$transaction(async (prisma:any) => {
+      const dataReregisterDetail = await prisma.reregisterDetail.update({
         where: {
           reregisterId_studentId: {
             reregisterId: validation?.data.reregisterId,
@@ -2336,7 +2340,7 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
         },
         data: {
           lecturerId: validation?.data.lecturerId,
-          campusType: validation?.data?.campusType || "BJB" as CampusType,
+          campusType: validation?.data?.campusType as CampusType || CampusType.BJB,
           semesterStatus: validation?.data?.semesterStatus as SemesterStatus,
           semester: parseInt(validation?.data?.semester),
           nominal: validation?.data.nominal,
@@ -2352,7 +2356,7 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
           }
         }
       });
-      await tx.student.update({
+      await prisma.student.update({
         where: {
           id: validation?.data.studentId
         },
@@ -2366,10 +2370,11 @@ export const updateReregisterDetail = async (state: stateType, data: FormData) =
       }
     })
     return { success: true, error: false, message: "Data berhasil diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2397,16 +2402,18 @@ export const deleteReregisterDetail = async (state: stateType, data: FormData) =
       const oldPath = path.join(process.cwd(), paymentFilePath, deleteData.paymentReceiptFile);
       try {
         await unlink(oldPath)
-      } catch (err: any) {
+      } catch (err) {
+        logger.error(err);
         logger.warn(err)
       }
     }
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2453,10 +2460,11 @@ export const createReregisterStudent = async (state: stateType, data: Reregistra
     ])
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2489,11 +2497,12 @@ export const createKrsDetail = async (state: stateType, data: CourseInKrsInputs)
       })
     ])
     return { success: true, error: false, message: "Mata Kuliah berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2526,7 +2535,7 @@ async function seedKhsDetailStudent({ krsDetailId }: { krsDetailId: string }) {
     throw new AppError("KRS Detail tidak ditemukan", 404);
   }
   
-  const dataKrsGradeStudent = krsDetail.course.assessment?.assessmentDetail.map((assessmentDetail: any) => (
+  const dataKrsGradeStudent = krsDetail.course.assessment?.assessmentDetail.map((assessmentDetail: AssessmentDetail) => (
     {
       assessmentDetailId: assessmentDetail.id,
       percentage: assessmentDetail.percentage,
@@ -2557,6 +2566,10 @@ export const updateKrsDetail = async (state: stateType, data: FormData) => {
           krsId: krsDetailUpdate.krsId,
         },
       });
+
+      if (!khs) {
+        throw new AppError("data tidak ditemukan", 404);
+      }
 
       // menambahkan data khsDetail & khsGrade
       await prisma.khsDetail.create({
@@ -2602,10 +2615,11 @@ export const updateKrsDetail = async (state: stateType, data: FormData) => {
     });
     
     return { success: true, error: false, message: "Status mata kuliah telah diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2618,7 +2632,7 @@ export const deleteKrsDetail = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
 
-    await prisma.$transaction(async (prisma: any) => {
+    await prisma.$transaction(async (prisma:any) => {
       // menghapus course di krsDetail
       const krsDetail = await prisma.krsDetail.delete({
         where: {
@@ -2647,10 +2661,11 @@ export const deleteKrsDetail = async (state: stateType, data: FormData) => {
     })
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2670,11 +2685,12 @@ export const createPosition = async (state: stateType, data: PositionInputs) => 
     })
     
     return { success: true, error: false, message: "Jabatan berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2695,10 +2711,11 @@ export const updatePosition = async (state: stateType, data: PositionInputs) => 
       },
     })
     return { success: true, error: false, message: "Jabatan telah diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2717,10 +2734,11 @@ export const deletePosition = async (state: stateType, data: FormData) => {
     })
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2744,12 +2762,12 @@ export const createClass = async (state: stateType, data: ClassInputs) => {
     });
     
     return { success: true, error: false, message: "Kelas berhasil ditambahkan" };
-  } catch (err: any) {
-    console.log(err);
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2774,10 +2792,11 @@ export const updateClass = async (state: stateType, data: ClassInputs) => {
       }
     });
     return { success: true, error: false, message: "Kelas telah diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2796,10 +2815,11 @@ export const deleteClass = async (state: stateType, data: FormData) => {
     });
 
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2820,11 +2840,12 @@ export const createTime = async (state: stateType, data: TimeInputs) => {
     })
     
     return { success: true, error: false, message: "Waktu pelajaran berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2835,7 +2856,6 @@ export const createTime = async (state: stateType, data: TimeInputs) => {
 }
 export const updateTime = async (state: stateType, data: TimeInputs) => {
   try {
-    console.log("updateTime called", data);
     await prisma.time.update({
       where: {
         id: data?.id
@@ -2847,10 +2867,11 @@ export const updateTime = async (state: stateType, data: TimeInputs) => {
     })
 
     return { success: true, error: false, message: "Waktu pelajaran telah diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2861,7 +2882,6 @@ export const updateTime = async (state: stateType, data: TimeInputs) => {
 }
 export const deleteTime = async (state: stateType, data: FormData) => {
   try {
-    console.log("deleteTime called");
     const id = data.get("id") as string;
     await prisma.time.delete({
       where: {
@@ -2870,10 +2890,11 @@ export const deleteTime = async (state: stateType, data: FormData) => {
     });
 
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2906,11 +2927,12 @@ export const createSchedule = async (state: stateType, data: ScheduleInputs) => 
     });
     
     return { success: true, error: false, message: "Jadwal berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2921,7 +2943,6 @@ export const createSchedule = async (state: stateType, data: ScheduleInputs) => 
 }
 export const updateSchedule = async (state: stateType, data: ScheduleInputs) => {
   try {
-    console.log("updateSchedule called", data);
 
     if (data.isActive) {
       await prisma.schedule.updateMany({
@@ -2946,10 +2967,11 @@ export const updateSchedule = async (state: stateType, data: ScheduleInputs) => 
     });
 
     return { success: true, error: false, message: "Jadwal telah diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2960,7 +2982,6 @@ export const updateSchedule = async (state: stateType, data: ScheduleInputs) => 
 }
 export const deleteSchedule = async (state: stateType, data: FormData) => {
   try {
-    console.log("deleteSchedule called");
     const id = data.get("id") as string;
     await prisma.schedule.delete({
       where: {
@@ -2969,10 +2990,11 @@ export const deleteSchedule = async (state: stateType, data: FormData) => {
     });
 
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -2984,24 +3006,24 @@ export const deleteSchedule = async (state: stateType, data: FormData) => {
 
 export const createScheduleDetail = async (state: stateType, data: ScheduleDetailInputs) => {
   try {
-    console.log("createScheduleDetail", data);
 
     await prisma.scheduleDetail.create({
       data: {
         scheduleId: data?.scheduleId,
         academicClassId: data?.academicClass,
-        dayName: data?.dayName,
+        dayName: data?.dayName as Day,
         timeId: data?.time,
         
       },
     });
     
     return { success: true, error: false, message: "Jadwal berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3012,7 +3034,6 @@ export const createScheduleDetail = async (state: stateType, data: ScheduleDetai
 }
 export const deleteScheduleDetail = async (state: stateType, data: FormData) => {
   try {
-    console.log("deleteSchedule called");
     const id = data.get("id") as string;
     await prisma.scheduleDetail.delete({
       where: {
@@ -3021,10 +3042,11 @@ export const deleteScheduleDetail = async (state: stateType, data: FormData) => 
     });
 
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3049,9 +3071,10 @@ export const createClassDetail = async (state: stateType, data: AcademicClassDet
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3070,9 +3093,10 @@ export const deleteClassDetail = async (state: stateType, data: FormData) => {
     })
     return { success: true, error: false, message: "Data berhasil dihapus" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3084,15 +3108,12 @@ export const deleteClassDetail = async (state: stateType, data: FormData) => {
 
 export const createPresence = async (state: stateType, data: PresenceInputs) => {
   try {
-    console.log('CREATE PRESENCE', data);
 
     const dataAcademicDetail = await prisma.academicClassDetail.findMany({
       where: {
         academicClassId: data?.academicClassId,
       }
     });
-    console.log(dataAcademicDetail);
-    
 
     if (dataAcademicDetail.length === 0) {
       throw new AppError("Data tidak bisa ditambahkan. Tidak ada mahasiswa yang terdaftar", 400);
@@ -3122,11 +3143,12 @@ export const createPresence = async (state: stateType, data: PresenceInputs) => 
     });
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3137,8 +3159,6 @@ export const createPresence = async (state: stateType, data: PresenceInputs) => 
 }
 export const updatePresence = async (state: stateType, data: PresenceInputs) => {
   try {
-    console.log('UPDATE PRESENCE', data);
-
     await prisma.presence.update({
       where: {
         id: data?.id,
@@ -3155,10 +3175,11 @@ export const updatePresence = async (state: stateType, data: PresenceInputs) => 
     })
     
     return { success: true, error: false, message: "Data telah diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3169,7 +3190,6 @@ export const updatePresence = async (state: stateType, data: PresenceInputs) => 
 }
 export const deletePresence = async (state: stateType, data: FormData) => {
   try {
-    console.log('DELETE PRESENCE', data);
     const id = data.get("id") as string;
     await prisma.presence.delete({
       where: {
@@ -3178,10 +3198,11 @@ export const deletePresence = async (state: stateType, data: FormData) => {
     })
     
     return { success: true, error: false, message: "Data berhasil dihapus" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3193,8 +3214,6 @@ export const deletePresence = async (state: stateType, data: FormData) => {
 
 export const presenceActivation = async (state: stateType, data: PresenceActivationInputs) => {
   try {
-    console.log('PRESENCEACTIVATION', data);
-
     await prisma.presence.update({
       where: {
         id: data?.id,
@@ -3207,10 +3226,11 @@ export const presenceActivation = async (state: stateType, data: PresenceActivat
     });
     
     return { success: true, error: false, message: "Presensi diaktifkan" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3227,14 +3247,15 @@ export const updatePresenceStatus = async (state: stateType, data: { id: string,
         id: data.id,
       },
       data: {
-        presenceStatus: data.status,
+        presenceStatus: data.status as PresenceStatus,
       }
     });
     return { success: true, error: false, message: "Status presensi telah diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3246,7 +3267,7 @@ export const updatePresenceStatus = async (state: stateType, data: { id: string,
 export const updateManyPresenceStatus = async (state: stateType, data: PresenceAllInputs) => {
   try {
 
-    await prisma.PresenceDetail.updateMany({
+    await prisma.presenceDetail.updateMany({
       where: {
         presenceId: data?.presenceId,
       },
@@ -3256,10 +3277,11 @@ export const updateManyPresenceStatus = async (state: stateType, data: PresenceA
     });
     
     return { success: true, error: false, message: "Status presensi telah diubah" };
-  } catch (err: any) {
+  } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3297,33 +3319,45 @@ function calculateEndTime(start: Date, duration: string): Date {
   }
 }
 export async function deactivateExpiredPresences() {
-  const now = new Date();
-  const activePresences = await prisma.presence.findMany({
-    where: {
-      isActive: true,
+  try {
+    const now = new Date();
+    const activePresences = await prisma.presence.findMany({
+      where: {
+        isActive: true,
+      }
+    });
+
+    for (const presence of activePresences) {
+      if (!presence.presenceDuration || !presence.activatedAt) continue;
+      if (presence.presenceDuration === "AKTIF" || presence.presenceDuration === "NONAKTIF") continue;
+
+      const end = calculateEndTime(presence.activatedAt, presence.presenceDuration);
+      if (isAfter(now, end)) {
+        await prisma.presence.update({
+          where: { id: presence.id },
+          data: { isActive: false },
+        });
+        logger.info(`Presensi dinonaktifkan: ${presence.id}`);
+      }
     }
-  });
-
-  for (const presence of activePresences) {
-    if (!presence.presenceDuration || !presence.activatedAt) continue;
-    if (presence.presenceDuration === "AKTIF" || presence.presenceDuration === "NONAKTIF") continue;
-
-    const end = calculateEndTime(presence.activatedAt, presence.presenceDuration);
-    if (isAfter(now, end)) {
-      await prisma.presence.update({
-        where: { id: presence.id },
-        data: { isActive: false },
-      });
-      console.log(`[✔] Presensi dinonaktifkan: ${presence.id}`);
+    logger.info(`Scheduler selesai dijalankan pada: ${now.toISOString()}`);
+  } catch (err) {
+    logger.error(err);
+    try {
+      handlePrismaError(err)
+    } catch (error) {
+      if (error instanceof AppError) {
+        return { success: false, error: true, message: error.message };
+      } else {
+        return { success: false, error: true, message: "Terjadi kesalahan tidak diketahui." }
+      }
     }
   }
-
-  console.log("⏱️ Scheduler selesai dijalankan pada", now.toISOString());
+  
 }
 
 export const updateKhsGrade = async (state: stateType, data: KhsGradeInputs) => {
   try {
-
     await prisma.khsDetail.update({
       where: {
         id: data.id,
@@ -3348,9 +3382,10 @@ export const updateKhsGrade = async (state: stateType, data: KhsGradeInputs) => 
     
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3364,7 +3399,7 @@ export const updateKhsGradeAnnouncement = async (state: stateType, data: FormDat
     const khsDetailId = data.get("khsDetailId") as string;
     const arrKhsDetailId = khsDetailId.split(",");
 
-    await prisma.$transaction(async (prisma: any) => {
+    await prisma.$transaction(async (prisma:any) => {
       for (const items of arrKhsDetailId) {
         const dataUpdate = await prisma.khsDetail.update({
           where: {
@@ -3387,11 +3422,11 @@ export const updateKhsGradeAnnouncement = async (state: stateType, data: FormDat
         });
         
         const totalSKS = khsDetailByKhsId
-          .map((item: any) => item.course.sks)
-          .reduce((acc: any, init: any) => acc + init, 0);
+          .map((item:{course: {sks: number}}) => item.course.sks || 0)
+          .reduce((acc: number, init: number) => acc + init, 0);
         const totalSKSxNAB = khsDetailByKhsId
-          .map((items: any) => items.course.sks * items.weight)
-          .reduce((acc: any, init: any) => acc + init, 0);
+          .map((items: KhsDetail & {course:Course}) => (items.course.sks || 0) * Number(items.weight))
+          .reduce((acc: number, init:number) => acc + init, 0);
         
         const IPK = Number(totalSKSxNAB / totalSKS).toFixed(2) 
         const maxSKS = await calculatingSKSLimits(parseFloat(IPK))
@@ -3411,9 +3446,10 @@ export const updateKhsGradeAnnouncement = async (state: stateType, data: FormDat
     
     return { success: true, error: false, message: "Data nilai diumumkan" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3442,9 +3478,10 @@ export const updateKhsGradeSubmitted = async (state: stateType, data: FormData) 
     
     return { success: true, error: false, message: "Data diserahkan ke prodi" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3473,9 +3510,10 @@ export const updateKhsGradeUnsubmitted = async (state: stateType, data: FormData
     
     return { success: true, error: false, message: "Data diserahkan ke dosen" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3524,9 +3562,10 @@ export const updateKhsGradeRevision = async (state: stateType, data: KhsGradeRev
     })
     return { success: true, error: false, message: "Data berhasil direvisi" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3538,7 +3577,7 @@ export const updateKhsGradeRevision = async (state: stateType, data: KhsGradeRev
 export const updateKhsGradeRevAnnouncement = async (state: stateType, data: KhsGradeRevisionInputs) => {
   try {
 
-    await prisma.$transaction(async (prisma: any) => {
+    await prisma.$transaction(async (prisma:any) => {
       await prisma.khsDetail.update({
         where: {
           id: data?.id,
@@ -3561,11 +3600,11 @@ export const updateKhsGradeRevAnnouncement = async (state: stateType, data: KhsG
         });
         
         const totalSKS = khsDetailByKhsId
-          .map((item: any) => item.course.sks)
-          .reduce((acc: any, init: any) => acc + init, 0);
+          .map((item: KhsDetail & {course: Course}) => item.course.sks || 0)
+          .reduce((acc:number, init:number) => acc + init, 0);
         const totalSKSxNAB = khsDetailByKhsId
-          .map((items: any) => items.course.sks * items.weight)
-          .reduce((acc: any, init: any) => acc + init, 0);
+          .map((items: KhsDetail & {course: Course}) => (items.course.sks || 0) * Number(items.weight))
+          .reduce((acc: number, init:number) => acc + init, 0);
         
         const IPK = Number(totalSKSxNAB / totalSKS).toFixed(2) 
         const maxSKS = await calculatingSKSLimits(parseFloat(IPK))
@@ -3583,9 +3622,10 @@ export const updateKhsGradeRevAnnouncement = async (state: stateType, data: KhsG
     })
     return { success: true, error: false, message: "Data revisi diumumkan" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3605,7 +3645,7 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
     const buffer = Buffer.from(await file.arrayBuffer());
     const result = await importAssessment(buffer)
     
-    const khsDetailIdFromRowsData = result.map((items: any) => items.uids);
+    const khsDetailIdFromRowsData = result.map((items: Record<string, string | number>) => items.uids);
 
     await prisma.$transaction(async (prisma: any) => {
       await prisma.khsDetail.findMany({
@@ -3627,7 +3667,7 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
         },
       });
       for (const [, value] of Object.entries(result)) {
-        const weight = getGradeLetter(value.finalScore);
+        const weight = getGradeLetter(value.finalScore as number);
         await prisma.khsDetail.update({
           where: {
             id: value?.uids,
@@ -3653,21 +3693,20 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
         });
 
         for (const items of khsGradeByKhsDetailId) {
-          const gradeName = items.assessmentDetail.grade.name ?? "";
-          const newScore = value[gradeName];
+          const gradeName: string = items.assessmentDetail.grade.name ?? "";
+          const newScore = value[gradeName] as number;
 
-          if (newScore !== undefined && newScore !== '' && newScore <= 100) {
+          if (newScore !== undefined && newScore <= 100) {
             await prisma.khsGrade.update({
               where: {
                 id: items.id,
               },
               data: {
-                score: Number(newScore),
+                score: newScore,
               },
             });
           } else {
             throw new AppError("Nilai tidak boleh lebih dari 100", 400);
-            break;
           };
         };
       }
@@ -3676,9 +3715,10 @@ export const importExcelFile = async (state: stateType, data: FormData) => {
     return { success: true, error: false, message: "File berhasil diunggah"};
     
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3708,9 +3748,10 @@ export const createRplTranscript = async (state: stateType, data: RplInputs) => 
     })
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3721,7 +3762,7 @@ export const createRplTranscript = async (state: stateType, data: RplInputs) => 
 }
 export const updateRplTranscript = async (state: stateType, data: RplInputs) => {
   try {
-    await prisma.$transaction(async (prisma: any) => {
+    await prisma.$transaction(async (prisma:any) => {
       // delete data khsDetail yang lama
       await prisma.khsDetail.deleteMany({
         where: {
@@ -3748,9 +3789,10 @@ export const updateRplTranscript = async (state: stateType, data: RplInputs) => 
     
     return { success: true, error: false, message: "Data berhasil diubah" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {
@@ -3772,9 +3814,10 @@ export const createKrsOverride = async (state: stateType, data: KrsOverrideInput
     
     return { success: true, error: false, message: "Data Krs Override berhasil ditambahkan"};
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
-    } catch (error: any) {
+    } catch (error) {
       if (error instanceof AppError) {
         return { success: false, error: true, message: error.message };
       } else {

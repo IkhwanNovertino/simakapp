@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
 
 
 const KrsPdf = ({ data }: GeneratePdfProps) => {
-  const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
+  // const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
   const totalSKS = data?.krsStudent?.krsDetail
     .map((item: any) => item.course.sks)
     .reduce((acc: any, init: any) => acc + init, 0);
@@ -111,7 +111,7 @@ const KrsPdf = ({ data }: GeneratePdfProps) => {
     <Document>
       <Page size={"A4"} style={styles.page}>
         <View style={styles.header}>
-          <Image style={styles.logo} src={imgLogo} />
+          <Image style={styles.logo} src={data.img} />
           <View style={styles.sectionTextHeader}>
             <Text style={styles.textHeader}>Kartu Rencana Studi</Text>
             <Text style={[styles.textAddress, { fontWeight: "bold" }]}>Sekolah Tinggi Manajemen Informatika dan Komputer (STMIK) Banjarbaru</Text>

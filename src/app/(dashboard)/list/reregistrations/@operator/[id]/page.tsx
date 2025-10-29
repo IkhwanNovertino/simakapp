@@ -5,12 +5,11 @@ import ModalAction from "@/component/ModalAction";
 import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@prisma/client";
 import Image from "next/image";
+import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@/generated/prisma/client";
 
 type ReregisterDetailDataType = ReregisterDetail & { student: Student & { major: Major } } & { reregister: Reregister };
 
@@ -109,6 +108,11 @@ const ReregisterSinglePage = async (
       className: "hidden md:table-cell",
     },
     {
+      header: "Kampus",
+      accessor: "kampus",
+      className: "hidden md:table-cell",
+    },
+    {
       header: "Pembayaran",
       accessor: "pembayaran",
       className: "hidden md:table-cell",
@@ -179,8 +183,9 @@ const ReregisterSinglePage = async (
             </ModalAction>
           </div>
         </td>
-        <td className="hidden lg:table-cell text-sm font-medium">{item.student.year || 2000}</td>
-        <td className="hidden md:table-cell text-sm font-medium">{item.student.major.name}</td>
+        <td className="hidden lg:table-cell text-sm font-medium">{item.student.year || ""}</td>
+        <td className="hidden md:table-cell text-sm font-medium">{item?.student?.major?.stringCode}</td>
+        <td className="hidden md:table-cell text-sm">{item?.campusType}</td>
         <td className={`hidden md:table-cell text-[10px] font-bold`}>
           <span className={paymentStyle.join(" ")}>
             {item.paymentStatus}

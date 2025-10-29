@@ -6,10 +6,10 @@ import { exportStudentTakingIntership } from "@/lib/excel/exportStudentTakingInt
 import { exportStudentTakingThesis } from "@/lib/excel/exportStudentTakingThesis";
 import { exportStudentUnregisteredKrs } from "@/lib/excel/exportStudentUnregisteredKrs";
 import { prisma } from "@/lib/prisma";
-import { previousPeriod } from "@/lib/utils";
-import { CampusType } from "@prisma/client";
+import { coursesClearing, totalBobot, totalSks } from "@/lib/utils";
 import { error } from "console";
 import { NextRequest, NextResponse } from "next/server";
+import { AnnouncementKhs, Course, KrsDetail, StudentStatus } from "@/generated/prisma/client";
 
 export async function GET(req: NextRequest) {
   try {
@@ -40,25 +40,39 @@ export async function GET(req: NextRequest) {
       case "coursekrs":
 
         const semesterQuery = dataPeriod?.semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
-        const coursesInCurriculumDetail = await prisma.curriculumDetail.findMany({
+        // NEW
+        const years = new Set();
+        const report = await prisma.curriculumDetail.findMany({
           where: {
             semester: { in: semesterQuery },
             curriculum: {
               isActive: true,
             },
           },
-          include: {
-            course: true,
-            curriculum: true,
+          select: {
+            course: {
+              select: {
+                id: true,
+                code: true,
+                name: true,
+                majorId: true,
+              },
+            },
+            semester: true,
           },
           orderBy: [
-            { curriculum: { major: { name: "asc" } } },
+            { course: { majorId: "asc" } },
             { semester: "asc" },
           ],
         });
-        console.log(coursesInCurriculumDetail);
-        
-
+        report.forEach((element: any) => {
+          element.BJB = 0;
+          element.BJM = 0;
+          element.ONLINE = 0;
+          element.SORE = 0;
+          element.angkatan = {};
+          element.totalStudents = 0;
+        });
         const coursesInStudyPlan = await prisma.krsDetail.findMany({
           where: {
             krs: {
@@ -85,54 +99,55 @@ export async function GET(req: NextRequest) {
             }
           }
         });
-        console.log(coursesInStudyPlan);
-        
-      
-        const countCourseInKrsDetail = await prisma.krsDetail.count({
-          where: {
-            krs: {
-              reregister: {
-                period: {
-                  id: uid,
-                }
-              }
+
+        coursesInStudyPlan.forEach((course: any) => {
+          const currentCourse = report.find((item: any) => item.course.id === course.courseId);
+
+          if (course?.krs?.reregisterDetail?.campusType === "BJB") currentCourse.BJB++;
+          if (course?.krs?.reregisterDetail?.campusType === "BJM") currentCourse.BJM++;
+          if (course?.krs?.reregisterDetail?.campusType === "ONLINE") currentCourse.ONLINE++;
+          if (course?.krs?.reregisterDetail?.campusType === "SORE") currentCourse.SORE++;
+          if (course?.krs?.student?.year) {
+            years.add(course?.krs?.student?.year);
+            if (!currentCourse.angkatan[course?.krs?.student?.year]) {
+              currentCourse.angkatan[course?.krs?.student?.year] = 0;
             }
+            currentCourse.angkatan[course?.krs?.student?.year]++;
           }
+          currentCourse.totalStudents++;
         });
-        let countCourseTaken = [];
-        if (countCourseInKrsDetail >= 1) {
-          countCourseTaken = await prisma.krsDetail.groupBy({
-            by: ["courseId"],
-            where: {
-              krs: {
-                reregister: {
-                  period: {
-                    id: uid,
-                  },
-                },
-              },
-            },
-            _count: {
-              courseId: true,
-            },
-          });
-        };
-      
-        const dataFinal = coursesInCurriculumDetail.map((item: any) => {
-          return {
-            ...item,
-            studentCount: countCourseTaken.find((items: any) => item.courseId === items.courseId)?._count?.courseId || 0,
+  
+        const finalReport = report.map((items: any) => {
+          const yearArray = Array.from(years) as number[];
+          const yearCounts = yearArray.sort().reduce<Record<string, number>>((acc, year) => {
+            acc[year] = items.angkatan[year] || 0;
+            return acc;
+          }, {});
+          const row = {
+            "code": items.course.code,
+            "name": items.course.name,
+            "semester": items.semester,
+            "majorId": items.course.majorId,
+            "BJB": items.BJB,
+            "BJM": items.BJM,
+            "ONLINE": items.ONLINE,
+            "SORE": items.SORE,
+            ...yearCounts,
+            totalStudents: items.totalStudents,
           };
-        });
+          return row;
+        })
+
         const dataCoursesByMajor = dataMajor.map((major: any) => {
-          const course = dataFinal.filter((course: any) => course?.course?.majorId === major.id)
-          return {major: major, courses: course}
+          const course = finalReport.filter((course: any) => course?.majorId === major.id)
+          return { major: major, courses: course }
         })
         
         bufferFile = await exportCourseTaken({
           data: {
             dataPeriod,
             dataCoursesByMajor: dataCoursesByMajor,
+            years: Array.from(years).sort() as number[],
           }
         })
         return new NextResponse(bufferFile, {
@@ -170,8 +185,22 @@ export async function GET(req: NextRequest) {
             reregisterDetail: {
               select: {
                 semester: true,
+                lecturer: {
+                  select: {
+                    name: true,
+                  }
+                }
               }
-            }
+            },
+            krsDetail: {
+              select: {
+                course: {
+                  select: {
+                    sks: true,
+                  }
+                }
+              }
+            },
           },
           orderBy: [
             {
@@ -183,12 +212,13 @@ export async function GET(req: NextRequest) {
         });
         studentRegisteredKrs.forEach((element: any) => {
           element.ips = Number(element.ips).toFixed(2);
+          const totalSks = element.krsDetail.map((item: KrsDetail & { course: Course }) => item.course.sks).reduce((acc: number, init: number) => acc + init, 0);
+          element.totalSksTaken = totalSks;
         });
         
-
         const dataStudentRegisteredKrs = dataMajor.map((major: any) => {
           const studentsRegisteredkrs = studentRegisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
-          return {major: major, students: studentsRegisteredkrs}
+          return { major: major, students: studentsRegisteredkrs }
         })
         
         bufferFile = await exportStudentRegisteredKrs({
@@ -230,6 +260,11 @@ export async function GET(req: NextRequest) {
             reregisterDetail: {
               select: {
                 semester: true,
+                lecturer: {
+                  select: {
+                    name: true,
+                  }
+                }
               }
             }
           },
@@ -247,7 +282,7 @@ export async function GET(req: NextRequest) {
 
         const dataStudentUnregisteredKrs = dataMajor.map((major: any) => {
           const studentsUnregisteredkrs = studentUnregisteredKrs.filter((student: any) => student?.student?.major?.id === major?.id)
-          return {major: major, students: studentsUnregisteredkrs}
+          return { major: major, students: studentsUnregisteredkrs }
         })
         
         bufferFile = await exportStudentUnregisteredKrs({
@@ -263,142 +298,202 @@ export async function GET(req: NextRequest) {
           },
         });
       case "studentsTakingThesis":
-        const studentsTakingThesis = await prisma.krs.findMany({
-          where: {
-            reregister: {
-              periodId: uid,
-            },
-            krsDetail: {
-              some: {
-                course: {
-                isSkripsi: true,
+        const [studentsTakingThesis] = await prisma.$transaction(async (prisma:any) => {
+          const studentsTakingThesis = await prisma.student.findMany({
+            where: {
+              krs: {
+                some: {
+                  krsDetail: {
+                    some: {
+                      course: {
+                        isSkripsi: true,
+                      }
+                    },
+                  }
                 },
               },
+              studentStatus: StudentStatus.AKTIF,
             },
-          },
-          select: {
-            student: {
-              select: {
-                nim: true,
-                name: true,
-                major: true,
+            select: {
+              name: true,
+              nim: true,
+              major: true,
+              reregisterDetail: {
+                where: {
+                  reregister: {
+                    periodId: uid,
+                  }
+                },
+                select: {
+                  lecturer: {
+                    select: {
+                      name: true,
+                      frontTitle: true,
+                      backTitle: true,
+                    }
+                  },
+                  semester: true,
+                }
+              },
+              khs: {
+                select: {
+                  khsDetail: {
+                    where: {
+                      isLatest: true,
+                      status: AnnouncementKhs.ANNOUNCEMENT,
+                    },
+                    select: {
+                      course: {
+                        select: {
+                          id: true,
+                          code: true,
+                          name: true,
+                          sks: true,
+                          isPKL: true,
+                          isSkripsi: true,
+                        }
+                      },
+                      weight: true,
+                      gradeLetter: true,
+                      status: true,
+                    },
+                    orderBy: [
+                      { course: { name: 'asc' } }
+                    ]
+                  },
+                }
+              },
+              _count: {
+                select: {
+                  krs: {
+                    where: {
+                      krsDetail: {
+                        some: {
+                          course: {
+                            isSkripsi: true,
+                          }
+                        }
+                      }
+                    },
+                  },
+                }
               }
-            }
-          },
-        });
+            },
+          });
+          studentsTakingThesis.forEach(async (student: any) => {
+            student.reregisterDetail = { ...student?.reregisterDetail[0] };
+            const coursesThesis = await coursesClearing(student?.khs);
+            const totalSksThesis: number = await totalSks(coursesThesis);
+            const totalBobotThesis: number = await totalBobot(coursesThesis);
+            const gpaCalculationThesis = (totalBobotThesis / totalSksThesis).toFixed(2);
 
-        const dataStudentsTakingThesis = dataMajor.map((major: any) => {
-          const studentsTakingthesis = studentsTakingThesis.filter((student: any) => student?.student?.major?.id === major?.id)
-          return {major: major, students: studentsTakingthesis}
-        })
+            student.transcript = {
+              totalSks: totalSksThesis,
+              ipkTranscript: gpaCalculationThesis,
+            };
+          });
+          
+          return [studentsTakingThesis];
+        });
         
         bufferFile = await exportStudentTakingThesis({
           data: {
             dataPeriod: dataPeriod,
-            dataStudentByMajor: dataStudentsTakingThesis,
+            dataStudent: studentsTakingThesis,
           }
         })
         return new NextResponse(bufferFile, {
           headers: {
             'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA PROGRAM TA (${dataPeriod?.name}).xlsx"`,
-          },
-        });
-      case "studentsExtendingThesis":
-        const getPrevPeriod = await previousPeriod({ semesterType: dataPeriod.semesterType, year: dataPeriod.year });
-        const studentsTakingThesisCurrentPeriod = await prisma.krs.findMany({
-          where: {
-            reregister: {
-              periodId: uid,
-            },
-            krsDetail: {
-              some: {
-                course: {
-                isSkripsi: true,
-                },
-              },
-            },
-          },
-          select: {
-            studentId: true,
-            student: {
-              select: {
-                nim: true,
-                name: true,
-                major: true,
-              }
-            }
-          },
-        });
-        const studentsTakingThesisPreviosPeriod = await prisma.krs.findMany({
-          where: {
-            reregister: {
-              period: {
-                semesterType: getPrevPeriod.semesterType,
-                year: getPrevPeriod.year,
-              },
-            },
-            krsDetail: {
-              some: {
-                course: {
-                  isSkripsi: true,
-                },
-              },
-            },
-          },
-          select: {
-            studentId: true,
-          },
-        });
-        const studentsExtendingThesis = studentsTakingThesisCurrentPeriod
-          .filter((student: any) => new Set(studentsTakingThesisPreviosPeriod
-            .map((items: any) => items.studentId))
-            .has(student.studentId));
-
-        const dataStudentsExtendingThesis = dataMajor.map((major: any) => {
-          const studentsExtendingthesis = studentsExtendingThesis.filter((student: any) => student?.student?.major?.id === major?.id)
-          return {major: major, students: studentsExtendingthesis}
-        })
-        
-        bufferFile = await exportStudentRegisteredKrs({
-          data: {
-            dataPeriod: dataPeriod,
-            dataStudentByMajor: dataStudentsExtendingThesis,
-          }
-        })
-        return new NextResponse(bufferFile, {
-          headers: {
-            'Content-Type': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'Content-Disposition': `attachment; filename="DAFTAR MAHASISWA PERPANJANGAN TA (${dataPeriod?.name}).xlsx"`,
+            'Content-Disposition': `attachment; filename="REKAP MAHASISWA PROGRAM TA (${dataPeriod?.name}).xlsx"`,
           },
         });
       case "studentsTakingInternship":
-        const studentsTakingInternship = await prisma.krs.findMany({
-          where: {
-            reregister: {
-              periodId: uid,
-            },
-            krsDetail: {
-              some: {
-                course: {
-                  isPKL: true,
+        const [studentsTakingInternship] = await prisma.$transaction(async (prisma: any) => {
+          const studentsTakingInternship = await prisma.student.findMany({
+            where: {
+              krs: {
+                some: {
+                  krsDetail: {
+                    some: {
+                      course: {
+                        isPKL: true,
+                      }
+                    },
+                  }
                 },
               },
+              studentStatus: StudentStatus.AKTIF,
             },
-          },
-          select: {
-            student: {
-              select: {
-                nim: true,
-                name: true,
-                major: true,
-              }
-            }
-          },
-        });
+            select: {
+              name: true,
+              nim: true,
+              major: true,
+              reregisterDetail: {
+                where: {
+                  reregister: {
+                    periodId: uid,
+                  }
+                },
+                select: {
+                  lecturer: {
+                    select: {
+                      name: true,
+                      frontTitle: true,
+                      backTitle: true,
+                    }
+                  },
+                  semester: true,
+                }
+              },
+              khs: {
+                select: {
+                  khsDetail: {
+                    where: {
+                      isLatest: true,
+                      status: AnnouncementKhs.ANNOUNCEMENT,
+                    },
+                    select: {
+                      course: {
+                        select: {
+                          id: true,
+                          code: true,
+                          name: true,
+                          sks: true,
+                          isPKL: true,
+                          isSkripsi: true,
+                        }
+                      },
+                      weight: true,
+                      gradeLetter: true,
+                      status: true,
+                    },
+                    orderBy: [
+                      { course: { name: 'asc' } }
+                    ]
+                  },
+                }
+              },
+            },
+          });
+      
+          studentsTakingInternship.forEach(async (student: any) => {
+            student.reregisterDetail = { ...student?.reregisterDetail[0] };
+            const courses = await coursesClearing(student?.khs);
+            const totalSksIntern: number = await totalSks(courses);
+            const totalBobotIntern: number = await totalBobot(courses);
+            const gpaCalculationIntern = (totalBobotIntern / totalSksIntern).toFixed(2);
 
+            student.transcript = {
+              totalSks: totalSksIntern,
+              ipkTranscript: gpaCalculationIntern,
+            };
+          });
+
+          return [studentsTakingInternship];
+        });
         const dataStudentsTakingInternship = dataMajor.map((major: any) => {
-          const studentsTakinginternship = studentsTakingInternship.filter((student: any) => student?.student?.major?.id === major?.id)
+          const studentsTakinginternship = studentsTakingInternship.filter((student: any) => student?.major?.id === major?.id)
           return {major: major, students: studentsTakinginternship}
         })
         

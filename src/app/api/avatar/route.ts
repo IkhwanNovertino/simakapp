@@ -18,7 +18,7 @@ export async function GET(req: NextRequest) {
     const fileBuffer = await fs.readFile(filePath);
     const mimeType = mime.getType(filePath) || 'application/octet-stream';
 
-    return new NextResponse(fileBuffer, {
+    return new NextResponse(new Uint8Array(fileBuffer), {
       headers: {
         'Content-Type': mimeType,
         'Content-Disposition': 'inline',

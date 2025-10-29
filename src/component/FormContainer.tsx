@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import FormModal from "./FormModal";
 import { getSession } from "@/lib/session";
-import { Course, CurriculumDetail } from "@prisma/client";
 import { FormModalProps } from "@/lib/datatype";
+import { Course, CurriculumDetail } from "@/generated/prisma/client";
 
 const FormContainer = async (
   { table, type, label, data, id }: FormModalProps
@@ -21,7 +21,7 @@ const FormContainer = async (
           select: { id: true, name: true },
         });
         const courseData = await prisma.course.findMany({
-          select: { id: true, name: true },
+          select: { id: true, name: true, code: true },
         });
         const assessmentType = await prisma.assessment.findMany({
           select: { id: true, name: true },
@@ -191,7 +191,8 @@ const FormContainer = async (
             },
           },
           orderBy: [
-            { semester: "asc" }
+            { semester: "asc" },
+            { course: { code: "asc" } },
           ]
         })
         const dataKrsDetail = data?.krsDetail.map((item: any) => item.courseId);
@@ -218,7 +219,7 @@ const FormContainer = async (
         const periodClass = data?.periodId || '098';
         const semesterType = data?.periodName?.split(" ")[0] || "GANJIL";
 
-        const semesterClass = semesterType === "GANJIL" ? [1, 3, 5, 7] : [2, 4, 6, 8];
+        const semesterClass = semesterType.includes("GANJIL") ? [1, 3, 5, 7] : [2, 4, 6, 8];
         const period = await prisma.period.findMany({
           select: { id: true, name: true },
         });
@@ -250,6 +251,7 @@ const FormContainer = async (
             orderBy: [
               { curriculum: { major: { name: "asc" } } },
               { semester: "asc" },
+              { course: { code: "asc" } }
             ],
           }),
           prisma.krsDetail.groupBy({

@@ -1,6 +1,5 @@
 import { RecapitulationCardType } from "@/lib/datatype";
 import { prisma } from "@/lib/prisma";
-import { previousPeriod } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,7 +15,7 @@ const RecapitulationCard = async ({ periodId, type, label }: RecapitulationCardP
       id: periodId,
     }
   });
-  const yearOfPeriod = period?.name.split(" ")[1];
+  const yearOfPeriod = period?.name?.split(" ")[1];
   let totalStudents: number = 0;
 
   switch (type) {
@@ -59,49 +58,6 @@ const RecapitulationCard = async ({ periodId, type, label }: RecapitulationCardP
           }
         },
       });
-      break;
-    case "studentsExtendingThesis":
-
-      const getPrevPeriod = await previousPeriod({ semesterType: period?.semesterType, year: period?.year });
-      const getStudentTakingThesis = await prisma.krs.findMany({
-        where: {
-          reregister: {
-            periodId: periodId,
-          },
-          krsDetail: {
-            some: {
-              course: {
-                isSkripsi: true,
-              }
-            }
-          }
-        },
-        select: {
-          studentId: true,
-        }
-      })
-      const getStudentTakingThesisPrevPeriod = await prisma.krs.findMany({
-        where: {
-          reregister: {
-            period: {
-              semesterType: getPrevPeriod.semesterType,
-              year: getPrevPeriod.year,
-            },
-          },
-          krsDetail: {
-            some: {
-              course: {
-                isSkripsi: true,
-              },
-            },
-          },
-        },
-        select: {
-          studentId: true,
-        }
-      });
-
-      totalStudents = getStudentTakingThesis.filter((student: any) => new Set(getStudentTakingThesisPrevPeriod.map((item: any) => item.studentId)).has(student.studentId)).length;
       break;
     case "studentsTakingInternship":
       totalStudents = await prisma.krs.count({

@@ -73,11 +73,11 @@ const ClassDetailLayout = async (
                 <span>:</span>
                 <span className="w-6/10 self-start">{dataAcademicClass?.semester || 0}</span>
               </div>
-              <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
+              {/* <div className="w-full 2xl:w-1/3 gap-2 flex items-center">
                 <span className="w-3/10">Jadwal</span>
                 <span>:</span>
                 <span className="w-6/10 self-start">Rabu, 09:40 - 11:20</span>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -60,7 +60,8 @@ export const status = [
 ];
 export const courseType = [
   "WAJIB", 
-  "PILIHAN"
+  "PILIHAN",
+  "PILIHAN_KONSENTRASI",
 ];
 export const semester = [
   "GANJIL", 
@@ -99,4 +100,6 @@ export const position = [
   "Kaprodi TI", 
   "Kaprodi SI"
 ];
+
+export const ACCEPTED_IMAGE_TYPES = "image/jpeg, image/jpg, image/png";
 

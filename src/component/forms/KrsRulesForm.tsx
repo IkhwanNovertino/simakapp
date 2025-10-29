@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { startTransition, useActionState, useEffect } from "react";
+import { FormEvent, startTransition, useActionState, useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { KrsRulesInputs, krsRulesSchema } from "@/lib/formValidationSchema";
@@ -76,7 +76,12 @@ const KrsRulesForm = ({ setOpen, type, data }: FormProps) => {
             name="semester"
             defaultValue={data?.semester || 1}
             register={register}
-            inputProps={{ inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+            inputProps={
+              {
+                inputMode: "numeric",
+                onInput: (e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+              }
+            }
             error={errors?.semester}
             required={true}
           />
@@ -87,7 +92,12 @@ const KrsRulesForm = ({ setOpen, type, data }: FormProps) => {
             name="maxSks"
             defaultValue={data?.maxSks || 0}
             register={register}
-            inputProps={{ inputMode: "numeric", onInput: (e: any) => e.target.value = e.target.value.replace(/[^0-9.]/g, '') }}
+            inputProps={
+              {
+                inputMode: "numeric",
+                onInput: (e: FormEvent<HTMLInputElement>) => (e.target as HTMLInputElement).value = (e.target as HTMLInputElement).value.replace(/[^0-9.]/g, '')
+              }
+            }
             error={errors?.maxSks}
             required={true}
           />
