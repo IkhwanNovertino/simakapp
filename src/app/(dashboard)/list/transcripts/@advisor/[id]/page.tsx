@@ -1,10 +1,10 @@
 import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
+import { AnnouncementKhs, Course, Khs, KhsDetail } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { coursesClearing, courseSorting, lecturerName, totalSks } from "@/lib/utils";
-import { AnnouncementKhs, Course, Khs, KhsDetail } from "@prisma/client";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
