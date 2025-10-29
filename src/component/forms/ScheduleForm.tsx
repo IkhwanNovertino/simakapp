@@ -10,7 +10,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Period } from "@prisma/client";
 
 const ScheduleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 
@@ -75,7 +74,7 @@ const ScheduleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             error={errors?.periodId}
             placeholder="Pilih Periode Akademik"
             required={true}
-            options={period.map((item: Period) => ({
+            options={period.map((item: any) => ({
               value: item.id,
               label: item.name
             }))}

@@ -1,6 +1,5 @@
-
-import { Prisma, PrismaClient } from '@prisma/client'
 import logger from './logger';
+import { Prisma, PrismaClient } from '@/generated/prisma/client';
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
 
@@ -13,15 +12,16 @@ const prismaClientSingleton: any = globalForPrisma.prisma || new PrismaClient({
     { emit: 'event', level: 'error' },
   ]
 })
+
 prismaClientSingleton.$on('info' as never, (e: Prisma.LogEvent) => {
   logger.info(e);
-})
+});
 prismaClientSingleton.$on('warn' as never, (e: Prisma.LogEvent) => {
   logger.warn(e);
-})
+});
 prismaClientSingleton.$on('error' as never, (e: Prisma.LogEvent) => {
   logger.error(e);
-})
+});
 
 export const prisma = prismaClientSingleton;
 

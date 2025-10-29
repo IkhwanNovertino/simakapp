@@ -1,7 +1,7 @@
 'use server';
-import { Permission, RolePermission } from "@prisma/client";
 import { prisma } from "./prisma";
 import { getSession } from "./session"
+import { Permission, RolePermission } from "@/generated/prisma/client";
 
 type PermissionDataType = RolePermission & {permission: Permission};
 

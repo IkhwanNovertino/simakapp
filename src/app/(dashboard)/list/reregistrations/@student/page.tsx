@@ -6,9 +6,9 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Lecturer, Major, Period, Prisma, Reregister, ReregisterDetail, Student } from "@prisma/client";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { Lecturer, Major, Period, Prisma, Reregister, ReregisterDetail, Student } from "@/generated/prisma/client";
 
 type ReregisterDetailDataType = ReregisterDetail & { reregister: Reregister & { period: Period } } & { student: Student & { lecturer: Lecturer } & { major: Major } };
 

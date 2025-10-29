@@ -12,7 +12,6 @@ import InputSelect from "../InputSelect";
 import { dayName } from "@/lib/setting";
 import Select from "react-select";
 import { FormProps } from "@/lib/datatype";
-import { AcademicClass, Course, Time } from "@prisma/client";
 
 const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 
@@ -93,9 +92,9 @@ const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => 
             placeholder="Pilih Waktu Pelajaran"
             required={true}
             error={errors?.time}
-            options={time.map((item: Time) => ({
+            options={time.map((item: { id: string, timeStart: Date, timeFinish: Date }) => ({
               value: item.id,
-              label: `${new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeStart || Date.now())} - ${new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeFinish || Date.now())}`,
+              label: `${new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeStart)} - ${new Intl.DateTimeFormat("id-ID", { hour: "numeric", minute: "numeric" }).format(item.timeFinish)}`,
             }))}
           />
         </div>
@@ -110,7 +109,7 @@ const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => 
             render={({ field }) => (
               <Select
                 {...field}
-                options={academicClass.map((cls: AcademicClass & { course: Course }) => ({
+                options={academicClass.map((cls: any) => ({
                   value: cls.id,
                   label: `${cls.course.code} | ${cls.course.name}`,
                   data: cls,
@@ -136,7 +135,7 @@ const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => 
                 }}
                 value={
                   academicClass
-                    .map((academicClass: AcademicClass & { course: Course }) => ({
+                    .map((academicClass: any) => ({
                       value: academicClass.id,
                       label: `${academicClass.course.code} | ${academicClass.course.name}`,
                       data: academicClass,

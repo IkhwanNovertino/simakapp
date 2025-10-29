@@ -7,6 +7,7 @@ import { createSession, deleteSession } from "./session";
 import { redirect } from "next/navigation";
 import { handlePrismaError } from "./errors/prismaError";
 import { AppError } from "./errors/appErrors";
+import logger from "./logger";
 
 export const login = async (state: { success: boolean, error: boolean, message: string }, data: LoginInputs) => {
   const user = await prisma.user.findUnique({
@@ -53,6 +54,7 @@ export const changePassword = async (state: { success: boolean, error: boolean, 
     })
     return { success: true, error: false, message: "berhasil ganti password" };
   } catch (err) {
+    logger.error(err);
     try {
       handlePrismaError(err)
     } catch (error) {

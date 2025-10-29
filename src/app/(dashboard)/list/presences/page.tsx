@@ -6,8 +6,8 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
-import { AcademicClass, AcademicClassDetail, Course, Lecturer, Period, PresenceDetail, Prisma } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { AcademicClass, AcademicClassDetail, Course, Lecturer, Period, PresenceDetail, Prisma } from "@/generated/prisma/client";
 
 type AcademicClassDetailDataType = AcademicClassDetail
   & {
@@ -143,17 +143,6 @@ const PresenceListPage = async (
             </div>
           </div>
           <div className="flex items-center justify-end gap-2 md:hidden ">
-            {/* <ModalAction>
-              <div className="flex items-center gap-3">
-                <Link href={`/list/classes/${item.id}`}>
-                  <button className="w-7 h-7 flex items-center justify-center rounded-full bg-ternary">
-                    <Image src="/icon/view.svg" alt="" width={20} height={20} />
-                  </button>
-                </Link>
-                <FormContainer table="class" type="update" data={itemUpdate} />
-                <FormContainer table="class" type="delete" id={item.id} />
-              </div>
-            </ModalAction> */}
           </div>
         </td>
         <td className="hidden md:table-cell">
@@ -176,9 +165,6 @@ const PresenceListPage = async (
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
           <div className="flex items-center gap-4 self-end">
-            {/* <button className="w-8 h-8 flex items-center justify-center rounded-full bg-secondary">
-              <Image src="/create.png" alt="" width={14} height={14} />
-            </button> */}
           </div>
         </div>
       </div>

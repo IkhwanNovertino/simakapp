@@ -3,7 +3,7 @@ import CountChart from "./CountChart";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { RecapitulationCardType } from "@/lib/datatype";
-import { ReregisterDetail } from "@prisma/client";
+import { ReregisterDetail } from "@/generated/prisma/client";
 
 interface RecapitulationCountChartContainerProps {
   periodId: string,

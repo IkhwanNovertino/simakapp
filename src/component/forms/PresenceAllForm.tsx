@@ -9,8 +9,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { FormProps } from "@/lib/datatype";
 import InputSelect from "../InputSelect";
-import { Presence } from "@prisma/client";
-
 
 const PresenceAllForm = ({ setOpen, type, data }: FormProps) => {
 
@@ -50,7 +48,7 @@ const PresenceAllForm = ({ setOpen, type, data }: FormProps) => {
             placeholder="Pilih Minggu/Pertemuan ke-..."
             error={errors?.presenceId}
             required={true}
-            options={data.map((item: Presence) => ({
+            options={data.map((item: Record<string, string | number>) => ({
               label: `Minggu/Pertemuan ke-${item.weekNumber}`,
               value: item.id,
             }))}

@@ -44,7 +44,7 @@ const KhsGradeAnnounceForm = ({ type, data }: TypeKhsGradeAnnounceForm) => {
       </button>
 
       {open && (
-        <div className="w-screen h-screen fixed z-[9999] left-0 top-0 bg-black/60  flex items-start justify-center overflow-scroll">
+        <div className="w-screen h-screen fixed z-9999 left-0 top-0 bg-black/60  flex items-start justify-center overflow-scroll">
           <div className="bg-white p-4 relative rounded-md mt-8  w-[88%] md:w-[70%] lg:w-[60%] xl:w-[55%] 2xl:w-[50%] h-fit">
             <div
               className="absolute top-4 right-4 cursor-pointer"

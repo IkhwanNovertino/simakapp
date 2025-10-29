@@ -6,8 +6,8 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Operator, Prisma, Role, User } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { Operator, Prisma, Role, User } from "@/generated/prisma/client";
 
 type OperatorDataType = Operator & { user: User & { role: Role } };
 

@@ -10,8 +10,6 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Course } from "@prisma/client";
-
 
 const RplForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { courses, period } = relatedData;
@@ -131,7 +129,7 @@ const RplForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                     <InputSelect
                       label="Mata Kuliah"
                       name={`khsDetail.${index}.id`}
-                      options={courses.map((item: { course: Course }) => ({
+                      options={courses.map((item: { course: any }) => ({
                         value: item.course.id,
                         label: `${item.course.code} | ${item.course.name} | ${item.course.sks} SKS`,
                       }))}

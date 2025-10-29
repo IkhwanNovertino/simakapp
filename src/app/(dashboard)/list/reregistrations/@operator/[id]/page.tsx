@@ -8,8 +8,8 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@prisma/client";
 import Image from "next/image";
+import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@/generated/prisma/client";
 
 type ReregisterDetailDataType = ReregisterDetail & { student: Student & { major: Major } } & { reregister: Reregister };
 

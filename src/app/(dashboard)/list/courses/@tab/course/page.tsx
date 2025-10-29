@@ -7,9 +7,8 @@ import TableSearch from "@/component/TableSearch";
 import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewData } from "@/lib/dal";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Course, Major, Prisma } from "@prisma/client";
-import { Console } from "console";
 import { redirect } from "next/navigation";
+import { Course, Major, Prisma } from "@/generated/prisma/client";
 
 type CourseDataType = Course & { major: Major };
 
@@ -62,6 +61,16 @@ const CourseListPage = async (
         courseType: true,
         majorId: true,
         assessmentId: true,
+        isPKL: true,
+        isSkripsi: true,
+        predecessorId: true,
+        predecessor: {
+          select: {
+            id: true,
+            code: true,
+            name: true,
+          }
+        },
         major: {
           select: {
             stringCode: true,

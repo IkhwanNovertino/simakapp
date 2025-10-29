@@ -3,9 +3,9 @@ import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { coursesClearing, courseSorting, lecturerName, totalSks } from "@/lib/utils";
-import { AnnouncementKhs, Course, KhsDetail } from "@prisma/client";
 import Image from "next/image";
 import { redirect } from "next/navigation";
+import { AnnouncementKhs, Course, KhsDetail } from "@/generated/prisma/client";
 
 type KhsDetailDataType = KhsDetail & { course: Course };
 

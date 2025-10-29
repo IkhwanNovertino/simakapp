@@ -1,18 +1,17 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useActionState, useEffect, useRef, useState } from "react";
+import { useActionState, useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import InputField from "../InputField";
 import { LecturerInputs, lecturerSchema } from "@/lib/formValidationSchema";
 import { createLecturer, updateLecturer } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { degree, religion } from "@/lib/setting";
+import { degree, gender, religion } from "@/lib/setting";
 import Image from "next/image";
 import InputSelect from "../InputSelect";
 import { FormProps } from "@/lib/datatype";
-import { Gender } from "@prisma/client";
 
 const LecturerForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors } = relatedData;
@@ -30,9 +29,9 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const action = type === "create" ? createLecturer : updateLecturer;
   const [state, formAction] = useActionState(action, { success: false, error: false, message: "" });
 
-  const onValid = () => {
+  const onValid = useCallback(() => {
     formRef.current?.requestSubmit()
-  }
+  }, [])
 
   // Handler untuk update preview image ketika file input berubah
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -182,7 +181,10 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             placeholder="--Pilih Gender"
             required={true}
             error={errors?.gender}
-            options={[{ value: Gender.PRIA, label: "PRIA" }, { value: Gender.WANITA, label: "WANITA" }]}
+            options={gender.map((item: string) => ({
+              value: item,
+              label: item,
+            }))}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
@@ -193,7 +195,10 @@ const LecturerForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             <Image src="/upload.png" alt="" width={28} height={28} />
             <span>Upload a photo</span>
           </label>
-          <input type="file" id="photo" name="photo"
+          <input
+            type="file"
+            id="photo"
+            name="photo"
             className="hidden"
             accept="image/jpeg, image/jpg, image/png"
             onChange={handleFileChange}

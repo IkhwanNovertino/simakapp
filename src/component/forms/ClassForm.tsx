@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import Select from "react-select";
 import { FormProps } from "@/lib/datatype";
-import { Lecturer, Room } from "@prisma/client";
 
 
 const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
@@ -188,7 +187,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                   defaultValue={data?.lecturerId}
                   error={errors?.lecturerId}
                   required={true}
-                  options={lecturers.map((item: Lecturer) => ({
+                  options={lecturers.map((item: Record<string, string | number>) => ({
                     value: item.id,
                     label: `${item.frontTitle ? item.frontTitle + " " : ""}${item.name} ${item.backTitle ? item.backTitle : ""}`,
                   }))}
@@ -203,7 +202,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                   defaultValue={data?.roomId}
                   error={errors?.roomId}
                   required={true}
-                  options={rooms.map((item: Room) => ({
+                  options={rooms.map((item: Record<string, string | number>) => ({
                     value: item.id,
                     label: item.name,
                   }))}

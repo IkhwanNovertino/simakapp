@@ -101,3 +101,5 @@ export const position = [
   "Kaprodi SI"
 ];
 
+export const ACCEPTED_IMAGE_TYPES = "image/jpeg, image/jpg, image/png";
+

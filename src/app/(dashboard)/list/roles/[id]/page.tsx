@@ -5,7 +5,7 @@ import TableSearch from "@/component/TableSearch";
 import ToggleSwitch from "@/component/ToggleSwitch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Permission, Prisma } from "@prisma/client";
+import { Permission, Prisma } from "@/generated/prisma/client";
 
 type PermissionDataType = Permission;
 
@@ -51,7 +51,7 @@ const SingleRolePage = async (
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
     }),
-    
+
     prisma.permission.count({ where: query }),
   ]);
 

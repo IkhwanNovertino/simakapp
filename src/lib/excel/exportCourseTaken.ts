@@ -1,5 +1,5 @@
-import { Period } from '@prisma/client';
 import ExcelJS from 'exceljs';
+import { Period } from '@/generated/prisma/client';
 
 interface ExportCourseTakenProps{
   dataPeriod: Period;

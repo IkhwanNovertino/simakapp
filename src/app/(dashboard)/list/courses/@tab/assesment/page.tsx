@@ -5,7 +5,7 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Assessment, AssessmentDetail, Prisma } from "@prisma/client";
+import { Assessment, AssessmentDetail, Prisma } from "@/generated/prisma/client";
 
 type AssessmentDataTypes = Assessment & { assessmentDetail: AssessmentDetail[] };
 

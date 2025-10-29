@@ -2,8 +2,8 @@
 import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
-import { Course, KhsDetail } from "@prisma/client";
 import Image from "next/image";
+import { Course, KhsDetail } from "@/generated/prisma/client";
 
 type KhsDetailDataType = KhsDetail & { course: Course };
 
@@ -60,7 +60,7 @@ const KHSDetailPage = async (
             status: true,
           },
           orderBy: [
-            { course: { name: 'asc' } }
+            { course: { code: 'asc' } }
           ]
         }
       }

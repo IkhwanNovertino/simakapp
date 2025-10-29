@@ -182,6 +182,7 @@ const ReregisterStudentForm = ({ setOpen, type, data }: FormProps) => {
             defaultValue={data?.student?.placeOfBirth}
             register={register}
             error={errors?.placeOfBirth}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
@@ -192,6 +193,7 @@ const ReregisterStudentForm = ({ setOpen, type, data }: FormProps) => {
             defaultValue={moment(data?.student?.birthday).format("yyyy-MM-dd")}
             register={register}
             error={errors?.birthday}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
@@ -201,6 +203,7 @@ const ReregisterStudentForm = ({ setOpen, type, data }: FormProps) => {
             defaultValue={data?.student?.hp}
             register={register}
             error={errors?.hp}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-5/12">
@@ -210,6 +213,7 @@ const ReregisterStudentForm = ({ setOpen, type, data }: FormProps) => {
             defaultValue={data?.student?.email}
             register={register}
             error={errors?.email}
+            required={true}
           />
         </div>
         <div className="flex flex-col gap-2 w-full md:w-11/12">
