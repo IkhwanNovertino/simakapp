@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import Select from "react-select";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {

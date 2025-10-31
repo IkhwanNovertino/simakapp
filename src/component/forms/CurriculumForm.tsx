@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const CurriculumForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors } = relatedData;

@@ -12,9 +12,10 @@ import { lecturerName } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Lecturer, Major, Prisma, Student, User } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { StudentTypes } from "@/lib/types/datatypes/type";
 
-type StudentDataType = Student & { major: Major } & { user: User } & { lecturer: Lecturer };
+// type StudentDataType = Student & { major: Major } & { user: User } & { lecturer: Lecturer };
 
 const StudentListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -118,7 +119,7 @@ const StudentListPage = async (
     },
   ];
 
-  const renderRow = (item: StudentDataType) => {
+  const renderRow = (item: StudentTypes) => {
     const semesterStyle = ["p-1 rounded-lg text-[9px] font-bold self-start"];
     if (item.studentStatus === "NONAKTIF") semesterStyle.push("text-rose-500 bg-rose-100");
     if (item.studentStatus === "AKTIF") semesterStyle.push("text-green-500 bg-green-100");
@@ -160,7 +161,7 @@ const StudentListPage = async (
                 )}
                 {canUpdateData && <FormContainer table="student" type="update" data={item} />}
                 {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-                {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.userId}`} />)}
+                {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.user.id}`} />)}
               </div>
             </ModalAction>
           </div>
@@ -185,7 +186,7 @@ const StudentListPage = async (
             )}
             {canUpdateData && <FormContainer table="student" type="update" data={item} />}
             {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-            {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.userId}`} />)}
+            {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.user.id}`} />)}
           </div>
         </td>
       </tr>

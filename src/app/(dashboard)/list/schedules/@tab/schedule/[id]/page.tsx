@@ -5,15 +5,16 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { AcademicClass, Course, Day, Lecturer, Major, Prisma, Room, ScheduleDetail, Time } from "@/generated/prisma/client";
+import { ScheduleDetailTypes } from "@/lib/types/datatypes/type";
 
-type ScheduleDetailDataType =
-  ScheduleDetail & { time: Time }
-  & {
-    academicClass: AcademicClass
-    & { lecturer: Lecturer }
-    & { room: Room }
-    & { course: Course & { major: Major } }
-  }
+// type ScheduleDetailDataType =
+//   ScheduleDetail & { time: Time }
+//   & {
+//     academicClass: AcademicClass
+//     & { lecturer: Lecturer }
+//     & { room: Room }
+//     & { course: Course & { major: Major } }
+//   }
 
 const ScheduleDetailPage = async (
   {
@@ -135,7 +136,7 @@ const ScheduleDetailPage = async (
     },
   ];
 
-  const renderRow = (item: ScheduleDetailDataType) => (
+  const renderRow = (item: ScheduleDetailTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

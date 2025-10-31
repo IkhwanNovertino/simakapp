@@ -10,9 +10,9 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Period, Prisma, Reregister } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { ReregisterTypes } from "@/lib/types/datatypes/type";
 
-type ReregisterDataType = Reregister & { period: Period };
 
 const ReregisterOperatorPage = async (
   { searchParams }: { searchParams: { [key: string]: string | undefined } }
@@ -100,7 +100,7 @@ const ReregisterOperatorPage = async (
     },
   ];
 
-  const renderRow = (item: ReregisterDataType) => (
+  const renderRow = (item: ReregisterTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

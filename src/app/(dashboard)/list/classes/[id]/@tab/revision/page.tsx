@@ -6,6 +6,7 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { AcademicClassDetail, Prisma } from "@/generated/prisma/client";
+import { AssessmentDetailTypes, KhsDetailTypes, KhsGradeTypes } from "@/lib/types/datatypes/type";
 
 const ClassSingleTabAssessmentPage = async (
   {
@@ -70,7 +71,7 @@ const ClassSingleTabAssessmentPage = async (
       }
     });
 
-    const enrolledStudents = academicClass?.academicClassDetail.map((detail: AcademicClassDetail) => detail.studentId) || [];
+    const enrolledStudents = academicClass?.academicClassDetail.map((detail: { studentId: string }) => detail.studentId) || [];
     const assessmentDetails = academicClass?.course.assessment?.assessmentDetail || [];
     const students = await prisma.khsDetail.findMany({
       where: {
@@ -170,14 +171,14 @@ const ClassSingleTabAssessmentPage = async (
     return [dataTransformed, assessmentDetails, count];
   });
 
-  const columnPreGrade = assessmentDetails.map((item: any) => (
+  const columnPreGrade = assessmentDetails.map((item: AssessmentDetailTypes) => (
     {
       header: `${item.grade.name}`,
       accessor: `pre${item.grade.name}`,
       className: "hidden md:table-cell w-8 text-[10px] lowercase ellipsis px-2",
     }
   ));
-  const columnGrade = assessmentDetails.map((item: any) => (
+  const columnGrade = assessmentDetails.map((item: AssessmentDetailTypes) => (
     {
       header: `${item.grade.name} (${item.percentage}%)`,
       accessor: item.grade.name,
@@ -224,7 +225,7 @@ const ClassSingleTabAssessmentPage = async (
       : []),
   ];
 
-  const renderRow = (item: any) => {
+  const renderRow = (item: KhsDetailTypes) => {
     return (
       <tr
         key={item.id}
@@ -239,12 +240,12 @@ const ClassSingleTabAssessmentPage = async (
           <div className="flex items-center justify-end gap-2 md:hidden ">
           </div>
         </td>
-        {item.predecessor.khsGrade.map((preGrade: any) => (
+        {item?.predecessor?.khsGrade.map((preGrade: KhsGradeTypes) => (
           <td key={preGrade.id} className="hidden md:table-cell w-8 px-2 bg-accent-light text-xs font-medium">{preGrade.score || 0}</td>
         ))}
-        <td className="hidden md:table-cell w-10 px-2 bg-accent-light text-xs font-medium">{item.predecessor.finalScore || 0}</td>
-        <td className="hidden md:table-cell w-10 px-2 text-xs bg-accent-light font-medium">{item.predecessor.gradeLetter || "TBC"}</td>
-        {item.khsGrade.map((grade: any) => (
+        <td className="hidden md:table-cell w-10 px-2 bg-accent-light text-xs font-medium">{item?.predecessor?.finalScore || 0}</td>
+        <td className="hidden md:table-cell w-10 px-2 text-xs bg-accent-light font-medium">{item?.predecessor?.gradeLetter || "TBC"}</td>
+        {item.khsGrade.map((grade: KhsGradeTypes) => (
           <td key={grade.id} className="hidden md:table-cell w-8 px-2 text-xs font-medium">{grade.score || 0}</td>
         ))}
         <td className="hidden md:table-cell w-10 px-2 text-xs font-medium">{item.finalScore || 0}</td>

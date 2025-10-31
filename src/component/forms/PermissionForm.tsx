@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { actionPermission, resourceData } from "@/lib/setting";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const PermissionForm = ({ setOpen, type, data }: FormProps) => {
 

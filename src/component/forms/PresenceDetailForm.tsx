@@ -9,8 +9,8 @@ import { presenceActivation } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { presenceDuration } from "@/lib/setting";
-import { FormProps } from "@/lib/datatype";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const PresenceDetailForm = ({ setOpen, type, data }: FormProps) => {

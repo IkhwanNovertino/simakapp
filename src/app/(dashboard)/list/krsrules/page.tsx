@@ -7,9 +7,8 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { redirect } from "next/navigation";
-import { KrsRule, Prisma } from "@/generated/prisma/client";
-
-type KrsRuleDataType = KrsRule;
+import { Prisma } from "@/generated/prisma/client";
+import { KrsRuleTypes } from "@/lib/types/datatypes/type";
 
 const KRSRuleListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -53,7 +52,7 @@ const KRSRuleListPage = async (
     prisma.krsRule.count({ where: query }),
   ]);
 
-  const renderRow = (item: KrsRuleDataType) => {
+  const renderRow = (item: KrsRuleTypes) => {
 
     return (
       <tr
@@ -63,13 +62,12 @@ const KRSRuleListPage = async (
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
           <div className="flex flex-col col-span-5 items-start">
             <h3 className="font-semibold">{item?.statusRegister ?? ""}</h3>
-            {/* <p className="hidden md:flex text-xs text-gray-500">Angkatan: {item?.student?.year ?? ""}</p>
-          <p className="flex text-xs text-gray-500">{item?.student?.nim || ""}</p>
-          <p className="flex lg:hidden">
-            <span className={isStatusForm.join(" ")}>
-              {item?.isStatusForm || ""}
-            </span>
-          </p> */}
+            <p className="hidden md:flex text-xs text-gray-500">semester: </p>
+            <p className="hidden md:flex">
+              <span className={item.isActive ? "text-lime-500 bg-lime-100 p-1 rounded-lg" : "text-red-700 bg-red-100 p-1 rounded-lg"}>
+                {item.isActive ? "AKTIF" : "NONAKTIF"}
+              </span>
+            </p>
           </div>
           <div className="flex items-center justify-end gap-2 md:hidden ">
             <ModalAction>

@@ -5,9 +5,8 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Period, Prisma } from "@/generated/prisma/client";
-
-type PeriodDataType = Period;
+import { Prisma } from "@/generated/prisma/client";
+import { PeriodTypes } from "@/lib/types/datatypes/type";
 
 const PeriodListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -68,7 +67,7 @@ const PeriodListPage = async (
     },
   ];
 
-  const renderRow = (item: PeriodDataType) => (
+  const renderRow = (item: PeriodTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

@@ -4,8 +4,9 @@ import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
 import { Course, KhsDetail } from "@/generated/prisma/client";
+import { KhsDetailTypes } from "@/lib/types/datatypes/type";
 
-type KhsDetailDataType = KhsDetail & { course: Course };
+// type KhsDetailDataType = KhsDetail & { course: Course };
 
 const KHSDetailPage = async (
   { params }: { params: Promise<{ id: string }> }
@@ -119,7 +120,7 @@ const KHSDetailPage = async (
     },
   ];
 
-  const renderRow = (item: KhsDetailDataType) => {
+  const renderRow = (item: KhsDetailTypes) => {
     return (
       <tr
         key={item.id}

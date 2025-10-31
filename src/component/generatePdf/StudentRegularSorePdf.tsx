@@ -1,4 +1,4 @@
-import { GeneratePdfProps } from "@/lib/datatype";
+import { GeneratePdfProps } from "@/lib/types/pdftype";
 import { Document, Image, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({
@@ -100,7 +100,6 @@ const styles = StyleSheet.create({
 
 
 const StudentRegularSorePdf = ({ data }: GeneratePdfProps) => {
-  // const imgLogo = `${process.env.NEXT_PUBLIC_SITE_URL}/logo.png`
 
   return (
     <Document>

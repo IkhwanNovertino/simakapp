@@ -8,8 +8,7 @@ import { GradeInputs, gradeSchema } from "@/lib/formValidationSchema";
 import { createGrade, updateGrade } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { FormProps } from "@/lib/datatype";
-
+import { FormProps } from "@/lib/types/formtype";
 
 const GradeForm = ({ setOpen, type, data }: FormProps) => {
 

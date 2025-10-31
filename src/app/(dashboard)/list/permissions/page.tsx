@@ -8,12 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { redirect } from "next/navigation";
 import { Prisma } from "@/generated/prisma/client";
-
-type PermissionDataType = {
-  id: number;
-  name: string;
-  description: string;
-};
+import { PermissionTypes } from "@/lib/types/datatypes/type";
 
 const PermissionListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -57,7 +52,7 @@ const PermissionListPage = async (
     prisma.permission.count({ where: query }),
   ]);
 
-  const renderRow = (item: PermissionDataType) => (
+  const renderRow = (item: PermissionTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

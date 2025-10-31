@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { degree, gender, religion } from "@/lib/setting";
 import Image from "next/image";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const LecturerForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { majors } = relatedData;

@@ -7,14 +7,15 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { AcademicClass, AcademicClassDetail, Course, Lecturer, Prisma, Student } from "@/generated/prisma/client";
+import { AcademicClassDetailTypes } from "@/lib/types/datatypes/type";
 
-type AcademicClassDetailDataType = AcademicClassDetail
-  & {
-    academicClass: AcademicClass
-    & { lecturer: Lecturer }
-    & { course: Course }
-  }
-  & { student: Student }
+// type AcademicClassDetailDataType = AcademicClassDetail
+//   & {
+//     academicClass: AcademicClass
+//     & { lecturer: Lecturer }
+//     & { course: Course }
+//   }
+//   & { student: Student }
 
 const ClassSingleTabStudentPage = async (
   {
@@ -93,11 +94,11 @@ const ClassSingleTabStudentPage = async (
     },
   ];
 
-  const renderRow = (item: AcademicClassDetailDataType) => {
+  const renderRow = (item: AcademicClassDetailTypes) => {
 
     return (
       <tr
-        key={item.studentId}
+        key={item.student.id}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">

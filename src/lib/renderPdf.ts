@@ -1,5 +1,4 @@
 import { renderToBuffer } from "@react-pdf/renderer";
-import { RenderPdfProps } from "./datatype";
 import AssessmentPdf from "@/component/generatePdf/AssessmentPdf";
 import KrsPdf from "@/component/generatePdf/KrsPdf";
 import KhsPdf from "@/component/generatePdf/khsPdf";
@@ -12,6 +11,7 @@ import StudentTakingIntershipPdf from "@/component/generatePdf/StudentTakingInte
 import StudentActiveInactivePdf from "@/component/generatePdf/StudentActiveInactivePdf";
 import StudentRegularSorePdf from "@/component/generatePdf/StudentRegularSorePdf";
 import TranscriptPdf from "@/component/generatePdf/TranscriptPdf";
+import { RenderPdfProps } from "./types/pdftype";
 
 const renderPdf  = async ({ type, data }: RenderPdfProps) : Promise<Buffer | undefined> => {
   // let pdfContent: React.ReactElement<unknown, string | React.JSXElementConstructor<any>>;

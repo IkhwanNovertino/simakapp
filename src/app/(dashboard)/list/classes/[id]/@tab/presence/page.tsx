@@ -7,11 +7,10 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { AcademicClass, AcademicClassDetail, Presence, PresenceDetail, Prisma, Student } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { AcademicClassDetailTypes, PresenceDetailTypes } from "@/lib/types/datatypes/type";
 
-type PresenceDetailDataType = AcademicClassDetail
-  & { academicClass: AcademicClass }
-  & { student: Student } & { presenceDetail: PresenceDetail[] & { presence: Presence } }
+type PresenceDetailDataType = AcademicClassDetailTypes & { presenceDetail: PresenceDetailTypes[] }
 
 const ClassSingleTabStudentPage = async (
   {
@@ -125,7 +124,7 @@ const ClassSingleTabStudentPage = async (
   const renderRow = (item: PresenceDetailDataType) => {
     return (
       <tr
-        key={item.studentId}
+        key={item.student.id}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className="flex flex-col gap-2 py-4 px-2 md:px-4 lg:w-80">

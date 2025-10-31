@@ -10,8 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
 import { learningMethod } from "@/lib/setting";
-import { FormProps } from "@/lib/datatype";
-
+import { FormProps } from "@/lib/types/formtype";
 
 const PresenceForm = ({ setOpen, type, data }: FormProps) => {
 

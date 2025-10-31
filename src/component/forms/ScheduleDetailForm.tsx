@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import { dayName } from "@/lib/setting";
 import Select from "react-select";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const ScheduleDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 

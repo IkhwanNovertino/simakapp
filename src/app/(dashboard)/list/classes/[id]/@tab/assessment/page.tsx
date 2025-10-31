@@ -9,6 +9,7 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { AcademicClassDetail, AnnouncementKhs, Prisma } from "@/generated/prisma/client";
+import { AssessmentDetailTypes, KhsDetailBaseTypes, KhsDetailTypes, KhsGradeTypes } from "@/lib/types/datatypes/type";
 
 const ClassSingleTabAssessmentPage = async (
   {
@@ -74,7 +75,7 @@ const ClassSingleTabAssessmentPage = async (
       }
     });
 
-    const enrolledStudents = academicClass?.academicClassDetail.map((detail: AcademicClassDetail) => detail.studentId) || [];
+    const enrolledStudents = academicClass?.academicClassDetail.map((detail: { studentId: string }) => detail.studentId) || [];
     const assessmentDetails = academicClass?.course.assessment?.assessmentDetail || [];
     const students = await prisma.khsDetail.findMany({
       where: {
@@ -159,7 +160,7 @@ const ClassSingleTabAssessmentPage = async (
     return [dataTransformed, assessmentDetails, count, dataKhsAnnouncement];
   });
 
-  const columnGrade = assessmentDetails.map((item: any) => (
+  const columnGrade = assessmentDetails.map((item: AssessmentDetailTypes) => (
     {
       header: `${item.grade.name} (${item.percentage}%)`,
       accessor: item.grade.name,
@@ -196,7 +197,7 @@ const ClassSingleTabAssessmentPage = async (
     },
   ];
 
-  const renderRow = (item: any) => {
+  const renderRow = (item: KhsDetailBaseTypes) => {
     return (
       <tr
         key={item.id}
@@ -210,7 +211,7 @@ const ClassSingleTabAssessmentPage = async (
           <div className="flex items-center justify-end gap-2 md:hidden ">
           </div>
         </td>
-        {item.khsGrade.map((grade: any) => (
+        {item.khsGrade.map((grade: KhsGradeTypes) => (
           <td key={grade.id} className="hidden md:table-cell w-18">{grade.score || 0}</td>
         ))}
         <td className="hidden md:table-cell w-18">{item.finalScore || 0}</td>
@@ -248,7 +249,7 @@ const ClassSingleTabAssessmentPage = async (
       <div className="block md:hidden font-semibold text-xs my-4 py-2 px-3 bg-amber-300 rounded-md">GUNAKAN TABLET/LAPTOP UNTUK MELAKUKAN PENILAIAN!</div>
       {/* LIST */}
       <div className="flex flex-col md:flex-row items-start md:items-center justify-between md:mb-6">
-        {students.find((item: any) => item.status === AnnouncementKhs.DRAFT) && (
+        {students.find((item: { status: AnnouncementKhs }) => item.status === AnnouncementKhs.DRAFT) && (
           <div className="hidden md:flex items-center gap-4">
             <a
               href={`/api/grade?academicClassId=${id}&template=true`}
@@ -271,7 +272,7 @@ const ClassSingleTabAssessmentPage = async (
             <ImportForm />
           </div>
         )}
-        {students.find((item: any) => item.status === AnnouncementKhs.SUBMITTED) && (
+        {students.find((item: { status: AnnouncementKhs }) => item.status === AnnouncementKhs.SUBMITTED) && (
           <div className="hidden md:flex items-center gap-4">
             <a
               href={`/api/grade?academicClassId=${id}`}
@@ -284,7 +285,7 @@ const ClassSingleTabAssessmentPage = async (
             </a>
           </div>
         )}
-        {students.find((item: any) => item.status === AnnouncementKhs.ANNOUNCEMENT) && (
+        {students.find((item: { status: AnnouncementKhs }) => item.status === AnnouncementKhs.ANNOUNCEMENT) && (
           <div className="hidden md:flex items-center gap-4">
             <a
               href={`/api/grade?academicClassId=${id}`}
@@ -305,17 +306,17 @@ const ClassSingleTabAssessmentPage = async (
         {user?.roleType === "OPERATOR" && (
           <div className="hidden md:flex items-center gap-4">
             <div className="flex flex-col md:flex-row items-center w-full md:w-auto">
-              {students.find((item: any) => item.status === AnnouncementKhs.SUBMITTED) && (
+              {students.find((item: { status: AnnouncementKhs }) => item.status === AnnouncementKhs.SUBMITTED) && (
                 <KhsGradeAnnounceForm type="announcement" data={dataKhsAnnouncement} />
               )}
             </div>
             <div className="flex flex-col md:flex-row items-center w-full md:w-auto">
-              {students.find((item: any) => item.status === AnnouncementKhs.SUBMITTED) && (
+              {students.find((item: { status: AnnouncementKhs }) => item.status === AnnouncementKhs.SUBMITTED) && (
                 <KhsGradeAnnounceForm type="unsubmitted" data={dataKhsAnnouncement} />
               )}
             </div>
             <div className="flex flex-col md:flex-row items-center w-full md:w-auto">
-              {students.find((item: any) => item.status === AnnouncementKhs.DRAFT) && (
+              {students.find((item: { status: AnnouncementKhs }) => item.status === AnnouncementKhs.DRAFT) && (
                 <KhsGradeAnnounceForm type="submitted" data={dataKhsAnnouncement} />
               )}
             </div>
@@ -323,7 +324,7 @@ const ClassSingleTabAssessmentPage = async (
         )}
         {user?.roleType !== "OPERATOR" && (
           <div className="flex flex-col md:flex-row items-center w-full md:w-auto">
-            {students.find((item: any) => item.status === AnnouncementKhs.DRAFT) && (
+            {students.find((item: { status: AnnouncementKhs }) => item.status === AnnouncementKhs.DRAFT) && (
               <KhsGradeAnnounceForm type="submitted" data={dataKhsAnnouncement} />
             )}
           </div>

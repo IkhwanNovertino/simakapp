@@ -8,9 +8,10 @@ import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { Lecturer, Major, Period, Prisma, Reregister, ReregisterDetail, Student } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { ReregisterDetailTypes } from "@/lib/types/datatypes/type";
 
-type ReregisterDetailDataType = ReregisterDetail & { reregister: Reregister & { period: Period } } & { student: Student & { lecturer: Lecturer } & { major: Major } };
+// type ReregisterDetailDataType = ReregisterDetail & { reregister: Reregister & { period: Period } } & { student: Student & { lecturer: Lecturer } & { major: Major } };
 
 const ReregisterStudentPage = async (
   { searchParams }: { searchParams: { [key: string]: string | undefined } }
@@ -121,9 +122,9 @@ const ReregisterStudentPage = async (
     },
   ];
 
-  const renderRow = (item: ReregisterDetailDataType) => (
+  const renderRow = (item: ReregisterDetailTypes) => (
     <tr
-      key={item.reregisterId}
+      key={item.reregister.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
     >
       <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
@@ -150,7 +151,7 @@ const ReregisterStudentPage = async (
               <FormContainer table="reregistrationStudent" type="update" data={item} />
             )}
             {(item.paymentStatus === "LUNAS" && item.isStatusForm) && (
-              <ButtonPdfDownload type="reregister" id={`${item.reregisterId}:${item.studentId}`}>
+              <ButtonPdfDownload type="reregister" id={`${item.reregister.id}:${item.student.id}`}>
                 <div className={`w-7 h-7 flex items-center justify-center rounded-full bg-primary-dark`}>
                   <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} />
                 </div>

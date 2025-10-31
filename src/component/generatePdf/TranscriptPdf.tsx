@@ -1,4 +1,4 @@
-import { GeneratePdfProps } from "@/lib/datatype";
+import { GeneratePdfProps } from "@/lib/types/pdftype";
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 
 const styles = StyleSheet.create({

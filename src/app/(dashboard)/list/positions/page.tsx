@@ -7,9 +7,8 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { redirect } from "next/navigation";
-import { Position, Prisma } from "@/generated/prisma/client";
-
-type PositionDataType = Position;
+import { Prisma } from "@/generated/prisma/client";
+import { PositionTypes } from "@/lib/types/datatypes/type";
 
 const PositionListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -52,7 +51,7 @@ const PositionListPage = async (
     prisma.position.count({ where: query }),
   ]);
 
-  const renderRow = (item: PositionDataType) => (
+  const renderRow = (item: PositionTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

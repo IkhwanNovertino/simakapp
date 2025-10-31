@@ -11,8 +11,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Lecturer, Major, Prisma, Student } from "@/generated/prisma/client";
+import { StudentTypes } from "@/lib/types/datatypes/type";
 
-type StudentDataType = Student & { major: Major } & { lecturer: Lecturer };
+// type StudentDataType = Student & { major: Major } & { lecturer: Lecturer };
 
 const TranskipOperatorPage = async (
   { searchParams }: { searchParams: { [key: string]: string | undefined } }
@@ -98,7 +99,7 @@ const TranskipOperatorPage = async (
     },
   ];
 
-  const renderRow = (item: StudentDataType) => {
+  const renderRow = (item: StudentTypes) => {
     const status = ["p-1 rounded-lg text-[9px] font-bold self-start m-1"];
     if (item.studentStatus === "NONAKTIF") status.push("text-rose-500 bg-rose-100");
     if (item.studentStatus === "AKTIF") status.push("text-green-500 bg-green-100");

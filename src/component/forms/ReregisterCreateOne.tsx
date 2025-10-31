@@ -12,7 +12,7 @@ import { ReregistrationDetailInputs, reregistrationDetailSchema } from "@/lib/fo
 import moment from "moment";
 import { status } from "@/lib/setting";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { students, lecturers, role } = relatedData;

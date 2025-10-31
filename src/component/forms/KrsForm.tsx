@@ -8,8 +8,8 @@ import { krsOverride, KrsOverrideInputs } from "@/lib/formValidationSchema";
 import { createKrsOverride } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { FormProps } from "@/lib/datatype";
 import { calculatingSKSLimits } from "@/lib/utils";
+import { FormProps } from "@/lib/types/formtype";
 
 const KrsForm = ({ setOpen, type, data }: FormProps) => {
 

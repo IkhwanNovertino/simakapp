@@ -2,8 +2,8 @@ import Image from "next/image";
 import CountChart from "./CountChart";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
-import { RecapitulationCardType } from "@/lib/datatype";
 import { ReregisterDetail } from "@/generated/prisma/client";
+import { RecapitulationCardType } from "@/lib/types/recaptype";
 
 interface RecapitulationCountChartContainerProps {
   periodId: string,

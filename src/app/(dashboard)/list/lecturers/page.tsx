@@ -12,8 +12,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Lecturer, Major, Prisma, Role, User } from "@/generated/prisma/client";
+import { LecturerTypes } from "@/lib/types/datatypes/type";
 
-type LecturerDataType = Lecturer & { user: User & { role: Role } } & { major: Major };
+// type LecturerDataType = Lecturer & { user: User & { role: Role } } & { major: Major };
 
 const LecturerListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -102,7 +103,7 @@ const LecturerListPage = async (
       className: "hidden md:table-cell",
     },
   ];
-  const renderRow = (item: LecturerDataType) => (
+  const renderRow = (item: LecturerTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
@@ -140,7 +141,7 @@ const LecturerListPage = async (
               )}
               {canUpdateData && (<FormContainer table="lecturer" type="update" data={item} />)}
               {canCreateUser && (<FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-              {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />)}
+              {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.user.id}`} />)}
             </div>
           </ModalAction>
         </div>
@@ -159,7 +160,7 @@ const LecturerListPage = async (
           )}
           {canUpdateData && (<FormContainer table="lecturer" type="update" data={item} />)}
           {canCreateUser && (<FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-          {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.userId}`} />)}
+          {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.user.id}`} />)}
         </div>
       </td >
     </tr >

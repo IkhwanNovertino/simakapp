@@ -10,8 +10,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Krs, Lecturer, Period, Prisma, Reregister, Student } from "@/generated/prisma/client";
+import { KrsTypes } from "@/lib/types/datatypes/type";
 
-type KrsDataType = Krs & { student: Student } & { lecturer: Lecturer } & { reregister: Reregister & { period: Period } };
+// type KrsDataType = Krs & { student: Student } & { lecturer: Lecturer } & { reregister: Reregister & { period: Period } };
 
 const KRSListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -57,10 +58,8 @@ const KRSListPage = async (
 
   switch (user?.roleType) {
     case "ADVISOR":
-      query.student = {
-        lecturer: {
-          userId: user.userId
-        },
+      query.lecturer = {
+        userId: user.userId
       }
       break;
     case "STUDENT":
@@ -151,7 +150,7 @@ const KRSListPage = async (
     },
   ];
 
-  const renderRow = (item: KrsDataType) => {
+  const renderRow = (item: KrsTypes) => {
     const isStatusForm = ["p-1 rounded-lg text-[10px] font-bold self-start"];
     if (item.isStatusForm === "DRAFT") isStatusForm.push("text-gray-500 bg-gray-200");
     if (item.isStatusForm === "SUBMITTED") isStatusForm.push("text-blue-500 bg-blue-100");
@@ -183,7 +182,6 @@ const KRSListPage = async (
                     <Image src="/icon/view.svg" alt="" width={20} height={20} />
                   </button>
                 </Link>
-                {/* {canDeleteData && (<FormContainer table="krs" type="delete" id={`${item.id}`} />)} */}
               </div>
             </ModalAction>
           </div>
@@ -215,18 +213,6 @@ const KRSListPage = async (
         <h1 className="hidden md:block text-lg font-semibold">Daftar Kartu Rencana Studi</h1>
         <div className="flex flex-col lg:flex-row items-center gap-4 w-full md:w-auto">
           <TableSearch />
-          <div className="flex items-center gap-4 self-end">
-            {/* {user?.roleType === "OPERATOR" && (
-              <Link href={`/list/krs/recap`}>
-                <button
-                  className="flex items-center justify-center rounded-md bg-secondary-light text-xs 
-                md:text-sm px-2 py-1.5 font-semibold text-orange-500 hover:cursor-pointer hover:bg-secondary hover:bg-secondary-dark hover:text-black"
-                >
-                  Rekap KRS
-                </button>
-              </Link>
-            )} */}
-          </div>
         </div>
       </div>
       <Table columns={columns} renderRow={renderRow} data={data} />

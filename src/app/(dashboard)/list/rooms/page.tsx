@@ -7,9 +7,8 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { redirect } from "next/navigation";
-import { Prisma, Room } from "@/generated/prisma/client";
-
-type RoomDataType = Room;
+import { Prisma } from "@/generated/prisma/client";
+import { RoomTypes } from "@/lib/types/datatypes/type";
 
 const RoomListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -51,7 +50,7 @@ const RoomListPage = async (
     prisma.room.count({ where: query }),
   ]);
 
-  const renderRow = (item: RoomDataType) => (
+  const renderRow = (item: RoomTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

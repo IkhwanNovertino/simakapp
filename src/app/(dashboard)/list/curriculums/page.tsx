@@ -10,9 +10,8 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Curriculum, Major, Prisma } from "@/generated/prisma/client";
-
-type CurriculumDataType = Curriculum & { major: Major };
+import { Prisma } from "@/generated/prisma/client";
+import { CurriculumTypes } from "@/lib/types/datatypes/type";
 
 const CurriculumListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -99,7 +98,7 @@ const CurriculumListPage = async (
     },
   ];
 
-  const renderRow = (item: CurriculumDataType) => (
+  const renderRow = (item: CurriculumTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

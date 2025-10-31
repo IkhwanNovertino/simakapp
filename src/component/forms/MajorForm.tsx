@@ -8,7 +8,7 @@ import { MajorInputs, majorSchema } from "@/lib/formValidationSchema";
 import { createMajor, updateMajor } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const PermissionForm = ({ setOpen, type, data }: FormProps) => {

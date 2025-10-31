@@ -21,13 +21,20 @@ import { AppError } from "./errors/appErrors";
 import { calculatingSKSLimits, getGradeLetter, previousPeriod } from "./utils";
 import { addMinutes, addHours, isAfter } from "date-fns";
 import { importAssessment } from "./excel/importAssessment";
-import { stateType } from "./datatype";
+// import { stateType } from "./datatype";
 import { AnnouncementKhs, CampusType, Day, Gender, PaymentStatus, PresenceStatus, Religion, SemesterStatus, SemesterType, StatusRegister, StudentStatus, StudyPlanStatus } from "@/generated/prisma/enums";
 import { AssessmentDetail, Course, KhsDetail, Student } from "@/generated/prisma/client";
+
+type stateType = {
+  success: boolean;
+  error: boolean;
+  message: string;
+}
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 const avatarFilePath = process.env.AVATAR_FOLDER as string;
 const paymentFilePath = process.env.PAYMENT_FOLDER as string;
+
 
 export const createPermission = async (state: stateType, data: PermissionInputs) => {
   try {
@@ -1669,11 +1676,6 @@ export const createPeriod = async (state: stateType, data: PeriodInputs) => {
         year: parseInt(yearData),
         name: `${data.semesterType} ${data.year}`,
         isActive: data.isActive,
-        reregister: {
-          create: {
-            name: `herregistrasi ${data.semesterType} ${data.year}`,
-          }
-        }
       }
     })
     return { success: true, error: false, message: "Data berhasil ditambahkan" };

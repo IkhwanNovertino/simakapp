@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import FormModal from "./FormModal";
 import { getSession } from "@/lib/session";
-import { FormModalProps } from "@/lib/datatype";
 import { Course, CurriculumDetail } from "@/generated/prisma/client";
+import { FormModalProps } from "@/lib/types/formtype";
 
 const FormContainer = async (
   { table, type, label, data, id }: FormModalProps

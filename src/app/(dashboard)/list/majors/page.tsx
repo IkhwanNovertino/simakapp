@@ -7,9 +7,8 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { redirect } from "next/navigation";
-import { Major, Prisma } from "@/generated/prisma/client";
-
-type MajorDataType = Major;
+import { Prisma } from "@/generated/prisma/client";
+import { MajorTypes } from "@/lib/types/datatypes/type";
 
 const MajorListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -53,7 +52,7 @@ const MajorListPage = async (
     prisma.major.count({ where: query }),
   ]);
 
-  const renderRow = (item: MajorDataType) => (
+  const renderRow = (item: MajorTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-100 text-sm hover:bg-ternary-light"

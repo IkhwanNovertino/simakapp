@@ -5,12 +5,13 @@ import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Prisma } from "@/generated/prisma/client";
+import { TimeTypes } from "@/lib/types/datatypes/type";
 
-interface TimeDataType {
-  id: string;
-  timeStart: Date;
-  timeFinish: Date;
-}
+// interface TimeDataType {
+//   id: string;
+//   timeStart: Date;
+//   timeFinish: Date;
+// }
 
 const TimeListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -58,7 +59,7 @@ const TimeListPage = async (
     },
   ];
 
-  const renderRow = (item: TimeDataType) => (
+  const renderRow = (item: TimeTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

@@ -5,19 +5,20 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
+import { PresenceTypes } from "@/lib/types/datatypes/type";
 
-type PresenceDataType = {
-  id: string,
-  academicClassId: string,
-  weekNumber: number,
-  date: Date,
-  learningMethod: string,
-  lesson: string,
-  lessonDetail: string,
-  duration: string,
-  isActive: boolean,
-  presenceDuration: string,
-}
+// type PresenceDataType = {
+//   id: string,
+//   academicClassId: string,
+//   weekNumber: number,
+//   date: Date,
+//   learningMethod: string,
+//   lesson: string,
+//   lessonDetail: string,
+//   duration: string,
+//   isActive: boolean,
+//   presenceDuration: string,
+// }
 
 const ClassSingleTabStudentPage = async (
   {
@@ -109,11 +110,11 @@ const ClassSingleTabStudentPage = async (
     },
   ];
 
-  const renderRow = (item: PresenceDataType) => {
+  const renderRow = (item: PresenceTypes) => {
 
     dataPassToForm = {
       id: item.id,
-      academicClassId: item.academicClassId,
+      academicClassId: item.academicClass.id,
       academicClass: dataAcademicClass,
       weekNumber: item.weekNumber,
       date: item.date,
