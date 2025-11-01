@@ -94,6 +94,7 @@ const CurriculumSinglePage = async (
       },
       orderBy: [
         { semester: "asc" },
+        { course: { code: "asc" } }
       ],
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),

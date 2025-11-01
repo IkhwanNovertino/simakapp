@@ -120,12 +120,12 @@ const LecturerListPage = async (
           <div className="flex flex-col">
             <h3 className="text-sm font-semibold">
               {lecturerName({
-                frontTitle: item.frontTitle,
-                name: item.name,
-                backTitle: item.backTitle,
+                frontTitle: item?.frontTitle,
+                name: item?.name,
+                backTitle: item?.backTitle,
               })}
             </h3>
-            <p className="text-xs text-gray-500 italic">NUPTK : {item.nuptk || "-"}</p>
+            <p className="text-xs text-gray-500 italic">NUPTK : {item?.nuptk || "-"}</p>
             <p className="text-xs text-gray-500 ">{item?.user?.email || ""}</p>
           </div>
         </div>
@@ -141,7 +141,7 @@ const LecturerListPage = async (
               )}
               {canUpdateData && (<FormContainer table="lecturer" type="update" data={item} />)}
               {canCreateUser && (<FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-              {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.user.id}`} />)}
+              {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item?.user?.id}`} />)}
             </div>
           </ModalAction>
         </div>
@@ -160,7 +160,7 @@ const LecturerListPage = async (
           )}
           {canUpdateData && (<FormContainer table="lecturer" type="update" data={item} />)}
           {canCreateUser && (<FormContainer table="lecturerUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-          {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item.user.id}`} />)}
+          {canDeleteData && (<FormContainer table="lecturer" type="delete" id={`${item.id}:${item?.user?.id}`} />)}
         </div>
       </td >
     </tr >

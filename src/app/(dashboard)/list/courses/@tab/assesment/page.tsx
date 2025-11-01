@@ -35,8 +35,11 @@ const AssesmentListPage = async (
         assessmentDetail: {
           include: {
             grade: true,
-          }
-        }
+          },
+          orderBy: [
+            { seq_number: 'desc' }
+          ],
+        },
       },
       orderBy: { name: "asc" },
       skip: (p - 1) * ITEM_PER_PAGE,
@@ -67,6 +70,7 @@ const AssesmentListPage = async (
         percentage: assessment.percentage,
       }))
     }
+
     return (
       <tr
         key={item.id}

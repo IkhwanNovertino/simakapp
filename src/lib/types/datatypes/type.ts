@@ -108,16 +108,16 @@ export interface LecturerTypes {
   backTitle?: string,
   photo?: string,
   major: MajorTypes,
-  user: UserTypes
-  role: RoleTypes
+  user?: UserTypes
+  role?: RoleTypes
 }
 
 export interface OperatorTypes {
   id: string,
   name: string,
   department?: string,
-  user: UserTypes,
-  role: RoleTypes
+  user?: UserTypes,
+  role?: RoleTypes
 }
 
 export interface StudentTypes {
@@ -130,8 +130,8 @@ export interface StudentTypes {
   lecturer: LecturerTypes,
   statusRegister: StatusRegister,
   studentStatus: StudentStatus,
-  user: UserTypes,
-  role: RoleTypes
+  user?: UserTypes,
+  role?: RoleTypes
 }
 
 export interface PositionTypes {

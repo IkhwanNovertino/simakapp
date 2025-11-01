@@ -161,7 +161,7 @@ const StudentListPage = async (
                 )}
                 {canUpdateData && <FormContainer table="student" type="update" data={item} />}
                 {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-                {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.user.id}`} />)}
+                {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item?.user?.id}`} />)}
               </div>
             </ModalAction>
           </div>
@@ -186,7 +186,7 @@ const StudentListPage = async (
             )}
             {canUpdateData && <FormContainer table="student" type="update" data={item} />}
             {canCreateUser && (<FormContainer table="studentUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-            {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item.user.id}`} />)}
+            {canDeleteData && (<FormContainer table="student" type="delete" id={`${item.id}:${item?.user?.id}`} />)}
           </div>
         </td>
       </tr>

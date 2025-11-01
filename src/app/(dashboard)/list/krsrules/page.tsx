@@ -62,8 +62,8 @@ const KRSRuleListPage = async (
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
           <div className="flex flex-col col-span-5 items-start">
             <h3 className="font-semibold">{item?.statusRegister ?? ""}</h3>
-            <p className="hidden md:flex text-xs text-gray-500">semester: </p>
-            <p className="hidden md:flex">
+            <p className="flex md:hidden text-xs text-gray-500">semester: {item?.semester}</p>
+            <p className="flex md:hidden text-[10px] font-bold">
               <span className={item.isActive ? "text-lime-500 bg-lime-100 p-1 rounded-lg" : "text-red-700 bg-red-100 p-1 rounded-lg"}>
                 {item.isActive ? "AKTIF" : "NONAKTIF"}
               </span>
