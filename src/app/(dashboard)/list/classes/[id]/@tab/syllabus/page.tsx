@@ -5,6 +5,7 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
+import { presenceDuration } from "@/lib/setting";
 import { PresenceTypes } from "@/lib/types/datatypes/type";
 
 // type PresenceDataType = {
@@ -111,10 +112,9 @@ const ClassSingleTabStudentPage = async (
   ];
 
   const renderRow = (item: PresenceTypes) => {
-
     dataPassToForm = {
       id: item.id,
-      academicClassId: item.academicClass.id,
+      academicClassId: id,
       academicClass: dataAcademicClass,
       weekNumber: item.weekNumber,
       date: item.date,
@@ -162,7 +162,9 @@ const ClassSingleTabStudentPage = async (
             ))}
           </ul>
         </td>
-        <td className="hidden lg:table-cell text-sm font-light">{item.presenceDuration}</td>
+        <td className="hidden lg:table-cell text-sm font-light">
+          {item.presenceDuration}
+        </td>
         <td>
           <div className="flex items-center gap-2">
             <div className="hidden lg:flex items-center gap-2">

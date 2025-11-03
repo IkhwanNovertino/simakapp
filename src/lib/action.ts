@@ -3129,6 +3129,7 @@ export const createPresence = async (state: stateType, data: PresenceInputs) => 
           lesson: data.lesson,
           lessonDetail: data.lessonDetail,
           learningMethod: data.learningMethod.join(","),
+          presenceDuration: "NONAKTIF",
         },
       });
 
@@ -3334,15 +3335,22 @@ export async function deactivateExpiredPresences() {
       const end = calculateEndTime(presence.activatedAt, presence.presenceDuration);
       if (isAfter(now, end)) {
         await prisma.presence.update({
-          where: { id: presence.id },
-          data: { isActive: false },
+          where: {
+            id: presence.id
+          },
+          data: {
+            isActive: false,
+            presenceDuration: "NONAKTIF"
+          },
         });
         logger.info(`Presensi dinonaktifkan: ${presence.id}`);
       }
     }
     logger.info(`Scheduler selesai dijalankan pada: ${now.toISOString()}`);
   } catch (err) {
-    logger.error(err);
+    // logger.error(err);
+    console.log(err);
+    
     try {
       handlePrismaError(err)
     } catch (error) {

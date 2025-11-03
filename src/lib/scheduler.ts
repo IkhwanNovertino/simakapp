@@ -6,7 +6,7 @@ export function startPresenceScheduler() {
   logger.info("Scheduler dimulai...");
 
   // Setiap 5 menit
-  cron.schedule("*/5 * * * *", async () => {
+  cron.schedule("* * * * *", async () => {
     logger.info("Menjalankan scheduler...")
     // console.log("🚀 Menjalankan cron...");
     await deactivateExpiredPresences();
