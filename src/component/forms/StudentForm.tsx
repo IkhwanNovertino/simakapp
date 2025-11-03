@@ -135,25 +135,22 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             required={true}
           />
         </div>
-        {!isRevision && (
-          <div className={"flex flex-col gap-2 w-full md:w-1/4"}>
-            <InputSelect
-              control={control}
-              label="Program Studi"
-              name="majorId"
-              required={true}
-              error={errors?.majorId}
-              placeholder="-- Pilih prodi"
-              defaultValue={data?.majorId}
-              options={majors.map((item: { id: number, name: string }) => ({
-                value: item.id,
-                label: item.name,
-              }))}
-            />
-          </div>
-
-        )}
-        <div className={type === "revision" ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
+        <div className={isRevision ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
+          <InputSelect
+            control={control}
+            label="Program Studi"
+            name="majorId"
+            required={true}
+            error={errors?.majorId}
+            placeholder="-- Pilih prodi"
+            defaultValue={data?.majorId}
+            options={majors.map((item: { id: number, name: string }) => ({
+              value: item.id,
+              label: item.name,
+            }))}
+          />
+        </div>
+        <div className={isRevision ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
           <InputSelect
             label="Dosen Wali"
             name="lecturerId"
@@ -168,7 +165,7 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             }))}
           />
         </div>
-        <div className={type === "revision" ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
+        <div className={isRevision ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
           <InputSelect
             label="Status Registrasi"
             name="statusRegister"
@@ -235,23 +232,21 @@ const StudentForm = ({ setOpen, type, data, relatedData }: FormProps) => {
             </div>
           )}
         </div>
-        {!isRevision && (
-          <div className={"flex flex-col gap-2 w-full md:w-1/4"}>
-            <InputSelect
-              label="Status Mahasiswa"
-              name="studentStatus"
-              control={control}
-              defaultValue={data?.studentStatus}
-              error={errors?.studentStatus}
-              placeholder="-- Pilih status.."
-              required={true}
-              options={status.map((item: string) => ({
-                value: item,
-                label: item,
-              }))}
-            />
-          </div>
-        )}
+        <div className={isRevision ? "hidden" : "flex flex-col gap-2 w-full md:w-1/4"}>
+          <InputSelect
+            label="Status Mahasiswa"
+            name="studentStatus"
+            control={control}
+            defaultValue={data?.studentStatus}
+            error={errors?.studentStatus}
+            placeholder="-- Pilih status.."
+            required={true}
+            options={status.map((item: string) => ({
+              value: item,
+              label: item,
+            }))}
+          />
+        </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <InputSelect
             label="Agama"
