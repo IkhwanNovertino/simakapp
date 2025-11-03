@@ -3,17 +3,15 @@ import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import Image from "next/image";
-import { Course, KhsDetail } from "@/generated/prisma/client";
-import { KhsDetailTypes } from "@/lib/types/datatypes/type";
-
-// type KhsDetailDataType = KhsDetail & { course: Course };
+import { AnnouncementKhs } from "@/generated/prisma/client";
+import { KhsDetailBaseTypes, KhsDetailTypes } from "@/lib/types/datatypes/type";
 
 const KHSDetailPage = async (
   { params }: { params: Promise<{ id: string }> }
 ) => {
   const { id } = await params;
 
-  const [dataStudent, dataKhs, dataKhsDetail] = await prisma.$transaction(async (prisma: any) => {
+  const [dataStudent, dataKhs, dataKhsDetail, isNotAnnounce] = await prisma.$transaction(async (prisma: any) => {
     const data = await prisma.khs.findUnique({
       where: {
         id: id,
@@ -68,14 +66,17 @@ const KHSDetailPage = async (
     })
 
     data.ips = Number(data?.ips);
-    data?.khsDetail.forEach((detail: any) => {
-      detail.weight = Number(detail?.weight)
+    data?.khsDetail.forEach((detail: KhsDetailBaseTypes) => {
+      detail.weight = detail.status === AnnouncementKhs.ANNOUNCEMENT ? Number(detail?.weight) : 0;
+      detail.gradeLetter = detail.status === AnnouncementKhs.ANNOUNCEMENT ? detail?.gradeLetter : 'E';
     });
-    const totalSks = data?.khsDetail.map((item: any) => item.course.sks)
-      .reduce((acc: any, init: any) => acc + init, 0);
+    const isNotAnnounce = data?.khsDetail.find((item: KhsDetailBaseTypes) => item.status !== AnnouncementKhs.ANNOUNCEMENT);
+
+    const totalSks = data?.khsDetail.map((item: KhsDetailBaseTypes) => item.course.sks)
+      .reduce((acc: number, init: number) => acc + init, 0);
     const totalSksNab = data?.khsDetail
-      .map((item: any) => item.course.sks * item.weight)
-      .reduce((acc: any, init: any) => acc + init, 0);
+      .map((item: KhsDetailBaseTypes) => item.course.sks * item.weight)
+      .reduce((acc: number, init: number) => acc + init, 0);
 
     const dataStudent = data?.student;
     const dataKhs = {
@@ -89,7 +90,7 @@ const KHSDetailPage = async (
     }
     const dataKhsDetail = data?.khsDetail;
 
-    return [dataStudent, dataKhs, dataKhsDetail]
+    return [dataStudent, dataKhs, dataKhsDetail, isNotAnnounce]
   })
 
   const columns = [
@@ -193,12 +194,14 @@ const KHSDetailPage = async (
           </div>
         </div>
         <div className="bg-white w-full lg:w-1/4 flex flex-col gap-4 p-4 rounded-md">
-          <ButtonPdfDownload id={id} type="khs">
-            <div className={`w-full py-4 gap-2 flex items-center justify-center rounded-md bg-primary-dark hover:bg-primary-dark/90`}>
-              <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={28} height={28} />
-              <span className="text-white font-medium text-sm">CETAK KHS</span>
-            </div>
-          </ButtonPdfDownload>
+          {!isNotAnnounce && (
+            <ButtonPdfDownload id={id} type="khs">
+              <div className={`w-full py-4 gap-2 flex items-center justify-center rounded-md bg-primary-dark hover:bg-primary-dark/90`}>
+                <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={28} height={28} />
+                <span className="text-white font-medium text-sm">CETAK KHS</span>
+              </div>
+            </ButtonPdfDownload>
+          )}
         </div>
       </div>
       {/* BOTTOM */}

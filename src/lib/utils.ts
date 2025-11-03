@@ -101,7 +101,7 @@ export const coursesClearing = async (data: {khsDetail: khsDetail[]}[]): Promise
   return Object.values(courses);
 }
 
-export const courseSorting = async (data: khsDetail[]): Promise<khsDetail[]> => {
+export const courseSorting = async (data: any): Promise<any[]> => {
   return data.sort((min: khsDetail, max: khsDetail) => {
       const x = min.course.name.toLowerCase();
       const y = max.course.name.toLowerCase();
