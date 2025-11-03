@@ -117,7 +117,7 @@ const ClassSingleTabStudentPage = async (
     {
       header: "Presensi Perkuliahan",
       accessor: "presensi perkuliahan",
-      className: "hidden md:table-cell",
+      className: "hidden lg:table-cell",
     },
   ];
 
@@ -132,16 +132,16 @@ const ClassSingleTabStudentPage = async (
             <h3 className="text-sm font-semibold truncate">{item.student.name}</h3>
             <p className="text-xs text-gray-600">{item.student.nim}</p>
           </div>
-          <div className="flex items-center justify-start gap-2 md:hidden ">
-            <div className="grid grid-cols-4 gap-2">
+          <div className="flex items-center justify-start gap-2 lg:hidden ">
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
               {item.presenceDetail.map((presenceItem: any) => (
                 <PresenceStatus key={presenceItem.id} data={presenceItem} role={user?.roleType} />
               ))}
             </div>
           </div>
         </td>
-        <td className="hidden md:table-cell">
-          <div className="grid md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-16 gap-2">
+        <td className="hidden lg:table-cell py-2">
+          <div className="grid lg:grid-cols-10 gap-2">
             {item.presenceDetail.map((presenceItem: any) => (
               <PresenceStatus key={presenceItem.id} data={presenceItem} role={user?.roleType} />
             ))}
