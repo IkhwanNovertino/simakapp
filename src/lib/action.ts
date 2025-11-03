@@ -3348,8 +3348,7 @@ export async function deactivateExpiredPresences() {
     }
     logger.info(`Scheduler selesai dijalankan pada: ${now.toISOString()}`);
   } catch (err) {
-    // logger.error(err);
-    console.log(err);
+    logger.error(err);
     
     try {
       handlePrismaError(err)

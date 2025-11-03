@@ -25,7 +25,6 @@ const KhsGradeAnnounceForm = ({ type, data }: TypeKhsGradeAnnounceForm) => {
     unsubmitted: "kembalikan ke dosen",
   };
   const [state, formAction] = useActionState(actionType[type], { success: false, error: false, message: "" });
-  console.log('KhsGradeAnnounceForm', data);
 
   useEffect(() => {
     if (state?.success) {
