@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 
 export interface FormModalProps {
   table: "permission"
@@ -48,47 +48,4 @@ export interface FormProps {
   type: "create" | "update" | "createUser" | "updateUser" | "createMany" | "presenceActive" | "presenceNon" | "revision";
   data?: any;
   relatedData?: any;
-}
-
-export type stateType = {
-  success: boolean;
-  error: boolean;
-  message: string;
-}
-
-export type PdfType = "reregister"
-  | "assessment"
-  | "khs"
-  | "krs"
-  | "transcript"
-  | "coursekrs"
-  | "studentsRegularSore"
-  | "studentActiveInactive"
-  | "studentsRegisteredKrs"
-  | "studentsUnregisteredKrs" 
-  | "studentsTakingThesis" 
-  | "studentsTakingInternship";
-
-export type RecapitulationCardType = "studentsRegisteredKrs"
-  | "coursekrs"  
-  | "studentsRegularSore"
-  | "studentActiveInactive"
-  | "studentsUnregisteredKrs" 
-  | "studentsTakingThesis"
-  | "studentsTakingInternship";
-
-export interface GeneratePdfProps {
-  data?: any,
-  img?: Buffer | string,
-};
-
-export interface ButtonPdfDownloadProps {
-  id: string;
-  type: PdfType;
-  children: React.ReactNode;
-};
-
-export interface RenderPdfProps {
-  type: PdfType;
-  data: any;
 }

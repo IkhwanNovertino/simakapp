@@ -9,7 +9,7 @@ import { createAssessment, updateAssessment } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const AssessmentForm = ({ setOpen, type, data, relatedData }: FormProps) => {

@@ -12,7 +12,7 @@ import { ReregistrationDetailInputs, reregistrationDetailSchema } from "@/lib/fo
 import moment from "moment";
 import { status } from "@/lib/setting";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { students, lecturers, role } = relatedData;
@@ -245,6 +245,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Unduh Bukti pembayaran</label>
+          {data.paymentReceiptFile && (
           <a
             href={`/api/payment?file=${data.paymentReceiptFile}&download=true`}
             target="_blank"
@@ -253,6 +254,7 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
           >
             Unduh File
           </a>
+          )}
         </div>
         <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Status Pembayaran</label>
@@ -463,7 +465,9 @@ const ReregiterCreateOneForm = ({ setOpen, type, data, relatedData }: FormProps)
           </div>
         </>
       )}
-      {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
+      {state?.error && (
+        <span className="text-xs text-red-400">{state.message.toString()}</span>
+      )}
       <button
         className="bg-blue-400 text-white p-2 rounded-md"
         onClick={handleSubmit(onValid)}

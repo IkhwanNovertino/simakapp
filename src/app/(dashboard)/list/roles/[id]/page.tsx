@@ -5,9 +5,10 @@ import TableSearch from "@/component/TableSearch";
 import ToggleSwitch from "@/component/ToggleSwitch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Permission, Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { PermissionTypes } from "@/lib/types/datatypes/type";
 
-type PermissionDataType = Permission;
+// type PermissionDataType = Permission;
 
 const SingleRolePage = async (
   {
@@ -55,7 +56,7 @@ const SingleRolePage = async (
     prisma.permission.count({ where: query }),
   ]);
 
-  const renderRow = (item: PermissionDataType) => (
+  const renderRow = (item: PermissionTypes) => (
     <tr
       key={item.id}
     >

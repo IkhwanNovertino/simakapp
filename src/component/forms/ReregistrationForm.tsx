@@ -9,7 +9,7 @@ import { createReregistration, updateReregistration } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const ReregistrationForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 
@@ -42,7 +42,7 @@ const ReregistrationForm = ({ setOpen, type, data, relatedData }: FormProps) => 
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-8">
-      <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data periode akademik baru" : "Ubah data periode akademik"}</h1>
+      <h1 className="text-xl font-semibold">{type === "create" ? "Tambah data her-registrasi baru" : "Ubah data her-registrasi"}</h1>
 
       <div className="flex justify-between flex-wrap gap-4">
         {data && (

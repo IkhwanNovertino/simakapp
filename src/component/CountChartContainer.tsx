@@ -7,8 +7,6 @@ interface CountChartContainerProps {
   title: string;
 }
 
-
-
 const CountChartContainer = async ({ type, title }: CountChartContainerProps) => {
   let valueA: number = 0;
   let valueB: number = 0;

@@ -6,8 +6,9 @@ import { coursesClearing, courseSorting, lecturerName, totalSks } from "@/lib/ut
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { AnnouncementKhs, Course, KhsDetail } from "@/generated/prisma/client";
+import { KhsDetailBaseTypes, KhsDetailTypes } from "@/lib/types/datatypes/type";
 
-type KhsDetailDataType = KhsDetail & { course: Course };
+// type KhsDetailDataType = KhsDetail & { course: Course };
 
 const TranscriptOperatorDetailPage = async (
   {
@@ -140,7 +141,7 @@ const TranscriptOperatorDetailPage = async (
     },
   ];
 
-  const renderRow = (item: KhsDetailDataType) => {
+  const renderRow = (item: KhsDetailBaseTypes) => {
     return (
       <tr
         key={item.course.id}

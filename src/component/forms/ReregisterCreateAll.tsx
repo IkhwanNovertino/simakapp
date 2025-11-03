@@ -5,7 +5,7 @@ import { reregisterCreateAll } from "@/lib/action";
 import { useActionState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const ReregisterCreateAll = ({ setOpen, type, data }: FormProps) => {

@@ -8,9 +8,9 @@ import { PositionInputs, positionSchema } from "@/lib/formValidationSchema";
 import { createPosition, updatePosition } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { FormProps } from "@/lib/datatype";
 import InputSelect from "../InputSelect";
 import { position } from "@/lib/setting";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const PositionForm = ({ setOpen, type, data }: FormProps) => {

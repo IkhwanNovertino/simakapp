@@ -1,6 +1,7 @@
 "use client";
 
-import { ButtonPdfDownloadProps } from "@/lib/datatype";
+import { ButtonPdfDownloadProps } from "@/lib/types/pdftype";
+
 
 const ButtonPdfDownload = ({ id, type, children }: ButtonPdfDownloadProps) => {
   return (

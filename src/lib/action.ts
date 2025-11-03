@@ -21,13 +21,20 @@ import { AppError } from "./errors/appErrors";
 import { calculatingSKSLimits, getGradeLetter, previousPeriod } from "./utils";
 import { addMinutes, addHours, isAfter } from "date-fns";
 import { importAssessment } from "./excel/importAssessment";
-import { stateType } from "./datatype";
+// import { stateType } from "./datatype";
 import { AnnouncementKhs, CampusType, Day, Gender, PaymentStatus, PresenceStatus, Religion, SemesterStatus, SemesterType, StatusRegister, StudentStatus, StudyPlanStatus } from "@/generated/prisma/enums";
 import { AssessmentDetail, Course, KhsDetail, Student } from "@/generated/prisma/client";
+
+type stateType = {
+  success: boolean;
+  error: boolean;
+  message: string;
+}
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp']
 const avatarFilePath = process.env.AVATAR_FOLDER as string;
 const paymentFilePath = process.env.PAYMENT_FOLDER as string;
+
 
 export const createPermission = async (state: stateType, data: PermissionInputs) => {
   try {
@@ -1262,7 +1269,7 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
         },
       });
 
-      if (id.split(":")[1] !== "null") {
+      if (!id.split(":")[1]) {
         await prisma.user.delete({
           where: {
             id: id.split(":")[1]
@@ -1299,8 +1306,6 @@ export const deleteLecturer = async (state: stateType, data: FormData) => {
 
 export const createStudent = async (state: {success: boolean, error: boolean}, data: FormData) => {
   try {
-    console.log(data);
-    
     const id=data.get('id')?.toString()
     const name = data.get('name')?.toString();
     const nim = data.get('nim')?.toString();
@@ -1527,6 +1532,8 @@ export const updateStudent = async (state: {success: boolean, error: boolean}, d
 export const deleteStudent = async (state: stateType, data: FormData) => {
   try {
     const id = data.get("id") as string;
+    console.log(id);
+    
     const dataDelete = await prisma.$transaction(async (prisma:any) => {
       const data = await prisma.student.delete({
         where: {
@@ -1534,7 +1541,7 @@ export const deleteStudent = async (state: stateType, data: FormData) => {
         },
       });
 
-      if (id.split(":")[1] !== "null") {
+      if (!id.split(":")[1]) {
         await prisma.user.delete({
           where: {
             id: id.split(":")[1]
@@ -1627,7 +1634,7 @@ export const deleteOperator = async (state: stateType, data: FormData) => {
         },
       });
 
-      if (id.split(":")[1] !== "null") {
+      if (!id.split(":")[1]) {
         await prisma.user.delete({
           where: {
             id: id.split(":")[1]
@@ -1669,11 +1676,6 @@ export const createPeriod = async (state: stateType, data: PeriodInputs) => {
         year: parseInt(yearData),
         name: `${data.semesterType} ${data.year}`,
         isActive: data.isActive,
-        reregister: {
-          create: {
-            name: `herregistrasi ${data.semesterType} ${data.year}`,
-          }
-        }
       }
     })
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
@@ -2076,7 +2078,6 @@ export const createReregistration = async (state: stateType, data: Reregistratio
 }
 export const updateReregistration = async (state: stateType, data: ReregistrationInputs) => {
   try {
-    logger.info(data)
     await prisma.reregister.update({
       where: {
         id: data.id
@@ -2222,41 +2223,40 @@ export const createReregisterDetail = async (state: stateType, data: FormData) =
       return { success: false, error: true, message: "Data gagal ditambahkan" }
     };
 
-    prisma.$transaction(async (prisma: any) => {
-      const createReregisterDetail =  await prisma.reregisterDetail.create({
-        data: {
-          reregisterId: validation.data.reregisterId,
-          studentId: validation.data.studentId,
-          lecturerId: validation.data.lecturerId,
-          campusType: validation.data?.campusType as CampusType || CampusType.BJB,
-          semesterStatus: validation.data?.semesterStatus as SemesterStatus || SemesterStatus.NONAKTIF,
-          semester: parseInt(validation.data?.semester),
-          nominal: validation.data.nominal,
-          paymentStatus: validation.data?.paymentStatus as PaymentStatus || PaymentStatus.BELUM_LUNAS,
-          paymentReceiptFile: validation.data?.paymentReceiptFile,
-          paymentDescription: validation.data?.paymentDescription,
-        },
-        include: {
-          reregister: {
-            include: {
-              period: true,
-            }
+    const createReregisterDetail =  await prisma.reregisterDetail.create({
+      data: {
+        reregisterId: validation.data.reregisterId,
+        studentId: validation.data.studentId,
+        lecturerId: validation.data.lecturerId,
+        campusType: validation.data?.campusType as CampusType || CampusType.BJB,
+        semesterStatus: validation.data?.semesterStatus as SemesterStatus || SemesterStatus.NONAKTIF,
+        semester: parseInt(validation.data?.semester),
+        nominal: validation.data.nominal,
+        paymentStatus: validation.data?.paymentStatus as PaymentStatus || PaymentStatus.BELUM_LUNAS,
+        paymentReceiptFile: validation.data?.paymentReceiptFile,
+        paymentDescription: validation.data?.paymentDescription,
+      },
+      include: {
+        reregister: {
+          include: {
+            period: true,
           }
         }
-      });
-      await prisma.student.update({
-        where: {
-          id: validation.data.studentId,
-        },
-        data: {
-          studentStatus: validation.data?.semesterStatus as StudentStatus || StudentStatus.NONAKTIF,
-        }
-      });
-      if (createReregisterDetail.semesterStatus === "AKTIF") {
-        await createKrs({studentId: validation.data.studentId, reregisterId: validation.data.reregisterId})
       }
     });
     
+    await prisma.student.update({
+      where: {
+        id: validation.data.studentId,
+      },
+      data: {
+        studentStatus: validation.data?.semesterStatus as StudentStatus || StudentStatus.NONAKTIF,
+      }
+    });
+
+    if (createReregisterDetail.semesterStatus === "AKTIF") {
+      await createKrs({studentId: validation.data.studentId, reregisterId: validation.data.reregisterId})
+    }
     return { success: true, error: false, message: "Data berhasil ditambahkan" };
   } catch (err) {
     logger.error(err);
@@ -3129,6 +3129,7 @@ export const createPresence = async (state: stateType, data: PresenceInputs) => 
           lesson: data.lesson,
           lessonDetail: data.lessonDetail,
           learningMethod: data.learningMethod.join(","),
+          presenceDuration: "NONAKTIF",
         },
       });
 
@@ -3334,8 +3335,13 @@ export async function deactivateExpiredPresences() {
       const end = calculateEndTime(presence.activatedAt, presence.presenceDuration);
       if (isAfter(now, end)) {
         await prisma.presence.update({
-          where: { id: presence.id },
-          data: { isActive: false },
+          where: {
+            id: presence.id
+          },
+          data: {
+            isActive: false,
+            presenceDuration: "NONAKTIF"
+          },
         });
         logger.info(`Presensi dinonaktifkan: ${presence.id}`);
       }
@@ -3343,6 +3349,7 @@ export async function deactivateExpiredPresences() {
     logger.info(`Scheduler selesai dijalankan pada: ${now.toISOString()}`);
   } catch (err) {
     logger.error(err);
+    
     try {
       handlePrismaError(err)
     } catch (error) {

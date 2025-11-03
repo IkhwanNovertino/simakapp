@@ -10,8 +10,9 @@ import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@/generated/prisma/client";
+import { ReregisterDetailTypes } from "@/lib/types/datatypes/type";
 
-type ReregisterDetailDataType = ReregisterDetail & { student: Student & { major: Major } } & { reregister: Reregister };
+// type ReregisterDetailDataType = ReregisterDetail & { student: Student & { major: Major } } & { reregister: Reregister };
 
 const ReregisterSinglePage = async (
   {
@@ -134,7 +135,7 @@ const ReregisterSinglePage = async (
     },
   ];
 
-  const renderRow = (item: ReregisterDetailDataType) => {
+  const renderRow = (item: ReregisterDetailTypes) => {
     const paymentStyle = ["p-1 rounded-lg"];
     const semesterStyle = ["p-1 rounded-lg"];
     if (item.paymentStatus === "BELUM_LUNAS") paymentStyle.push("text-red-700 bg-red-100");
@@ -148,7 +149,7 @@ const ReregisterSinglePage = async (
 
     return (
       <tr
-        key={item.studentId}
+        key={item.student.id}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
         <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
@@ -178,7 +179,7 @@ const ReregisterSinglePage = async (
             <ModalAction>
               <div className="flex items-center gap-3">
                 <FormContainer table="reregistrationDetail" type="update" data={item} />
-                {session?.roleName === "admin" && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
+                {session?.roleName === "admin" && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregister.id}:${item.student.id}`} />)}
               </div>
             </ModalAction>
           </div>
@@ -205,14 +206,14 @@ const ReregisterSinglePage = async (
           <div className="flex items-center gap-2">
             <div className="hidden md:flex items-center gap-2">
               {(session?.roleName === "admin" && item.isStatusForm) && (
-                <ButtonPdfDownload type="reregister" id={`${item.reregisterId}:${item.studentId}`}>
+                <ButtonPdfDownload type="reregister" id={`${item.reregister.id}:${item.student.id}`}>
                   <div className={`w-7 h-7 flex items-center justify-center rounded-full bg-primary-dark`}>
                     <Image src={`/icon/printPdf.svg`} alt={`icon-print}`} width={20} height={20} />
                   </div>
                 </ButtonPdfDownload>
               )}
               <FormContainer table="reregistrationDetail" type="update" data={item} />
-              {session?.roleName === "admin" && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregisterId}:${item.studentId}`} />)}
+              {session?.roleName === "admin" && (<FormContainer table="reregistrationDetail" type="delete" id={`${item.reregister.id}:${item.student.id}`} />)}
             </div>
           </div>
         </td>

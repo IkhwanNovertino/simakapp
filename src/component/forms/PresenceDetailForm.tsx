@@ -9,8 +9,8 @@ import { presenceActivation } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { presenceDuration } from "@/lib/setting";
-import { FormProps } from "@/lib/datatype";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const PresenceDetailForm = ({ setOpen, type, data }: FormProps) => {
@@ -26,6 +26,8 @@ const PresenceDetailForm = ({ setOpen, type, data }: FormProps) => {
   const [state, formAction] = useActionState(presenceActivation, { success: false, error: false, message: "" });
 
   const onSubmit = handleSubmit((data) => {
+    console.log(data);
+
     startTransition(() => formAction(data))
   })
 
@@ -67,7 +69,7 @@ const PresenceDetailForm = ({ setOpen, type, data }: FormProps) => {
             name="academicClass"
             defaultValue={`Minggu ${data?.weekNumber} | Kelas ${data?.academicClass.name} | ${data?.academicClass.course.name}`}
             register={register}
-            inputProps={{ readOnly: true, disabled: true }}
+            inputProps={{ readOnly: true }}
             error={errors?.academicClass}
           />
         </div>
@@ -77,7 +79,7 @@ const PresenceDetailForm = ({ setOpen, type, data }: FormProps) => {
             control={control}
             label="Aktifkan Presensi"
             name="durationPresence"
-            defaultValue={data?.isActive ? "AKTIF" : "NONAKTIF"}
+            defaultValue={data?.presenceDuration}
             error={errors?.durationPresence}
             placeholder="Lama Presensi Aktif"
             required={true}
@@ -89,7 +91,10 @@ const PresenceDetailForm = ({ setOpen, type, data }: FormProps) => {
         </div>
       </div>
       {state?.error && (<span className="text-xs text-red-400">{state.message.toString()}</span>)}
-      <button className="bg-blue-400 text-white p-2 rounded-md">
+      <button
+        type="submit"
+        className="bg-blue-400 text-white p-2 rounded-md cursor-pointer hover:bg-blue-500 transition-colors"
+      >
         {"Aktifkan Presensi"}
       </button>
     </form >

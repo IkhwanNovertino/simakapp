@@ -6,10 +6,10 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import InputField from "../InputField";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { FormProps } from "@/lib/datatype";
 import { getFinalScore, getGradeLetter } from "@/lib/utils";
 import { KhsGradeInputs, khsGradeSchema } from "@/lib/formValidationSchema";
 import { updateKhsGrade } from "@/lib/action";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const KrsGradeForm = ({ setOpen, type, data }: FormProps) => {

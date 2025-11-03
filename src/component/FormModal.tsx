@@ -6,7 +6,7 @@ import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { deleteAssessment, deleteClass, deleteClassDetail, deleteCourse, deleteCurriculum, deleteCurriculumDetail, deleteGrade, deleteKrsDetail, deleteKrsRules, deleteLecturer, deleteMajor, deleteOperator, deletePeriod, deletePermission, deletePosition, deletePresence, deleteReregisterDetail, deleteReregistration, deleteRole, deleteRoom, deleteSchedule, deleteScheduleDetail, deleteStudent, deleteTime } from "@/lib/action";
 import { toast } from "react-toastify";
-import { FormModalProps } from "@/lib/datatype";
+import { FormModalProps } from "@/lib/types/formtype";
 
 const PermissionForm = dynamic(() => import("./forms/PermissionForm"), { loading: () => <h1>Loading...</h1> });
 const RoleForm = dynamic(() => import("./forms/RoleForm"), { loading: () => <h1>Loading...</h1> });

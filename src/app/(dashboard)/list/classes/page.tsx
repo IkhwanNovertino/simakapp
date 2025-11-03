@@ -12,8 +12,9 @@ import { lecturerName } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { AcademicClass, AcademicClassDetail, Course, Lecturer, Major, Period, Prisma, Room } from "@/generated/prisma/client";
+import { AcademicClassDetailTypes, AcademicClassTypes } from "@/lib/types/datatypes/type";
 
-type AcademicClassDataType = AcademicClass & { course: Course & { major: Major } } & { lecturer: Lecturer } & { room: Room } & { period: Period } & { academicClassDetail: AcademicClassDetail[] };
+// type AcademicClassDataType = AcademicClass & { course: Course & { major: Major } } & { lecturer: Lecturer } & { room: Room } & { period: Period } & { academicClassDetail: AcademicClassDetail[] };
 
 const ClassListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -142,7 +143,7 @@ const ClassListPage = async (
     },
   ];
 
-  const renderRow = (item: AcademicClassDataType) => {
+  const renderRow = (item: AcademicClassTypes & { academicClassDetail: AcademicClassDetailTypes[] }) => {
     const itemUpdate = {
       id: item.id,
       name: item.name,

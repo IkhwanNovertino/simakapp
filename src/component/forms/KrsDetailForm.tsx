@@ -9,7 +9,7 @@ import { createKrsDetail } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import Tooltip from "../Tooltip";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const KrsDetailForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { course } = relatedData;

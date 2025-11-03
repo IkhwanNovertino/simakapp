@@ -433,16 +433,16 @@ export async function GET(req: NextRequest) {
                 },
                 distinct: ['courseId'],
               },
-
             }
           });
+          
         
           const dataStudent = {
             name: data?.name,
             nim: data?.nim,
           };
           
-          const coursesFinish: any = {};
+          let coursesFinish: any = {};
           let coursekonsentrasi: number = 0;
           for (const khs of data?.khs) {
             khs?.khsDetail.forEach((detail: any) => {
@@ -464,6 +464,8 @@ export async function GET(req: NextRequest) {
               }
             });
           };
+          coursesFinish = Object.values(coursesFinish)
+          
 
           // Menghitung course pilihan konsentrasi
           // 1. delete CourseCurriculum that courseType is PILIHAN_KONSENTRASI
@@ -483,9 +485,9 @@ export async function GET(req: NextRequest) {
               },
             })
           }
-        
-          const coursesFinishSorted = await courseSorting(coursesFinish);
+          
           const coursesUnfinishSorted = await courseSorting(coursesUnfinish);
+          const coursesFinishSorted = await courseSorting(coursesFinish);
           
           const courseIsnPkl = coursesFinishSorted.filter((item: any) => item.course.isPKL === false);
           const courseIsPkl = coursesFinishSorted.filter((item: any) => item.course.isPKL);
@@ -516,7 +518,7 @@ export async function GET(req: NextRequest) {
           }
         })
         if (!bufferFile) {
-          return new NextResponse('Terjadi Kesalahan...', { status: 400 });
+          return new NextResponse('Terjadi Kesalahan. File Buffer gagal dibuat...', { status: 400 });
         }
         bufferUint8Array = new Uint8Array(bufferFile);
         return new NextResponse(bufferUint8Array, {

@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
 import Select from "react-select";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
@@ -104,7 +104,7 @@ const ClassForm = ({ setOpen, type, data, relatedData }: FormProps) => {
                         const selectedCourse = courses.find((c: any) => c.id === selected?.value);
                         field.onChange(selected ? selected.value : "");
                         if (selectedCourse) {
-                          const name = `${selectedCourse.semester}${selectedCourse.major === 'Sistem Informasi' ? 1 : 6}`
+                          const name = `${selectedCourse.semester}${selectedCourse.major.toLowerCase().includes("sistem informasi") ? 1 : 6}`
                           setValue("name", name);
                           setValue("semester", selectedCourse.semester);
                           setValue("major", selectedCourse.major || "");

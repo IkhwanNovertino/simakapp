@@ -2,12 +2,6 @@
 
 import { usePathname, useRouter } from "next/navigation";
 
-// const tabs = [
-//   { href: "/list/courses/course", label: "Matkul" },
-//   { href: "/list/courses/assesment", label: "Penilaian" },
-//   { href: "/list/courses/grade-component", label: "Komponen Nilai" },
-// ];
-
 interface Tab {
   href: string;
   label: string;

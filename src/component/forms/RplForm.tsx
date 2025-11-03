@@ -9,7 +9,7 @@ import { createRplTranscript, updateRplTranscript } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const RplForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { courses, period } = relatedData;

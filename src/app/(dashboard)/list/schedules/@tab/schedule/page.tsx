@@ -8,8 +8,9 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import Link from "next/link";
 import { Period, Prisma, Schedule } from "@/generated/prisma/client";
+import { ScheduleTypes } from "@/lib/types/datatypes/type";
 
-type ScheduleDataType = Schedule & { period: Period };
+// type ScheduleDataType = Schedule & { period: Period };
 
 const ScheduleListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -76,7 +77,7 @@ const ScheduleListPage = async (
     },
   ];
 
-  const renderRow = (item: ScheduleDataType) => (
+  const renderRow = (item: ScheduleTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

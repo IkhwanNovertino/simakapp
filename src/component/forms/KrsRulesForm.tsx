@@ -9,8 +9,8 @@ import { createKrsRules, updateKrsRules } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
 import { StatusRegister } from "@/lib/setting";
+import { FormProps } from "@/lib/types/formtype";
 
 const KrsRulesForm = ({ setOpen, type, data }: FormProps) => {
 

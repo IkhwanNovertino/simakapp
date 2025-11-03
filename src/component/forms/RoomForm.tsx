@@ -8,7 +8,7 @@ import { RoomInputs, roomSchema } from "@/lib/formValidationSchema";
 import { createRoom, updateRoom } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const RoomForm = ({ setOpen, type, data }: FormProps) => {

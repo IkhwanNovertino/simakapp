@@ -6,6 +6,7 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { Prisma } from "@/generated/prisma/client";
+import { GradeComponentTypes } from "@/lib/types/datatypes/type";
 
 const GradeListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -56,7 +57,7 @@ const GradeListPage = async (
     },
   ];
 
-  const renderRow = (item: any) => {
+  const renderRow = (item: GradeComponentTypes) => {
     return (
       <tr
         key={item.id}

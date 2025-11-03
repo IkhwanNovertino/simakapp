@@ -8,8 +8,8 @@ import StudentsTakingInternship from "@/component/recapType/StudentsTakingIntern
 import StudentsTakingThesis from "@/component/recapType/StudentsTakingThesis";
 import StudentsUnregisteredKrs from "@/component/recapType/StudentsUnregisteredKrs";
 import TableSearch from "@/component/TableSearch";
-import { RecapitulationCardType } from "@/lib/datatype";
 import { prisma } from "@/lib/prisma";
+import { RecapitulationCardType } from "@/lib/types/recaptype";
 
 const RecapitulationDetailByCardPage = async (
   {

@@ -8,17 +8,15 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
 import { redirect } from "next/navigation";
 import { AcademicClass, AcademicClassDetail, Course, Lecturer, Period, PresenceDetail, Prisma } from "@/generated/prisma/client";
+import { AcademicClassDetailTypes } from "@/lib/types/datatypes/type";
 
-type AcademicClassDetailDataType = AcademicClassDetail
-  & {
-    academicClass: AcademicClass
-    & { lecturer: Lecturer }
-    & { course: Course }
-    & { period: Period }
-  }
-  & {
-    presence: PresenceDetail[]
-  }
+// type AcademicClassDetailDataType = AcademicClassDetail & { academicClass: AcademicClass
+//     & { lecturer: Lecturer }
+//     & { course: Course }
+//     & { period: Period }
+//   } & {
+//     presence: PresenceDetail[]
+//   }
 
 const PresenceListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -114,18 +112,18 @@ const PresenceListPage = async (
     {
       header: "Presensi Perkuliahan",
       accessor: "presensi perkuliahan",
-      className: "hidden md:table-cell",
+      className: "hidden lg:table-cell",
     },
   ];
 
-  const renderRow = (item: AcademicClassDetailDataType) => {
+  const renderRow = (item: AcademicClassDetailTypes & { presence: PresenceDetail[] }) => {
     return (
       <tr
         key={item.id}
         className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
       >
-        <td className="grid grid-cols-6 md:flex py-4 px-2 md:px-4">
-          <div className="flex flex-col col-span-5 items-start gap-2">
+        <td className="flex flex-col gap-2 py-4 px-2 md:px-4 lg:w-80">
+          <div className="flex flex-col items-start w-full">
             <h3 className="font-semibold">Kelas : {item.academicClass.name}</h3>
             <h6 className="text-xs font-medium">{item.academicClass.period?.name}</h6>
             <div className="flex flex-col w-full md:w-80">
@@ -142,11 +140,16 @@ const PresenceListPage = async (
               </p>
             </div>
           </div>
-          <div className="flex items-center justify-end gap-2 md:hidden ">
+          <div className="flex items-center justify-start gap-2 lg:hidden ">
+            <div className="grid grid-cols-4 md:grid-cols-8 gap-2">
+              {item.presence.map((presenceItem: any) => (
+                <PresenceStatus key={presenceItem.id} data={presenceItem} role={user?.roleType} />
+              ))}
+            </div>
           </div>
         </td>
-        <td className="hidden md:table-cell">
-          <div className="grid md:grid-cols-8 lg:grid-cols-10 xl:grid-cols-16 gap-2">
+        <td className="hidden lg:table-cell">
+          <div className="grid md:grid-cols-8 lg:grid-cols-10 gap-2">
             {item.presence.map((presenceItem: any) => (
               <PresenceStatus key={presenceItem.id} data={presenceItem} role={user?.roleType} />
             ))}

@@ -1,5 +1,5 @@
-import { RecapitulationCardType } from "@/lib/datatype";
 import { prisma } from "@/lib/prisma";
+import { RecapitulationCardType } from "@/lib/types/recaptype";
 import Image from "next/image";
 import Link from "next/link";
 

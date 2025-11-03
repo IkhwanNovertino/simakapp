@@ -7,9 +7,8 @@ import { canRoleCreateData, canRoleCreateDataUser, canRoleDeleteData, canRoleUpd
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { redirect } from "next/navigation";
-import { Operator, Prisma, Role, User } from "@/generated/prisma/client";
-
-type OperatorDataType = Operator & { user: User & { role: Role } };
+import { Prisma } from "@/generated/prisma/client";
+import { OperatorTypes } from "@/lib/types/datatypes/type";
 
 const OperatorListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -91,7 +90,7 @@ const OperatorListPage = async (
     },
   ];
 
-  const renderRow = (item: OperatorDataType) => (
+  const renderRow = (item: OperatorTypes) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"
@@ -106,7 +105,7 @@ const OperatorListPage = async (
             <div className="flex items-center gap-3">
               {canUpdateData && (<FormContainer table="operator" type="update" data={item} />)}
               {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-              {canDeleteData && (<FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />)}
+              {canDeleteData && (<FormContainer table="operator" type="delete" id={`${item.id}:${item?.user?.id}`} />)}
             </div>
           </ModalAction>
         </div>
@@ -117,7 +116,7 @@ const OperatorListPage = async (
         <div className="hidden md:flex items-center gap-2">
           {canUpdateData && <FormContainer table="operator" type="update" data={item} />}
           {canCreateUser && (<FormContainer table="operatorUser" type={item.user ? "updateUser" : "createUser"} data={item} />)}
-          {canDeleteData && <FormContainer table="operator" type="delete" id={`${item.id}:${item.userId}`} />}
+          {canDeleteData && <FormContainer table="operator" type="delete" id={`${item.id}:${item?.user?.id}`} />}
         </div>
       </td>
     </tr>

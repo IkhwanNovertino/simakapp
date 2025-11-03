@@ -101,7 +101,7 @@ export const coursesClearing = async (data: {khsDetail: khsDetail[]}[]): Promise
   return Object.values(courses);
 }
 
-export const courseSorting = async (data: khsDetail[]): Promise<khsDetail[]> => {
+export const courseSorting = async (data: any): Promise<any[]> => {
   return data.sort((min: khsDetail, max: khsDetail) => {
       const x = min.course.name.toLowerCase();
       const y = max.course.name.toLowerCase();
@@ -128,7 +128,8 @@ export const gpaCalculation = async (data: khsDetail[]): Promise<number> => {
 const getLatestMonday = (): Date => {
   const today = new Date();
   const dayOfWeek = today.getDay();
-  const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+  const daysSinceMonday = dayOfWeek;
+  // const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
   const latestMonday = today;
   latestMonday.setDate(today.getDate() - daysSinceMonday);
   return latestMonday;
@@ -173,25 +174,4 @@ export const adjustScheduleToCurrentWeek = (
     };
   });
 };
-
-// export const convertLogotoBase64 = async () => {
-//   try {
-//     const logoPath = path.join(process.cwd(), 'public', 'logo.png');
-//     const logoFile = await readFile(logoPath);
-
-//     if (!logoFile) {
-//       throw new AppError("Gagal membaca file logo .png", 400);
-//     }
-
-//     const mimeType = 'image/png';
-    
-//     const logoBase64: string = `data:${mimeType};base64,${logoFile.toString('base64')}`;
-//     return {
-//       success: true,
-//       data: logoBase64,
-//     }
-//   } catch (err) {
-//     throw new AppError("Gagal membaca file logo .png", 400);
-//   }
-// }
 

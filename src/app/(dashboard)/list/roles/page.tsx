@@ -9,13 +9,14 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Permission, Prisma, Role } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { RolePermissionTypes, RoleTypes } from "@/lib/types/datatypes/type";
 
-type RoleDataType = Role & {
-  rolePermission: {
-    permission: Permission;
-  }[];
-}
+// type RoleDataType = Role & {
+//   rolePermission: {
+//     permission: Permission;
+//   }[];
+// }
 
 const RoleListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -70,7 +71,7 @@ const RoleListPage = async (
     prisma.role.count({ where: query }),
   ]);
 
-  const renderRow = (item: RoleDataType) => (
+  const renderRow = (item: RoleTypes & { rolePermission: RolePermissionTypes[] }) => (
     <tr
       key={item.id}
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-gray-200"

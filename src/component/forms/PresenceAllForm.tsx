@@ -7,8 +7,8 @@ import { PresenceAllInputs, presenceAllSchema } from "@/lib/formValidationSchema
 import { updateManyPresenceStatus } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { FormProps } from "@/lib/datatype";
 import InputSelect from "../InputSelect";
+import { FormProps } from "@/lib/types/formtype";
 
 const PresenceAllForm = ({ setOpen, type, data }: FormProps) => {
 

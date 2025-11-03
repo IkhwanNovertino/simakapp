@@ -8,7 +8,7 @@ import { OperatorInputs, operatorSchema } from "@/lib/formValidationSchema";
 import { createOperator, updateOperator } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 
 const OperatorForm = ({ setOpen, type, data }: FormProps) => {

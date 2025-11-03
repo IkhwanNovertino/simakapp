@@ -9,7 +9,7 @@ import { createTime, updateTime } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import moment from "moment";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const TimeForm = ({ setOpen, type, data }: FormProps) => {
 

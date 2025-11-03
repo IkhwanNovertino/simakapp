@@ -9,8 +9,7 @@ import { createUserLecturer, updateUserLecturer } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
-
+import { FormProps } from "@/lib/types/formtype";
 
 const LecturerUserForm = ({ setOpen, type, data, relatedData }: FormProps) => {
   const { role } = relatedData;

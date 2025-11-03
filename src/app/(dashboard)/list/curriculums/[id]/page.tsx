@@ -7,9 +7,10 @@ import { canRoleCreateData, canRoleDeleteData, canRoleViewData } from "@/lib/dal
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { redirect } from "next/navigation";
-import { Course, CurriculumDetail, Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
+import { CurriculumDetailTypes } from "@/lib/types/datatypes/type";
 
-type CurriculumDetailDataType = CurriculumDetail & { course: Course };
+// type CurriculumDetailDataType = CurriculumDetail & { course: Course };
 
 const CurriculumSinglePage = async (
   { searchParams, params }: {
@@ -93,6 +94,7 @@ const CurriculumSinglePage = async (
       },
       orderBy: [
         { semester: "asc" },
+        { course: { code: "asc" } }
       ],
       take: ITEM_PER_PAGE,
       skip: ITEM_PER_PAGE * (p - 1),
@@ -134,7 +136,7 @@ const CurriculumSinglePage = async (
     },
   ];
 
-  const renderRow = (item: CurriculumDetailDataType) => {
+  const renderRow = (item: CurriculumDetailTypes) => {
     const arrSemester = ["SATU", "DUA", "TIGA", "EMPAT", "LIMA", "ENAM", "TUJUH", "DELAPAN"];
     const style = [`grid grid-cols-6 md:flex py-4 px-2 md:px-4 md:w-28`];
     if (item?.semester === 1) {

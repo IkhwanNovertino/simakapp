@@ -5,9 +5,8 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { Assessment, AssessmentDetail, Prisma } from "@/generated/prisma/client";
-
-type AssessmentDataTypes = Assessment & { assessmentDetail: AssessmentDetail[] };
+import { Prisma } from "@/generated/prisma/client";
+import { AssessmentDetailTypes, AssessmentTypes } from "@/lib/types/datatypes/type";
 
 const AssesmentListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -36,8 +35,11 @@ const AssesmentListPage = async (
         assessmentDetail: {
           include: {
             grade: true,
-          }
-        }
+          },
+          orderBy: [
+            { seq_number: 'desc' }
+          ],
+        },
       },
       orderBy: { name: "asc" },
       skip: (p - 1) * ITEM_PER_PAGE,
@@ -59,15 +61,16 @@ const AssesmentListPage = async (
     },
   ];
 
-  const renderRow = (item: AssessmentDataTypes) => {
+  const renderRow = (item: AssessmentTypes & { assessmentDetail: AssessmentDetailTypes[] }) => {
     const dataEdit = {
       id: item.id,
       name: item.name,
-      gradeComponents: item.assessmentDetail.map((assessment: any) => ({
+      gradeComponents: item.assessmentDetail.map((assessment: AssessmentDetailTypes) => ({
         id: assessment.grade.id,
         percentage: assessment.percentage,
       }))
     }
+
     return (
       <tr
         key={item.id}

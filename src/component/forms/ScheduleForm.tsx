@@ -9,7 +9,7 @@ import { createSchedule, updateSchedule } from "@/lib/action";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import InputSelect from "../InputSelect";
-import { FormProps } from "@/lib/datatype";
+import { FormProps } from "@/lib/types/formtype";
 
 const ScheduleForm = ({ setOpen, type, data, relatedData }: FormProps) => {
 

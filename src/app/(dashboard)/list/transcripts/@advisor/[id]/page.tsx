@@ -4,11 +4,12 @@ import TableSearch from "@/component/TableSearch";
 import { AnnouncementKhs, Course, Khs, KhsDetail } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
+import { KhsDetailBaseTypes } from "@/lib/types/datatypes/type";
 import { coursesClearing, courseSorting, lecturerName, totalSks } from "@/lib/utils";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
-type KhsDetailDataType = KhsDetail & { khs: Khs } & { course: Course };
+// type KhsDetailDataType = KhsDetail & { khs: Khs } & { course: Course };
 
 const TranscriptAdvisorDetailPage = async (
   {
@@ -141,7 +142,7 @@ const TranscriptAdvisorDetailPage = async (
     },
   ];
 
-  const renderRow = (item: KhsDetailDataType) => {
+  const renderRow = (item: KhsDetailBaseTypes) => {
     return (
       <tr
         key={item.course.id}

@@ -25,13 +25,14 @@
     "next": "^15.5.6",
     "node-cron": "^4.2.0",
     "react": "^19.0.0",
-    "react-big-calendar": "^1.18.0",
+    "react-big-calendar": "^1.19.4",
     "react-calendar": "^5.1.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.54.2",
     "react-select": "^5.10.1",
     "react-toastify": "^11.0.5",
     "recharts": "^2.15.1",
+    "tsx": "^4.20.6",
     "uuid": "^11.1.0",
     "winston": "^3.17.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
@@ -48,8 +49,6 @@
     "eslint-config-next": "^16.0.0",
     "prisma": "^6.18.0",
     "tailwindcss": "^4",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.20.6",
     "typescript": "^5"
   }
 }
