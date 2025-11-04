@@ -5,10 +5,8 @@ import { getSession } from "@/lib/session";
 import { coursesClearing, courseSorting, lecturerName, totalSks } from "@/lib/utils";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { AnnouncementKhs, Course, KhsDetail } from "@/generated/prisma/client";
-import { KhsDetailBaseTypes, KhsDetailTypes } from "@/lib/types/datatypes/type";
-
-// type KhsDetailDataType = KhsDetail & { course: Course };
+import { AnnouncementKhs } from "@/generated/prisma/client";
+import { KhsDetailBaseTypes } from "@/lib/types/datatypes/type";
 
 const TranscriptOperatorDetailPage = async (
   {

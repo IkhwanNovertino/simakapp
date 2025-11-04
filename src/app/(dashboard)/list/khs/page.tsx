@@ -8,10 +8,9 @@ import { getSession } from "@/lib/session";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Khs, KhsDetail, Period, Prisma, Student } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { KhsDetailTypes, KhsTypes } from "@/lib/types/datatypes/type";
 
-// type KhsDataType = Khs & { student: Student } & { period: Period } & { khsDetail: KhsDetail[] };
 
 const KHSListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }

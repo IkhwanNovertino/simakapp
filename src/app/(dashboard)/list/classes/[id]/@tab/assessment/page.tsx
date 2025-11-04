@@ -8,8 +8,8 @@ import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { AcademicClassDetail, AnnouncementKhs, Prisma } from "@/generated/prisma/client";
-import { AssessmentDetailTypes, KhsDetailBaseTypes, KhsDetailTypes, KhsGradeTypes } from "@/lib/types/datatypes/type";
+import { AnnouncementKhs, Prisma } from "@/generated/prisma/client";
+import { AssessmentDetailTypes, KhsDetailBaseTypes, KhsGradeTypes } from "@/lib/types/datatypes/type";
 
 const ClassSingleTabAssessmentPage = async (
   {

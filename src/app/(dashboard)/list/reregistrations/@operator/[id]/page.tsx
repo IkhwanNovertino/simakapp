@@ -9,10 +9,8 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
-import { Major, Prisma, Reregister, ReregisterDetail, Student } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { ReregisterDetailTypes } from "@/lib/types/datatypes/type";
-
-// type ReregisterDetailDataType = ReregisterDetail & { student: Student & { major: Major } } & { reregister: Reregister };
 
 const ReregisterSinglePage = async (
   {

@@ -4,17 +4,8 @@ import ModalAction from "@/component/ModalAction";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
-import { AcademicClass, Course, Day, Lecturer, Major, Prisma, Room, ScheduleDetail, Time } from "@/generated/prisma/client";
+import { Day, Prisma } from "@/generated/prisma/client";
 import { ScheduleDetailTypes } from "@/lib/types/datatypes/type";
-
-// type ScheduleDetailDataType =
-//   ScheduleDetail & { time: Time }
-//   & {
-//     academicClass: AcademicClass
-//     & { lecturer: Lecturer }
-//     & { room: Room }
-//     & { course: Course & { major: Major } }
-//   }
 
 const ScheduleDetailPage = async (
   {
