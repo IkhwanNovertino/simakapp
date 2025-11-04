@@ -281,7 +281,7 @@ export async function GET(req: NextRequest) {
             maxSks: true,
           }
         });
-        const queryPosition = khsStudent?.student?.major?.name === "Sistem Informasi" ? "KAPRODI SI" : "KAPRODI TI";
+        const queryPosition = khsStudent?.student?.major?.name.toLowerCase() === "sistem informasi" ? "KAPRODI SI" : "KAPRODI TI";
         const position = await prisma.position.findFirst({
           where: {
             positionName: {
