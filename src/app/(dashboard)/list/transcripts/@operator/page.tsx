@@ -10,10 +10,8 @@ import { lecturerName } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Lecturer, Major, Prisma, Student } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { StudentTypes } from "@/lib/types/datatypes/type";
-
-// type StudentDataType = Student & { major: Major } & { lecturer: Lecturer };
 
 const TranskipOperatorPage = async (
   { searchParams }: { searchParams: { [key: string]: string | undefined } }

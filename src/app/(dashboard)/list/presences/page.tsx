@@ -7,16 +7,8 @@ import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { lecturerName } from "@/lib/utils";
 import { redirect } from "next/navigation";
-import { AcademicClass, AcademicClassDetail, Course, Lecturer, Period, PresenceDetail, Prisma } from "@/generated/prisma/client";
-import { AcademicClassDetailTypes } from "@/lib/types/datatypes/type";
-
-// type AcademicClassDetailDataType = AcademicClassDetail & { academicClass: AcademicClass
-//     & { lecturer: Lecturer }
-//     & { course: Course }
-//     & { period: Period }
-//   } & {
-//     presence: PresenceDetail[]
-//   }
+import { Prisma } from "@/generated/prisma/client";
+import { AcademicClassDetailTypes, PresenceDetailTypes } from "@/lib/types/datatypes/type";
 
 const PresenceListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
@@ -116,7 +108,7 @@ const PresenceListPage = async (
     },
   ];
 
-  const renderRow = (item: AcademicClassDetailTypes & { presence: PresenceDetail[] }) => {
+  const renderRow = (item: AcademicClassDetailTypes & { presence: PresenceDetailTypes[] }) => {
     return (
       <tr
         key={item.id}

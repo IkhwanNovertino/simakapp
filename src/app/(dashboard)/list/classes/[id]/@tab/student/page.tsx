@@ -6,16 +6,8 @@ import TableSearch from "@/component/TableSearch";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { ITEM_PER_PAGE } from "@/lib/setting";
-import { AcademicClass, AcademicClassDetail, Course, Lecturer, Prisma, Student } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { AcademicClassDetailTypes } from "@/lib/types/datatypes/type";
-
-// type AcademicClassDetailDataType = AcademicClassDetail
-//   & {
-//     academicClass: AcademicClass
-//     & { lecturer: Lecturer }
-//     & { course: Course }
-//   }
-//   & { student: Student }
 
 const ClassSingleTabStudentPage = async (
   {

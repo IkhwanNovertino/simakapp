@@ -7,10 +7,8 @@ import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import Link from "next/link";
-import { Period, Prisma, Schedule } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { ScheduleTypes } from "@/lib/types/datatypes/type";
-
-// type ScheduleDataType = Schedule & { period: Period };
 
 const ScheduleListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }

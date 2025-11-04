@@ -11,10 +11,8 @@ import { lecturerName } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Lecturer, Major, Prisma, Role, User } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { LecturerTypes } from "@/lib/types/datatypes/type";
-
-// type LecturerDataType = Lecturer & { user: User & { role: Role } } & { major: Major };
 
 const LecturerListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }

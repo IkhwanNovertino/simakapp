@@ -8,10 +8,7 @@ import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { lecturerName } from "@/lib/utils";
 import Image from "next/image";
-import { Course, KrsDetail } from "@/generated/prisma/client";
 import { KrsDetailTypes } from "@/lib/types/datatypes/type";
-
-// type KrsDetailDataType = KrsDetail & { course: Course };
 
 const KRSDetailPage = async (
   { params }: { params: Promise<{ id: string }> }

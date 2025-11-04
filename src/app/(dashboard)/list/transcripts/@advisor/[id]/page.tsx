@@ -1,15 +1,13 @@
 import ButtonPdfDownload from "@/component/ButtonPdfDownload";
 import Table from "@/component/Table";
 import TableSearch from "@/component/TableSearch";
-import { AnnouncementKhs, Course, Khs, KhsDetail } from "@/generated/prisma/client";
+import { AnnouncementKhs } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
 import { KhsDetailBaseTypes } from "@/lib/types/datatypes/type";
 import { coursesClearing, courseSorting, lecturerName, totalSks } from "@/lib/utils";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-
-// type KhsDetailDataType = KhsDetail & { khs: Khs } & { course: Course };
 
 const TranscriptAdvisorDetailPage = async (
   {

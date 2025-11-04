@@ -9,10 +9,8 @@ import { ITEM_PER_PAGE } from "@/lib/setting";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { Krs, Lecturer, Period, Prisma, Reregister, Student } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { KrsTypes } from "@/lib/types/datatypes/type";
-
-// type KrsDataType = Krs & { student: Student } & { lecturer: Lecturer } & { reregister: Reregister & { period: Period } };
 
 const KRSListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }

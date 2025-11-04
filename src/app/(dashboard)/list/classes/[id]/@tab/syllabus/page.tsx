@@ -5,21 +5,7 @@ import Pagination from "@/component/Pagination";
 import Table from "@/component/Table";
 import { prisma } from "@/lib/prisma";
 import { getSession } from "@/lib/session";
-import { presenceDuration } from "@/lib/setting";
 import { PresenceTypes } from "@/lib/types/datatypes/type";
-
-// type PresenceDataType = {
-//   id: string,
-//   academicClassId: string,
-//   weekNumber: number,
-//   date: Date,
-//   learningMethod: string,
-//   lesson: string,
-//   lessonDetail: string,
-//   duration: string,
-//   isActive: boolean,
-//   presenceDuration: string,
-// }
 
 const ClassSingleTabStudentPage = async (
   {

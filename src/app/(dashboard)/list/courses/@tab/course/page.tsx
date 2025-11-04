@@ -8,10 +8,8 @@ import { canRoleCreateData, canRoleDeleteData, canRoleUpdateData, canRoleViewDat
 import { prisma } from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/setting";
 import { redirect } from "next/navigation";
-import { Course, Major, Prisma } from "@/generated/prisma/client";
+import { Prisma } from "@/generated/prisma/client";
 import { CourseTypes } from "@/lib/types/datatypes/type";
-
-// type CourseDataType = Course & { major: Major };
 
 const CourseListPage = async (
   { searchParams }: { searchParams: Promise<{ [key: string]: string | undefined }> }
